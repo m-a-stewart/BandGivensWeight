@@ -2,8 +2,8 @@ program test_decomp
   use decomp
   use utility
   implicit none
-  integer(kind=int32), parameter :: n=5000, rmax=2, ubwmax=20, lbw=1, mb=ubwmax+lbw+1
-  real(kind=dp), parameter :: tol=1e-15
+  integer(kind=int32), parameter :: n=100, rmax=2, ubwmax=100, lbw=1, mb=ubwmax+lbw+1
+  real(kind=dp), parameter :: tol=1e-18
   real(kind=dp), dimension(n,n) :: a, a0, a1
   real(kind=dp), dimension(mb,n) :: b
   real(kind=dp), dimension(n,rmax) :: u
@@ -38,7 +38,7 @@ program test_decomp
   call d_form_upper_ub(a1, mb, n, b, lbw, ubw, j1s, j2s, cs, ss, numrots)
   print *, ubw  
   print *, "error: ", maxabs(a1-a0)
-  print *
+!  print *
   ! call print_matrix(a0-a1)
   ! print *
   ! call print_matrix(a1)

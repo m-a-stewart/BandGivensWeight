@@ -236,7 +236,7 @@ contains
     real(kind=dp), dimension(:), intent(in) :: a
     !
     integer(kind=int32) :: j, m
-    real(kind=dp) :: y
+    real(kind=dp) :: y, tmp
     m=size(a)
     y=d_maxabs_v(a)
     if (y==0.0_dp) then
@@ -245,17 +245,26 @@ contains
     end if
     y=(2.0_dp)**(floor(log(y)/log(2.0_dp)))
     x=0.0_dp
-    do j=1,m
-       x=x+(a(j)/y)**2
-    end do
-    x=sqrt(x)*y
+    if (y > 1e150_dp .or. y < 1e-150_dp) then
+       do j=1,m
+          tmp=a(j)/y
+          x=x+tmp*tmp
+       end do
+       x=sqrt(x)*y
+    else
+       do j=1,m
+          tmp=a(j)
+          x=x+tmp*tmp
+       end do
+       x=sqrt(x)
+    end if
   end function d_norm2_v
 
   real(kind=dp) function c_normf(a) result(x)
     complex(kind=dp), dimension(:,:), intent(in) :: a
     !
     integer(kind=int32) :: j, k, m, n
-    real(kind=dp) :: y
+    real(kind=dp) :: y, tmp
     m=size(a,1)
     n=size(a,2)
     y=c_maxabs(a)
@@ -265,19 +274,30 @@ contains
     end if
     y=(2.0_dp)**(floor(log(y)/log(2.0_dp)))
     x=0.0_dp
-    do j=1,m
-       do k=1,n
-          x=x+abs(a(j,k)/y)**2
+    if (y > 1e150_dp .or. y < 1e-150_dp) then
+       do j=1,m
+          do k=1,n
+             tmp=abs(a(j,k)/y)
+             x=x+tmp*tmp
+          end do
        end do
-    end do
-    x=sqrt(x)*y
+       x=sqrt(x)*y
+    else
+       do j=1,m
+          do k=1,n
+             tmp=abs(a(j,k))
+             x=x+tmp*tmp
+          end do
+       end do
+       x=sqrt(x)
+    end if
   end function c_normf
 
   real(kind=dp) function d_normf(a) result(x)
     real(kind=dp), dimension(:,:), intent(in) :: a
     !
     integer(kind=int32) :: j, k, m, n
-    real(kind=dp) :: y
+    real(kind=dp) :: y, tmp
     m=size(a,1)
     n=size(a,2)
     y=d_maxabs(a)
@@ -287,12 +307,23 @@ contains
     end if
     y=(2.0_dp)**(floor(log(y)/log(2.0_dp)))
     x=0.0_dp
-    do j=1,m
-       do k=1,n
-          x=x+abs(a(j,k)/y)**2
+    if (y > 1e150_dp .or. y < 1e-150_dp) then
+       do j=1,m
+          do k=1,n
+             tmp = a(j,k)/y
+             x=x+tmp*tmp
+          end do
        end do
-    end do
-    x=sqrt(x)*y
+       x=sqrt(x)*y
+    else
+       do j=1,m
+          do k=1,n
+             tmp = a(j,k)
+             x=x+tmp*tmp
+          end do
+       end do
+       x=sqrt(x)
+    end if
   end function d_normf
 
   subroutine d_print_matrix(a)

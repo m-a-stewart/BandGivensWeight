@@ -35,7 +35,7 @@ contains
        ! for a null vector directly.
        x(p)=(1.0_dp, 0.0_dp)
        call lower_right_invert(x(1:p-1),l(1:p-1, 1:p-1), -l(p,1:p-1))
-       error=0
+       error=p
     else
        ! Otherwise use the Linpack condition estimator approach.
        x(n)=(1.0_dp,0.0_dp)/l(n,n)
@@ -55,7 +55,7 @@ contains
        nrmx=norm2(x)
        x=x/nrmx
        k=1
-       error=1
+       error=-1
        do while (k < maxit)
           if (1/nrmx < tol) then
              error=0
@@ -93,7 +93,7 @@ contains
        ! for a null vector directly.
        x(p)=1.0_dp
        call lower_right_invert(x(1:p-1),l(1:p-1, 1:p-1), -l(p,1:p-1))
-       error = 0
+       error = p
     else
        ! Otherwise use the Linpack condition estimator approach.
        x(n)=1.0_dp/l(n,n)
@@ -113,7 +113,7 @@ contains
        nrmx=norm2(x)
        x=x/nrmx
        k=1
-       error=1
+       error=-1
        do while (k < maxit)
           if (1/nrmx < tol) then
              error=0

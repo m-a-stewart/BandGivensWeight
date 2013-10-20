@@ -2,9 +2,9 @@ FC = gfortran
 OBJDIR = ../mod
 #LFLAGS = -warn all -O -pg
 #CFLAGS = -warn all -O -pg
-LFLAGS =
-#CFLAGS = -Wall
-CFLAGS = 
+LFLAGS = -pg
+#CFLAGS = -Wall -O -pg
+CFLAGS = -Wall -O2
 OBJS =  $(OBJDIR)/utility.o $(OBJDIR)/shift.o $(OBJDIR)/nullvec.o $(OBJDIR)/prec.o $(OBJDIR)/rotation.o $(OBJDIR)/decomp.o
 
 run_test : test_decomp
@@ -28,8 +28,8 @@ force_look :
 clean :
 	rm $(OBJDIR)/*.o $(OBJDIR)/*.mod test_decomp
 
-prof :
-	gprof -c test_nest gmon.out | less
+prof : run_test
+	gprof -c -q test_decomp gmon.out | less
 
 kill :
 	kill -9 `ps -e | grep test_nest | sed -e "s/ pts.*//"`
