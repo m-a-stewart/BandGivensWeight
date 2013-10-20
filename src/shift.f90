@@ -12,6 +12,11 @@ end interface right_shift
 interface down_shift
    module procedure d_down_shift
 end interface down_shift
+
+interface left_shift
+   module procedure d_left_shift
+end interface left_shift
+
 contains
 
   subroutine d_upper_left_shift(a)

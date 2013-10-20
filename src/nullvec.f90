@@ -30,7 +30,7 @@ contains
     x=(0.0_dp, 0.0_dp)
     y=(0.0_dp, 0.0_dp)
     p=first_zero_diagonal(l, 1.0e-1_dp*tol)
-    if (p < n+1) then
+    if (p <= n) then
        ! if a small enough diagonal element is found, solve
        ! for a null vector directly.
        x(p)=(1.0_dp, 0.0_dp)
@@ -57,7 +57,7 @@ contains
        k=1
        error=1
        do while (k < maxit)
-          if (1/nrmx > tol) then
+          if (1/nrmx < tol) then
              error=0
              return
           end if
@@ -88,7 +88,7 @@ contains
     x=0.0_dp
     y=0.0_dp
     p=first_zero_diagonal(l, 1.0e-1_dp*tol)
-    if (p < n+1) then
+    if (p <= n) then
        ! if a small enough diagonal element is found, solve
        ! for a null vector directly.
        x(p)=1.0_dp
@@ -115,7 +115,7 @@ contains
        k=1
        error=1
        do while (k < maxit)
-          if (1/nrmx > tol) then
+          if (1/nrmx < tol) then
              error=0
              return
           end if

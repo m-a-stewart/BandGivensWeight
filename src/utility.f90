@@ -2,7 +2,6 @@ module utility
 use prec
 implicit none
 
-
 interface lower_right_invert
    module procedure f_c_lower_right_invert, f_d_lower_right_invert
 end interface lower_right_invert
@@ -27,9 +26,14 @@ interface normf
    module procedure c_normf, d_normf
 end interface normf
 
+interface print_matrix
+   module procedure d_print_matrix, c_print_matrix, i_print_matrix
+end interface print_matrix
+
+
 public :: f_c_lower_right_invert, f_d_lower_right_invert, f_c_lower_tr_right_invert, &
           f_d_lower_tr_right_invert, c_first_zero_diagonal, &
-          d_first_zero_diagonal, c_maxabs, d_maxabs
+          d_first_zero_diagonal, c_maxabs, d_maxabs, d_print_matrix, c_print_matrix
 
 contains
 
@@ -216,6 +220,10 @@ contains
     real(kind=dp) :: y
     m=size(a)
     y=c_maxabs_v(a)
+    if (y==0.0_dp) then
+       x=0.0_dp
+       return
+    end if
     y=(2.0_dp)**(floor(log(y)/log(2.0_dp)))
     x=0.0_dp
     do j=1,m
@@ -231,6 +239,10 @@ contains
     real(kind=dp) :: y
     m=size(a)
     y=d_maxabs_v(a)
+    if (y==0.0_dp) then
+       x=0.0_dp
+       return
+    end if
     y=(2.0_dp)**(floor(log(y)/log(2.0_dp)))
     x=0.0_dp
     do j=1,m
@@ -247,6 +259,10 @@ contains
     m=size(a,1)
     n=size(a,2)
     y=c_maxabs(a)
+    if (y==0.0_dp) then
+       x=0.0_dp
+       return
+    end if
     y=(2.0_dp)**(floor(log(y)/log(2.0_dp)))
     x=0.0_dp
     do j=1,m
@@ -265,6 +281,10 @@ contains
     m=size(a,1)
     n=size(a,2)
     y=d_maxabs(a)
+    if (y==0.0_dp) then
+       x=0.0_dp
+       return
+    end if
     y=(2.0_dp)**(floor(log(y)/log(2.0_dp)))
     x=0.0_dp
     do j=1,m
@@ -275,4 +295,42 @@ contains
     x=sqrt(x)*y
   end function d_normf
 
+  subroutine d_print_matrix(a)
+    real(kind=dp), dimension(:,:), intent(in) :: a
+    integer(kind=int32) :: j,k,m,n
+    m=size(a,1)
+    n=size(a,2)
+    do j=1,m
+       do k=1,n
+          write(*,'(ES12.4, "  ")',advance='no') a(j,k)
+       end do
+       write(*,*)
+    end do
+  end subroutine d_print_matrix
+
+  subroutine c_print_matrix(a)
+    complex(kind=dp), dimension(:,:), intent(in) :: a
+    integer(kind=int32) :: j,k,m,n
+    m=size(a,1)
+    n=size(a,2)
+    do j=1,m
+       do k=1,n
+          write(*,'(ES12.4, "  ")',advance='no') a(j,k)
+       end do
+       write(*,*)
+    end do
+  end subroutine c_print_matrix
+
+  subroutine i_print_matrix(a)
+    integer(kind=int32), dimension(:,:), intent(in) :: a
+    integer(kind=int32) :: j,k,m,n
+    m=size(a,1)
+    n=size(a,2)
+    do j=1,m
+       do k=1,n
+          write(*,'(i4, "  ")',advance='no') a(j,k)
+       end do
+       write(*,*)
+    end do
+  end subroutine i_print_matrix
 end module utility
