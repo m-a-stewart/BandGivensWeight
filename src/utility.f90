@@ -30,6 +30,9 @@ interface print_matrix
    module procedure d_print_matrix, c_print_matrix, i_print_matrix
 end interface print_matrix
 
+interface random_complex
+   module procedure random_complex_m, random_complex_v, random_complex_s
+end interface random_complex
 
 public :: f_c_lower_right_invert, f_d_lower_right_invert, f_c_lower_tr_right_invert, &
           f_d_lower_tr_right_invert, c_first_zero_diagonal, &
@@ -333,7 +336,7 @@ contains
     n=size(a,2)
     do j=1,m
        do k=1,n
-          write(*,'(ES12.4, "  ")',advance='no') a(j,k)
+          write(*,'(ES12.4, ",  ")',advance='no') a(j,k)
        end do
        write(*,*)
     end do
@@ -346,7 +349,7 @@ contains
     n=size(a,2)
     do j=1,m
        do k=1,n
-          write(*,'(ES12.4, "  ")',advance='no') a(j,k)
+          write(*,'(ES12.4, A, ES11.4,A)',advance='no') real(a(j,k)), ' +i*',aimag(a(j,k)), '   '
        end do
        write(*,*)
     end do
@@ -364,4 +367,40 @@ contains
        write(*,*)
     end do
   end subroutine i_print_matrix
+
+  subroutine random_complex_m(a)
+    complex(kind=dp), dimension(:,:), intent(out) :: a
+    real(kind=dp) :: x,y
+    integer(kind=int32) :: j, k, m, n
+    m=size(a,1)
+    n=size(a,2)
+    do j=1,m
+       do k=1,n
+          call random_number(x)
+          call random_number(y)
+          a(j,k)=cmplx(x,y)
+       end do
+    end do
+  end subroutine random_complex_m
+
+  subroutine random_complex_v(a)
+    complex(kind=dp), dimension(:), intent(out) :: a
+    real(kind=dp) :: x,y
+    integer(kind=int32) :: j, m
+    m=size(a)
+    do j=1,m
+       call random_number(x)
+       call random_number(y)
+       a(j)=cmplx(x,y)
+    end do
+  end subroutine random_complex_v
+
+  subroutine random_complex_s(a)
+    complex(kind=dp), intent(out) :: a
+    real(kind=dp) :: x,y
+    call random_number(x)
+    call random_number(y)
+    a=cmplx(x,y)
+  end subroutine random_complex_s
+    
 end module utility
