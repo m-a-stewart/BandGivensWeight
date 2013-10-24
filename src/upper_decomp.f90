@@ -1,4 +1,4 @@
-module decomp
+module upper_decomp
   use prec
   use nullvec
   use utility
@@ -25,7 +25,7 @@ contains
     real(kind=dp), dimension(ubwmax+2) :: x
     real(kind=dp) :: nrma, nrmq12
     real(kind=dp), pointer, dimension(:,:) :: pl, pq
-    integer(kind=int32) :: i, j, k, nullerr, ortherror, offs, nl
+    integer(kind=int32) :: i, j, k, nullerr, ortherror, roffs, nl, klast
     integer(kind=int32), dimension(n) :: ubws
     type(d_rotation) :: rot
     !
@@ -46,7 +46,7 @@ contains
     ! Compute an initial trivial LQ factorization
     q(1,1:n-1) = a(1,2:n)
     a(1,2:n)=0.0_dp
-    a(1,2)=norm2(q(1,2:n))
+    a(1,2)=norm2(q(1,1:n-1))
     if (a(1,2) == 0.0_dp) then
        q(1,1:n-1) = 1.0_dp
        q(1,1:n-1)=q(1,1:n-1)/norm2(q(1,1:n-1))
@@ -54,21 +54,24 @@ contains
        q(1,1:n-1)=q(1,1:n-1)/a(1,2)
     end if
     nl=1
+    klast=n
     kloop: do k=1,n
        ! Current, possibly singular, L should be contained in
        ! a(k-nl+1:k,k+1:k+nl)
        ! At the start of the loop nl is a possible overestimate that
        ! can be decreased by finding a null vector.
-       offs=k-nl
-       pl => a(offs+1:k, k+1:k+nl)
+       roffs=k-nl
+       pl => a(roffs+1:k, k+1:k+nl)
        pq => q(1:nl, 1:n-k)
        if (nl==1) then
           if (abs(pl(1,1)) < tol*nrma) then ! null vector
              ubws(k)=0;  pl(1,1)=0.0_dp
              if (k==n-1) then ! k+nl=n
+                klast=k+1
                 exit kloop
              else if (k==n-2) then ! k+nl=n-1
                 q(1,1)=1.0_dp
+                klast=k+1
                 exit kloop
              else
                 ! set up a 1x1 LQ factorization for computing the next U_k
@@ -88,6 +91,7 @@ contains
              ubws(k)=1
              if (k==n-1) then
                 pl(1,1)=pl(1,1)*pq(1,1)
+                klast=k+1
                 exit kloop
              else
                 pl => a(k:k, k+1:k+2) ! extend pl to the right
@@ -107,7 +111,7 @@ contains
                    pq => q(1:2,1:n-k-1)
                    pq(2,:)=a(k+1,k+2:n)
                    pl => a(k:k+1,k+2:k+3)
-                   call d_extend_gs(pq(1:1,:), pl(2,1:1), pl(2,2), pq(2,:), ortherror)
+                   call d_extend_gs_lq(pq(1:1,:), pl(2,1:1), pl(2,2), pq(2,:), ortherror)
                    if (ortherror == 1) then
                       error = 1; return
                    end if
@@ -116,12 +120,14 @@ contains
                    end if
                    nl=nl+1
                 else ! k==n-2; only needed to extend L down before exiting.
+                   a(k+1,k+2)=a(k+1,k+2)/pq(1,1)
+                   klast=k+1
                    exit kloop                   
                 end if
              end if
           end if
        else ! nl > 1
-          call left_nullvec(x(1:nl),pl,tol*nrma,nullmaxits,nullerr)
+          call lower_left_nullvec(x(1:nl),pl,tol*nrma,nullmaxits,nullerr)
           if (nullerr >= 0) then ! if there is a left null vector then introduce a zero row.
              ubws(k)=nl-1
              if (nullerr == 1) then
@@ -135,7 +141,7 @@ contains
                    call rotation_times_general(trp_rot(rot), pl(:,1:j), j,j+1)
                    pl(j,j)=0.0_dp
                    cs(j,k)=rot%cosine; ss(j,k)=rot%sine
-                   j1s(j,k)=offs+j; j2s(j,k)=offs+j+1
+                   j1s(j,k)=roffs+j; j2s(j,k)=roffs+j+1
                 end do
              else ! nullerr=0
                 numrots(k)=nl-1;
@@ -144,7 +150,7 @@ contains
                    call general_times_rotation(x,rot,j-1,j)
                    call rotation_times_general(trp_rot(rot), pl,j-1,j)
                    cs(j-1,k)=rot%cosine; ss(j-1,k)=rot%sine
-                   j1s(j-1,k)=offs+j-1; j2s(j-1,k)=offs+j
+                   j1s(j-1,k)=roffs+j-1; j2s(j-1,k)=roffs+j
                    rot=rgivens(pl(j-1,j-1),pl(j-1,j))
                    call general_times_rotation(pl,rot,j-1,j)
                    call rotation_times_general(trp_rot(rot),pq,j-1,j)
@@ -175,10 +181,11 @@ contains
                    end do
                 end do
                 a(k+1,k+2:n)=x(1:nl-1)
+                klast=k+1
                 exit kloop ! terminate
              else
                 pq(1,:)=0.0_dp;     pq(1,1)=1.0_dp
-                call d_extend_gs(pq(2:nl,:), x(1:nl-1), x(nl), pq(1,:), ortherror) ! orthogonalize
+                call d_extend_gs_lq(pq(2:nl,:), x(1:nl-1), x(nl), pq(1,:), ortherror) ! orthogonalize
                 if (ortherror == 1) then
                    error = 1; return
                 end if
@@ -192,8 +199,8 @@ contains
                 ! extend the LQ factorization
                 pq => q(1:nl,1:n-k-1)
                 pq(nl,:)=a(k+1,k+2:n)
-                pl => a(offs+2:k+1,k+2:k+nl+1) ! nl by nl
-                call d_extend_gs(pq(1:nl-1,:), pl(nl,1:nl-1), pl(nl,nl), pq(nl,:), ortherror)
+                pl => a(roffs+2:k+1,k+2:k+nl+1) ! nl by nl
+                call d_extend_gs_lq(pq(1:nl-1,:), pl(nl,1:nl-1), pl(nl,nl), pq(nl,:), ortherror)
                 if (ortherror == 1) then
                    error = 1; return
                 end if
@@ -201,35 +208,22 @@ contains
                    a(k+1,k+nl+2:n)=0.0_dp
                 end if
              end if
-          else ! no null vector found.  Simply reveal column k+1
+          else
+             ! no null vector found.  Simply reveal column k+1 if there is room.  Otherwise terminate
+             !  with square L.
              ubws(k)=nl
              if (k+nl==n) then
-                ! reveal column k+1
-                do j=nl,2,-1
-                   rot=lgivens(pq(1,1),pq(j,1))
-                   call rotation_times_general(trp_rot(rot), pq, 1,j)
-                   call general_times_rotation(pl(j:nl,:),rot,1,j)
-                end do
-                pl(:,1)=pl(:,1)*pq(1,1)
-                call upper_left_shift(pq)
-                ! extend one row
-                x(1:nl-1)=0.0_dp
-                do j=1,nl-1
-                   do i=1,nl-1
-                      x(j)=x(j)+a(k+1,k+1+i)*pq(j,i)
-                   end do
-                end do
-                a(k+1,k+2:n)=x(1:nl-1)
+                klast=k ! terminate with square L.
                 exit kloop
              else
-                pl => a(offs+1:k, k+1:k+nl+1) ! extend pl to the right. (note this requires k+nl < n)
+                pl => a(roffs+1:k, k+1:k+nl+1) ! extend pl to the right. (note this requires k+nl < n)
                 call right_shift(pl)
                 pq => q(1:nl+1, 1:n-k)
                 call down_shift(pq)
                 pq(1,:)=0.0_dp
                 pq(1,1)=1.0_dp
                 ! orthogonalizing.  Note x is used as workspace for coefficients.
-                call d_extend_gs(pq(2:nl+1,:), x(1:nl), x(nl+1), pq(1,:), ortherror)
+                call d_extend_gs_lq(pq(2:nl+1,:), x(1:nl), x(nl+1), pq(1,:), ortherror)
                 if (ortherror == 1) then
                    error = 1; return
                 end if
@@ -240,7 +234,7 @@ contains
                 end do
                 pl(:,1)=pl(:,1)*pq(1,1)
                 call upper_left_shift(pq)
-                if (k+nl==n-1) then ! q is nl by nl.  Extend the LQ factorization down one row before stopping.
+                if (k+nl==n-1) then ! q is now nl by nl.  Extend the LQ factorization down one row before stopping.
                    pq => q(1:nl,1:n-k-1)
                    x(1:nl)=0.0_dp
                    do j=1,nl
@@ -249,12 +243,13 @@ contains
                       end do
                    end do
                    a(k+1,k+2:n)=x(1:nl)
+                   klast=k+1
                    exit kloop
                 else ! q is not square.  Make L (nl+1)x(nl+1)
                    pq => q(1:nl+1,1:n-k-1)
                    pq(nl+1,:)=a(k+1,k+2:n)
-                   pl => a(offs+1:k+1,k+2:k+nl+2)
-                   call d_extend_gs(pq(1:nl,:), pl(nl+1,1:nl), pl(nl+1,nl+1), pq(nl+1,:), ortherror)
+                   pl => a(roffs+1:k+1,k+2:k+nl+2)
+                   call d_extend_gs_lq(pq(1:nl,:), pl(nl+1,1:nl), pl(nl+1,nl+1), pq(nl+1,:), ortherror)
                    if (ortherror == 1) then
                       error = 1; return
                    end if
@@ -267,35 +262,68 @@ contains
           end if ! null vector check
        end if
     end do kloop
-    k=k+1
-    ! Now a(k-(n-k):k,k+1:n) contains a rectangular L
-    ubws(k:n-1)=n-k
-    nl=n-k
-    if (nl > 0) then
-       do i=1,nl
-          nl=n-k-i+1
-          offs=2*k-n-2+i
-          pl=>a(offs+1:k,k+i:n)
-          pq=>q(i:n-k,i:n-k)
-          numrots(k+i-1)=nl
-          ! Triangularize L
-          do j=nl,1,-1
-             rot=lgivens2(pl(j,j),pl(j+1,j))
-             cs(j,k+i-1)=rot%cosine; ss(j,k+i-1)=rot%sine
-             j1s(j,k+i-1)=offs+j; j2s(j,k+i-1)=offs+j+1
-             call rotation_times_general(trp_rot(rot), pl,j,j+1)
-             pl(j,j)=0.0_dp
-          end do
-          ! reveal column k + i
-          if (nl > 1) then
+    ! If klast = k+1, we need to terminate on an nl+1 by nl matrix L
+    ! contained in a(klast-(n-klast):klast,klast+1:n).  If klast=k, then L is square and
+    ! contained in a(k-(n-k)+1:k,k+1:n).  The former happens when the last step
+    ! of kloop found a null vector.  The latter happens when it didn't.
+    if (klast == k) then ! square termination
+       ubws(k:n-1)=n-k
+       nl=n-k
+       if (n-k > 1) then
+          do i=1,n-k-1 ! nl-1
+             nl=n-k-i+1
+             roffs=k-nl
+             pl => a(roffs+1:k,k+i:n)
+             pq => q(i:n-k,i:n-k)
+             ! reveal column k+i
              do j=nl,2,-1
                 rot=lgivens(pq(j-1,1),pq(j,1))
                 call rotation_times_general(trp_rot(rot), pq, j-1,j)
                 call general_times_rotation(pl, rot, j-1,j)
              end do
-          end if
-          pl(:,1)=pl(:,1)*pq(1,1)
-       end do
+             ! triangularize L
+             pl(:,1)=pl(:,1)*pq(1,1)
+             numrots(k+i)=nl-1
+             do j=nl-1,1,-1
+                rot=lgivens2(pl(j,j+1),pl(j+1,j+1))
+                call rotation_times_general(trp_rot(rot),pl(:,2:nl),j,j+1)
+                cs(j,k+i)=rot%cosine; ss(j,k+i)=rot%sine
+                j1s(j,k+i)=roffs+j; j2s(j,k+i)=roffs+j+1
+                pl(j,j+1)=0.0_dp
+             end do
+          end do
+          pl(2,2)=pl(2,2)*pq(2,2)
+       end if
+    else ! rectangular termination
+       k=k+1
+       ubws(k:n-1)=n-k
+       nl=n-k
+       if (nl > 0) then
+          do i=1,n-k
+             nl=n-k-i+1
+             roffs=k-nl-1
+             pl=>a(roffs+1:k,k+i:n)
+             pq=>q(i:n-k,i:n-k)
+             numrots(k+i-1)=nl
+             ! Triangularize L
+             do j=nl,1,-1
+                rot=lgivens2(pl(j,j),pl(j+1,j))
+                cs(j,k+i-1)=rot%cosine; ss(j,k+i-1)=rot%sine
+                j1s(j,k+i-1)=roffs+j; j2s(j,k+i-1)=roffs+j+1
+                call rotation_times_general(trp_rot(rot), pl,j,j+1)
+                pl(j,j)=0.0_dp
+             end do
+             ! reveal column k + i
+             if (nl > 1) then
+                do j=nl,2,-1
+                   rot=lgivens(pq(j-1,1),pq(j,1))
+                   call rotation_times_general(trp_rot(rot), pq, j-1,j)
+                   call general_times_rotation(pl, rot, j-1,j)
+                end do
+             end if
+             pl(:,1)=pl(:,1)*pq(1,1)
+          end do
+       end if
     end if
     call d_extract_diagonals_upper_ub(a,n,ubwmax,lbw,b,ubws,ubw)
   end subroutine d_upper_general_to_upper_ub
@@ -324,7 +352,7 @@ contains
 
 
   ! Extend a Gram-Schmidt LQ decomposition
-  subroutine d_extend_gs(q1, l, rho, q2, error)
+  subroutine d_extend_gs_lq(q1, l, rho, q2, error)
     ! orthogonalize q2 against q1.  Return error = 1 if
     ! too many iterations are required.
     real(kind=dp), dimension (:,:), intent(in) :: q1
@@ -372,7 +400,7 @@ contains
     if (k >= orthmaxits) then
        error = 1
     end if
-  end subroutine d_extend_gs
+  end subroutine d_extend_gs_lq
 
   subroutine d_form_upper_ub(a, mb, n, b, lbw, ubw, j1s, j2s, cs, ss, numrots)
     real(kind=dp), target, dimension(n,n), intent(out) :: a
@@ -409,7 +437,11 @@ contains
     a(1:lbw+1,1)=b(ubw+1:ubw+lbw+1,1)
   end subroutine d_form_upper_ub
 
+  !
   ! Complex.
+  !
+  ! Updating procedure to compute a UB factorization from a general matrix.
+  !
   subroutine c_upper_general_to_upper_ub(a, n, ubwmax, tol, b, lbw, ubw, &
        j1s, j2s, cs, ss, numrots, error)
     complex(kind=dp), target, dimension(n,n), intent(inout) :: a
@@ -425,7 +457,7 @@ contains
     complex(kind=dp), dimension(ubwmax+2) :: x
     real(kind=dp) :: nrma, nrmq12
     complex(kind=dp), pointer, dimension(:,:) :: pl, pq
-    integer(kind=int32) :: i, j, k, nullerr, ortherror, offs, nl
+    integer(kind=int32) :: i, j, k, nullerr, ortherror, roffs, nl, klast
     integer(kind=int32), dimension(n) :: ubws
     type(c_rotation) :: rot
     !
@@ -446,29 +478,32 @@ contains
     ! Compute an initial trivial LQ factorization
     q(1,1:n-1) = a(1,2:n)
     a(1,2:n)=(0.0_dp, 0.0_dp)
-    a(1,2)=norm2(q(1,2:n))
+    a(1,2)=norm2(q(1,1:n-1))
     if (a(1,2) == (0.0_dp, 0.0_dp)) then
-       q(1,1:n-1) = 1.0_dp
+       q(1,1:n-1) = (1.0_dp,0.0_dp)
        q(1,1:n-1)=q(1,1:n-1)/norm2(q(1,1:n-1))
     else
        q(1,1:n-1)=q(1,1:n-1)/a(1,2)
     end if
     nl=1
+    klast=n
     kloop: do k=1,n
        ! Current, possibly singular, L should be contained in
        ! a(k-nl+1:k,k+1:k+nl)
        ! At the start of the loop nl is a possible overestimate that
        ! can be decreased by finding a null vector.
-       offs=k-nl
-       pl => a(offs+1:k, k+1:k+nl)
+       roffs=k-nl
+       pl => a(roffs+1:k, k+1:k+nl)
        pq => q(1:nl, 1:n-k)
        if (nl==1) then
           if (abs(pl(1,1)) < tol*nrma) then ! null vector
              ubws(k)=0;  pl(1,1)=(0.0_dp, 0.0_dp)
              if (k==n-1) then ! k+nl=n
+                klast=k+1
                 exit kloop
              else if (k==n-2) then ! k+nl=n-1
-                q(1,1)=1.0_dp
+                q(1,1)=(1.0_dp,0.0_dp)
+                klast=k+1
                 exit kloop
              else
                 ! set up a 1x1 LQ factorization for computing the next U_k
@@ -477,7 +512,7 @@ contains
                 a(k+1,k+2:n)=(0.0_dp, 0.0_dp)
                 a(k+1,k+2)=norm2(q(1,1:n-k-1))
                 if (a(k+1,k+2) == (0.0_dp, 0.0_dp)) then
-                   q(1,1:n-k-1) = 1.0_dp
+                   q(1,1:n-k-1) = (1.0_dp,0.0_dp)
                    q(1,1:n-k-1)=q(1,1:n-k-1)/norm2(q(1,1:n-k-1))
                 else
                    q(1,1:n-k-1)=q(1,1:n-k-1)/a(k+1,k+2)
@@ -488,15 +523,15 @@ contains
              ubws(k)=1
              if (k==n-1) then
                 pl(1,1)=pl(1,1)*pq(1,1)
+                klast=k+1
                 exit kloop
              else
                 pl => a(k:k, k+1:k+2) ! extend pl to the right
                 pl(1,2) = pl(1,1) ! shift
                 pl(1,1)=pl(1,1)*pq(1,1) ! reveal column k+1
                 nrmq12 = norm2(pq(1,2:n-k))
-                if (nrmq12 == (0.0_dp, 0.0_dp)) then
-                   pl(1,2)=(0.0_dp, 0.0_dp);
-                   pq(1,2:n-k)=1.0_dp
+                if (nrmq12 == 0.0_dp) then
+                   pl(1,2)=(0.0_dp, 0.0_dp);   pq(1,2:n-k)=(1.0_dp,0.0_dp)
                    nrmq12 = norm2(pq(1,2:n-k))
                    pq(1,2:n-k)=pq(1,2:n-k)/nrmq12
                 else
@@ -508,7 +543,7 @@ contains
                    pq => q(1:2,1:n-k-1)
                    pq(2,:)=a(k+1,k+2:n)
                    pl => a(k:k+1,k+2:k+3)
-                   call c_extend_gs(pq(1:1,:), pl(2,1:1), pl(2,2), pq(2,:), ortherror)
+                   call c_extend_gs_lq(pq(1:1,:), pl(2,1:1), pl(2,2), pq(2,:), ortherror)
                    if (ortherror == 1) then
                       error = 1; return
                    end if
@@ -517,12 +552,14 @@ contains
                    end if
                    nl=nl+1
                 else ! k==n-2; only needed to extend L down before exiting.
+                   a(k+1,k+2)=a(k+1,k+2)/pq(1,1)
+                   klast=k+1
                    exit kloop                   
                 end if
              end if
           end if
        else ! nl > 1
-          call left_nullvec(x(1:nl),pl,tol*nrma,nullmaxits,nullerr)
+          call lower_left_nullvec(x(1:nl),pl,tol*nrma,nullmaxits,nullerr)
           if (nullerr >= 0) then ! if there is a left null vector then introduce a zero row.
              ubws(k)=nl-1
              if (nullerr == 1) then
@@ -536,7 +573,7 @@ contains
                    call rotation_times_general(trp_rot(rot), pl(:,1:j), j,j+1)
                    pl(j,j)=(0.0_dp, 0.0_dp)
                    cs(j,k)=rot%cosine; ss(j,k)=rot%sine
-                   j1s(j,k)=offs+j; j2s(j,k)=offs+j+1
+                   j1s(j,k)=roffs+j; j2s(j,k)=roffs+j+1
                 end do
              else ! nullerr=0
                 numrots(k)=nl-1;
@@ -545,7 +582,7 @@ contains
                    call general_times_rotation(x,rot,j-1,j)
                    call rotation_times_general(trp_rot(rot), pl,j-1,j)
                    cs(j-1,k)=rot%cosine; ss(j-1,k)=rot%sine
-                   j1s(j-1,k)=offs+j-1; j2s(j-1,k)=offs+j
+                   j1s(j-1,k)=roffs+j-1; j2s(j-1,k)=roffs+j
                    rot=rgivens(pl(j-1,j-1),pl(j-1,j))
                    call general_times_rotation(pl,rot,j-1,j)
                    call rotation_times_general(trp_rot(rot),pq,j-1,j)
@@ -576,10 +613,11 @@ contains
                    end do
                 end do
                 a(k+1,k+2:n)=x(1:nl-1)
+                klast=k+1
                 exit kloop ! terminate
              else
-                pq(1,:)=(0.0_dp, 0.0_dp);     pq(1,1)=(1.0_dp, 0.0_dp)
-                call c_extend_gs(pq(2:nl,:), x(1:nl-1), x(nl), pq(1,:), ortherror) ! orthogonalize
+                pq(1,:)=(0.0_dp, 0.0_dp);     pq(1,1)=(1.0_dp,0.0_dp)
+                call c_extend_gs_lq(pq(2:nl,:), x(1:nl-1), x(nl), pq(1,:), ortherror) ! orthogonalize
                 if (ortherror == 1) then
                    error = 1; return
                 end if
@@ -593,8 +631,8 @@ contains
                 ! extend the LQ factorization
                 pq => q(1:nl,1:n-k-1)
                 pq(nl,:)=a(k+1,k+2:n)
-                pl => a(offs+2:k+1,k+2:k+nl+1) ! nl by nl
-                call c_extend_gs(pq(1:nl-1,:), pl(nl,1:nl-1), pl(nl,nl), pq(nl,:), ortherror)
+                pl => a(roffs+2:k+1,k+2:k+nl+1) ! nl by nl
+                call c_extend_gs_lq(pq(1:nl-1,:), pl(nl,1:nl-1), pl(nl,nl), pq(nl,:), ortherror)
                 if (ortherror == 1) then
                    error = 1; return
                 end if
@@ -602,35 +640,22 @@ contains
                    a(k+1,k+nl+2:n)=(0.0_dp, 0.0_dp)
                 end if
              end if
-          else ! no null vector found.  Simply reveal column k+1
+          else
+             ! no null vector found.  Simply reveal column k+1 if there is room.  Otherwise terminate
+             !  with square L.
              ubws(k)=nl
              if (k+nl==n) then
-                ! reveal column k+1
-                do j=nl,2,-1
-                   rot=lgivens(pq(1,1),pq(j,1))
-                   call rotation_times_general(trp_rot(rot), pq, 1,j)
-                   call general_times_rotation(pl(j:nl,:),rot,1,j)
-                end do
-                pl(:,1)=pl(:,1)*pq(1,1)
-                call upper_left_shift(pq)
-                ! extend one row
-                x(1:nl-1)=(0.0_dp, 0.0_dp)
-                do j=1,nl-1
-                   do i=1,nl-1
-                      x(j)=x(j)+a(k+1,k+1+i)*conjg(pq(j,i))
-                   end do
-                end do
-                a(k+1,k+2:n)=x(1:nl-1)
+                klast=k ! terminate with square L.
                 exit kloop
              else
-                pl => a(offs+1:k, k+1:k+nl+1) ! extend pl to the right. (note this requires k+nl < n)
+                pl => a(roffs+1:k, k+1:k+nl+1) ! extend pl to the right. (note this requires k+nl < n)
                 call right_shift(pl)
                 pq => q(1:nl+1, 1:n-k)
                 call down_shift(pq)
                 pq(1,:)=(0.0_dp, 0.0_dp)
-                pq(1,1)=1.0_dp
+                pq(1,1)=(1.0_dp, 0.0_dp)
                 ! orthogonalizing.  Note x is used as workspace for coefficients.
-                call c_extend_gs(pq(2:nl+1,:), x(1:nl), x(nl+1), pq(1,:), ortherror)
+                call c_extend_gs_lq(pq(2:nl+1,:), x(1:nl), x(nl+1), pq(1,:), ortherror)
                 if (ortherror == 1) then
                    error = 1; return
                 end if
@@ -641,7 +666,7 @@ contains
                 end do
                 pl(:,1)=pl(:,1)*pq(1,1)
                 call upper_left_shift(pq)
-                if (k+nl==n-1) then ! q is nl by nl.  Extend the LQ factorization down one row before stopping.
+                if (k+nl==n-1) then ! q is now nl by nl.  Extend the LQ factorization down one row before stopping.
                    pq => q(1:nl,1:n-k-1)
                    x(1:nl)=(0.0_dp, 0.0_dp)
                    do j=1,nl
@@ -650,12 +675,13 @@ contains
                       end do
                    end do
                    a(k+1,k+2:n)=x(1:nl)
+                   klast=k+1
                    exit kloop
                 else ! q is not square.  Make L (nl+1)x(nl+1)
                    pq => q(1:nl+1,1:n-k-1)
                    pq(nl+1,:)=a(k+1,k+2:n)
-                   pl => a(offs+1:k+1,k+2:k+nl+2)
-                   call c_extend_gs(pq(1:nl,:), pl(nl+1,1:nl), pl(nl+1,nl+1), pq(nl+1,:), ortherror)
+                   pl => a(roffs+1:k+1,k+2:k+nl+2)
+                   call c_extend_gs_lq(pq(1:nl,:), pl(nl+1,1:nl), pl(nl+1,nl+1), pq(nl+1,:), ortherror)
                    if (ortherror == 1) then
                       error = 1; return
                    end if
@@ -668,35 +694,68 @@ contains
           end if ! null vector check
        end if
     end do kloop
-    k=k+1
-    ! Now a(k-(n-k):k,k+1:n) contains a rectangular L
-    ubws(k:n-1)=n-k
-    nl=n-k
-    if (nl > 0) then
-       do i=1,nl
-          nl=n-k-i+1
-          offs=2*k-n-2+i
-          pl=>a(offs+1:k,k+i:n)
-          pq=>q(i:n-k,i:n-k)
-          numrots(k+i-1)=nl
-          ! Triangularize L
-          do j=nl,1,-1
-             rot=lgivens2(pl(j,j),pl(j+1,j))
-             cs(j,k+i-1)=rot%cosine; ss(j,k+i-1)=rot%sine
-             j1s(j,k+i-1)=offs+j; j2s(j,k+i-1)=offs+j+1
-             call rotation_times_general(trp_rot(rot), pl,j,j+1)
-             pl(j,j)=(0.0_dp, 0.0_dp)
-          end do
-          ! reveal column k + i
-          if (nl > 1) then
+    ! If klast = k+1, we need to terminate on an nl+1 by nl matrix L
+    ! contained in a(klast-(n-klast):klast,klast+1:n).  If klast=k, then L is square and
+    ! contained in a(k-(n-k)+1:k,k+1:n).  The former happens when the last step
+    ! of kloop found a null vector.  The latter happens when it didn't.
+    if (klast == k) then ! square termination
+       ubws(k:n-1)=n-k
+       nl=n-k
+       if (n-k > 1) then
+          do i=1,n-k-1 ! nl-1
+             nl=n-k-i+1
+             roffs=k-nl
+             pl => a(roffs+1:k,k+i:n)
+             pq => q(i:n-k,i:n-k)
+             ! reveal column k+i
              do j=nl,2,-1
                 rot=lgivens(pq(j-1,1),pq(j,1))
                 call rotation_times_general(trp_rot(rot), pq, j-1,j)
                 call general_times_rotation(pl, rot, j-1,j)
              end do
-          end if
-          pl(:,1)=pl(:,1)*pq(1,1)
-       end do
+             ! triangularize L
+             pl(:,1)=pl(:,1)*pq(1,1)
+             numrots(k+i)=nl-1
+             do j=nl-1,1,-1
+                rot=lgivens2(pl(j,j+1),pl(j+1,j+1))
+                call rotation_times_general(trp_rot(rot),pl(:,2:nl),j,j+1)
+                cs(j,k+i)=rot%cosine; ss(j,k+i)=rot%sine
+                j1s(j,k+i)=roffs+j; j2s(j,k+i)=roffs+j+1
+                pl(j,j+1)=(0.0_dp, 0.0_dp)
+             end do
+          end do
+          pl(2,2)=pl(2,2)*pq(2,2)
+       end if
+    else ! rectangular termination
+       k=k+1
+       ubws(k:n-1)=n-k
+       nl=n-k
+       if (nl > 0) then
+          do i=1,n-k
+             nl=n-k-i+1
+             roffs=k-nl-1
+             pl=>a(roffs+1:k,k+i:n)
+             pq=>q(i:n-k,i:n-k)
+             numrots(k+i-1)=nl
+             ! Triangularize L
+             do j=nl,1,-1
+                rot=lgivens2(pl(j,j),pl(j+1,j))
+                cs(j,k+i-1)=rot%cosine; ss(j,k+i-1)=rot%sine
+                j1s(j,k+i-1)=roffs+j; j2s(j,k+i-1)=roffs+j+1
+                call rotation_times_general(trp_rot(rot), pl,j,j+1)
+                pl(j,j)=(0.0_dp, 0.0_dp)
+             end do
+             ! reveal column k + i
+             if (nl > 1) then
+                do j=nl,2,-1
+                   rot=lgivens(pq(j-1,1),pq(j,1))
+                   call rotation_times_general(trp_rot(rot), pq, j-1,j)
+                   call general_times_rotation(pl, rot, j-1,j)
+                end do
+             end if
+             pl(:,1)=pl(:,1)*pq(1,1)
+          end do
+       end if
     end if
     call c_extract_diagonals_upper_ub(a,n,ubwmax,lbw,b,ubws,ubw)
   end subroutine c_upper_general_to_upper_ub
@@ -725,7 +784,7 @@ contains
 
 
   ! Extend a Gram-Schmidt LQ decomposition
-  subroutine c_extend_gs(q1, l, rho, q2, error)
+  subroutine c_extend_gs_lq(q1, l, rho, q2, error)
     ! orthogonalize q2 against q1.  Return error = 1 if
     ! too many iterations are required.
     complex(kind=dp), dimension (:,:), intent(in) :: q1
@@ -776,7 +835,7 @@ contains
     if (k >= orthmaxits) then
        error = 1
     end if
-  end subroutine c_extend_gs
+  end subroutine c_extend_gs_lq
 
   subroutine c_form_upper_ub(a, mb, n, b, lbw, ubw, j1s, j2s, cs, ss, numrots)
     complex(kind=dp), target, dimension(n,n), intent(out) :: a
@@ -813,4 +872,4 @@ contains
     a(1:lbw+1,1)=b(ubw+1:ubw+lbw+1,1)
   end subroutine c_form_upper_ub
 
-end module decomp
+end module upper_decomp

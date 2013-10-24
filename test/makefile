@@ -5,7 +5,7 @@ OBJDIR = ../mod
 LFLAGS = -pg
 #CFLAGS = -Wall -O -pg
 CFLAGS = -Wall -O2
-OBJS =  $(OBJDIR)/utility.o $(OBJDIR)/shift.o $(OBJDIR)/nullvec.o $(OBJDIR)/prec.o $(OBJDIR)/rotation.o $(OBJDIR)/decomp.o
+OBJS =  $(OBJDIR)/utility.o $(OBJDIR)/shift.o $(OBJDIR)/nullvec.o $(OBJDIR)/prec.o $(OBJDIR)/rotation.o $(OBJDIR)/upper_decomp.o $(OBJDIR)/triangular.o
 
 run_test : test_decomp
 	./test_decomp
