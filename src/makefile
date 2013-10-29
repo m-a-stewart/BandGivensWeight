@@ -10,6 +10,8 @@ CFLAGS = -Wall -fbounds-check
 $(OBJDIR)/%.o : %.f90
 	$(FC) $(CFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@
 
+all : $(OBJDIR)/upper_decomp.o $(OBJDIR)/assemble.o
+
 $(OBJDIR)/upper_decomp.o : $(OBJDIR)/prec.o $(OBJDIR)/nullvec.o $(OBJDIR)/rotation.o $(OBJDIR)/shift.o \
 		           $(OBJDIR)/gs.o
 $(OBJDIR)/nullvec.o : $(OBJDIR)/utility.o $(OBJDIR)/triangular.o $(OBJDIR)/prec.o
@@ -18,6 +20,7 @@ $(OBJDIR)/triangular.o : $(OBJDIR)/prec.o
 $(OBJDIR)/shift.o : $(OBJDIR)/prec.o
 $(OBJDIR)/rotation.o : $(OBJDIR)/prec.o
 $(OBJDIR)/gs.o : $(OBJDIR)/prec.o $(OBJDIR)/utility.o
+$(OBJDIR)/assemble.o : $(OBJDIR)/prec.o $(OBJDIR)/rotation.o
 
 clean :
 	rm $(OBJDIR)/*.o $(OBJDIR)/*.mod
