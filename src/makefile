@@ -21,6 +21,7 @@ $(OBJDIR)/shift.o : $(OBJDIR)/prec.o
 $(OBJDIR)/rotation.o : $(OBJDIR)/prec.o
 $(OBJDIR)/gs.o : $(OBJDIR)/prec.o $(OBJDIR)/utility.o
 $(OBJDIR)/assemble.o : $(OBJDIR)/prec.o $(OBJDIR)/rotation.o
+$(OBJDIR)/band.o : $(OBJDIR)/prec.o $(OBJDIR)/rotation.o
 
 clean :
 	rm $(OBJDIR)/*.o $(OBJDIR)/*.mod
