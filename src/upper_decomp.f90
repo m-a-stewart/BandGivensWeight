@@ -343,18 +343,19 @@ contains
     integer(kind=int32), intent(in) :: n, mb, lbw
     integer(kind=int32), dimension(n), intent(in) :: ubws
     !
-    integer(kind=int32) :: k
+    integer(kind=int32) :: k, d
     ubw=maxval(ubws)
     ! put diagonals in b
     b=0.0_dp
-    do k = 1,ubw
-       b(ubw+2-k:ubw+lbw+1,k)=a(1:lbw+k,k)
+    do d=1,ubw+1
+       do k=ubw-d+2,n
+          b(d,k) = a(d+k-ubw-1,k)
+       end do
     end do
-    do k = 1,lbw
-       b(1:ubw+k,n-k+1)=a(n-ubw-k+1:n,n-k+1)
-    end do
-    do k=ubw+1,n-lbw
-       b(1:ubw+lbw+1,k)=a(k-ubw:k+lbw,k)
+    do d=ubw+2, ubw+lbw+1
+       do k=1,n-d+ubw+1
+          b(d,k) = a(d+k-ubw-1,k)
+       end do
     end do
   end subroutine d_extract_diagonals_upper_ub
 
@@ -689,18 +690,19 @@ contains
     integer(kind=int32), intent(in) :: n, mb, lbw
     integer(kind=int32), dimension(n), intent(in) :: ubws
     !
-    integer(kind=int32) :: k
+    integer(kind=int32) :: k, d
     ubw=maxval(ubws)
     ! put diagonals in b
     b=(0.0_dp, 0.0_dp)
-    do k = 1,ubw
-       b(ubw+2-k:ubw+lbw+1,k)=a(1:lbw+k,k)
+    do d=1,ubw+1
+       do k=ubw-d+2,n
+          b(d,k) = a(d+k-ubw-1,k)
+       end do
     end do
-    do k = 1,lbw
-       b(1:ubw+k,n-k+1)=a(n-ubw-k+1:n,n-k+1)
-    end do
-    do k=ubw+1,n-lbw
-       b(1:ubw+lbw+1,k)=a(k-ubw:k+lbw,k)
+    do d=ubw+2, ubw+lbw+1
+       do k=1,n-d+ubw+1
+          b(d,k) = a(d+k-ubw-1,k)
+       end do
     end do
   end subroutine c_extract_diagonals_upper_ub
 
@@ -1026,18 +1028,19 @@ contains
     integer(kind=int32), intent(in) :: n, nb, lbw
     integer(kind=int32), dimension(n), intent(in) :: ubws
     !
-    integer(kind=int32) :: j
+    integer(kind=int32) :: j, d
     ubw=maxval(ubws)
     ! put diagonals in b
     b=0.0_dp
-    do j=1,lbw
-       b(j,lbw-j+2:lbw+ubw+1)=a(j,1:ubw+j)
+    do d=1,lbw+1
+       do j=lbw-d+2, n
+          b(j,d)=a(j,d+j-lbw-1)
+       end do
     end do
-    do j=1,ubw
-       b(n-j+1,1:lbw+j)=a(n-j+1,n+1-lbw-j:n)
-    end do
-    do j=lbw+1,n-ubw
-       b(j,1:lbw+ubw+1)=a(j,j-lbw:j+ubw)
+    do d=lbw+2,ubw+lbw+1
+       do j=1, n-d+lbw+1
+          b(j,d)=a(j,d+j-lbw-1)
+       end do
     end do
   end subroutine d_extract_diagonals_upper_bv
 
@@ -1363,18 +1366,19 @@ contains
     integer(kind=int32), intent(in) :: n, nb, lbw
     integer(kind=int32), dimension(n), intent(in) :: ubws
     !
-    integer(kind=int32) :: j
+    integer(kind=int32) :: j, d
     ubw=maxval(ubws)
     ! put diagonals in b
     b=(0.0_dp, 0.0_dp)
-    do j=1,lbw
-       b(j,lbw-j+2:lbw+ubw+1)=a(j,1:ubw+j)
+    do d=1,lbw+1
+       do j=lbw-d+2, n
+          b(j,d)=a(j,d+j-lbw-1)
+       end do
     end do
-    do j=1,ubw
-       b(n-j+1,1:lbw+j)=a(n-j+1,n+1-lbw-j:n)
-    end do
-    do j=lbw+1,n-ubw
-       b(j,1:lbw+ubw+1)=a(j,j-lbw:j+ubw)
+    do d=lbw+2,ubw+lbw+1
+       do j=1, n-d+lbw+1
+          b(j,d)=a(j,d+j-lbw-1)
+       end do
     end do
   end subroutine c_extract_diagonals_upper_bv
 

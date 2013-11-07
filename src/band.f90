@@ -311,7 +311,7 @@ end subroutine d_tbc_times_rotation
 
 subroutine c_tbc_times_rotation(b,n,lbw,ubw,l,r,k)
   complex(kind=dp), dimension(:,:), intent(inout) :: b
-  type(d_rotation), intent(in) :: r
+  type(c_rotation), intent(in) :: r
   integer(kind=int32), intent(in) :: k,n, ubw,lbw, l
   !
   complex(kind=dp) :: c, s, tmp
@@ -391,7 +391,7 @@ end subroutine d_rotation_times_tbr
 
 subroutine c_rotation_times_tbr(r,b,m,lbw,ubw,l,j)
   complex(kind=dp), dimension(:,:), intent(inout) :: b
-  type(d_rotation), intent(in) :: r
+  type(c_rotation), intent(in) :: r
   integer(kind=int32), intent(in) :: j,m, ubw,lbw, l
   !
   complex(kind=dp) :: c, s, tmp

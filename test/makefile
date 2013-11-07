@@ -5,13 +5,17 @@ OBJDIR = ../mod
 LFLAGS = -pg
 #CFLAGS = -Wall -O -pg
 CFLAGS = -Wall -O2
-OBJS =  $(OBJDIR)/utility.o $(OBJDIR)/shift.o $(OBJDIR)/nullvec.o $(OBJDIR)/prec.o $(OBJDIR)/rotation.o $(OBJDIR)/upper_decomp.o $(OBJDIR)/triangular.o $(OBJDIR)/gs.o $(OBJDIR)/assemble.o
+OBJS =  $(OBJDIR)/utility.o $(OBJDIR)/shift.o $(OBJDIR)/nullvec.o $(OBJDIR)/prec.o $(OBJDIR)/rotation.o $(OBJDIR)/upper_decomp.o $(OBJDIR)/triangular.o $(OBJDIR)/gs.o $(OBJDIR)/assemble.o $(OBJDIR)/band.o $(OBJDIR)/upper_convert.o
 
-run_test : test_decomp
+run_test : test_decomp test_convert
 	./test_decomp
+	./test_convert
 
 test_decomp : $(OBJDIR)/test_decomp.o $(OBJS)
 	$(FC) $(LFLAGS) $(OBJDIR)/test_decomp.o $(OBJS) -o test_decomp
+
+test_convert : $(OBJDIR)/test_convert.o $(OBJS)
+	$(FC) $(LFLAGS) $(OBJDIR)/test_convert.o $(OBJS) -o test_convert
 
 $(OBJDIR)/test_decomp.o : $(OBJDIR)/decomp.o
 
