@@ -20,7 +20,7 @@ $(OBJDIR)/triangular.o : $(OBJDIR)/prec.o
 $(OBJDIR)/shift.o : $(OBJDIR)/prec.o
 $(OBJDIR)/rotation.o : $(OBJDIR)/prec.o
 $(OBJDIR)/gs.o : $(OBJDIR)/prec.o $(OBJDIR)/utility.o
-$(OBJDIR)/assemble.o : $(OBJDIR)/prec.o $(OBJDIR)/rotation.o
+$(OBJDIR)/assemble.o : $(OBJDIR)/prec.o $(OBJDIR)/rotation.o $(OBJDIR)/band.o
 $(OBJDIR)/band.o : $(OBJDIR)/prec.o $(OBJDIR)/rotation.o
 $(OBJDIR)/upper_convert.o : $(OBJDIR)/prec.o $(OBJDIR)/band.o $(OBJDIR)/shift.o
 
