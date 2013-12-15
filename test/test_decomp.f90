@@ -3,7 +3,7 @@ program test_decomp
   use utility
   use assemble
   implicit none
-  integer(kind=int32), parameter :: n=500, rmax=5, ubwmax=rmax, lbw=1, mb=ubwmax+lbw+1, nb=mb
+  integer(kind=int32), parameter :: n=1000, rmax=5, ubwmax=rmax, lbw=1, mb=ubwmax+lbw+1, nb=mb
   real(kind=dp), parameter :: tol=1e-14
   real(kind=dp) :: t1, t2
   integer(kind=int32) :: j, k, error
@@ -55,7 +55,7 @@ program test_decomp
   end do
   a0=a
   call cpu_time(t1)
-  call upper_general_to_upper_ub(a,n, b_ub, mb, lbw, ubw, numrots, j1s, j2s, cs_ub, ss_ub, tol, error)
+  call f_upper_to_ub(a,n, b_ub, mb, lbw, ubw, numrots, j1s, j2s, cs_ub, ss_ub, tol, error)
   call cpu_time(t2)
   if (error == 1) then
      print *, "orthogonalization error in real UB"
@@ -79,7 +79,7 @@ program test_decomp
   end do
   a0=a
   call cpu_time(t1)
-  call upper_general_to_upper_ub(a,n, b_ub, mb, lbw, ubw, numrots, j1s, j2s, cs_ub, ss_ub, tol, error)
+  call f_upper_to_ub(a,n, b_ub, mb, lbw, ubw, numrots, j1s, j2s, cs_ub, ss_ub, tol, error)
   call cpu_time(t2)
   if (error == 1) then
      print *, "orthogonalization error in real square termination UB"
@@ -101,7 +101,7 @@ program test_decomp
   end do
   a0=a
   call cpu_time(t1)
-  call upper_general_to_upper_bv(a, n, b_bv, nb, lbw, ubw, numrots, k1s, k2s, cs_bv, ss_bv, tol, error)
+  call f_upper_to_bv(a, n, b_bv, nb, lbw, ubw, numrots, k1s, k2s, cs_bv, ss_bv, tol, error)
   call cpu_time(t2)
   if (error == 1) then
      print *, "orthogonalization error in real BV"
@@ -124,7 +124,7 @@ program test_decomp
   end do
   a0=a
   call cpu_time(t1)
-  call upper_general_to_upper_bv(a,n, b_bv, nb, lbw, ubw, numrots, k1s, k2s, cs_bv, ss_bv, tol, error)
+  call f_upper_to_bv(a,n, b_bv, nb, lbw, ubw, numrots, k1s, k2s, cs_bv, ss_bv, tol, error)
   call cpu_time(t2)
   if (error == 1) then
      print *, "orthogonalization error in real square termination BV"
@@ -147,7 +147,7 @@ program test_decomp
   end do
   a0c=ac
   call cpu_time(t1)
-  call upper_general_to_upper_ub(ac,n, bc_ub, mb, lbw, ubwc, numrotsc, j1sc, j2sc, &
+  call f_upper_to_ub(ac,n, bc_ub, mb, lbw, ubwc, numrotsc, j1sc, j2sc, &
        csc_ub, ssc_ub, tol, error)
   call cpu_time(t2)
   if (error == 1) then
@@ -173,7 +173,7 @@ program test_decomp
   end do
   a0c=ac
   call cpu_time(t1)
-  call upper_general_to_upper_ub(ac,n, bc_ub, mb, lbw, ubwc, numrotsc, j1sc, j2sc, &
+  call f_upper_to_ub(ac,n, bc_ub, mb, lbw, ubwc, numrotsc, j1sc, j2sc, &
        csc_ub, ssc_ub, tol, error)
   call cpu_time(t2)
   if (error == 1) then
@@ -199,7 +199,7 @@ program test_decomp
   end do
   a0c=ac
   call cpu_time(t1)
-  call upper_general_to_upper_bv(ac,n, bc_bv, nb, lbw, ubwc, numrots, k1sc, k2sc, csc_bv, ssc_bv, &
+  call f_upper_to_bv(ac,n, bc_bv, nb, lbw, ubwc, numrots, k1sc, k2sc, csc_bv, ssc_bv, &
        tol, error)
   call cpu_time(t2)
   if (error == 1) then

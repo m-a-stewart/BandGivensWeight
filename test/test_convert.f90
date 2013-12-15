@@ -53,7 +53,7 @@ program test_convert
      a(j,j)=d(j)
   end do
   a0=a
-  call upper_general_to_upper_ub(a,n, b_ub, mb, lbw, ubw, numrots_ub, j1s, j2s,  &
+  call f_upper_to_ub(a,n, b_ub, mb, lbw, ubw, numrots_ub, j1s, j2s,  &
        cs_ub, ss_ub, tol, error)
   if (error == 1) then
      print *, "orthogonalization error in real UB"
@@ -75,7 +75,7 @@ program test_convert
 
   ! bv to ub
   a=a0
-  call upper_general_to_upper_bv(a,n, b_bv, mb, lbw, ubw, numrots_bv, k1s, k2s,  &
+  call f_upper_to_bv(a,n, b_bv, mb, lbw, ubw, numrots_bv, k1s, k2s,  &
        cs_bv, ss_bv, tol, error)
   if (error == 1) then
      print *, "orthogonalization error in real BV"
@@ -110,7 +110,7 @@ program test_convert
   end do
   ! ub to bv
   a0_c=a_c
-  call upper_general_to_upper_ub(a_c,n, b_ub_c, mb, lbw, ubw_c, numrots_ub_c, j1s_c, j2s_c,  &
+  call f_upper_to_ub(a_c,n, b_ub_c, mb, lbw, ubw_c, numrots_ub_c, j1s_c, j2s_c,  &
        cs_ub_c, ss_ub_c, tol, error)
   if (error == 1) then
      print *, "orthogonalization error in complex UB"
@@ -129,7 +129,7 @@ program test_convert
   end if
   ! bv to ub
   a_c=a0_c
-  call upper_general_to_upper_bv(a_c,n, b_bv_c, mb, lbw, ubw_c, numrots_bv_c, k1s_c, k2s_c,  &
+  call f_upper_to_bv(a_c,n, b_bv_c, mb, lbw, ubw_c, numrots_bv_c, k1s_c, k2s_c,  &
        cs_bv_c, ss_bv_c, tol, error)
   if (error == 1) then
      print *, "orthogonalization error in complex BV"

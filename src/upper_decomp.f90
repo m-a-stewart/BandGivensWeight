@@ -5,20 +5,21 @@ module upper_decomp
   use rotation
   use shift
   use gs
+  use decomp_types
   implicit none
   integer(kind=int32), parameter :: nullmaxits=5
 
-  interface upper_general_to_upper_ub
-     module procedure d_upper_general_to_upper_ub, c_upper_general_to_upper_ub
-  end interface upper_general_to_upper_ub
+  interface f_upper_to_ub
+     module procedure f_d_upper_to_ub, f_c_upper_to_ub
+  end interface f_upper_to_ub
 
-  interface upper_general_to_upper_bv
-     module procedure d_upper_general_to_upper_bv, c_upper_general_to_upper_bv
-  end interface upper_general_to_upper_bv
+  interface f_upper_to_bv
+     module procedure f_d_upper_to_bv, f_c_upper_to_bv
+  end interface f_upper_to_bv
 
 contains
   ! Updating procedure to compute a UB factorization from a general matrix.
-  subroutine d_upper_general_to_upper_ub(a, n, b, mb, lbw, ubw, &
+  subroutine f_d_upper_to_ub(a, n, b, mb, lbw, ubw, &
        numrots, j1s, j2s, cs, ss, tol, error)
     real(kind=dp), target, dimension(n,n), intent(inout) :: a
     integer(kind=int32), dimension(mb-lbw-1,n), intent(out) :: j1s, j2s
@@ -333,10 +334,10 @@ contains
           end do
        end if
     end if
-    call d_extract_diagonals_upper_ub(a, n, b, mb, lbw, ubw, ubws)
-  end subroutine d_upper_general_to_upper_ub
+    call d_extract_diagonals_ub(a, n, b, mb, lbw, ubw, ubws)
+  end subroutine f_d_upper_to_ub
 
-  subroutine d_extract_diagonals_upper_ub(a, n, b, mb, lbw, ubw, ubws)
+  subroutine d_extract_diagonals_ub(a, n, b, mb, lbw, ubw, ubws)
     real(kind=dp), target, dimension(n,n), intent(in) :: a
     real(kind=dp), dimension(mb,n), intent(out) :: b
     integer(kind=int32), intent(out) :: ubw
@@ -357,7 +358,7 @@ contains
           b(d,k) = a(d+k-ubw-1,k)
        end do
     end do
-  end subroutine d_extract_diagonals_upper_ub
+  end subroutine d_extract_diagonals_ub
 
 
   !
@@ -365,7 +366,7 @@ contains
   !
   ! Updating procedure to compute a UB factorization from a general matrix.
   !
-  subroutine c_upper_general_to_upper_ub(a, n, b, mb, lbw, ubw, &
+  subroutine f_c_upper_to_ub(a, n, b, mb, lbw, ubw, &
        numrots, j1s, j2s, cs, ss, tol, error)
     complex(kind=dp), target, dimension(n,n), intent(inout) :: a
     integer(kind=int32), dimension(mb-lbw-1,n), intent(out) :: j1s, j2s
@@ -680,10 +681,10 @@ contains
           end do
        end if
     end if
-    call c_extract_diagonals_upper_ub(a,n,b,mb,lbw,ubw,ubws)
-  end subroutine c_upper_general_to_upper_ub
+    call c_extract_diagonals_ub(a,n,b,mb,lbw,ubw,ubws)
+  end subroutine f_c_upper_to_ub
 
-  subroutine c_extract_diagonals_upper_ub(a, n, b, mb, lbw, ubw, ubws)
+  subroutine c_extract_diagonals_ub(a, n, b, mb, lbw, ubw, ubws)
     complex(kind=dp), target, dimension(n,n), intent(in) :: a
     complex(kind=dp), dimension(mb,n), intent(out) :: b
     integer(kind=int32), intent(out) :: ubw
@@ -704,11 +705,11 @@ contains
           b(d,k) = a(d+k-ubw-1,k)
        end do
     end do
-  end subroutine c_extract_diagonals_upper_ub
+  end subroutine c_extract_diagonals_ub
 
 
   ! BV
-  subroutine d_upper_general_to_upper_bv(a, n, b, nb, lbw, ubw, &
+  subroutine f_d_upper_to_bv(a, n, b, nb, lbw, ubw, &
        numrots, k1s, k2s, cs, ss, tol, error)
     real(kind=dp), target, dimension(n,n), intent(inout) :: a
     integer(kind=int32), dimension(n,nb-lbw-1), intent(out) :: k1s, k2s
@@ -1018,10 +1019,10 @@ contains
           end do
        end if
     end if
-    call d_extract_diagonals_upper_bv(a, n, b, nb, lbw, ubw, ubws)
-  end subroutine d_upper_general_to_upper_bv
+    call d_extract_diagonals_bv(a, n, b, nb, lbw, ubw, ubws)
+  end subroutine f_d_upper_to_bv
 
-  subroutine d_extract_diagonals_upper_bv(a, n, b, nb, lbw, ubw, ubws)
+  subroutine d_extract_diagonals_bv(a, n, b, nb, lbw, ubw, ubws)
     real(kind=dp), target, dimension(n,n), intent(in) :: a
     real(kind=dp), dimension(n,nb), intent(out) :: b
     integer(kind=int32), intent(out) :: ubw
@@ -1042,11 +1043,11 @@ contains
           b(j,d)=a(j,d+j-lbw-1)
        end do
     end do
-  end subroutine d_extract_diagonals_upper_bv
+  end subroutine d_extract_diagonals_bv
 
 ! complex BV
 
-  subroutine c_upper_general_to_upper_bv(a, n, b, nb, lbw, ubw, &
+  subroutine f_c_upper_to_bv(a, n, b, nb, lbw, ubw, &
        numrots, k1s, k2s, cs, ss, tol, error)
     complex(kind=dp), target, dimension(n,n), intent(inout) :: a
     integer(kind=int32), dimension(n,nb-lbw-1), intent(out) :: k1s, k2s
@@ -1356,10 +1357,10 @@ contains
           end do
        end if
     end if
-    call c_extract_diagonals_upper_bv(a,n,b,nb,lbw,ubw,ubws)
-  end subroutine c_upper_general_to_upper_bv
+    call c_extract_diagonals_bv(a,n,b,nb,lbw,ubw,ubws)
+  end subroutine f_c_upper_to_bv
 
-  subroutine c_extract_diagonals_upper_bv(a, n, b, nb, lbw, ubw, ubws)
+  subroutine c_extract_diagonals_bv(a, n, b, nb, lbw, ubw, ubws)
     complex(kind=dp), target, dimension(n,n), intent(in) :: a
     complex(kind=dp), dimension(n,nb), intent(out) :: b
     integer(kind=int32), intent(out) :: ubw
@@ -1380,6 +1381,6 @@ contains
           b(j,d)=a(j,d+j-lbw-1)
        end do
     end do
-  end subroutine c_extract_diagonals_upper_bv
+  end subroutine c_extract_diagonals_bv
 
 end module upper_decomp
