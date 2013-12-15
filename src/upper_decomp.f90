@@ -19,19 +19,19 @@ module upper_decomp
 
 contains
   ! Updating procedure to compute a UB factorization from a general matrix.
-  subroutine f_d_upper_to_ub(a, n, b, mb, lbw, ubw, &
+  subroutine f_d_upper_to_ub(a, n, b, lbw, ubw, lbwmax, ubwmax, &
        numrots, j1s, j2s, cs, ss, tol, error)
     real(kind=dp), target, dimension(n,n), intent(inout) :: a
-    integer(kind=int32), dimension(mb-lbw-1,n), intent(out) :: j1s, j2s
-    real(kind=dp), dimension(mb-lbw-1,n), intent(out) :: cs, ss
-    real(kind=dp), dimension(mb,n), intent(out) :: b
+    integer(kind=int32), dimension(ubwmax,n), intent(out) :: j1s, j2s
+    real(kind=dp), dimension(ubwmax,n), intent(out) :: cs, ss
+    real(kind=dp), dimension(ubwmax+lbwmax+1,n), intent(out) :: b
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), dimension(n), intent(out) :: numrots
     integer(kind=int32), intent(out) :: ubw, error
-    integer(kind=int32), intent(in) :: n, mb, lbw
+    integer(kind=int32), intent(in) :: n, lbw, ubwmax, lbwmax
     !
-    real(kind=dp), target, dimension(mb-lbw,n) :: q
-    real(kind=dp), dimension(mb-lbw+1) :: x
+    real(kind=dp), target, dimension(ubwmax+1,n) :: q
+    real(kind=dp), dimension(ubwmax+1) :: x
     real(kind=dp) :: nrma, nrmq12
     real(kind=dp), pointer, dimension(:,:) :: pl, pq
     integer(kind=int32) :: i, j, k, nullerr, ortherror, roffs, nl, klast
@@ -334,14 +334,14 @@ contains
           end do
        end if
     end if
-    call d_extract_diagonals_ub(a, n, b, mb, lbw, ubw, ubws)
+    call d_extract_diagonals_ub(a, n, b, lbw, ubw, lbwmax, ubwmax, ubws)
   end subroutine f_d_upper_to_ub
 
-  subroutine d_extract_diagonals_ub(a, n, b, mb, lbw, ubw, ubws)
+  subroutine d_extract_diagonals_ub(a, n, b, lbw, ubw, lbwmax, ubwmax, ubws)
     real(kind=dp), target, dimension(n,n), intent(in) :: a
-    real(kind=dp), dimension(mb,n), intent(out) :: b
+    real(kind=dp), dimension(lbwmax+ubwmax+1,n), intent(out) :: b
     integer(kind=int32), intent(out) :: ubw
-    integer(kind=int32), intent(in) :: n, mb, lbw
+    integer(kind=int32), intent(in) :: n, lbw, lbwmax, ubwmax
     integer(kind=int32), dimension(n), intent(in) :: ubws
     !
     integer(kind=int32) :: k, d
@@ -366,19 +366,19 @@ contains
   !
   ! Updating procedure to compute a UB factorization from a general matrix.
   !
-  subroutine f_c_upper_to_ub(a, n, b, mb, lbw, ubw, &
+  subroutine f_c_upper_to_ub(a, n, b, lbw, ubw, lbwmax, ubwmax, &
        numrots, j1s, j2s, cs, ss, tol, error)
     complex(kind=dp), target, dimension(n,n), intent(inout) :: a
-    integer(kind=int32), dimension(mb-lbw-1,n), intent(out) :: j1s, j2s
-    complex(kind=dp), dimension(mb-lbw-1,n), intent(out) :: cs, ss
-    complex(kind=dp), dimension(mb,n), intent(out) :: b
+    integer(kind=int32), dimension(ubwmax,n), intent(out) :: j1s, j2s
+    complex(kind=dp), dimension(ubwmax,n), intent(out) :: cs, ss
+    complex(kind=dp), dimension(lbwmax+ubwmax+1,n), intent(out) :: b
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), dimension(n), intent(out) :: numrots
     integer(kind=int32), intent(out) :: ubw, error
-    integer(kind=int32), intent(in) :: n, mb, lbw
+    integer(kind=int32), intent(in) :: n, lbw, lbwmax, ubwmax
     !
-    complex(kind=dp), target, dimension(mb-lbw,n) :: q
-    complex(kind=dp), dimension(mb-lbw+1) :: x
+    complex(kind=dp), target, dimension(ubwmax+1,n) :: q
+    complex(kind=dp), dimension(ubwmax+1) :: x
     real(kind=dp) :: nrma, nrmq12
     complex(kind=dp), pointer, dimension(:,:) :: pl, pq
     integer(kind=int32) :: i, j, k, nullerr, ortherror, roffs, nl, klast
@@ -681,14 +681,14 @@ contains
           end do
        end if
     end if
-    call c_extract_diagonals_ub(a,n,b,mb,lbw,ubw,ubws)
+    call c_extract_diagonals_ub(a,n,b,lbw,ubw,lbwmax, ubwmax, ubws)
   end subroutine f_c_upper_to_ub
 
-  subroutine c_extract_diagonals_ub(a, n, b, mb, lbw, ubw, ubws)
+  subroutine c_extract_diagonals_ub(a, n, b, lbw, ubw, lbwmax, ubwmax, ubws)
     complex(kind=dp), target, dimension(n,n), intent(in) :: a
-    complex(kind=dp), dimension(mb,n), intent(out) :: b
+    complex(kind=dp), dimension(lbwmax+ubwmax+1,n), intent(out) :: b
     integer(kind=int32), intent(out) :: ubw
-    integer(kind=int32), intent(in) :: n, mb, lbw
+    integer(kind=int32), intent(in) :: n, lbw, lbwmax, ubwmax
     integer(kind=int32), dimension(n), intent(in) :: ubws
     !
     integer(kind=int32) :: k, d
@@ -709,19 +709,19 @@ contains
 
 
   ! BV
-  subroutine f_d_upper_to_bv(a, n, b, nb, lbw, ubw, &
+  subroutine f_d_upper_to_bv(a, n, b, lbw, ubw, lbwmax, ubwmax, &
        numrots, k1s, k2s, cs, ss, tol, error)
     real(kind=dp), target, dimension(n,n), intent(inout) :: a
-    integer(kind=int32), dimension(n,nb-lbw-1), intent(out) :: k1s, k2s
-    real(kind=dp), dimension(n,nb-lbw-1), intent(out) :: cs, ss
-    real(kind=dp), dimension(n,nb), intent(out) :: b
+    integer(kind=int32), dimension(n,ubwmax), intent(out) :: k1s, k2s
+    real(kind=dp), dimension(n,ubwmax), intent(out) :: cs, ss
+    real(kind=dp), dimension(n,lbwmax+ubwmax+1), intent(out) :: b
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), dimension(n), intent(out) :: numrots
     integer(kind=int32), intent(out) :: ubw, error
-    integer(kind=int32), intent(in) :: n, nb, lbw
+    integer(kind=int32), intent(in) :: n, lbw, lbwmax, ubwmax
     !
-    real(kind=dp), target, dimension(n,nb-lbw) :: q
-    real(kind=dp), dimension(nb-lbw+1) :: x
+    real(kind=dp), target, dimension(n,ubwmax+1) :: q
+    real(kind=dp), dimension(ubwmax+1) :: x
     real(kind=dp) :: nrma, nrmq1
     real(kind=dp), pointer, dimension(:,:) :: pl, pq
     integer(kind=int32) :: i, j, k, nullerr, ortherror, roffs, coffs, nl, klast
@@ -1019,14 +1019,14 @@ contains
           end do
        end if
     end if
-    call d_extract_diagonals_bv(a, n, b, nb, lbw, ubw, ubws)
+    call d_extract_diagonals_bv(a, n, b, lbw, ubw, lbwmax, ubwmax, ubws)
   end subroutine f_d_upper_to_bv
 
-  subroutine d_extract_diagonals_bv(a, n, b, nb, lbw, ubw, ubws)
+  subroutine d_extract_diagonals_bv(a, n, b, lbw, ubw, lbwmax, ubwmax, ubws)
     real(kind=dp), target, dimension(n,n), intent(in) :: a
-    real(kind=dp), dimension(n,nb), intent(out) :: b
+    real(kind=dp), dimension(n,lbwmax+ubwmax+1), intent(out) :: b
     integer(kind=int32), intent(out) :: ubw
-    integer(kind=int32), intent(in) :: n, nb, lbw
+    integer(kind=int32), intent(in) :: n, lbw, lbwmax, ubwmax
     integer(kind=int32), dimension(n), intent(in) :: ubws
     !
     integer(kind=int32) :: j, d
@@ -1047,19 +1047,19 @@ contains
 
 ! complex BV
 
-  subroutine f_c_upper_to_bv(a, n, b, nb, lbw, ubw, &
+  subroutine f_c_upper_to_bv(a, n, b, lbw, ubw, lbwmax, ubwmax, &
        numrots, k1s, k2s, cs, ss, tol, error)
     complex(kind=dp), target, dimension(n,n), intent(inout) :: a
-    integer(kind=int32), dimension(n,nb-lbw-1), intent(out) :: k1s, k2s
-    complex(kind=dp), dimension(n,nb-lbw-1), intent(out) :: cs, ss
-    complex(kind=dp), dimension(n,nb), intent(out) :: b
+    integer(kind=int32), dimension(n,ubwmax), intent(out) :: k1s, k2s
+    complex(kind=dp), dimension(n,ubwmax), intent(out) :: cs, ss
+    complex(kind=dp), dimension(n,lbwmax+ubwmax+1), intent(out) :: b
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), dimension(n), intent(out) :: numrots
     integer(kind=int32), intent(out) :: ubw, error
-    integer(kind=int32), intent(in) :: n, nb, lbw
+    integer(kind=int32), intent(in) :: n, lbw, lbwmax, ubwmax
     !
-    complex(kind=dp), target, dimension(n,nb-lbw) :: q
-    complex(kind=dp), dimension(nb-lbw+1) :: x
+    complex(kind=dp), target, dimension(n,ubwmax+1) :: q
+    complex(kind=dp), dimension(ubwmax+1) :: x
     real(kind=dp) :: nrma, nrmq1
     complex(kind=dp), pointer, dimension(:,:) :: pl, pq
     integer(kind=int32) :: i, j, k, nullerr, ortherror, roffs, coffs, nl, klast
@@ -1357,14 +1357,14 @@ contains
           end do
        end if
     end if
-    call c_extract_diagonals_bv(a,n,b,nb,lbw,ubw,ubws)
+    call c_extract_diagonals_bv(a,n,b,lbw,ubw,lbwmax, ubwmax,ubws)
   end subroutine f_c_upper_to_bv
 
-  subroutine c_extract_diagonals_bv(a, n, b, nb, lbw, ubw, ubws)
+  subroutine c_extract_diagonals_bv(a, n, b, lbw, ubw, lbwmax, ubwmax, ubws)
     complex(kind=dp), target, dimension(n,n), intent(in) :: a
-    complex(kind=dp), dimension(n,nb), intent(out) :: b
+    complex(kind=dp), dimension(n,lbwmax+ubwmax+1), intent(out) :: b
     integer(kind=int32), intent(out) :: ubw
-    integer(kind=int32), intent(in) :: n, nb, lbw
+    integer(kind=int32), intent(in) :: n, lbw, lbwmax, ubwmax
     integer(kind=int32), dimension(n), intent(in) :: ubws
     !
     integer(kind=int32) :: j, d

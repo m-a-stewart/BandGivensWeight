@@ -5,20 +5,28 @@ use rotation
 use band
 implicit none
 
+interface f_ub_to_bv
+   module procedure f_d_ub_to_bv, f_c_ub_to_bv
+end interface f_ub_to_bv
+
+interface f_bv_to_ub
+   module procedure f_d_bv_to_ub, f_c_bv_to_ub
+end interface f_bv_to_ub
+
 contains
 
-  subroutine d_upper_ub_to_bv(b_ub, mb_ub, n, lbw, ubw, numrots_ub, j1s_ub, j2s_ub, cs_ub, ss_ub, &
-       b_bv, nb_bv, numrots_bv, k1s_bv, k2s_bv, cs_bv, ss_bv, error)
-    real(kind=dp), dimension(mb_ub,n), intent(inout) :: b_ub
-    integer(kind=int32), intent(in) :: mb_ub, n, lbw, ubw, nb_bv
+  subroutine f_d_ub_to_bv(b_ub, n, lbw, ubw, lbwmax_ub, ubwmax_ub, numrots_ub, j1s_ub, j2s_ub, cs_ub, ss_ub, &
+       b_bv, lbwmax_bv, ubwmax_bv, numrots_bv, k1s_bv, k2s_bv, cs_bv, ss_bv, error)
+    real(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(inout) :: b_ub
+    integer(kind=int32), intent(in) :: n, lbw, ubw, lbwmax_ub, ubwmax_ub, lbwmax_bv, ubwmax_bv
     integer(kind=int32), dimension(n), intent(in) :: numrots_ub
-    integer(kind=int32), dimension(mb_ub-lbw-1,n), intent(in) :: j1s_ub, j2s_ub
-    real(kind=dp), dimension(mb_ub-lbw-1,n), intent(in) :: cs_ub, ss_ub
+    integer(kind=int32), dimension(ubwmax_ub,n), intent(in) :: j1s_ub, j2s_ub
+    real(kind=dp), dimension(ubwmax_ub,n), intent(in) :: cs_ub, ss_ub
 
-    real(kind=dp), dimension(n,nb_bv), intent(out) :: b_bv
+    real(kind=dp), dimension(n,lbwmax_bv+ubwmax_bv+1), intent(out) :: b_bv
     integer(kind=int32), dimension(n), intent(out) :: numrots_bv
-    integer(kind=int32), dimension(n,nb_bv-lbw-1), intent(out) :: k1s_bv, k2s_bv
-    real(kind=dp), dimension(n,nb_bv-lbw-1), intent(out) :: cs_bv, ss_bv
+    integer(kind=int32), dimension(n,ubwmax_bv), intent(out) :: k1s_bv, k2s_bv
+    real(kind=dp), dimension(n,ubwmax_bv), intent(out) :: cs_bv, ss_bv
     integer(kind=int32), intent(out) :: error
 
     integer(kind=int32) :: j, k, l, roffs, coffs, ubw1, lbw1, d
@@ -40,7 +48,7 @@ contains
        return
     end if
     ! must allow for temporary fill-in
-    if (mb_ub<ubw1+lbw1+1) then
+    if (lbwmax_ub+ubwmax_ub+1<ubw1+lbw1+1) then
        error = 2
        return
     end if
@@ -110,20 +118,20 @@ contains
           b_bv(j,d)=b_ub(ubw+lbw+2-d,j+d-lbw-1)
        end do
     end do
-  end subroutine d_upper_ub_to_bv
+  end subroutine f_d_ub_to_bv
 
-  subroutine c_upper_ub_to_bv(b_ub, mb_ub, n, lbw, ubw, numrots_ub, j1s_ub, j2s_ub, cs_ub, ss_ub, &
-       b_bv, nb_bv, numrots_bv, k1s_bv, k2s_bv, cs_bv, ss_bv, error)
-    complex(kind=dp), dimension(mb_ub,n), intent(inout) :: b_ub
-    integer(kind=int32), intent(in) :: mb_ub, n, lbw, ubw, nb_bv
+  subroutine f_c_ub_to_bv(b_ub, n, lbw, ubw, lbwmax_ub, ubwmax_ub, numrots_ub, j1s_ub, j2s_ub, cs_ub, ss_ub, &
+       b_bv, lbwmax_bv, ubwmax_bv, numrots_bv, k1s_bv, k2s_bv, cs_bv, ss_bv, error)
+    complex(kind=dp), dimension(lbwmax_ub+ubwmax_bv+1,n), intent(inout) :: b_ub
+    integer(kind=int32), intent(in) :: n, lbw, ubw, lbwmax_ub, ubwmax_ub, lbwmax_bv, ubwmax_bv
     integer(kind=int32), dimension(n), intent(in) :: numrots_ub
-    integer(kind=int32), dimension(mb_ub-lbw-1,n), intent(in) :: j1s_ub, j2s_ub
-    complex(kind=dp), dimension(mb_ub-lbw-1,n), intent(in) :: cs_ub, ss_ub
+    integer(kind=int32), dimension(ubwmax_ub,n), intent(in) :: j1s_ub, j2s_ub
+    complex(kind=dp), dimension(ubwmax_ub,n), intent(in) :: cs_ub, ss_ub
 
-    complex(kind=dp), dimension(n,nb_bv), intent(out) :: b_bv
+    complex(kind=dp), dimension(n,lbwmax_bv+ubwmax_bv+1), intent(out) :: b_bv
     integer(kind=int32), dimension(n), intent(out) :: numrots_bv
-    integer(kind=int32), dimension(n,nb_bv-lbw-1), intent(out) :: k1s_bv, k2s_bv
-    complex(kind=dp), dimension(n,nb_bv-lbw-1), intent(out) :: cs_bv, ss_bv
+    integer(kind=int32), dimension(n,ubwmax_bv), intent(out) :: k1s_bv, k2s_bv
+    complex(kind=dp), dimension(n,ubwmax_bv), intent(out) :: cs_bv, ss_bv
     integer(kind=int32), intent(out) :: error
 
     integer(kind=int32) :: j, k, l, roffs, coffs, ubw1, lbw1, d
@@ -145,7 +153,7 @@ contains
        return
     end if
     ! must allow for temporary fill-in
-    if (mb_ub<ubw1+lbw1+1) then
+    if (lbwmax_ub+ubwmax_ub+1<ubw1+lbw1+1) then
        error = 2
        return
     end if
@@ -215,20 +223,20 @@ contains
           b_bv(j,d)=b_ub(ubw+lbw+2-d,j+d-lbw-1)
        end do
     end do
-  end subroutine c_upper_ub_to_bv
+  end subroutine f_c_ub_to_bv
 
-  subroutine d_upper_bv_to_ub(b_bv, nb_bv, n, lbw, ubw, numrots_bv, k1s_bv, k2s_bv, cs_bv, ss_bv, &
-       b_ub, mb_ub, numrots_ub, j1s_ub, j2s_ub, cs_ub, ss_ub, error)
-    real(kind=dp), dimension(n,nb_bv), intent(inout) :: b_bv
-    integer(kind=int32), intent(in) :: mb_ub, n, lbw, ubw, nb_bv
+  subroutine f_d_bv_to_ub(b_bv, n, lbw, ubw, lbwmax_bv, ubwmax_bv, numrots_bv, k1s_bv, k2s_bv, cs_bv, ss_bv, &
+       b_ub, lbwmax_ub, ubwmax_ub, numrots_ub, j1s_ub, j2s_ub, cs_ub, ss_ub, error)
+    real(kind=dp), dimension(n,lbwmax_bv+ubwmax_bv+1), intent(inout) :: b_bv
+    integer(kind=int32), intent(in) :: n, lbw, ubw, lbwmax_ub, ubwmax_ub, lbwmax_bv, ubwmax_bv
     integer(kind=int32), dimension(n), intent(in) :: numrots_bv
-    integer(kind=int32), dimension(n,nb_bv-lbw-1), intent(in) :: k1s_bv, k2s_bv
-    real(kind=dp), dimension(n,nb_bv-lbw-1), intent(in) :: cs_bv, ss_bv
+    integer(kind=int32), dimension(n,ubwmax_bv), intent(in) :: k1s_bv, k2s_bv
+    real(kind=dp), dimension(n,ubwmax_bv), intent(in) :: cs_bv, ss_bv
 
-    real(kind=dp), dimension(mb_ub,n), intent(out) :: b_ub
+    real(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(out) :: b_ub
     integer(kind=int32), dimension(n), intent(out) :: numrots_ub
-    integer(kind=int32), dimension(mb_ub-lbw-1,n), intent(out) :: j1s_ub, j2s_ub
-    real(kind=dp), dimension(mb_ub-lbw-1,n), intent(out) :: cs_ub, ss_ub
+    integer(kind=int32), dimension(ubwmax_ub,n), intent(out) :: j1s_ub, j2s_ub
+    real(kind=dp), dimension(ubwmax_ub,n), intent(out) :: cs_ub, ss_ub
     integer(kind=int32), intent(out) :: error
 
     integer(kind=int32) :: j, k, l, roffs, coffs, ubw1, lbw1, d
@@ -250,7 +258,7 @@ contains
        return
     end if
     ! must allow for temporary fill-in
-    if (nb_bv<ubw1+lbw1+1) then
+    if (lbwmax_bv+ubwmax_bv+1<ubw1+lbw1+1) then
        error = 2
        return
     end if
@@ -320,20 +328,20 @@ contains
           b_ub(ubw+lbw+2-d,j+d-lbw-1)=b_bv(j,d)
        end do
     end do
-  end subroutine d_upper_bv_to_ub
+  end subroutine f_d_bv_to_ub
 
-  subroutine c_upper_bv_to_ub(b_bv, nb_bv, n, lbw, ubw, numrots_bv, k1s_bv, k2s_bv, cs_bv, ss_bv, &
-       b_ub, mb_ub, numrots_ub, j1s_ub, j2s_ub, cs_ub, ss_ub, error)
-    complex(kind=dp), dimension(n,nb_bv), intent(inout) :: b_bv
-    integer(kind=int32), intent(in) :: mb_ub, n, lbw, ubw, nb_bv
+  subroutine f_c_bv_to_ub(b_bv, n, lbw, ubw, lbwmax_bv, ubwmax_bv, numrots_bv, k1s_bv, k2s_bv, cs_bv, ss_bv, &
+       b_ub, lbwmax_ub, ubwmax_ub, numrots_ub, j1s_ub, j2s_ub, cs_ub, ss_ub, error)
+    complex(kind=dp), dimension(n,lbwmax_bv+ubwmax_bv+1), intent(inout) :: b_bv
+    integer(kind=int32), intent(in) :: n, lbw, ubw, lbwmax_bv, ubwmax_bv, lbwmax_ub, ubwmax_ub
     integer(kind=int32), dimension(n), intent(in) :: numrots_bv
-    integer(kind=int32), dimension(n,nb_bv-lbw-1), intent(in) :: k1s_bv, k2s_bv
-    complex(kind=dp), dimension(n,nb_bv-lbw-1), intent(in) :: cs_bv, ss_bv
+    integer(kind=int32), dimension(n,ubwmax_bv), intent(in) :: k1s_bv, k2s_bv
+    complex(kind=dp), dimension(n,ubwmax_bv), intent(in) :: cs_bv, ss_bv
 
-    complex(kind=dp), dimension(mb_ub,n), intent(out) :: b_ub
+    complex(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(out) :: b_ub
     integer(kind=int32), dimension(n), intent(out) :: numrots_ub
-    integer(kind=int32), dimension(mb_ub-lbw-1,n), intent(out) :: j1s_ub, j2s_ub
-    complex(kind=dp), dimension(mb_ub-lbw-1,n), intent(out) :: cs_ub, ss_ub
+    integer(kind=int32), dimension(ubwmax_ub,n), intent(out) :: j1s_ub, j2s_ub
+    complex(kind=dp), dimension(ubwmax_ub,n), intent(out) :: cs_ub, ss_ub
     integer(kind=int32), intent(out) :: error
 
     integer(kind=int32) :: j, k, l, roffs, coffs, ubw1, lbw1, d
@@ -355,7 +363,7 @@ contains
        return
     end if
     ! must allow for temporary fill-in
-    if (nb_bv<ubw1+lbw1+1) then
+    if (lbwmax_bv+ubwmax_bv+1<ubw1+lbw1+1) then
        error = 2
        return
     end if
@@ -425,7 +433,7 @@ contains
           b_ub(ubw+lbw+2-d,j+d-lbw-1)=b_bv(j,d)
        end do
     end do
-  end subroutine c_upper_bv_to_ub
+  end subroutine f_c_bv_to_ub
 
 
 

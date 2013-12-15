@@ -4,23 +4,23 @@ use rotation
 use band
 implicit none
 
-interface form_upper_ub
-   module procedure d_form_upper_ub, c_form_upper_ub
-end interface form_upper_ub
+interface ub_to_upper
+   module procedure d_ub_to_upper, c_ub_to_upper
+end interface ub_to_upper
 
-interface form_upper_bv
-   module procedure d_form_upper_bv, c_form_upper_bv
-end interface form_upper_bv
+interface bv_to_upper
+   module procedure d_bv_to_upper, c_bv_to_upper
+end interface bv_to_upper
 
 contains
 
-  subroutine d_form_upper_ub(a, n, b, mb, lbw, ubw, numrots, j1s, j2s, cs, ss)
+  subroutine d_ub_to_upper(b, n, lbw, ubw, lbwmax, ubwmax, numrots, j1s, j2s, cs, ss, a)
     real(kind=dp), target, dimension(n,n), intent(out) :: a
-    integer(kind=int32), dimension(mb-lbw-1,n), intent(in) :: j1s, j2s
-    real(kind=dp), dimension(mb-lbw-1,n), intent(in) :: cs, ss
-    real(kind=dp), dimension(mb,n), intent(in) :: b
+    integer(kind=int32), dimension(ubwmax,n), intent(in) :: j1s, j2s
+    real(kind=dp), dimension(ubwmax,n), intent(in) :: cs, ss
+    real(kind=dp), dimension(lbwmax+ubwmax+1,n), intent(in) :: b
     integer(kind=int32), dimension(n), intent(in) :: numrots
-    integer(kind=int32), intent(in) :: ubw, lbw, n, mb
+    integer(kind=int32), intent(in) :: ubw, lbw, n, lbwmax, ubwmax
     !
     integer(kind=int32) :: j,k
     type(d_rotation) :: rot
@@ -43,15 +43,15 @@ contains
           call rotation_times_general(rot,a(:,k+1:n),j1s(j,k),j2s(j,k))
        end do
     end do
-  end subroutine d_form_upper_ub
+  end subroutine d_ub_to_upper
 
-  subroutine c_form_upper_ub(a, n, b, mb, lbw, ubw, numrots, j1s, j2s, cs, ss)
+  subroutine c_ub_to_upper(b, n, lbw, ubw, lbwmax, ubwmax, numrots, j1s, j2s, cs, ss, a)
     complex(kind=dp), target, dimension(n,n), intent(out) :: a
-    integer(kind=int32), dimension(mb-lbw-1,n), intent(in) :: j1s, j2s
-    complex(kind=dp), dimension(mb-lbw-1,n), intent(in) :: cs, ss
-    complex(kind=dp), dimension(mb,n), intent(in) :: b
+    integer(kind=int32), dimension(ubwmax,n), intent(in) :: j1s, j2s
+    complex(kind=dp), dimension(ubwmax,n), intent(in) :: cs, ss
+    complex(kind=dp), dimension(lbwmax+ubwmax+1,n), intent(in) :: b
     integer(kind=int32), dimension(n), intent(in) :: numrots
-    integer(kind=int32), intent(in) :: ubw, lbw, n, mb
+    integer(kind=int32), intent(in) :: ubw, lbw, n, lbwmax, ubwmax
     !
     integer(kind=int32) :: j,k
     type(c_rotation) :: rot
@@ -75,15 +75,15 @@ contains
           call rotation_times_general(rot,a(:,k+1:n),j1s(j,k),j2s(j,k))
        end do
     end do
-  end subroutine c_form_upper_ub
+  end subroutine c_ub_to_upper
 
-  subroutine d_form_upper_bv(a, n, b, nb, lbw, ubw, numrots, k1s, k2s, cs, ss)
+  subroutine d_bv_to_upper(b, n, lbw, ubw, lbwmax, ubwmax, numrots, k1s, k2s, cs, ss, a)
     real(kind=dp), target, dimension(n,n), intent(out) :: a
-    integer(kind=int32), dimension(n,nb-lbw-1), intent(in) :: k1s, k2s
-    real(kind=dp), dimension(n, nb-lbw-1), intent(in) :: cs, ss
-    real(kind=dp), dimension(n,nb), intent(in) :: b
+    integer(kind=int32), dimension(n,ubwmax), intent(in) :: k1s, k2s
+    real(kind=dp), dimension(n, ubwmax), intent(in) :: cs, ss
+    real(kind=dp), dimension(n,lbwmax+ubwmax+1), intent(in) :: b
     integer(kind=int32), dimension(n), intent(in) :: numrots
-    integer(kind=int32), intent(in) :: ubw, lbw, n, nb
+    integer(kind=int32), intent(in) :: ubw, lbw, n, lbwmax, ubwmax
     !
     integer(kind=int32) :: j,k
     type(d_rotation) :: rot
@@ -106,15 +106,15 @@ contains
           call general_times_rotation(a(1:j,:),trp_rot(rot),k1s(n-j,k), k2s(n-j,k))
        end do
     end do
-  end subroutine d_form_upper_bv
+  end subroutine d_bv_to_upper
 
-  subroutine c_form_upper_bv(a, n, b, nb, lbw, ubw, numrots, k1s, k2s, cs, ss)
+  subroutine c_bv_to_upper(b, n, lbw, ubw, lbwmax, ubwmax, numrots, k1s, k2s, cs, ss, a)
     complex(kind=dp), target, dimension(n,n), intent(out) :: a
-    integer(kind=int32), dimension(n,nb-lbw-1), intent(in) :: k1s, k2s
-    complex(kind=dp), dimension(n, nb-lbw-1), intent(in) :: cs, ss
-    complex(kind=dp), dimension(n,nb), intent(in) :: b
+    integer(kind=int32), dimension(n,ubwmax), intent(in) :: k1s, k2s
+    complex(kind=dp), dimension(n, ubwmax), intent(in) :: cs, ss
+    complex(kind=dp), dimension(n,lbwmax+ubwmax+1), intent(in) :: b
     integer(kind=int32), dimension(n), intent(in) :: numrots
-    integer(kind=int32), intent(in) :: ubw, lbw, n, nb
+    integer(kind=int32), intent(in) :: ubw, lbw, n, lbwmax, ubwmax
     !
     integer(kind=int32) :: j,k
     type(c_rotation) :: rot
@@ -137,6 +137,6 @@ contains
           call general_times_rotation(a(1:j,:),trp_rot(rot),k1s(n-j,k), k2s(n-j,k))
        end do
     end do
-  end subroutine c_form_upper_bv
+  end subroutine c_bv_to_upper
     
 end module assemble
