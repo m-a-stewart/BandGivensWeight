@@ -60,7 +60,7 @@ program test_decomp
   if (error == 1) then
      print *, "orthogonalization error in real UB"
   else
-     call ub_to_upper(b_ub, n, lbw, ubw, lbwmax, ubwmax, numrots, j1s, j2s, cs_ub, ss_ub, a1)
+     call f_ub_to_upper(b_ub, n, lbw, ubw, lbwmax, ubwmax, numrots, j1s, j2s, cs_ub, ss_ub, a1)
      write (*,"('Real UB;                     ', 'Time: ',ES8.2,', ubw: ',I3,', error: ',ES8.2)") &
           t2-t1, ubw, maxabs(a1-a0)
   end if
@@ -84,7 +84,7 @@ program test_decomp
   if (error == 1) then
      print *, "orthogonalization error in real square termination UB"
   else
-     call ub_to_upper(b_ub, n, lbw, ubw, lbwmax, ubwmax, numrots, j1s, j2s, cs_ub, ss_ub, a1)
+     call f_ub_to_upper(b_ub, n, lbw, ubw, lbwmax, ubwmax, numrots, j1s, j2s, cs_ub, ss_ub, a1)
      write (*,"('Real Sq. term. UB;           ', 'Time: ',ES8.2,', ubw: ',I3,', error: ',ES8.2)") &
           t2-t1, ubw, maxabs(a1-a0)
   end if
@@ -106,7 +106,7 @@ program test_decomp
   if (error == 1) then
      print *, "orthogonalization error in real BV"
   else
-     call bv_to_upper(b_bv, n, lbw, ubw, lbwmax, ubwmax, numrots, k1s, k2s, cs_bv, ss_bv, a1)
+     call f_bv_to_upper(b_bv, n, lbw, ubw, lbwmax, ubwmax, numrots, k1s, k2s, cs_bv, ss_bv, a1)
      write (*,"('Real BV;                     ','Time: ',ES8.2,', ubw: ',I3,', error: ',ES8.2)") &
           t2-t1, ubw, maxabs(a1-a0)
   end if
@@ -129,7 +129,7 @@ program test_decomp
   if (error == 1) then
      print *, "orthogonalization error in real square termination BV"
   else
-     call bv_to_upper(b_bv, n, lbw, ubw, lbwmax, ubwmax, numrots, k1s, k2s, cs_bv, ss_bv, a1)
+     call f_bv_to_upper(b_bv, n, lbw, ubw, lbwmax, ubwmax, numrots, k1s, k2s, cs_bv, ss_bv, a1)
      write (*,"('Real Sq. Term BV;            ','Time: ',ES8.2,', ubw: ',I3,', error: ',ES8.2)") &
           t2-t1, ubw, maxabs(a1-a0)
   end if
@@ -153,7 +153,7 @@ program test_decomp
   if (error == 1) then
      print *, "orthogonalization error in complex UB"
   else
-     call ub_to_upper(bc_ub, n, lbw, ubwc, lbwmax, ubwmax, numrotsc, j1sc, j2sc, csc_ub, ssc_ub, a1c)
+     call f_ub_to_upper(bc_ub, n, lbw, ubwc, lbwmax, ubwmax, numrotsc, j1sc, j2sc, csc_ub, ssc_ub, a1c)
      write (*,"('Complex UB;                  ','Time: ',ES8.2,', ubw: ',I3,', error: ',ES8.2)") &
           t2-t1, ubwc, maxabs(a1c-a0c)
   end if
@@ -179,7 +179,7 @@ program test_decomp
   if (error == 1) then
      print *, "orthogonalization error in complex UB"
   else
-     call ub_to_upper(bc_ub, n, lbw, ubwc, lbwmax, ubwmax, numrotsc, j1sc, j2sc, csc_ub, ssc_ub, a1c)
+     call f_ub_to_upper(bc_ub, n, lbw, ubwc, lbwmax, ubwmax, numrotsc, j1sc, j2sc, csc_ub, ssc_ub, a1c)
      write (*,"('Complex square term. UB;     ','Time: ',ES8.2,', ubw: ',I3,', error: ',ES8.2)") &
           t2-t1, ubwc, maxabs(a1c-a0c)
   end if
@@ -205,7 +205,7 @@ program test_decomp
   if (error == 1) then
      print *, "orthogonalization error in complex BV"
   else
-     call bv_to_upper(bc_bv, n, lbw, ubwc, lbwmax, ubwmax, numrots, k1sc, k2sc, csc_bv, ssc_bv, a1c)
+     call f_bv_to_upper(bc_bv, n, lbw, ubwc, lbwmax, ubwmax, numrots, k1sc, k2sc, csc_bv, ssc_bv, a1c)
      write (*,"('Real BV;                     ','Time: ',ES8.2,', ubw: ',I3,', error: ',ES8.2)") &
           t2-t1, ubw, maxabs(a1c-a0c)
   end if

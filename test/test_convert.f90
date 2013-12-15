@@ -65,7 +65,7 @@ program test_convert
      if (error > 0) then
         print *, "Error in upper_ub_to_bv:", error
      else
-        call bv_to_upper(b_bv, n, lbw, ubw, lbwmax, ubwmax, numrots_bv, k1s, k2s, cs_bv, ss_bv, a1)
+        call f_bv_to_upper(b_bv, n, lbw, ubw, lbwmax, ubwmax, numrots_bv, k1s, k2s, cs_bv, ss_bv, a1)
         write (*, "('Real UB to BV;                     ', 'Time: ',ES8.2,', ubw: ',I3,', error: ',ES8.2)") &
              t2-t1, ubw, maxabs(a1-a0)
      end if
@@ -87,7 +87,7 @@ program test_convert
      if (error > 0) then
         print *, "Error in upper_bv_to_ub:", error
      else
-        call ub_to_upper(b_ub, n, lbw, ubw, lbwmax, ubwmax, numrots_ub, j1s, j2s, cs_ub, ss_ub, a1)
+        call f_ub_to_upper(b_ub, n, lbw, ubw, lbwmax, ubwmax, numrots_ub, j1s, j2s, cs_ub, ss_ub, a1)
         write (*, "('Real BV to UB;                     ', 'Time: ',ES8.2,', ubw: ',I3,', error: ',ES8.2)") &
              t2-t1, ubw, maxabs(a1-a0)/maxabs(a0)
      end if
@@ -122,7 +122,7 @@ program test_convert
      if (error > 0) then
         print *, "Error in upper_ub_to_bv:", error
      else
-        call bv_to_upper(b_bv_c, n, lbw, ubw_c, lbwmax, ubwmax, numrots_bv_c, &
+        call f_bv_to_upper(b_bv_c, n, lbw, ubw_c, lbwmax, ubwmax, numrots_bv_c, &
              k1s_c, k2s_c, cs_bv_c, ss_bv_c, a1_c)
         write (*, "('Complex UB to BV;                     ', 'Time: ',ES8.2,', ubw: ',I3,', error: ',ES8.2)") &
              t2-t1, ubw_c, maxabs(a1_c-a0_c)/maxabs(a0_c)
@@ -142,7 +142,7 @@ program test_convert
      if (error > 0) then
         print *, "Error in upper_bv_to_ub:", error
      else
-        call ub_to_upper(b_ub_c, n, lbw, ubw_c, lbwmax, ubwmax, numrots_ub_c, &
+        call f_ub_to_upper(b_ub_c, n, lbw, ubw_c, lbwmax, ubwmax, numrots_ub_c, &
              j1s_c, j2s_c, cs_ub_c, ss_ub_c, a1_c)
         write (*, "('Complex BV to UB;                     ', 'Time: ',ES8.2,', ubw: ',I3,', error: ',ES8.2)") &
              t2-t1, ubw_c, maxabs(a1_c-a0_c)/maxabs(a0_c)

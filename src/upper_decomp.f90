@@ -9,15 +9,42 @@ module upper_decomp
   implicit none
   integer(kind=int32), parameter :: nullmaxits=5
 
+  interface upper_to_ub
+     module procedure d_upper_to_ub, c_upper_to_ub
+  end interface upper_to_ub
+
   interface f_upper_to_ub
      module procedure f_d_upper_to_ub, f_c_upper_to_ub
   end interface f_upper_to_ub
+
+  interface upper_to_bv
+     module procedure d_upper_to_bv, c_upper_to_bv
+  end interface upper_to_bv
 
   interface f_upper_to_bv
      module procedure f_d_upper_to_bv, f_c_upper_to_bv
   end interface f_upper_to_bv
 
 contains
+  
+
+  ! Errors:
+  ! 0: no error
+  ! 1: n<1
+  ! 2: ortherror
+  ! 3: n is not the same for a and ub or bv.
+  subroutine d_upper_to_ub(a,ub,tol,error)
+    real(kind=dp), target, dimension(:,:), intent(inout) :: a
+    type(d_ub), intent(inout) :: ub
+    integer(kind=int32), intent(out) :: error
+    real(kind=dp), intent(in) :: tol
+    if (ub%n /= size(a,1) .or. ub%n /= size(a,2)) then
+       error=3; return
+    end if
+    call f_d_upper_to_ub(a,ub%n,ub%b, ub%lbw, ub%ubw, ub%lbwmax, ub%ubwmax, &
+         ub%numrotsu, ub%j1su, ub%j2su, ub%csu, ub%ssu, tol, error)
+  end subroutine d_upper_to_ub
+
   ! Updating procedure to compute a UB factorization from a general matrix.
   subroutine f_d_upper_to_ub(a, n, b, lbw, ubw, lbwmax, ubwmax, &
        numrots, j1s, j2s, cs, ss, tol, error)
@@ -122,7 +149,7 @@ contains
                    pl => a(k:k+1,k+2:k+3)
                    call extend_gs_rows(pq(1:1,:), pl(2,1:1), pl(2,2), pq(2,:), ortherror)
                    if (ortherror == 1) then
-                      error = 1; return
+                      error = 2; return
                    end if
                    if (k+4 <= n) then
                       a(k+1,k+4:n)=0.0_dp
@@ -196,7 +223,7 @@ contains
                 pq(1,:)=0.0_dp;     pq(1,1)=1.0_dp
                 call extend_gs_rows(pq(2:nl,:), x(1:nl-1), x(nl), pq(1,:), ortherror) ! orthogonalize
                 if (ortherror == 1) then
-                   error = 1; return
+                   error = 2; return
                 end if
                 do j=nl,2,-1
                    rot=lgivens(pq(1,1),pq(j,1))
@@ -211,7 +238,7 @@ contains
                 pl => a(roffs+2:k+1,k+2:k+nl+1) ! nl by nl
                 call extend_gs_rows(pq(1:nl-1,:), pl(nl,1:nl-1), pl(nl,nl), pq(nl,:), ortherror)
                 if (ortherror == 1) then
-                   error = 1; return
+                   error = 2; return
                 end if
                 if (k+nl+2 <= n) then
                    a(k+1,k+nl+2:n)=0.0_dp
@@ -234,7 +261,7 @@ contains
                 ! orthogonalizing.  Note x is used as workspace for coefficients.
                 call extend_gs_rows(pq(2:nl+1,:), x(1:nl), x(nl+1), pq(1,:), ortherror)
                 if (ortherror == 1) then
-                   error = 1; return
+                   error = 2; return
                 end if
                 do j=nl+1,2,-1
                    rot=lgivens(pq(1,1),pq(j,1))
@@ -260,7 +287,7 @@ contains
                    pl => a(roffs+1:k+1,k+2:k+nl+2)
                    call extend_gs_rows(pq(1:nl,:), pl(nl+1,1:nl), pl(nl+1,nl+1), pq(nl+1,:), ortherror)
                    if (ortherror == 1) then
-                      error = 1; return
+                      error = 2; return
                    end if
                    if (k+nl+3 <= n) then
                       a(k+1,k+nl+3:n)=0.0_dp
@@ -366,6 +393,19 @@ contains
   !
   ! Updating procedure to compute a UB factorization from a general matrix.
   !
+
+  subroutine c_upper_to_ub(a,ub,tol,error)
+    complex(kind=dp), target, dimension(:,:), intent(inout) :: a
+    type(c_ub), intent(inout) :: ub
+    integer(kind=int32), intent(out) :: error
+    real(kind=dp), intent(in) :: tol
+    if (ub%n /= size(a,1) .or. ub%n /= size(a,2)) then
+       error=3; return
+    end if
+    call f_c_upper_to_ub(a,ub%n,ub%b, ub%lbw, ub%ubw, ub%lbwmax, ub%ubwmax, &
+         ub%numrotsu, ub%j1su, ub%j2su, ub%csu, ub%ssu, tol, error)
+  end subroutine c_upper_to_ub
+
   subroutine f_c_upper_to_ub(a, n, b, lbw, ubw, lbwmax, ubwmax, &
        numrots, j1s, j2s, cs, ss, tol, error)
     complex(kind=dp), target, dimension(n,n), intent(inout) :: a
@@ -469,7 +509,7 @@ contains
                    pl => a(k:k+1,k+2:k+3)
                    call extend_gs_rows(pq(1:1,:), pl(2,1:1), pl(2,2), pq(2,:), ortherror)
                    if (ortherror == 1) then
-                      error = 1; return
+                      error = 2; return
                    end if
                    if (k+4 <= n) then
                       a(k+1,k+4:n)=(0.0_dp, 0.0_dp)
@@ -543,7 +583,7 @@ contains
                 pq(1,:)=(0.0_dp, 0.0_dp);     pq(1,1)=(1.0_dp,0.0_dp)
                 call extend_gs_rows(pq(2:nl,:), x(1:nl-1), x(nl), pq(1,:), ortherror) ! orthogonalize
                 if (ortherror == 1) then
-                   error = 1; return
+                   error = 2; return
                 end if
                 do j=nl,2,-1
                    rot=lgivens(pq(1,1),pq(j,1))
@@ -558,7 +598,7 @@ contains
                 pl => a(roffs+2:k+1,k+2:k+nl+1) ! nl by nl
                 call extend_gs_rows(pq(1:nl-1,:), pl(nl,1:nl-1), pl(nl,nl), pq(nl,:), ortherror)
                 if (ortherror == 1) then
-                   error = 1; return
+                   error = 2; return
                 end if
                 if (k+nl+2 <= n) then
                    a(k+1,k+nl+2:n)=(0.0_dp, 0.0_dp)
@@ -581,7 +621,7 @@ contains
                 ! orthogonalizing.  Note x is used as workspace for coefficients.
                 call extend_gs_rows(pq(2:nl+1,:), x(1:nl), x(nl+1), pq(1,:), ortherror)
                 if (ortherror == 1) then
-                   error = 1; return
+                   error = 2; return
                 end if
                 do j=nl+1,2,-1
                    rot=lgivens(pq(1,1),pq(j,1))
@@ -607,7 +647,7 @@ contains
                    pl => a(roffs+1:k+1,k+2:k+nl+2)
                    call extend_gs_rows(pq(1:nl,:), pl(nl+1,1:nl), pl(nl+1,nl+1), pq(nl+1,:), ortherror)
                    if (ortherror == 1) then
-                      error = 1; return
+                      error = 2; return
                    end if
                    if (k+nl+3 <= n) then
                       a(k+1,k+nl+3:n)=(0.0_dp, 0.0_dp)
@@ -707,6 +747,17 @@ contains
     end do
   end subroutine c_extract_diagonals_ub
 
+  subroutine d_upper_to_bv(a,bv,tol,error)
+    real(kind=dp), target, dimension(:,:), intent(inout) :: a
+    type(d_bv), intent(inout) :: bv
+    integer(kind=int32), intent(out) :: error
+    real(kind=dp), intent(in) :: tol
+    if (bv%n /= size(a,1) .or. bv%n /= size(a,2)) then
+       error=3; return
+    end if
+    call f_d_upper_to_bv(a,bv%n,bv%b, bv%lbw, bv%ubw, bv%lbwmax, bv%ubwmax, &
+         bv%numrotsv, bv%k1sv, bv%k2sv, bv%csv, bv%ssv, tol, error)
+  end subroutine d_upper_to_bv
 
   ! BV
   subroutine f_d_upper_to_bv(a, n, b, lbw, ubw, lbwmax, ubwmax, &
@@ -812,7 +863,7 @@ contains
                    pl => a(roffs-1:roffs,coffs:coffs+1)
                    call extend_gs_columns(pq(:,2:2),pl(2:2,1), pl(1,1), pq(:,1), ortherror)
                    if (ortherror == 1) then
-                      error = 1; return
+                      error = 2; return
                    end if
                    if (n-k-3 >= 1) then
                       a(1:n-k-3,coffs)=0.0_dp
@@ -885,7 +936,7 @@ contains
                 pq(:,nl)=0.0_dp; pq(n-k,nl)=1.0_dp
                 call extend_gs_columns(pq(:,1:nl-1), x(1:nl-1), x(nl), pq(:,nl), ortherror)
                 if (ortherror == 1) then
-                   error = 1; return
+                   error = 2; return
                 end if
                 do j=1,nl-1
                    rot=rgivens2(pq(n-k,j),pq(n-k,nl))
@@ -900,7 +951,7 @@ contains
                 pl => a(roffs:roffs+nl-1, coffs:coffs+nl-1)
                 call extend_gs_columns(pq(:,2:nl),pl(2:nl,1),pl(1,1),pq(:,1),ortherror)
                 if (ortherror == 1) then
-                   error = 1; return
+                   error = 2; return
                 end if
                 if (roffs>1) then
                    a(1:roffs-1,coffs)=0.0_dp
@@ -920,7 +971,7 @@ contains
                 pq(:,nl+1)=0.0_dp; pq(n-k,nl+1)=1.0_dp
                 call extend_gs_columns(pq(:,1:nl),x(1:nl), x(nl+1),pq(:,nl+1),ortherror)
                 if (ortherror==1) then
-                   error = 1; return
+                   error = 2; return
                 end if
                 do j=1,nl
                    rot=rgivens2(pq(n-k,j),pq(n-k,nl+1))
@@ -946,7 +997,7 @@ contains
                    pl => a(roffs-1:roffs-1+nl,coffs:coffs+nl)
                    call extend_gs_columns(pq(:,2:nl+1), pl(2:nl+1,1), pl(1,1), pq(:,1), ortherror)
                    if (ortherror==1) then
-                      error=1; return
+                      error=2; return
                    end if
                    if (roffs-2 >= 1) then
                       a(1:roffs-2,coffs)=0.0_dp
@@ -1046,6 +1097,19 @@ contains
   end subroutine d_extract_diagonals_bv
 
 ! complex BV
+
+  subroutine c_upper_to_bv(a,bv,tol,error)
+    complex(kind=dp), target, dimension(:,:), intent(inout) :: a
+    type(c_bv), intent(inout) :: bv
+    integer(kind=int32), intent(out) :: error
+    real(kind=dp), intent(in) :: tol
+    if (bv%n /= size(a,1) .or. bv%n /= size(a,2)) then
+       error=3; return
+    end if
+    call f_c_upper_to_bv(a,bv%n,bv%b, bv%lbw, bv%ubw, bv%lbwmax, bv%ubwmax, &
+         bv%numrotsv, bv%k1sv, bv%k2sv, bv%csv, bv%ssv, tol, error)
+  end subroutine c_upper_to_bv
+
 
   subroutine f_c_upper_to_bv(a, n, b, lbw, ubw, lbwmax, ubwmax, &
        numrots, k1s, k2s, cs, ss, tol, error)
@@ -1150,7 +1214,7 @@ contains
                    pl => a(roffs-1:roffs,coffs:coffs+1)
                    call extend_gs_columns(pq(:,2:2),pl(2:2,1), pl(1,1), pq(:,1), ortherror)
                    if (ortherror == 1) then
-                      error = 1; return
+                      error = 2; return
                    end if
                    if (n-k-3 >= 1) then
                       a(1:n-k-3,coffs)=(0.0_dp, 0.0_dp)
@@ -1223,7 +1287,7 @@ contains
                 pq(:,nl)=(0.0_dp, 0.0_dp); pq(n-k,nl)=(1.0_dp, 0.0_dp)
                 call extend_gs_columns(pq(:,1:nl-1), x(1:nl-1), x(nl), pq(:,nl), ortherror)
                 if (ortherror == 1) then
-                   error = 1; return
+                   error = 2; return
                 end if
                 do j=1,nl-1
                    rot=rgivens2(pq(n-k,j),pq(n-k,nl))
@@ -1238,7 +1302,7 @@ contains
                 pl => a(roffs:roffs+nl-1, coffs:coffs+nl-1)
                 call extend_gs_columns(pq(:,2:nl),pl(2:nl,1),pl(1,1),pq(:,1),ortherror)
                 if (ortherror == 1) then
-                   error = 1; return
+                   error = 2; return
                 end if
                 if (roffs>1) then
                    a(1:roffs-1,coffs)=(0.0_dp, 0.0_dp)
@@ -1258,7 +1322,7 @@ contains
                 pq(:,nl+1)=(0.0_dp, 0.0_dp); pq(n-k,nl+1)=(1.0_dp, 0.0_dp)
                 call extend_gs_columns(pq(:,1:nl),x(1:nl), x(nl+1),pq(:,nl+1),ortherror)
                 if (ortherror==1) then
-                   error = 1; return
+                   error = 2; return
                 end if
                 do j=1,nl
                    rot=rgivens2(pq(n-k,j),pq(n-k,nl+1))
@@ -1284,7 +1348,7 @@ contains
                    pl => a(roffs-1:roffs-1+nl,coffs:coffs+nl)
                    call extend_gs_columns(pq(:,2:nl+1), pl(2:nl+1,1), pl(1,1), pq(:,1), ortherror)
                    if (ortherror==1) then
-                      error=1; return
+                      error=2; return
                    end if
                    if (roffs-2 >= 1) then
                       a(1:roffs-2,coffs)=(0.0_dp, 0.0_dp)

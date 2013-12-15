@@ -3,17 +3,43 @@ use prec
 use shift
 use rotation
 use band
+use decomp_types
 implicit none
+
+interface ub_to_bv
+   module procedure d_ub_to_bv, c_ub_to_bv
+end interface ub_to_bv
 
 interface f_ub_to_bv
    module procedure f_d_ub_to_bv, f_c_ub_to_bv
 end interface f_ub_to_bv
+
+interface bv_to_ub
+   module procedure d_bv_to_ub, c_bv_to_ub
+end interface bv_to_ub
 
 interface f_bv_to_ub
    module procedure f_d_bv_to_ub, f_c_bv_to_ub
 end interface f_bv_to_ub
 
 contains
+
+  ! Errors:
+  ! 0: no error
+  ! 1: n<1
+  ! 3: ub%n /= bv%n
+
+  subroutine d_ub_to_bv(ub, bv, error)
+    type(d_ub) :: ub
+    type(d_bv) :: bv
+    integer(kind=int32), intent(out) :: error
+    if (ub%n /= bv%n) then
+       error = 3; return
+    end if
+    call f_d_ub_to_bv(ub%b, ub%n, ub%lbw, ub%ubw, ub%lbwmax, ub%ubwmax, ub%numrotsu, ub%j1su, ub%j2su, &
+         ub%csu, ub%ssu, bv%b, bv%lbwmax, bv%ubwmax, bv%numrotsv, bv%k1sv, bv%k2sv, bv%csv, bv%ssv, error)
+    bv%lbw=ub%lbw; bv%ubw=ub%ubw; bv%n=ub%n
+  end subroutine d_ub_to_bv
 
   subroutine f_d_ub_to_bv(b_ub, n, lbw, ubw, lbwmax_ub, ubwmax_ub, numrots_ub, j1s_ub, j2s_ub, cs_ub, ss_ub, &
        b_bv, lbwmax_bv, ubwmax_bv, numrots_bv, k1s_bv, k2s_bv, cs_bv, ss_bv, error)
@@ -120,6 +146,18 @@ contains
     end do
   end subroutine f_d_ub_to_bv
 
+  subroutine c_ub_to_bv(ub, bv, error)
+    type(c_ub) :: ub
+    type(c_bv) :: bv
+    integer(kind=int32), intent(out) :: error
+    if (ub%n /= bv%n) then
+       error = 3; return
+    end if
+    call f_c_ub_to_bv(ub%b, ub%n, ub%lbw, ub%ubw, ub%lbwmax, ub%ubwmax, ub%numrotsu, ub%j1su, ub%j2su, &
+         ub%csu, ub%ssu, bv%b, bv%lbwmax, bv%ubwmax, bv%numrotsv, bv%k1sv, bv%k2sv, bv%csv, bv%ssv, error)
+    bv%lbw=ub%lbw; bv%ubw=ub%ubw; bv%n=ub%n
+  end subroutine c_ub_to_bv
+
   subroutine f_c_ub_to_bv(b_ub, n, lbw, ubw, lbwmax_ub, ubwmax_ub, numrots_ub, j1s_ub, j2s_ub, cs_ub, ss_ub, &
        b_bv, lbwmax_bv, ubwmax_bv, numrots_bv, k1s_bv, k2s_bv, cs_bv, ss_bv, error)
     complex(kind=dp), dimension(lbwmax_ub+ubwmax_bv+1,n), intent(inout) :: b_ub
@@ -225,6 +263,19 @@ contains
     end do
   end subroutine f_c_ub_to_bv
 
+  subroutine d_bv_to_ub(bv, ub, error)
+    type(d_bv) :: bv
+    type(d_ub) :: ub
+    integer(kind=int32), intent(out) :: error
+    if (ub%n /= bv%n) then
+       error = 3; return
+    end if
+    call f_d_bv_to_ub(bv%b, bv%n, bv%lbw, bv%ubw, bv%lbwmax, bv%ubwmax, bv%numrotsv, bv%k1sv, bv%k2sv, &
+         bv%csv, bv%ssv, ub%b,  ub%lbwmax, ub%ubwmax, ub%numrotsu, ub%j1su, ub%j2su, &
+         ub%csu, ub%ssu, error)
+    ub%lbw=bv%lbw; ub%ubw=bv%ubw; ub%n=bv%n
+  end subroutine d_bv_to_ub
+
   subroutine f_d_bv_to_ub(b_bv, n, lbw, ubw, lbwmax_bv, ubwmax_bv, numrots_bv, k1s_bv, k2s_bv, cs_bv, ss_bv, &
        b_ub, lbwmax_ub, ubwmax_ub, numrots_ub, j1s_ub, j2s_ub, cs_ub, ss_ub, error)
     real(kind=dp), dimension(n,lbwmax_bv+ubwmax_bv+1), intent(inout) :: b_bv
@@ -329,6 +380,19 @@ contains
        end do
     end do
   end subroutine f_d_bv_to_ub
+
+  subroutine c_bv_to_ub(bv, ub, error)
+    type(c_bv) :: bv
+    type(c_ub) :: ub
+    integer(kind=int32), intent(out) :: error
+    if (ub%n /= bv%n) then
+       error = 3; return
+    end if
+    call f_c_bv_to_ub(bv%b, bv%n, bv%lbw, bv%ubw, bv%lbwmax, bv%ubwmax, bv%numrotsv, bv%k1sv, bv%k2sv, &
+         bv%csv, bv%ssv, ub%b,  ub%lbwmax, ub%ubwmax, ub%numrotsu, ub%j1su, ub%j2su, &
+         ub%csu, ub%ssu, error)
+    ub%lbw=bv%lbw; ub%ubw=bv%ubw; ub%n=bv%n
+  end subroutine c_bv_to_ub
 
   subroutine f_c_bv_to_ub(b_bv, n, lbw, ubw, lbwmax_bv, ubwmax_bv, numrots_bv, k1s_bv, k2s_bv, cs_bv, ss_bv, &
        b_ub, lbwmax_ub, ubwmax_ub, numrots_ub, j1s_ub, j2s_ub, cs_ub, ss_ub, error)
