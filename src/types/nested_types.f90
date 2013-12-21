@@ -1,4 +1,4 @@
-module decomp_types
+module nested_types
 use prec
 implicit none
 
@@ -142,4 +142,4 @@ subroutine c_deallocate_bv(bv)
   deallocate(bv%numrotsv)
 end subroutine c_deallocate_bv
 
-end module decomp_types
+end module nested_types

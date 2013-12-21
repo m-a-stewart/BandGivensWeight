@@ -1,12 +1,14 @@
 program test_convert
-  use upper_decomp
+  use general_ub
+  use general_bv
   use utility
   use assemble
-  use upper_convert
-  use band
-  use decomp_types
+  use convert_ub
+  use convert_bv
+  use band_types
+  use nested_types
   implicit none
-  integer(kind=int32), parameter :: n=500, rmax=4, ubwmax=rmax+1, lbw=3, lbwmax=3, mb=ubwmax+lbwmax+1, nb=mb
+  integer(kind=int32), parameter :: n=500, rmax=4, ubwmax=rmax+1, lbw=3, lbwmax=3
   real(kind=dp), parameter :: tol=1e-15
   real(kind=dp) :: t1, t2
   integer(kind=int32) :: error
@@ -47,10 +49,10 @@ program test_convert
      print *, "orthogonalization error in real UB"
   else
      call cpu_time(t1)
-     call ub_to_bv(ub_d, bv_d,error)
+     call convert_ub_to_bv(ub_d, bv_d,error)
      call cpu_time(t2)
      if (error > 0) then
-        print *, "Error in upper_ub_to_bv:", error
+        print *, "Error in convert_ub_to_bv:", error
      else
         call bv_to_upper(bv_d,a1,error)
         test_name = "Real UB to BV;"
@@ -65,10 +67,10 @@ program test_convert
      print *, "orthogonalization error in real BV"
   else
      call cpu_time(t1)
-     call bv_to_ub(bv_d, ub_d, error)
+     call convert_bv_to_ub(bv_d, ub_d, error)
      call cpu_time(t2)
      if (error > 0) then
-        print *, "Error in upper_bv_to_ub:", error
+        print *, "Error in upper_convert_bv_to_ub:", error
      else
         call ub_to_upper(ub_d,a1,error)
         test_name="Real BV to UB;"
@@ -89,10 +91,10 @@ program test_convert
      print *, "orthogonalization error in complex UB"
   else
      call cpu_time(t1)
-     call ub_to_bv(ub_c, bv_c, error)
+     call convert_ub_to_bv(ub_c, bv_c, error)
      call cpu_time(t2)
      if (error > 0) then
-        print *, "Error in upper_ub_to_bv:", error
+        print *, "Error in convert_ub_to_bv:", error
      else
         call bv_to_upper(bv_c, a1_c, error)
         test_name="Complex UB to BV;"
@@ -106,10 +108,10 @@ program test_convert
      print *, "orthogonalization error in complex BV"
   else
      call cpu_time(t1)
-     call bv_to_ub(bv_c, ub_c, error)
+     call convert_bv_to_ub(bv_c, ub_c, error)
      call cpu_time(t2)
      if (error > 0) then
-        print *, "Error in upper_bv_to_ub:", error
+        print *, "Error in convert_bv_to_ub:", error
      else
         call ub_to_upper(ub_c, a1_c, error)
         test_name="Complex BV to UB;"

@@ -1,8 +1,8 @@
 module assemble
 use prec
 use rotation
-use band
-use decomp_types
+use band_types
+use nested_types
 implicit none
 
 interface ub_to_upper

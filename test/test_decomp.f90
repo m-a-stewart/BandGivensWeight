@@ -1,10 +1,11 @@
 program test_decomp
-  use upper_decomp
+  use general_ub
+  use general_bv
   use utility
   use assemble
-  use decomp_types
+  use nested_types
   implicit none
-  integer(kind=int32), parameter :: n=10, rmax=2, ubwmax=rmax, lbw=1, lbwmax=lbw, mb=ubwmax+lbwmax+1, nb=mb
+  integer(kind=int32), parameter :: n=1000, rmax=2, ubwmax=rmax, lbw=1, lbwmax=lbw
   real(kind=dp), parameter :: tol=1e-14
   real(kind=dp) :: t1, t2
   integer(kind=int32) :: error

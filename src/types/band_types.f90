@@ -1,4 +1,4 @@
-module band
+module band_types
 use prec
 use rotation
 use utility
@@ -407,4 +407,4 @@ subroutine c_rotation_times_tbr(r,b,m,lbw,ubw,l,j)
   end do
 end subroutine c_rotation_times_tbr
 
-end module band
+end module band_types

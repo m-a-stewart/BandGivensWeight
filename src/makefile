@@ -1,29 +1,45 @@
-FC = gfortran
-OBJDIR = ../mod
-#LFLAGS = -warn all -O -pg
-#CFLAGS = -warn all -O -pg
-LFLAGS = 
-CFLAGS = -Wall -fbounds-check
-#CFLAGS = -Wall -O2
-#CFLAGS = -Wall -O -pg
+include ../include/vars.mk
+all : $(OBJS)
 
-$(OBJDIR)/%.o : %.f90
-	$(FC) $(CFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@
-
-all : $(OBJDIR)/upper_decomp.o $(OBJDIR)/assemble.o $(OBJDIR)/upper_convert.o
-
-$(OBJDIR)/upper_decomp.o : $(OBJDIR)/prec.o $(OBJDIR)/nullvec.o $(OBJDIR)/rotation.o $(OBJDIR)/shift.o \
-		           $(OBJDIR)/gs.o $(OBJDIR)/decomp_types.o
+$(OBJDIR)/general_ub.o : $(OBJDIR)/prec.o $(OBJDIR)/nullvec.o $(OBJDIR)/rotation.o $(OBJDIR)/shift.o \
+		           $(OBJDIR)/gs.o $(OBJDIR)/nested_types.o
+$(OBJDIR)/general_bv.o : $(OBJDIR)/prec.o $(OBJDIR)/nullvec.o $(OBJDIR)/rotation.o $(OBJDIR)/shift.o \
+		           $(OBJDIR)/gs.o $(OBJDIR)/nested_types.o
 $(OBJDIR)/nullvec.o : $(OBJDIR)/utility.o $(OBJDIR)/triangular.o $(OBJDIR)/prec.o
 $(OBJDIR)/utility.o : $(OBJDIR)/prec.o
 $(OBJDIR)/triangular.o : $(OBJDIR)/prec.o
 $(OBJDIR)/shift.o : $(OBJDIR)/prec.o
 $(OBJDIR)/rotation.o : $(OBJDIR)/prec.o
-$(OBJDIR)/decomp_types.o : $(OBJDIR)/prec.o
+$(OBJDIR)/nested_types.o : $(OBJDIR)/prec.o
 $(OBJDIR)/gs.o : $(OBJDIR)/prec.o $(OBJDIR)/utility.o
-$(OBJDIR)/assemble.o : $(OBJDIR)/prec.o $(OBJDIR)/rotation.o $(OBJDIR)/band.o $(OBJDIR)/decomp_types.o
-$(OBJDIR)/band.o : $(OBJDIR)/prec.o $(OBJDIR)/rotation.o
-$(OBJDIR)/upper_convert.o : $(OBJDIR)/prec.o $(OBJDIR)/band.o $(OBJDIR)/shift.o $(OBJDIR)/decomp_types.o
+$(OBJDIR)/assemble.o : $(OBJDIR)/prec.o $(OBJDIR)/rotation.o $(OBJDIR)/band_types.o $(OBJDIR)/nested_types.o
+$(OBJDIR)/band_types.o : $(OBJDIR)/prec.o $(OBJDIR)/rotation.o
+$(OBJDIR)/convert_ub.o : $(OBJDIR)/prec.o $(OBJDIR)/band_types.o $(OBJDIR)/shift.o $(OBJDIR)/nested_types.o
+$(OBJDIR)/convert_bv.o : $(OBJDIR)/prec.o $(OBJDIR)/band_types.o $(OBJDIR)/shift.o $(OBJDIR)/nested_types.o
+
+$(OBJDIR)/%.o : %.f90
+	$(FC) $(CFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@
+
+$(OBJDIR)/%.o : transforms/%.f90
+	$(FC) $(CFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@
+
+$(OBJDIR)/%.o : orth/%.f90
+	$(FC) $(CFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@
+
+$(OBJDIR)/%.o : misc/%.f90
+	$(FC) $(CFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@
+
+$(OBJDIR)/%.o : decomp/%.f90
+	$(FC) $(CFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@
+
+$(OBJDIR)/%.o : types/%.f90
+	$(FC) $(CFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@
+
+$(OBJDIR)/%.o : convert/%.f90
+	$(FC) $(CFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@
+
+$(OBJDIR)/%.o : assemble/%.f90
+	$(FC) $(CFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@
 
 clean :
 	rm $(OBJDIR)/*.o $(OBJDIR)/*.mod
