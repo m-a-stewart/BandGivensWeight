@@ -5,6 +5,10 @@ interface up_left_shift
    module procedure d_up_left_shift, c_up_left_shift
 end interface up_left_shift
 
+interface down_right_shift
+   module procedure d_down_right_shift, c_down_right_shift
+end interface down_right_shift
+
 interface right_shift
    module procedure d_right_shift, c_right_shift
 end interface right_shift
@@ -37,6 +41,21 @@ contains
     a(m,:)=0.0_dp
   end subroutine d_up_left_shift
 
+  subroutine d_down_right_shift(a)
+    real(kind=dp), dimension(:,:), intent(inout) :: a
+    integer(kind=int32) :: m,n,j,k
+    m=size(a,1)
+    n=size(a,2)
+    do j=m,2,-1
+       do k=n,2,-1
+          a(j,k) = a(j-1,k-1)
+       end do
+    end do
+    a(1,:)=0.0_dp
+    a(:,1)=0.0_dp
+  end subroutine d_down_right_shift
+
+
   subroutine d_left_shift(a)
     real(kind=dp), dimension(:,:), intent(inout) :: a
     integer(kind=int32) :: m,n,j,k
@@ -49,6 +68,8 @@ contains
     end do
     a(:,n)=0.0_dp
   end subroutine d_left_shift
+
+
 
   subroutine d_right_shift(a)
     real(kind=dp), dimension(:,:), intent(inout) :: a
@@ -105,6 +126,21 @@ contains
     a(:,n)=(0.0_dp, 0.0_dp)
     a(m,:)=(0.0_dp, 0.0_dp)
   end subroutine c_up_left_shift
+
+  subroutine c_down_right_shift(a)
+    complex(kind=dp), dimension(:,:), intent(inout) :: a
+    integer(kind=int32) :: m,n,j,k
+    m=size(a,1)
+    n=size(a,2)
+    do j=m,2,-1
+       do k=n,2,-1
+          a(j,k) = a(j-1,k-1)
+       end do
+    end do
+    a(1,:)=(0.0_dp,0.0_dp)
+    a(:,1)=(0.0_dp,0.0_dp)
+  end subroutine c_down_right_shift
+
 
   subroutine c_left_shift(a)
     complex(kind=dp), dimension(:,:), intent(inout) :: a

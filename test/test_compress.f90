@@ -1,15 +1,16 @@
-program test_convert
+program test_compress
   use general_ub
   use general_bv
   use utility
   use assemble
   use convert_ub
   use convert_bv
+  use compress_ub
   use band_types
   use nested_types
   implicit none
   integer(kind=int32), parameter :: n=10000, rmax=4, ubwmax=rmax+1, lbw=3, lbwmax=3
-  real(kind=dp), parameter :: tol=1e-14
+  real(kind=dp), parameter :: tol=1e-14, tol1=1e-14, tol2=1e-10
   real(kind=dp) :: t1, t2
   integer(kind=int32) :: error
   character(len=*), parameter :: fmt="(A30, 'Time: ',ES8.2,', ubw: ',I3,', error: ',ES8.2)"
@@ -40,49 +41,33 @@ program test_convert
   call random_number(u)
   call random_number(v)
   call random_number(d)
+  u(:,rmax)=0.1*tol2*u(:,rmax)
   u0=u; v0=v
   ! test one
   call d_assemble_a(a,u,v,d,lbw)
   a0=a
-  call upper_to_ub(a,ub_d,tol,error)
+  call upper_to_ub(a,ub_d,tol1,error)
+  print *, ub_d%ubw
   if (error == 1) then
      print *, "orthogonalization error in real UB"
   else
      call cpu_time(t1)
-     call convert_ub_to_bv(ub_d, bv_d,error)
+     call compress_ub_to_bv(ub_d, bv_d,tol2,tol2,error)
      call cpu_time(t2)
      if (error > 0) then
-        print *, "Error in convert_ub_to_bv:", error
+        print *, "Error in compress_ub_to_bv:", error
      else
         call bv_to_upper(bv_d,a1,error)
         test_name = "Real UB to BV;"
         write (*,fmt) test_name, t2-t1, bv_d%ubw, maxabs(a1-a0)
      end if
   end if
-
-  ! bv to ub
-  a=a0
-  call upper_to_bv(a,bv_d,tol,error)
-  if (error == 1) then
-     print *, "orthogonalization error in real BV"
-  else
-     call cpu_time(t1)
-     call convert_bv_to_ub(bv_d, ub_d, error)
-     call cpu_time(t2)
-     if (error > 0) then
-        print *, "Error in upper_convert_bv_to_ub:", error
-     else
-        call ub_to_upper(ub_d,a1,error)
-        test_name="Real BV to UB;"
-        write (*,fmt) test_name, t2-t1, ub_d%ubw, maxabs(a1-a0)/maxabs(a0)
-     end if
-  end if
-
-! complex
-
+  !
+  ! complex
   call random_complex(u_c)
   call random_complex(v_c)
   call random_complex(d_c)
+  u_c(:,rmax)=0.1*tol2*u_c(:,rmax)
   u0_c=u_c; v0_c=v_c
   call c_assemble_a(a_c, u_c, v_c, d_c, lbw)
   a0_c=a_c
@@ -91,7 +76,7 @@ program test_convert
      print *, "orthogonalization error in complex UB"
   else
      call cpu_time(t1)
-     call convert_ub_to_bv(ub_c, bv_c, error)
+     call compress_ub_to_bv(ub_c, bv_c, tol2, tol2, error)
      call cpu_time(t2)
      if (error > 0) then
         print *, "Error in convert_ub_to_bv:", error
@@ -101,24 +86,6 @@ program test_convert
         write (*,fmt) test_name, t2-t1, bv_c%ubw, maxabs(a1_c-a0_c)/maxabs(a0_c)
      end if
   end if
-  ! bv to ub
-  a_c=a0_c
-  call upper_to_bv(a_c, bv_c, tol, error)
-  if (error == 1) then
-     print *, "orthogonalization error in complex BV"
-  else
-     call cpu_time(t1)
-     call convert_bv_to_ub(bv_c, ub_c, error)
-     call cpu_time(t2)
-     if (error > 0) then
-        print *, "Error in convert_bv_to_ub:", error
-     else
-        call ub_to_upper(ub_c, a1_c, error)
-        test_name="Complex BV to UB;"
-        write (*,fmt) test_name, t2-t1, ub_c%ubw, maxabs(a1_c-a0_c)/maxabs(a0_c)
-     end if
-  end if
-  print *
 
 contains
   
@@ -160,4 +127,4 @@ contains
     end do
   end subroutine c_assemble_a
 
-end program test_convert
+end program test_compress

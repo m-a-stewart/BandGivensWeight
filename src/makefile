@@ -14,8 +14,12 @@ $(OBJDIR)/nested_types.o : $(OBJDIR)/prec.o
 $(OBJDIR)/gs.o : $(OBJDIR)/prec.o $(OBJDIR)/utility.o
 $(OBJDIR)/assemble.o : $(OBJDIR)/prec.o $(OBJDIR)/rotation.o $(OBJDIR)/band_types.o $(OBJDIR)/nested_types.o
 $(OBJDIR)/band_types.o : $(OBJDIR)/prec.o $(OBJDIR)/rotation.o
-$(OBJDIR)/convert_ub.o : $(OBJDIR)/prec.o $(OBJDIR)/band_types.o $(OBJDIR)/shift.o $(OBJDIR)/nested_types.o
-$(OBJDIR)/convert_bv.o : $(OBJDIR)/prec.o $(OBJDIR)/band_types.o $(OBJDIR)/shift.o $(OBJDIR)/nested_types.o
+$(OBJDIR)/convert_ub.o : $(OBJDIR)/prec.o $(OBJDIR)/band_types.o $(OBJDIR)/shift.o $(OBJDIR)/nested_types.o \
+                           $(OBJDIR)/rotation.o
+$(OBJDIR)/convert_bv.o : $(OBJDIR)/prec.o $(OBJDIR)/band_types.o $(OBJDIR)/shift.o $(OBJDIR)/nested_types.o \
+                           $(OBJDIR)/rotation.o
+$(OBJDIR)/compress_ub.o : $(OBJDIR)/prec.o $(OBJDIR)/band_types.o $(OBJDIR)/shift.o $(OBJDIR)/nested_types.o \
+                           $(OBJDIR)/rotation.o
 
 $(OBJDIR)/%.o : %.f90
 	$(FC) $(CFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@
@@ -37,6 +41,10 @@ $(OBJDIR)/%.o : types/%.f90
 
 $(OBJDIR)/%.o : convert/%.f90
 	$(FC) $(CFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@
+
+$(OBJDIR)/%.o : compress/%.f90
+	$(FC) $(CFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@
+
 
 $(OBJDIR)/%.o : assemble/%.f90
 	$(FC) $(CFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@

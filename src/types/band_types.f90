@@ -30,6 +30,16 @@ interface br_to_general
    module procedure d_br_to_general, c_br_to_general
 end interface br_to_general
 
+! submatrices
+
+interface submatrix_bc
+   module procedure d_submatrix_bc, c_submatrix_bc
+end interface submatrix_bc
+
+interface submatrix_br
+   module procedure d_submatrix_br, c_submatrix_br
+end interface submatrix_br
+
 ! printing
 
 interface print_bc
@@ -203,6 +213,70 @@ subroutine c_br_to_general(br,lbw,ubw,a)
      end do
   end do
 end subroutine c_br_to_general
+
+! Submatrix
+
+subroutine d_submatrix_bc(bc,lbw,ubw,j1,j2,k1,k2,a)
+  real(kind=dp), dimension(:,:), intent(in) :: bc
+  integer(kind=int32), intent(in) :: ubw, lbw,j1,j2,k1,k2
+  real(kind=dp), dimension(:,:), intent(out) :: a
+  ! 
+  integer(kind=int32) :: n, k, j
+  a=0.0_dp
+  n=size(bc,2)
+  do k=k1,k2
+     do j=max(k-ubw,j1),min(k+lbw,j2)
+        a(j-j1+1,k-k1+1)=bc(j-k+ubw+1,k)
+     end do
+  end do
+end subroutine d_submatrix_bc
+
+subroutine c_submatrix_bc(bc,lbw,ubw,j1,j2,k1,k2,a)
+  complex(kind=dp), dimension(:,:), intent(in) :: bc
+  integer(kind=int32), intent(in) :: ubw, lbw,j1,j2,k1,k2
+  complex(kind=dp), dimension(:,:), intent(out) :: a
+  ! 
+  integer(kind=int32) :: n, k, j
+  a=(0.0_dp,0.0_dp)
+  n=size(bc,2)
+  do k=k1,k2
+     do j=max(k-ubw,j1),min(k+lbw,j2)
+        a(j-j1+1,k-k1+1)=bc(j-k+ubw+1,k)
+     end do
+  end do
+end subroutine c_submatrix_bc
+
+subroutine d_submatrix_br(br,lbw,ubw,j1,j2,k1,k2,a)
+  real(kind=dp), dimension(:,:), intent(in) :: br
+  integer(kind=int32), intent(in) :: ubw, lbw,j1,j2,k1,k2
+  real(kind=dp), dimension(:,:), intent(out) :: a
+  ! 
+  integer(kind=int32) :: n, k, j
+  a=0.0_dp
+  n=size(br,2)
+  do j=j1,j2
+     do k=max(j-lbw,k1),min(j+ubw,k2)
+        a(j-j1+1,k-k1+1)=br(j,k-j+lbw+1)
+     end do
+  end do
+end subroutine d_submatrix_br
+
+subroutine c_submatrix_br(br,lbw,ubw,j1,j2,k1,k2,a)
+  complex(kind=dp), dimension(:,:), intent(in) :: br
+  integer(kind=int32), intent(in) :: ubw, lbw,j1,j2,k1,k2
+  complex(kind=dp), dimension(:,:), intent(out) :: a
+  ! 
+  integer(kind=int32) :: n, k, j
+  a=(0.0_dp,0.0_dp)
+  n=size(br,2)
+  do j=j1,j2
+     do k=max(j-lbw,k1),min(j+ubw,k2)
+        a(j-j1+1,k-k1+1)=br(j,k-j+lbw+1)
+     end do
+  end do
+end subroutine c_submatrix_br
+
+
 
 ! printing
 

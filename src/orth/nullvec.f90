@@ -15,8 +15,8 @@ end interface lower_right_nullvec
 contains
 
   ! null vector of a lower triangular matrix.
-  ! error: 0 no error
-  !        1 no null vector within tolerance
+  ! error: >= 0 no error
+  !        -1 no null vector within tolerance
   subroutine f_d_lower_left_nullvec(x,l,tol,maxit, error)
     real(kind=dp), dimension(:,:), intent(in) :: l
     real(kind=dp), dimension(:), intent(out) :: x

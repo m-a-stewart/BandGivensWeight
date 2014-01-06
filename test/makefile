@@ -1,8 +1,9 @@
 include ../include/vars.mk
 
-run_test : test_decomp test_convert
-	./test_decomp
-	./test_convert
+run_test : test_compress #test_decomp test_convert 
+#	./test_decomp
+#	./test_convert
+	./test_compress
 
 test_decomp : $(OBJDIR)/test_decomp.o $(OBJS)
 	$(FC) $(LFLAGS) $(PROFLFLAGS) $(OBJDIR)/test_decomp.o $(OBJS) -o test_decomp
@@ -10,9 +11,15 @@ test_decomp : $(OBJDIR)/test_decomp.o $(OBJS)
 test_convert : $(OBJDIR)/test_convert.o $(OBJS)
 	$(FC) $(LFLAGS) $(PROFLFLAGS) $(OBJDIR)/test_convert.o $(OBJS) -o test_convert
 
-$(OBJDIR)/test_decomp.o : $(OBJDIR)/decomp.o
+test_compress : $(OBJDIR)/test_compress.o $(OBJS)
+	$(FC) $(LFLAGS) $(PROFLFLAGS) $(OBJDIR)/test_compress.o $(OBJS) -o test_compress
 
-$(OBJDIR)/decomp.o : force_look
+
+$(OBJDIR)/test_decomp.o : $(OBJDIR)/prec.o
+$(OBJDIR)/test_compress.o : $(OBJDIR)/prec.o
+$(OBJDIR)/test_convert.o : $(OBJDIR)/prec.o
+
+$(OBJDIR)/prec.o : force_look
 	cd ../src; $(MAKE)
 
 $(OBJDIR)/%.o : %.f90
@@ -23,7 +30,7 @@ force_look :
 	true
 
 clean :
-	rm $(OBJDIR)/*.o $(OBJDIR)/*.mod test_decomp test_convert
+	rm $(OBJDIR)/*.o $(OBJDIR)/*.mod test_decomp test_convert test_compress
 
 prof : run_test
 	gprof -c -q test_decomp gmon.out | less

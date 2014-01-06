@@ -185,7 +185,7 @@ contains
                 end do
                 pl(nl,nl)=0.0_dp
              end if
-             do j=nl-1,1,-1 ! compress (TODO: this is no necessary if zero is in pl(1,1))
+             do j=nl-1,1,-1 ! compress (TODO: this is not necessary if zero is in pl(1,1))
                 rot=lgivens(pl(j,j),pl(nl,j))
                 call rotation_times_general(trp_rot(rot),pl(:,1:j),j,nl)
                 call general_times_rotation(pq,rot,j,nl)
