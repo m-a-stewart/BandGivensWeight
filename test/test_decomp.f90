@@ -4,9 +4,8 @@ program test_decomp
   use utility
   use assemble
   use nested_types
+  use test_data
   implicit none
-  integer(kind=int32), parameter :: n=1000, rmax=2, ubwmax=rmax, lbw=1, lbwmax=lbw
-  real(kind=dp), parameter :: tol=1e-14
   real(kind=dp) :: t1, t2
   integer(kind=int32) :: error
   character(len=*), parameter :: fmt="(A30, 'Time: ',ES8.2,', ubw: ',I3,', error: ',ES8.2)"

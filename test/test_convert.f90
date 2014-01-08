@@ -7,9 +7,9 @@ program test_convert
   use convert_bv
   use band_types
   use nested_types
+  use test_data
   implicit none
-  integer(kind=int32), parameter :: n=10000, rmax=4, ubwmax=rmax+1, lbw=3, lbwmax=3
-  real(kind=dp), parameter :: tol=1e-14
+
   real(kind=dp) :: t1, t2
   integer(kind=int32) :: error
   character(len=*), parameter :: fmt="(A30, 'Time: ',ES8.2,', ubw: ',I3,', error: ',ES8.2)"

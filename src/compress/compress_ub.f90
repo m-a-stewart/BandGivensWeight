@@ -195,7 +195,7 @@ contains
        end if
        ! include an extra row in L in anticipation of including column n-j
        roffs=roffs-1
-       ! Apply u_{n-j}
+       ! Apply u_{n-j}: This is the biggest cost.
        do k=1,numrots_ub(n-j)
           rot%cosine=cs_ub(k,n-j); rot%sine=ss_ub(k,n-j)
           call rotation_times_general(rot,q,j1s_ub(k,n-j)-roffs,j2s_ub(k,n-j)-roffs)

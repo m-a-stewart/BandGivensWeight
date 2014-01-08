@@ -22,32 +22,32 @@ $(OBJDIR)/compress_ub.o : $(OBJDIR)/prec.o $(OBJDIR)/band_types.o $(OBJDIR)/shif
                            $(OBJDIR)/rotation.o
 
 $(OBJDIR)/%.o : %.f90
-	$(FC) $(CFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@
+	$(FC) $(CFLAGS) $(PROFCFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@
 
 $(OBJDIR)/%.o : transforms/%.f90
-	$(FC) $(CFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@
+	$(FC) $(CFLAGS) $(PROFCFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@
 
 $(OBJDIR)/%.o : orth/%.f90
-	$(FC) $(CFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@
+	$(FC) $(CFLAGS) $(PROFCFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@
 
 $(OBJDIR)/%.o : misc/%.f90
-	$(FC) $(CFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@
+	$(FC) $(CFLAGS) $(PROFCFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@
 
 $(OBJDIR)/%.o : decomp/%.f90
-	$(FC) $(CFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@
+	$(FC) $(CFLAGS) $(PROFCFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@
 
 $(OBJDIR)/%.o : types/%.f90
-	$(FC) $(CFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@
+	$(FC) $(CFLAGS) $(PROFCFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@
 
 $(OBJDIR)/%.o : convert/%.f90
-	$(FC) $(CFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@
+	$(FC) $(CFLAGS) $(PROFCFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@
 
 $(OBJDIR)/%.o : compress/%.f90
-	$(FC) $(CFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@
+	$(FC) $(CFLAGS) $(PROFCFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@
 
 
 $(OBJDIR)/%.o : assemble/%.f90
-	$(FC) $(CFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@
+	$(FC) $(CFLAGS) $(PROFCFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@
 
 clean :
 	rm $(OBJDIR)/*.o $(OBJDIR)/*.mod

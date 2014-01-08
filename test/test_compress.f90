@@ -8,9 +8,8 @@ program test_compress
   use compress_ub
   use band_types
   use nested_types
+  use test_data
   implicit none
-  integer(kind=int32), parameter :: n=10000, rmax=4, ubwmax=rmax+1, lbw=3, lbwmax=3
-  real(kind=dp), parameter :: tol=1e-14, tol1=1e-14, tol2=1e-10
   real(kind=dp) :: t1, t2
   integer(kind=int32) :: error
   character(len=*), parameter :: fmt="(A30, 'Time: ',ES8.2,', ubw: ',I3,', error: ',ES8.2)"
@@ -64,28 +63,28 @@ program test_compress
   end if
   !
   ! complex
-  call random_complex(u_c)
-  call random_complex(v_c)
-  call random_complex(d_c)
-  u_c(:,rmax)=0.1*tol2*u_c(:,rmax)
-  u0_c=u_c; v0_c=v_c
-  call c_assemble_a(a_c, u_c, v_c, d_c, lbw)
-  a0_c=a_c
-  call upper_to_ub(a_c, ub_c, tol, error)
-  if (error == 1) then
-     print *, "orthogonalization error in complex UB"
-  else
-     call cpu_time(t1)
-     call compress_ub_to_bv(ub_c, bv_c, tol2, tol2, error)
-     call cpu_time(t2)
-     if (error > 0) then
-        print *, "Error in convert_ub_to_bv:", error
-     else
-        call bv_to_upper(bv_c, a1_c, error)
-        test_name="Complex UB to BV;"
-        write (*,fmt) test_name, t2-t1, bv_c%ubw, maxabs(a1_c-a0_c)/maxabs(a0_c)
-     end if
-  end if
+  ! call random_complex(u_c)
+  ! call random_complex(v_c)
+  ! call random_complex(d_c)
+  ! u_c(:,rmax)=0.1*tol2*u_c(:,rmax)
+  ! u0_c=u_c; v0_c=v_c
+  ! call c_assemble_a(a_c, u_c, v_c, d_c, lbw)
+  ! a0_c=a_c
+  ! call upper_to_ub(a_c, ub_c, tol, error)
+  ! if (error == 1) then
+  !    print *, "orthogonalization error in complex UB"
+  ! else
+  !    call cpu_time(t1)
+  !    call compress_ub_to_bv(ub_c, bv_c, tol2, tol2, error)
+  !    call cpu_time(t2)
+  !    if (error > 0) then
+  !       print *, "Error in convert_ub_to_bv:", error
+  !    else
+  !       call bv_to_upper(bv_c, a1_c, error)
+  !       test_name="Complex UB to BV;"
+  !       write (*,fmt) test_name, t2-t1, bv_c%ubw, maxabs(a1_c-a0_c)/maxabs(a0_c)
+  !    end if
+  ! end if
 
 contains
   
