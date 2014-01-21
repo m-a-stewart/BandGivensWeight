@@ -1,4 +1,4 @@
-module compress_bv
+module compressions_bv_to_ub
 use prec
 use shift
 use rotation
@@ -616,4 +616,4 @@ contains
     end do
   end subroutine f_c_compress_bv_to_ub_1
 
-end module compress_bv
+end module compressions_bv_to_ub

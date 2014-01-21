@@ -1,4 +1,4 @@
-module compress_ub
+module compressions_ub_to_bv
 use prec
 use shift
 use rotation
@@ -18,6 +18,8 @@ interface f_compress_ub_to_bv_1
 end interface f_compress_ub_to_bv_1
 
 contains
+
+  ! Rank one compression.
 
   ! Errors:
   ! 0: no error
@@ -638,4 +640,4 @@ contains
   end subroutine f_c_compress_ub_to_bv_1
 
 
-end module compress_ub
+end module compressions_ub_to_bv

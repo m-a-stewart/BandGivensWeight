@@ -3,8 +3,8 @@ program test_convert
   use general_bv
   use utility
   use assemble
-  use convert_ub
-  use convert_bv
+  use conversions_ub_to_bv
+  use conversions_bv_to_ub
   use band_types
   use nested_types
   use test_data

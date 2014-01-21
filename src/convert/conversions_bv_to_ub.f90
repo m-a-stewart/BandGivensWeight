@@ -1,4 +1,4 @@
-module convert_bv
+module conversions_bv_to_ub
 use prec
 use shift
 use rotation
@@ -256,4 +256,4 @@ contains
     end do
   end subroutine f_c_convert_bv_to_ub
 
-end module convert_bv
+end module conversions_bv_to_ub
