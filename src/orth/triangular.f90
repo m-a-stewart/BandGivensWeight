@@ -204,7 +204,7 @@ contains
     n=min(size(a,1), size(a,2))
     d=1
     do j=1,n
-       if (abs(a(j,j)) < tol) then
+       if (abs(a(j,j)) <= tol) then
           return
        end if
        d=d+1
@@ -219,7 +219,7 @@ contains
     n=min(size(a,1), size(a,2))
     d=1
     do j=1,n
-       if (abs(a(j,j)) < tol) then
+       if (abs(a(j,j)) <= tol) then
           return
        end if
        d=d+1
@@ -234,7 +234,7 @@ contains
     n=min(size(a,1), size(a,2))
     d=n
     do j=n,1,-1
-       if (abs(a(j,j)) < tol) then
+       if (abs(a(j,j)) <= tol) then
           return
        end if
        d=d-1
@@ -249,7 +249,7 @@ contains
     n=min(size(a,1), size(a,2))
     d=n
     do j=n,1,-1
-       if (abs(a(j,j)) < tol) then
+       if (abs(a(j,j)) <= tol) then
           return
        end if
        d=d-1

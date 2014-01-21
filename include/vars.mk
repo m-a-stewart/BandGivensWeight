@@ -10,4 +10,4 @@ CFLAGS = -Wall -O2 -mcmodel=medium
 OBJS =  $(OBJDIR)/utility.o $(OBJDIR)/shift.o $(OBJDIR)/nullvec.o $(OBJDIR)/prec.o \
 	$(OBJDIR)/rotation.o $(OBJDIR)/general_ub.o $(OBJDIR)/general_bv.o $(OBJDIR)/triangular.o \
 	$(OBJDIR)/gs.o $(OBJDIR)/assemble.o $(OBJDIR)/band_types.o $(OBJDIR)/convert_ub.o \
-	$(OBJDIR)/convert_bv.o $(OBJDIR)/nested_types.o $(OBJDIR)/compress_ub.o
+	$(OBJDIR)/convert_bv.o $(OBJDIR)/nested_types.o $(OBJDIR)/compress_ub.o $(OBJDIR)/compress_bv.o

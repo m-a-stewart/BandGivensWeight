@@ -17,6 +17,7 @@ contains
   ! null vector of a lower triangular matrix.
   ! error: >= 0 no error
   !        -1 no null vector within tolerance
+  ! If tol=0 try to get the best possible null vector.
   subroutine f_d_lower_left_nullvec(x,l,tol,maxit, error)
     real(kind=dp), dimension(:,:), intent(in) :: l
     real(kind=dp), dimension(:), intent(out) :: x
@@ -78,6 +79,9 @@ contains
           x=x/nrmx
           k=k+1
        end do
+       if (tol==0.0_dp) then
+          error=0
+       end if
     end if
   end subroutine f_d_lower_left_nullvec
 
@@ -143,6 +147,9 @@ contains
           x=x/nrmx
           k=k+1
        end do
+       if (tol==0.0_dp) then
+          error=0
+       end if
     end if
   end subroutine f_c_lower_left_nullvec
 
@@ -210,6 +217,9 @@ contains
           x=x/nrmx
           k=k+1
        end do
+       if (tol==0.0_dp) then
+          error=0
+       end if
     end if
   end subroutine f_d_lower_right_nullvec
 
@@ -276,6 +286,9 @@ contains
           x=x/nrmx
           k=k+1
        end do
+       if (tol==0.0_dp) then
+          error=0
+       end if
     end if
   end subroutine f_c_lower_right_nullvec
 

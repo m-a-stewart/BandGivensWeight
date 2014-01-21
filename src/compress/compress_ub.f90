@@ -9,13 +9,13 @@ implicit none
 
 integer(kind=int32), private, parameter :: nullmaxits=5
 
-interface compress_ub_to_bv
-   module procedure d_compress_ub_to_bv, c_compress_ub_to_bv
-end interface compress_ub_to_bv
+interface compress_ub_to_bv_1
+   module procedure d_compress_ub_to_bv_1, c_compress_ub_to_bv_1
+end interface compress_ub_to_bv_1
 
-interface f_compress_ub_to_bv
-   module procedure f_d_compress_ub_to_bv, f_c_compress_ub_to_bv
-end interface f_compress_ub_to_bv
+interface f_compress_ub_to_bv_1
+   module procedure f_d_compress_ub_to_bv_1, f_c_compress_ub_to_bv_1
+end interface f_compress_ub_to_bv_1
 
 contains
 
@@ -24,8 +24,15 @@ contains
   ! 1: n<1
   ! 3: ub%n /= bv%n
   ! 4: compression error, failed to get a null vector at some point.
-
-  subroutine d_compress_ub_to_bv(ub, bv, told, tol, error)
+  ! 
+  ! told governs whether a diagonal of L is considered small enough to move to the
+  ! lower right corner of L.  If this tolerance is not met, the algorithm looks
+  ! for a null vector.  If both are zero the result is a forced compression.
+  ! The algorithm will use the maximum number of iterations to get the best
+  ! null vector possible and truncate whatever appears in the lower right corner
+  ! of L, whether it is small or not.
+  !
+  subroutine d_compress_ub_to_bv_1(ub, bv, told, tol, error)
     type(d_ub) :: ub
     type(d_bv) :: bv
     integer(kind=int32), intent(out) :: error
@@ -33,15 +40,15 @@ contains
     if (ub%n /= bv%n) then
        error = 3; return
     end if
-    call f_d_compress_ub_to_bv(ub%b, ub%n, ub%lbw, ub%ubw, ub%lbwmax, ub%ubwmax, ub%numrotsu, ub%j1su, ub%j2su, &
+    call f_d_compress_ub_to_bv_1(ub%b, ub%n, ub%lbw, ub%ubw, ub%lbwmax, ub%ubwmax, ub%numrotsu, ub%j1su, ub%j2su, &
          ub%csu, ub%ssu, bv%b, bv%lbwmax, bv%ubwmax, bv%numrotsv, bv%k1sv, bv%k2sv, bv%csv, bv%ssv, told, tol, &
          error)
     if (error == 0) then
        bv%lbw=ub%lbw; bv%ubw=ub%ubw-1; bv%n=ub%n
     end if
-  end subroutine d_compress_ub_to_bv
+  end subroutine d_compress_ub_to_bv_1
 
-  subroutine f_d_compress_ub_to_bv(b_ub, n, lbw, ubw, lbwmax_ub, ubwmax_ub, numrots_ub, &
+  subroutine f_d_compress_ub_to_bv_1(b_ub, n, lbw, ubw, lbwmax_ub, ubwmax_ub, numrots_ub, &
        j1s_ub, j2s_ub, cs_ub, ss_ub, &
        b_bv, lbwmax_bv, ubwmax_bv, numrots_bv, k1s_bv, k2s_bv, cs_bv, ss_bv, told, tol, error)
     real(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(inout) :: b_ub
@@ -134,7 +141,7 @@ contains
        ! B(n-k-ubw+1:n-k,n-k+1:n-k+ubw) representing the L factor
        ! in a QL decomposition.
        !
-       ! Try to find a small diagonal of L.
+       ! Try to find a small diagonal of L and move it to the lower right.
        roffs=n-j-ubw; coffs=n-j
        mindiag=abs(get_el_bc(b_ub,ubw1,roffs+1,coffs+1))
        minindex=1
@@ -237,7 +244,7 @@ contains
     call f_d_lower_right_nullvec(x(1:ubw),l(1:ubw,1:ubw),tol*nrma,nullmaxits, nullerr)
     if (nullerr >= 0) then ! nullvector found
        ! Introduce a zero while preserving the QL factorization.
-       numrots_bv(j)=ubw-1
+       numrots_bv(n-ubw)=ubw-1
        do k=1,ubw-1
           rot=lgivens2(x(k),x(k+1))
           call rotation_times_general(trp_rot(rot),x,k,k+1)
@@ -307,6 +314,7 @@ contains
           call general_times_rotation(pq,rot,k,k+1)
           call rotation_times_tbc(trp_rot(rot),b_ub,n,lbw1,ubw1,coffs-1,k)
        end do
+       ! TODO: double check this.
        do k=1,ubw
           tmp=get_el_bc(b_ub,ubw1,coffs,coffs+k-1)
           call set_el_bc(b_ub,ubw1,coffs,coffs+k-1,pq(coffs,coffs)*tmp)
@@ -324,9 +332,9 @@ contains
           b_bv(j,d)=b_ub(ubw+lbw+1-d,j+d-lbw-1)
        end do
     end do
-  end subroutine f_d_compress_ub_to_bv
+  end subroutine f_d_compress_ub_to_bv_1
 
-  subroutine c_compress_ub_to_bv(ub, bv, told, tol, error)
+  subroutine c_compress_ub_to_bv_1(ub, bv, told, tol, error)
     type(c_ub) :: ub
     type(c_bv) :: bv
     integer(kind=int32), intent(out) :: error
@@ -334,15 +342,15 @@ contains
     if (ub%n /= bv%n) then
        error = 3; return
     end if
-    call f_c_compress_ub_to_bv(ub%b, ub%n, ub%lbw, ub%ubw, ub%lbwmax, ub%ubwmax, ub%numrotsu, ub%j1su, ub%j2su, &
+    call f_c_compress_ub_to_bv_1(ub%b, ub%n, ub%lbw, ub%ubw, ub%lbwmax, ub%ubwmax, ub%numrotsu, ub%j1su, ub%j2su, &
          ub%csu, ub%ssu, bv%b, bv%lbwmax, bv%ubwmax, bv%numrotsv, bv%k1sv, bv%k2sv, bv%csv, bv%ssv, told, tol, &
          error)
     if (error == 0) then
        bv%lbw=ub%lbw; bv%ubw=ub%ubw-1; bv%n=ub%n
     end if
-  end subroutine c_compress_ub_to_bv
+  end subroutine c_compress_ub_to_bv_1
 
-  subroutine f_c_compress_ub_to_bv(b_ub, n, lbw, ubw, lbwmax_ub, ubwmax_ub, numrots_ub, &
+  subroutine f_c_compress_ub_to_bv_1(b_ub, n, lbw, ubw, lbwmax_ub, ubwmax_ub, numrots_ub, &
        j1s_ub, j2s_ub, cs_ub, ss_ub, &
        b_bv, lbwmax_bv, ubwmax_bv, numrots_bv, k1s_bv, k2s_bv, cs_bv, ss_bv, told, tol, error)
     complex(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(inout) :: b_ub
@@ -627,7 +635,7 @@ contains
           b_bv(j,d)=b_ub(ubw+lbw+1-d,j+d-lbw-1)
        end do
     end do
-  end subroutine f_c_compress_ub_to_bv
+  end subroutine f_c_compress_ub_to_bv_1
 
 
 end module compress_ub
