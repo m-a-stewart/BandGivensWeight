@@ -35,15 +35,15 @@ contains
        error=3; return
     end if
     call f_d_upper_to_ub(a,ub%n,ub%b, lbw, ub%ubw, ub%lbwmax, ub%ubwmax, &
-         ub%numrotsu, ub%j1su, ub%j2su, ub%csu, ub%ssu, tol, error)
+         ub%numrotsu, ub%jsu, ub%csu, ub%ssu, tol, error)
     ub%lbw=lbw
   end subroutine d_upper_to_ub
 
   ! Updating procedure to compute a UB factorization from a general matrix.
   subroutine f_d_upper_to_ub(a, n, b, lbw, ubw, lbwmax, ubwmax, &
-       numrots, j1s, j2s, cs, ss, tol, error)
+       numrots, js, cs, ss, tol, error)
     real(kind=dp), target, dimension(n,n), intent(inout) :: a
-    integer(kind=int32), dimension(ubwmax,n), intent(out) :: j1s, j2s
+    integer(kind=int32), dimension(ubwmax,n), intent(out) :: js
     real(kind=dp), dimension(ubwmax,n), intent(out) :: cs, ss
     real(kind=dp), dimension(ubwmax+lbwmax+1,n), intent(out) :: b
     real(kind=dp), intent(in) :: tol
@@ -60,7 +60,7 @@ contains
     type(d_rotation) :: rot
     !
     q=0.0_dp; numrots=0;
-    ss=0.0_dp; cs=0.0_dp; j2s=0; j1s=0
+    ss=0.0_dp; cs=0.0_dp; js=0
     ubw=0; ubws=0
     error = 0
     nrma = maxabs(a)*sqrt(real(n))
@@ -171,7 +171,7 @@ contains
                    call rotation_times_general(trp_rot(rot), pl(:,1:j), j,j+1)
                    pl(j,j)=0.0_dp
                    cs(j,k)=rot%cosine; ss(j,k)=rot%sine
-                   j1s(j,k)=roffs+j; j2s(j,k)=roffs+j+1
+                   js(j,k)=roffs+j
                 end do
              else ! nullerr=0
                 numrots(k)=nl-1;
@@ -180,7 +180,7 @@ contains
                    call general_times_rotation(x,rot,j-1,j)
                    call rotation_times_general(trp_rot(rot), pl,j-1,j)
                    cs(j-1,k)=rot%cosine; ss(j-1,k)=rot%sine
-                   j1s(j-1,k)=roffs+j-1; j2s(j-1,k)=roffs+j
+                   js(j-1,k)=roffs+j-1
                    rot=rgivens(pl(j-1,j-1),pl(j-1,j))
                    call general_times_rotation(pl,rot,j-1,j)
                    call rotation_times_general(trp_rot(rot),pq,j-1,j)
@@ -318,7 +318,7 @@ contains
                 rot=lgivens2(pl(j,j+1),pl(j+1,j+1))
                 call rotation_times_general(trp_rot(rot),pl(:,2:nl),j,j+1)
                 cs(j,k+i)=rot%cosine; ss(j,k+i)=rot%sine
-                j1s(j,k+i)=roffs+j; j2s(j,k+i)=roffs+j+1
+                js(j,k+i)=roffs+j
                 pl(j,j+1)=0.0_dp
              end do
           end do
@@ -338,7 +338,7 @@ contains
           do j=nl,1,-1
              rot=lgivens2(pl(j,j),pl(j+1,j))
              cs(j,k+i-1)=rot%cosine; ss(j,k+i-1)=rot%sine
-             j1s(j,k+i-1)=roffs+j; j2s(j,k+i-1)=roffs+j+1
+             js(j,k+i-1)=roffs+j
              call rotation_times_general(trp_rot(rot), pl,j,j+1)
              pl(j,j)=0.0_dp
           end do
@@ -394,14 +394,14 @@ contains
        error=3; return
     end if
     call f_c_upper_to_ub(a,ub%n,ub%b, lbw, ub%ubw, ub%lbwmax, ub%ubwmax, &
-         ub%numrotsu, ub%j1su, ub%j2su, ub%csu, ub%ssu, tol, error)
+         ub%numrotsu, ub%jsu, ub%csu, ub%ssu, tol, error)
     ub%lbw=lbw
   end subroutine c_upper_to_ub
 
   subroutine f_c_upper_to_ub(a, n, b, lbw, ubw, lbwmax, ubwmax, &
-       numrots, j1s, j2s, cs, ss, tol, error)
+       numrots, js, cs, ss, tol, error)
     complex(kind=dp), target, dimension(n,n), intent(inout) :: a
-    integer(kind=int32), dimension(ubwmax,n), intent(out) :: j1s, j2s
+    integer(kind=int32), dimension(ubwmax,n), intent(out) :: js
     complex(kind=dp), dimension(ubwmax,n), intent(out) :: cs, ss
     complex(kind=dp), dimension(lbwmax+ubwmax+1,n), intent(out) :: b
     real(kind=dp), intent(in) :: tol
@@ -418,7 +418,7 @@ contains
     type(c_rotation) :: rot
     !
     q=(0.0_dp, 0.0_dp); numrots=0;
-    ss=(0.0_dp, 0.0_dp); cs=(0.0_dp, 0.0_dp); j2s=0; j1s=0
+    ss=(0.0_dp, 0.0_dp); cs=(0.0_dp, 0.0_dp); js=0
     ubw=0; ubws=0
     error = 0
     nrma = maxabs(a)*sqrt(real(n))
@@ -529,7 +529,7 @@ contains
                    call rotation_times_general(trp_rot(rot), pl(:,1:j), j,j+1)
                    pl(j,j)=(0.0_dp, 0.0_dp)
                    cs(j,k)=rot%cosine; ss(j,k)=rot%sine
-                   j1s(j,k)=roffs+j; j2s(j,k)=roffs+j+1
+                   js(j,k)=roffs+j
                 end do
              else ! nullerr=0
                 numrots(k)=nl-1;
@@ -538,7 +538,7 @@ contains
                    call general_times_rotation(x,rot,j-1,j)
                    call rotation_times_general(trp_rot(rot), pl,j-1,j)
                    cs(j-1,k)=rot%cosine; ss(j-1,k)=rot%sine
-                   j1s(j-1,k)=roffs+j-1; j2s(j-1,k)=roffs+j
+                   js(j-1,k)=roffs+j-1
                    rot=rgivens(pl(j-1,j-1),pl(j-1,j))
                    call general_times_rotation(pl,rot,j-1,j)
                    call rotation_times_general(trp_rot(rot),pq,j-1,j)
@@ -676,7 +676,7 @@ contains
                 rot=lgivens2(pl(j,j+1),pl(j+1,j+1))
                 call rotation_times_general(trp_rot(rot),pl(:,2:nl),j,j+1)
                 cs(j,k+i)=rot%cosine; ss(j,k+i)=rot%sine
-                j1s(j,k+i)=roffs+j; j2s(j,k+i)=roffs+j+1
+                js(j,k+i)=roffs+j
                 pl(j,j+1)=(0.0_dp, 0.0_dp)
              end do
           end do
@@ -696,7 +696,7 @@ contains
           do j=nl,1,-1
              rot=lgivens2(pl(j,j),pl(j+1,j))
              cs(j,k+i-1)=rot%cosine; ss(j,k+i-1)=rot%sine
-             j1s(j,k+i-1)=roffs+j; j2s(j,k+i-1)=roffs+j+1
+             js(j,k+i-1)=roffs+j
              call rotation_times_general(trp_rot(rot), pl,j,j+1)
              pl(j,j)=(0.0_dp, 0.0_dp)
           end do

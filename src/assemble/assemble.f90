@@ -35,12 +35,12 @@ contains
        error=3; return
     end if
     call f_d_ub_to_upper(ub%b, ub%n, ub%lbw, ub%ubw, ub%lbwmax, ub%ubwmax, ub%numrotsu, &
-         ub%j1su, ub%j2su, ub%csu, ub%ssu, a)
+         ub%jsu, ub%csu, ub%ssu, a)
   end subroutine d_ub_to_upper
 
-  subroutine f_d_ub_to_upper(b, n, lbw, ubw, lbwmax, ubwmax, numrots, j1s, j2s, cs, ss, a)
+  subroutine f_d_ub_to_upper(b, n, lbw, ubw, lbwmax, ubwmax, numrots, js, cs, ss, a)
     real(kind=dp), target, dimension(n,n), intent(out) :: a
-    integer(kind=int32), dimension(ubwmax,n), intent(in) :: j1s, j2s
+    integer(kind=int32), dimension(ubwmax,n), intent(in) :: js
     real(kind=dp), dimension(ubwmax,n), intent(in) :: cs, ss
     real(kind=dp), dimension(lbwmax+ubwmax+1,n), intent(in) :: b
     integer(kind=int32), dimension(n), intent(in) :: numrots
@@ -55,19 +55,19 @@ contains
     do k=n-1,n-lbw,-1
        do j=1,numrots(k)
           rot%cosine=cs(j,k); rot%sine=ss(j,k)
-          call rotation_times_general(rot,a(:,k+1:n),j1s(j,k),j2s(j,k))
+          call rotation_times_general(rot,a(:,k+1:n),js(j,k),js(j,k)+1)
        end do
     end do
     do k=n-lbw-1, ubw+1,-1
        do j=1,numrots(k)
           rot%cosine=cs(j,k); rot%sine=ss(j,k)
-          call rotation_times_general(rot,a(:,k+1:n),j1s(j,k),j2s(j,k))
+          call rotation_times_general(rot,a(:,k+1:n),js(j,k),js(j,k)+1)
        end do
     end do
     do k=ubw,1,-1
        do j=1,numrots(k)
           rot%cosine=cs(j,k); rot%sine=ss(j,k)
-          call rotation_times_general(rot,a(:,k+1:n),j1s(j,k),j2s(j,k))
+          call rotation_times_general(rot,a(:,k+1:n),js(j,k),js(j,k)+1)
        end do
     end do
   end subroutine f_d_ub_to_upper
@@ -81,12 +81,12 @@ contains
        error=3; return
     end if
     call f_c_ub_to_upper(ub%b, ub%n, ub%lbw, ub%ubw, ub%lbwmax, ub%ubwmax, ub%numrotsu, &
-         ub%j1su, ub%j2su, ub%csu, ub%ssu, a)
+         ub%jsu, ub%csu, ub%ssu, a)
   end subroutine c_ub_to_upper
 
-  subroutine f_c_ub_to_upper(b, n, lbw, ubw, lbwmax, ubwmax, numrots, j1s, j2s, cs, ss, a)
+  subroutine f_c_ub_to_upper(b, n, lbw, ubw, lbwmax, ubwmax, numrots, js, cs, ss, a)
     complex(kind=dp), target, dimension(n,n), intent(out) :: a
-    integer(kind=int32), dimension(ubwmax,n), intent(in) :: j1s, j2s
+    integer(kind=int32), dimension(ubwmax,n), intent(in) :: js
     complex(kind=dp), dimension(ubwmax,n), intent(in) :: cs, ss
     complex(kind=dp), dimension(lbwmax+ubwmax+1,n), intent(in) :: b
     integer(kind=int32), dimension(n), intent(in) :: numrots
@@ -102,19 +102,19 @@ contains
     do k=n-1,n-lbw,-1
        do j=1,numrots(k)
           rot%cosine=cs(j,k); rot%sine=ss(j,k)
-          call rotation_times_general(rot,a(:,k+1:n),j1s(j,k),j2s(j,k))
+          call rotation_times_general(rot,a(:,k+1:n),js(j,k),js(j,k)+1)
        end do
     end do
     do k=n-lbw-1, ubw+1,-1
        do j=1,numrots(k)
           rot%cosine=cs(j,k); rot%sine=ss(j,k)
-          call rotation_times_general(rot,a(:,k+1:n),j1s(j,k),j2s(j,k))
+          call rotation_times_general(rot,a(:,k+1:n),js(j,k),js(j,k)+1)
        end do
     end do
     do k=ubw,1,-1
        do j=1,numrots(k)
           rot%cosine=cs(j,k); rot%sine=ss(j,k)
-          call rotation_times_general(rot,a(:,k+1:n),j1s(j,k),j2s(j,k))
+          call rotation_times_general(rot,a(:,k+1:n),js(j,k),js(j,k)+1)
        end do
     end do
   end subroutine f_c_ub_to_upper
@@ -128,12 +128,12 @@ contains
        error=3; return
     end if
     call f_d_bv_to_upper(bv%b, bv%n, bv%lbw, bv%ubw, bv%lbwmax, bv%ubwmax, bv%numrotsv, &
-         bv%k1sv, bv%k2sv, bv%csv, bv%ssv, a)
+         bv%ksv, bv%csv, bv%ssv, a)
   end subroutine d_bv_to_upper
 
-  subroutine f_d_bv_to_upper(b, n, lbw, ubw, lbwmax, ubwmax, numrots, k1s, k2s, cs, ss, a)
+  subroutine f_d_bv_to_upper(b, n, lbw, ubw, lbwmax, ubwmax, numrots, ks, cs, ss, a)
     real(kind=dp), target, dimension(n,n), intent(out) :: a
-    integer(kind=int32), dimension(n,ubwmax), intent(in) :: k1s, k2s
+    integer(kind=int32), dimension(n,ubwmax), intent(in) :: ks
     real(kind=dp), dimension(n, ubwmax), intent(in) :: cs, ss
     real(kind=dp), dimension(n,lbwmax+ubwmax+1), intent(in) :: b
     integer(kind=int32), dimension(n), intent(in) :: numrots
@@ -148,19 +148,19 @@ contains
     do j=1,lbw
        do k=1,numrots(n-j)
           rot%cosine=cs(n-j,k); rot%sine=ss(n-j,k)
-          call general_times_rotation(a(1:j,:),trp_rot(rot),k1s(n-j,k), k2s(n-j,k))
+          call general_times_rotation(a(1:j,:),trp_rot(rot),ks(n-j,k), ks(n-j,k)+1)
        end do
     end do
     do j=lbw+1,n-ubw-1
        do k=1,numrots(n-j)
           rot%cosine=cs(n-j,k); rot%sine=ss(n-j,k)
-          call general_times_rotation(a(1:j,:),trp_rot(rot),k1s(n-j,k), k2s(n-j,k))
+          call general_times_rotation(a(1:j,:),trp_rot(rot),ks(n-j,k), ks(n-j,k)+1)
        end do
     end do
     do j=n-ubw,n-1
        do k=1,numrots(n-j)
           rot%cosine=cs(n-j,k); rot%sine=ss(n-j,k)
-          call general_times_rotation(a(1:j,:),trp_rot(rot),k1s(n-j,k), k2s(n-j,k))
+          call general_times_rotation(a(1:j,:),trp_rot(rot),ks(n-j,k), ks(n-j,k)+1)
        end do
     end do
   end subroutine f_d_bv_to_upper
@@ -174,12 +174,12 @@ contains
        error=3; return
     end if
     call f_c_bv_to_upper(bv%b, bv%n, bv%lbw, bv%ubw, bv%lbwmax, bv%ubwmax, bv%numrotsv, &
-         bv%k1sv, bv%k2sv, bv%csv, bv%ssv, a)
+         bv%ksv, bv%csv, bv%ssv, a)
   end subroutine c_bv_to_upper
 
-  subroutine f_c_bv_to_upper(b, n, lbw, ubw, lbwmax, ubwmax, numrots, k1s, k2s, cs, ss, a)
+  subroutine f_c_bv_to_upper(b, n, lbw, ubw, lbwmax, ubwmax, numrots, ks, cs, ss, a)
     complex(kind=dp), target, dimension(n,n), intent(out) :: a
-    integer(kind=int32), dimension(n,ubwmax), intent(in) :: k1s, k2s
+    integer(kind=int32), dimension(n,ubwmax), intent(in) :: ks
     complex(kind=dp), dimension(n, ubwmax), intent(in) :: cs, ss
     complex(kind=dp), dimension(n,lbwmax+ubwmax+1), intent(in) :: b
     integer(kind=int32), dimension(n), intent(in) :: numrots
@@ -194,19 +194,19 @@ contains
     do j=1,lbw
        do k=1,numrots(n-j)
           rot%cosine=cs(n-j,k); rot%sine=ss(n-j,k)
-          call general_times_rotation(a(1:j,:),trp_rot(rot),k1s(n-j,k), k2s(n-j,k))
+          call general_times_rotation(a(1:j,:),trp_rot(rot),ks(n-j,k), ks(n-j,k)+1)
        end do
     end do
     do j=lbw+1,n-ubw-1
        do k=1,numrots(n-j)
           rot%cosine=cs(n-j,k); rot%sine=ss(n-j,k)
-          call general_times_rotation(a(1:j,:),trp_rot(rot),k1s(n-j,k), k2s(n-j,k))
+          call general_times_rotation(a(1:j,:),trp_rot(rot),ks(n-j,k), ks(n-j,k)+1)
        end do
     end do
     do j=n-ubw,n-1
        do k=1,numrots(n-j)
           rot%cosine=cs(n-j,k); rot%sine=ss(n-j,k)
-          call general_times_rotation(a(1:j,:),trp_rot(rot),k1s(n-j,k), k2s(n-j,k))
+          call general_times_rotation(a(1:j,:),trp_rot(rot),ks(n-j,k), ks(n-j,k)+1)
        end do
     end do
   end subroutine f_c_bv_to_upper
