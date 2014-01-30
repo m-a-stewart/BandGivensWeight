@@ -50,6 +50,15 @@ interface print_br
    module procedure d_print_br, c_print_br
 end interface print_br
 
+interface print_abs_bc
+   module procedure d_print_abs_bc, c_print_abs_bc
+end interface print_abs_bc
+
+interface print_abs_br
+   module procedure d_print_abs_br, c_print_abs_br
+end interface print_abs_br
+
+
 ! rotations
 
 interface rotation_times_tbc
@@ -316,6 +325,43 @@ subroutine c_print_br(br,lbw,ubw)
   call print_matrix(a)
 end subroutine c_print_br
 
+! abs print
+
+subroutine d_print_abs_bc(bc,lbw,ubw)
+  real(kind=dp), dimension(:,:), intent(in) :: bc
+  integer(kind=int32), intent(in) :: ubw, lbw
+  !
+  real(kind=dp), dimension(size(bc,2),size(bc,2)) :: a
+  call d_bc_to_general(bc,lbw,ubw,a)
+  call print_matrix(abs(a))
+end subroutine d_print_abs_bc
+
+subroutine c_print_abs_bc(bc,lbw,ubw)
+  complex(kind=dp), dimension(:,:), intent(in) :: bc
+  integer(kind=int32), intent(in) :: ubw, lbw
+  !
+  complex(kind=dp), dimension(size(bc,2),size(bc,2)) :: a
+  call c_bc_to_general(bc,lbw,ubw,a)
+  call print_matrix(abs(a))
+end subroutine c_print_abs_bc
+
+subroutine d_print_abs_br(br,lbw,ubw)
+  real(kind=dp), dimension(:,:), intent(in) :: br
+  integer(kind=int32), intent(in) :: ubw, lbw
+  !
+  real(kind=dp), dimension(size(br,1),size(br,1)) :: a
+  call d_br_to_general(br,lbw,ubw,a)
+  call print_matrix(abs(a))
+end subroutine d_print_abs_br
+
+subroutine c_print_abs_br(br,lbw,ubw)
+  complex(kind=dp), dimension(:,:), intent(in) :: br
+  integer(kind=int32), intent(in) :: ubw, lbw
+  !
+  complex(kind=dp), dimension(size(br,1),size(br,1)) :: a
+  call c_br_to_general(br,lbw,ubw,a)
+  call print_matrix(abs(a))
+end subroutine c_print_abs_br
 
 ! Rotations for band matrices with aligned columns
 

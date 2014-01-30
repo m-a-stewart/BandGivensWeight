@@ -32,8 +32,6 @@ program test_convert
   ub_c=c_new_ub(n,lbwmax,ubwmax)
   bv_d=d_new_bv(n,lbwmax,ubwmax)
   bv_c=c_new_bv(n,lbwmax,ubwmax)
-  ub_d%lbw=lbw;   ub_c%lbw=lbw
-  bv_d%lbw=lbw;   bv_c%lbw=lbw
 
   ! real
   call random_seed
@@ -44,7 +42,7 @@ program test_convert
   ! test one
   call d_assemble_a(a,u,v,d,lbw)
   a0=a
-  call upper_to_ub(a,ub_d,tol,error)
+  call upper_to_ub(a,ub_d,lbw, tol,error)
   if (error == 1) then
      print *, "orthogonalization error in real UB"
   else
@@ -62,7 +60,7 @@ program test_convert
 
   ! bv to ub
   a=a0
-  call upper_to_bv(a,bv_d,tol,error)
+  call upper_to_bv(a,bv_d,lbw,tol,error)
   if (error == 1) then
      print *, "orthogonalization error in real BV"
   else
@@ -86,7 +84,7 @@ program test_convert
   u0_c=u_c; v0_c=v_c
   call c_assemble_a(a_c, u_c, v_c, d_c, lbw)
   a0_c=a_c
-  call upper_to_ub(a_c, ub_c, tol, error)
+  call upper_to_ub(a_c, ub_c, lbw, tol, error)
   if (error == 1) then
      print *, "orthogonalization error in complex UB"
   else
@@ -103,7 +101,7 @@ program test_convert
   end if
   ! bv to ub
   a_c=a0_c
-  call upper_to_bv(a_c, bv_c, tol, error)
+  call upper_to_bv(a_c, bv_c, lbw, tol, error)
   if (error == 1) then
      print *, "orthogonalization error in complex BV"
   else

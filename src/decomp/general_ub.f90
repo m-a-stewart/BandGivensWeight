@@ -25,16 +25,18 @@ contains
   ! 1: n<1
   ! 2: ortherror
   ! 3: n is not the same for a and ub or bv.
-  subroutine d_upper_to_ub(a,ub,tol,error)
+  subroutine d_upper_to_ub(a,ub,lbw,tol,error)
     real(kind=dp), target, dimension(:,:), intent(inout) :: a
     type(d_ub), intent(inout) :: ub
     integer(kind=int32), intent(out) :: error
     real(kind=dp), intent(in) :: tol
+    integer(kind=int32), intent(in) :: lbw
     if (ub%n /= size(a,1) .or. ub%n /= size(a,2)) then
        error=3; return
     end if
-    call f_d_upper_to_ub(a,ub%n,ub%b, ub%lbw, ub%ubw, ub%lbwmax, ub%ubwmax, &
+    call f_d_upper_to_ub(a,ub%n,ub%b, lbw, ub%ubw, ub%lbwmax, ub%ubwmax, &
          ub%numrotsu, ub%j1su, ub%j2su, ub%csu, ub%ssu, tol, error)
+    ub%lbw=lbw
   end subroutine d_upper_to_ub
 
   ! Updating procedure to compute a UB factorization from a general matrix.
@@ -297,8 +299,8 @@ contains
     if (klast == k) then ! square termination
        ubws(k:n-1)=n-k
        nl=n-k
-       if (n-k > 1) then
-          do i=1,n-k-1 ! nl-1
+       if (nl > 1) then
+          do i=1,nl-1 ! nl-1
              nl=n-k-i+1
              roffs=k-nl
              pl => a(roffs+1:k,k+i:n)
@@ -326,32 +328,28 @@ contains
        k=k+1
        ubws(k:n-1)=n-k
        nl=n-k
-       if (nl > 0) then
-          do i=1,n-k
-             nl=n-k-i+1
-             roffs=k-nl-1
-             pl=>a(roffs+1:k,k+i:n)
-             pq=>q(i:n-k,i:n-k)
-             numrots(k+i-1)=nl
-             ! Triangularize L
-             do j=nl,1,-1
-                rot=lgivens2(pl(j,j),pl(j+1,j))
-                cs(j,k+i-1)=rot%cosine; ss(j,k+i-1)=rot%sine
-                j1s(j,k+i-1)=roffs+j; j2s(j,k+i-1)=roffs+j+1
-                call rotation_times_general(trp_rot(rot), pl,j,j+1)
-                pl(j,j)=0.0_dp
-             end do
-             ! reveal column k + i
-             if (nl > 1) then
-                do j=nl,2,-1
-                   rot=lgivens(pq(j-1,1),pq(j,1))
-                   call rotation_times_general(trp_rot(rot), pq, j-1,j)
-                   call general_times_rotation(pl, rot, j-1,j)
-                end do
-             end if
-             pl(:,1)=pl(:,1)*pq(1,1)
+       do i=1,n-k
+          nl=n-k-i+1
+          roffs=k-nl-1
+          pl=>a(roffs+1:k,k+i:n)
+          pq=>q(i:n-k,i:n-k)
+          numrots(k+i-1)=nl
+          ! Triangularize L
+          do j=nl,1,-1
+             rot=lgivens2(pl(j,j),pl(j+1,j))
+             cs(j,k+i-1)=rot%cosine; ss(j,k+i-1)=rot%sine
+             j1s(j,k+i-1)=roffs+j; j2s(j,k+i-1)=roffs+j+1
+             call rotation_times_general(trp_rot(rot), pl,j,j+1)
+             pl(j,j)=0.0_dp
           end do
-       end if
+          ! reveal column k + i
+          do j=nl,2,-1
+             rot=lgivens(pq(j-1,1),pq(j,1))
+             call rotation_times_general(trp_rot(rot), pq, j-1,j)
+             call general_times_rotation(pl, rot, j-1,j)
+          end do
+          pl(:,1)=pl(:,1)*pq(1,1)
+       end do
     end if
     call d_extract_diagonals_ub(a, n, b, lbw, ubw, lbwmax, ubwmax, ubws)
   end subroutine f_d_upper_to_ub
@@ -386,16 +384,18 @@ contains
   ! Updating procedure to compute a UB factorization from a general matrix.
   !
 
-  subroutine c_upper_to_ub(a,ub,tol,error)
+  subroutine c_upper_to_ub(a,ub,lbw,tol,error)
     complex(kind=dp), target, dimension(:,:), intent(inout) :: a
     type(c_ub), intent(inout) :: ub
     integer(kind=int32), intent(out) :: error
     real(kind=dp), intent(in) :: tol
+    integer(kind=int32), intent(in) :: lbw
     if (ub%n /= size(a,1) .or. ub%n /= size(a,2)) then
        error=3; return
     end if
-    call f_c_upper_to_ub(a,ub%n,ub%b, ub%lbw, ub%ubw, ub%lbwmax, ub%ubwmax, &
+    call f_c_upper_to_ub(a,ub%n,ub%b, lbw, ub%ubw, ub%lbwmax, ub%ubwmax, &
          ub%numrotsu, ub%j1su, ub%j2su, ub%csu, ub%ssu, tol, error)
+    ub%lbw=lbw
   end subroutine c_upper_to_ub
 
   subroutine f_c_upper_to_ub(a, n, b, lbw, ubw, lbwmax, ubwmax, &
@@ -686,32 +686,28 @@ contains
        k=k+1
        ubws(k:n-1)=n-k
        nl=n-k
-       if (nl > 0) then
-          do i=1,n-k
-             nl=n-k-i+1
-             roffs=k-nl-1
-             pl=>a(roffs+1:k,k+i:n)
-             pq=>q(i:n-k,i:n-k)
-             numrots(k+i-1)=nl
-             ! Triangularize L
-             do j=nl,1,-1
-                rot=lgivens2(pl(j,j),pl(j+1,j))
-                cs(j,k+i-1)=rot%cosine; ss(j,k+i-1)=rot%sine
-                j1s(j,k+i-1)=roffs+j; j2s(j,k+i-1)=roffs+j+1
-                call rotation_times_general(trp_rot(rot), pl,j,j+1)
-                pl(j,j)=(0.0_dp, 0.0_dp)
-             end do
-             ! reveal column k + i
-             if (nl > 1) then
-                do j=nl,2,-1
-                   rot=lgivens(pq(j-1,1),pq(j,1))
-                   call rotation_times_general(trp_rot(rot), pq, j-1,j)
-                   call general_times_rotation(pl, rot, j-1,j)
-                end do
-             end if
-             pl(:,1)=pl(:,1)*pq(1,1)
+       do i=1,n-k
+          nl=n-k-i+1
+          roffs=k-nl-1
+          pl=>a(roffs+1:k,k+i:n)
+          pq=>q(i:n-k,i:n-k)
+          numrots(k+i-1)=nl
+          ! Triangularize L
+          do j=nl,1,-1
+             rot=lgivens2(pl(j,j),pl(j+1,j))
+             cs(j,k+i-1)=rot%cosine; ss(j,k+i-1)=rot%sine
+             j1s(j,k+i-1)=roffs+j; j2s(j,k+i-1)=roffs+j+1
+             call rotation_times_general(trp_rot(rot), pl,j,j+1)
+             pl(j,j)=(0.0_dp, 0.0_dp)
           end do
-       end if
+          ! reveal column k + i
+          do j=nl,2,-1
+             rot=lgivens(pq(j-1,1),pq(j,1))
+             call rotation_times_general(trp_rot(rot), pq, j-1,j)
+             call general_times_rotation(pl, rot, j-1,j)
+          end do
+          pl(:,1)=pl(:,1)*pq(1,1)
+       end do
     end if
     call c_extract_diagonals_ub(a,n,b,lbw,ubw,lbwmax, ubwmax, ubws)
   end subroutine f_c_upper_to_ub

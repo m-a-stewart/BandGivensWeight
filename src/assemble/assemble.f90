@@ -49,19 +49,22 @@ contains
     integer(kind=int32) :: j,k
     type(d_rotation) :: rot
     call bc_to_general(b,lbw,ubw,a)
+    if (n==1) then
+       return
+    end if
     do k=n-1,n-lbw,-1
        do j=1,numrots(k)
           rot%cosine=cs(j,k); rot%sine=ss(j,k)
           call rotation_times_general(rot,a(:,k+1:n),j1s(j,k),j2s(j,k))
        end do
     end do
-    do k=n-lbw-1, ubw,-1
+    do k=n-lbw-1, ubw+1,-1
        do j=1,numrots(k)
           rot%cosine=cs(j,k); rot%sine=ss(j,k)
           call rotation_times_general(rot,a(:,k+1:n),j1s(j,k),j2s(j,k))
        end do
     end do
-    do k=ubw-1,1,-1
+    do k=ubw,1,-1
        do j=1,numrots(k)
           rot%cosine=cs(j,k); rot%sine=ss(j,k)
           call rotation_times_general(rot,a(:,k+1:n),j1s(j,k),j2s(j,k))
@@ -93,19 +96,22 @@ contains
     type(c_rotation) :: rot
 
     call bc_to_general(b,lbw,ubw,a)
+    if (n==1) then
+       return
+    end if
     do k=n-1,n-lbw,-1
        do j=1,numrots(k)
           rot%cosine=cs(j,k); rot%sine=ss(j,k)
           call rotation_times_general(rot,a(:,k+1:n),j1s(j,k),j2s(j,k))
        end do
     end do
-    do k=n-lbw-1, ubw,-1
+    do k=n-lbw-1, ubw+1,-1
        do j=1,numrots(k)
           rot%cosine=cs(j,k); rot%sine=ss(j,k)
           call rotation_times_general(rot,a(:,k+1:n),j1s(j,k),j2s(j,k))
        end do
     end do
-    do k=ubw-1,1,-1
+    do k=ubw,1,-1
        do j=1,numrots(k)
           rot%cosine=cs(j,k); rot%sine=ss(j,k)
           call rotation_times_general(rot,a(:,k+1:n),j1s(j,k),j2s(j,k))
@@ -136,19 +142,22 @@ contains
     integer(kind=int32) :: j,k
     type(d_rotation) :: rot
     call br_to_general(b,lbw,ubw,a)
+    if (n==1) then
+       return
+    end if
     do j=1,lbw
        do k=1,numrots(n-j)
           rot%cosine=cs(n-j,k); rot%sine=ss(n-j,k)
           call general_times_rotation(a(1:j,:),trp_rot(rot),k1s(n-j,k), k2s(n-j,k))
        end do
     end do
-    do j=lbw+1,n-ubw
+    do j=lbw+1,n-ubw-1
        do k=1,numrots(n-j)
           rot%cosine=cs(n-j,k); rot%sine=ss(n-j,k)
           call general_times_rotation(a(1:j,:),trp_rot(rot),k1s(n-j,k), k2s(n-j,k))
        end do
     end do
-    do j=n-ubw+1,n-1
+    do j=n-ubw,n-1
        do k=1,numrots(n-j)
           rot%cosine=cs(n-j,k); rot%sine=ss(n-j,k)
           call general_times_rotation(a(1:j,:),trp_rot(rot),k1s(n-j,k), k2s(n-j,k))
@@ -179,19 +188,22 @@ contains
     integer(kind=int32) :: j,k
     type(c_rotation) :: rot
     call br_to_general(b,lbw,ubw,a)
+    if (n==1) then
+       return
+    end if
     do j=1,lbw
        do k=1,numrots(n-j)
           rot%cosine=cs(n-j,k); rot%sine=ss(n-j,k)
           call general_times_rotation(a(1:j,:),trp_rot(rot),k1s(n-j,k), k2s(n-j,k))
        end do
     end do
-    do j=lbw+1,n-ubw
+    do j=lbw+1,n-ubw-1
        do k=1,numrots(n-j)
           rot%cosine=cs(n-j,k); rot%sine=ss(n-j,k)
           call general_times_rotation(a(1:j,:),trp_rot(rot),k1s(n-j,k), k2s(n-j,k))
        end do
     end do
-    do j=n-ubw+1,n-1
+    do j=n-ubw,n-1
        do k=1,numrots(n-j)
           rot%cosine=cs(n-j,k); rot%sine=ss(n-j,k)
           call general_times_rotation(a(1:j,:),trp_rot(rot),k1s(n-j,k), k2s(n-j,k))

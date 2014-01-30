@@ -1,8 +1,9 @@
 module test_data
 use prec
+use utility
 implicit none
 
-integer, parameter :: n=11, rmax=3, ubwmax=rmax+1, lbw=1, lbwmax=3
+integer, parameter :: n=30, rmax=7, ubwmax=rmax+1, lbw=1, lbwmax=3
 real(kind=dp), parameter :: tol=1e-14, tol1=1e-14, tol2=1e-10
 
 contains
@@ -45,5 +46,50 @@ contains
     end do
   end subroutine c_assemble_a
 
+  subroutine d_output_result(name,a0,a1,ubw0,ubw1,t0,t1,bnd,error)
+    character(len=*) :: name
+    real(kind=dp), dimension(:,:) :: a0, a1     
+    real(kind=dp) :: bnd, t0, t1
+    integer(kind=int32) :: error, ubw0, ubw1
+
+    real(kind=dp) :: berr
+    character(len=*), parameter :: fmt="(A40, 'Time: ',ES8.2,', ubw: ',I3,', error: ',ES8.2, ', ', A10)"
+    character(len=10) :: test_result
+
+    if (error > 0) then
+       print *, "Calling error in test: ", name
+    else
+       berr = maxabs(a1-a0)
+       if (ubw0==ubw1 .and. berr < bnd) then
+          test_result="PASSED"
+       else
+          test_result="    FAILED"
+       end if
+       write (*,fmt) name, t1-t0, ubw1, berr, test_result
+    end if
+  end subroutine d_output_result
+
+  subroutine c_output_result(name,a0,a1,ubw0,ubw1,t0,t1,bnd,error)
+    character(len=*) :: name
+    complex(kind=dp), dimension(:,:) :: a0, a1     
+    real(kind=dp) :: bnd, t0, t1
+    integer(kind=int32) :: error, ubw0, ubw1
+
+    real(kind=dp) :: berr
+    character(len=*), parameter :: fmt="(A40, 'Time: ',ES8.2,', ubw: ',I3,', error: ',ES8.2, ', ', A10)"
+    character(len=10) :: test_result
+
+    if (error > 0) then
+       print *, "Calling error in test: ", name
+    else
+       berr = maxabs(a1-a0)
+       if (ubw0==ubw1 .and. berr < bnd) then
+          test_result="PASSED"
+       else
+          test_result="    FAILED"
+       end if
+       write (*,fmt) name, t1-t0, ubw1, berr, test_result
+    end if
+  end subroutine c_output_result
 
 end module test_data

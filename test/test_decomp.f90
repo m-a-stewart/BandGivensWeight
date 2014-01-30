@@ -27,8 +27,6 @@ program test_decomp
   ub_c=c_new_ub(n,lbwmax,ubwmax)
   bv_d=d_new_bv(n,lbwmax,ubwmax)
   bv_c=c_new_bv(n,lbwmax,ubwmax)
-  ub_d%lbw=lbw;   ub_c%lbw=lbw
-  bv_d%lbw=lbw;   bv_c%lbw=lbw
 
   call random_seed
   call random_number(u)
@@ -45,7 +43,7 @@ program test_decomp
   call d_assemble_a(a,u,v,d,lbw)
   a0=a
   call cpu_time(t1)
-  call upper_to_ub(a,ub_d,tol,error)
+  call upper_to_ub(a,ub_d,lbw,tol,error)
   call cpu_time(t2)
   if (error == 1) then
      print *, "orthogonalization error in real UB"
@@ -62,7 +60,7 @@ program test_decomp
   call d_assemble_a(a,u,v,d,lbw)
   a0=a
   call cpu_time(t1)
-  call upper_to_ub(a,ub_d,tol,error)
+  call upper_to_ub(a,ub_d,lbw,tol,error)
   call cpu_time(t2)
   if (error == 1) then
      print *, "orthogonalization error in real square termination UB"
@@ -76,7 +74,7 @@ program test_decomp
   call d_assemble_a(a,u,v,d,lbw)
   a0=a
   call cpu_time(t1)
-  call upper_to_bv(a,bv_d,tol,error)
+  call upper_to_bv(a,bv_d,lbw,tol,error)
   call cpu_time(t2)
   if (error == 1) then
      print *, "orthogonalization error in real BV"
@@ -91,7 +89,7 @@ program test_decomp
   call d_assemble_a(a,u,v,d,lbw)
   a0=a
   call cpu_time(t1)
-  call upper_to_bv(a,bv_d,tol,error)
+  call upper_to_bv(a,bv_d,lbw,tol,error)
   call cpu_time(t2)
   if (error == 1) then
      print *, "orthogonalization error in real square termination BV"
@@ -107,7 +105,7 @@ program test_decomp
   call c_assemble_a(ac,uc,vc,dc,lbw)
   a0c=ac
   call cpu_time(t1)
-  call upper_to_ub(ac,ub_c,tol,error)
+  call upper_to_ub(ac,ub_c,lbw,tol,error)
   call cpu_time(t2)
   if (error == 1) then
      print *, "orthogonalization error in complex UB"
@@ -124,7 +122,7 @@ program test_decomp
   call c_assemble_a(ac,uc,vc,dc,lbw)
   a0c=ac
   call cpu_time(t1)
-  call upper_to_ub(ac,ub_c,tol,error)
+  call upper_to_ub(ac,ub_c,lbw,tol,error)
   call cpu_time(t2)
   if (error == 1) then
      print *, "orthogonalization error in complex UB"
@@ -141,7 +139,7 @@ program test_decomp
   call c_assemble_a(ac,uc,vc,dc,lbw)
   a0c=ac
   call cpu_time(t1)
-  call upper_to_bv(ac,bv_c,tol,error)
+  call upper_to_bv(ac,bv_c,lbw,tol,error)
   call cpu_time(t2)
   if (error == 1) then
      print *, "orthogonalization error in complex BV"

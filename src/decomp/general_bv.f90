@@ -24,16 +24,18 @@ contains
   ! 1: n<1
   ! 2: ortherror
   ! 3: n is not the same for a and ub or bv.
-  subroutine d_upper_to_bv(a,bv,tol,error)
+  subroutine d_upper_to_bv(a,bv,lbw,tol,error)
     real(kind=dp), target, dimension(:,:), intent(inout) :: a
     type(d_bv), intent(inout) :: bv
     integer(kind=int32), intent(out) :: error
     real(kind=dp), intent(in) :: tol
+    integer(kind=int32), intent(in) :: lbw
     if (bv%n /= size(a,1) .or. bv%n /= size(a,2)) then
        error=3; return
     end if
-    call f_d_upper_to_bv(a,bv%n,bv%b, bv%lbw, bv%ubw, bv%lbwmax, bv%ubwmax, &
+    call f_d_upper_to_bv(a,bv%n,bv%b, lbw, bv%ubw, bv%lbwmax, bv%ubwmax, &
          bv%numrotsv, bv%k1sv, bv%k2sv, bv%csv, bv%ssv, tol, error)
+    bv%lbw=lbw
   end subroutine d_upper_to_bv
 
   ! BV
@@ -321,31 +323,27 @@ contains
        k=k+1
        ubws(k:n-1)=n-k
        nl=n-k
-       if (nl > 0) then
-          coffs=n-k
-          do i=1,n-k
-             nl=n-k-i+1
-             pl=>a(1:nl,coffs+1:coffs+nl+1)
-             pq=>q(1:nl,1:nl)
-             numrots(k+i-1)=nl
-             do j=1,nl
-                rot=rgivens(pl(j,j),pl(j,j+1))
-                cs(k+i-1,nl-j+1)=rot%cosine; ss(k+i-1,nl-j+1)=rot%sine
-                k1s(k+i-1,nl-j+1)=coffs+j; k2s(k+i-1,nl-j+1)=coffs+j+1
-                call general_times_rotation(pl(j:nl,:),rot,j,j+1)
-                pl(j,j+1)=0.0_dp
-             end do
-             ! reveal row nl
-             if (nl > 1) then
-                do j=1,nl-1
-                   rot=rgivens2(pq(nl,j),pq(nl,j+1))
-                   call general_times_rotation(pq,rot,j,j+1)
-                   call rotation_times_general(trp_rot(rot),pl(:,1:j+1),j,j+1)
-                end do
-             end if
-             pl(nl,:)=pq(nl,nl)*pl(nl,:)
+       coffs=n-k
+       do i=1,n-k
+          nl=n-k-i+1
+          pl=>a(1:nl,coffs+1:coffs+nl+1)
+          pq=>q(1:nl,1:nl)
+          numrots(k+i-1)=nl
+          do j=1,nl
+             rot=rgivens(pl(j,j),pl(j,j+1))
+             cs(k+i-1,nl-j+1)=rot%cosine; ss(k+i-1,nl-j+1)=rot%sine
+             k1s(k+i-1,nl-j+1)=coffs+j; k2s(k+i-1,nl-j+1)=coffs+j+1
+             call general_times_rotation(pl(j:nl,:),rot,j,j+1)
+             pl(j,j+1)=0.0_dp
           end do
-       end if
+          ! reveal row nl
+          do j=1,nl-1
+             rot=rgivens2(pq(nl,j),pq(nl,j+1))
+             call general_times_rotation(pq,rot,j,j+1)
+             call rotation_times_general(trp_rot(rot),pl(:,1:j+1),j,j+1)
+          end do
+          pl(nl,:)=pq(nl,nl)*pl(nl,:)
+       end do
     end if
     call d_extract_diagonals_bv(a, n, b, lbw, ubw, lbwmax, ubwmax, ubws)
   end subroutine f_d_upper_to_bv
@@ -375,16 +373,18 @@ contains
 
 ! complex BV
 
-  subroutine c_upper_to_bv(a,bv,tol,error)
+  subroutine c_upper_to_bv(a,bv,lbw,tol,error)
     complex(kind=dp), target, dimension(:,:), intent(inout) :: a
     type(c_bv), intent(inout) :: bv
     integer(kind=int32), intent(out) :: error
     real(kind=dp), intent(in) :: tol
+    integer(kind=int32), intent(in) :: lbw
     if (bv%n /= size(a,1) .or. bv%n /= size(a,2)) then
        error=3; return
     end if
-    call f_c_upper_to_bv(a,bv%n,bv%b, bv%lbw, bv%ubw, bv%lbwmax, bv%ubwmax, &
+    call f_c_upper_to_bv(a,bv%n,bv%b, lbw, bv%ubw, bv%lbwmax, bv%ubwmax, &
          bv%numrotsv, bv%k1sv, bv%k2sv, bv%csv, bv%ssv, tol, error)
+    bv%lbw=lbw
   end subroutine c_upper_to_bv
 
 
@@ -672,31 +672,27 @@ contains
        k=k+1
        ubws(k:n-1)=n-k
        nl=n-k
-       if (nl > 0) then
-          coffs=n-k
-          do i=1,n-k
-             nl=n-k-i+1
-             pl=>a(1:nl,coffs+1:coffs+nl+1)
-             pq=>q(1:nl,1:nl)
-             numrots(k+i-1)=nl
-             do j=1,nl
-                rot=rgivens(pl(j,j),pl(j,j+1))
-                cs(k+i-1,nl-j+1)=rot%cosine; ss(k+i-1,nl-j+1)=rot%sine
-                k1s(k+i-1,nl-j+1)=coffs+j; k2s(k+i-1,nl-j+1)=coffs+j+1
-                call general_times_rotation(pl(j:nl,:),rot,j,j+1)
-                pl(j,j+1)=(0.0_dp, 0.0_dp)
-             end do
-             ! reveal row nl
-             if (nl > 1) then
-                do j=1,nl-1
-                   rot=rgivens2(pq(nl,j),pq(nl,j+1))
-                   call general_times_rotation(pq,rot,j,j+1)
-                   call rotation_times_general(trp_rot(rot),pl(:,1:j+1),j,j+1)
-                end do
-             end if
-             pl(nl,:)=pq(nl,nl)*pl(nl,:)
+       coffs=n-k
+       do i=1,n-k
+          nl=n-k-i+1
+          pl=>a(1:nl,coffs+1:coffs+nl+1)
+          pq=>q(1:nl,1:nl)
+          numrots(k+i-1)=nl
+          do j=1,nl
+             rot=rgivens(pl(j,j),pl(j,j+1))
+             cs(k+i-1,nl-j+1)=rot%cosine; ss(k+i-1,nl-j+1)=rot%sine
+             k1s(k+i-1,nl-j+1)=coffs+j; k2s(k+i-1,nl-j+1)=coffs+j+1
+             call general_times_rotation(pl(j:nl,:),rot,j,j+1)
+             pl(j,j+1)=(0.0_dp, 0.0_dp)
           end do
-       end if
+          ! reveal row nl
+          do j=1,nl-1
+             rot=rgivens2(pq(nl,j),pq(nl,j+1))
+             call general_times_rotation(pq,rot,j,j+1)
+             call rotation_times_general(trp_rot(rot),pl(:,1:j+1),j,j+1)
+          end do
+          pl(nl,:)=pq(nl,nl)*pl(nl,:)
+       end do
     end if
     call c_extract_diagonals_bv(a,n,b,lbw,ubw,lbwmax, ubwmax,ubws)
   end subroutine f_c_upper_to_bv

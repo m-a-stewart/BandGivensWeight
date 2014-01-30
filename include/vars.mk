@@ -3,8 +3,8 @@ OBJDIR = ../mod
 PROFLFLAGS = -pg
 PROFCFLAGS = -pg
 LFLAGS = 
-#CFLAGS = -Wall -fbounds-check -mcmodel=medium
-CFLAGS = -Wall -O2 -mcmodel=medium
+CFLAGS = -Wall -fbounds-check -mcmodel=medium
+#CFLAGS = -Wall -O2 -mcmodel=medium
 
 
 OBJS =  $(OBJDIR)/utility.o $(OBJDIR)/shift.o $(OBJDIR)/nullvec.o $(OBJDIR)/prec.o \
