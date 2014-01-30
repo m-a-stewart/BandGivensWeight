@@ -3,8 +3,9 @@ use prec
 use utility
 implicit none
 
-integer, parameter :: n=30, rmax=7, ubwmax=rmax+1, lbw=1, lbwmax=3
+integer, parameter :: n=100, rmax=7, ubwmax=rmax+1, lbw=2, lbwmax=3
 real(kind=dp), parameter :: tol=1e-14, tol1=1e-14, tol2=1e-10
+character(len=40) :: test_name
 
 contains
   

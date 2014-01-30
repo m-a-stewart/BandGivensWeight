@@ -10,10 +10,9 @@ program test_convert
   use test_data
   implicit none
 
-  real(kind=dp) :: t1, t2
+  real(kind=dp) :: t0, t1
   integer(kind=int32) :: error
-  character(len=*), parameter :: fmt="(A30, 'Time: ',ES8.2,', ubw: ',I3,', error: ',ES8.2)"
-  character(len=30) :: test_name
+  character(len=*), parameter :: fmt="(A40, 'Time: ',ES8.2,', ubw: ',I3,', error: ',ES8.2)"
   !
   real(kind=dp), dimension(n,n) :: a, a0, a1
   real(kind=dp), dimension(n,rmax) :: u, u0
@@ -39,45 +38,35 @@ program test_convert
   call random_number(v)
   call random_number(d)
   u0=u; v0=v
-  ! test one
+  print *
+  print *, "--------------------------------"
+  print *
+  print *, "Real UB and BV Conversion Tests:"
+  print *
+  ! ub to bv
   call d_assemble_a(a,u,v,d,lbw)
   a0=a
   call upper_to_ub(a,ub_d,lbw, tol,error)
-  if (error == 1) then
-     print *, "orthogonalization error in real UB"
-  else
-     call cpu_time(t1)
-     call convert_ub_to_bv(ub_d, bv_d,error)
-     call cpu_time(t2)
-     if (error > 0) then
-        print *, "Error in convert_ub_to_bv:", error
-     else
-        call bv_to_upper(bv_d,a1,error)
-        test_name = "Real UB to BV;"
-        write (*,fmt) test_name, t2-t1, bv_d%ubw, maxabs(a1-a0)
-     end if
-  end if
-
+  call cpu_time(t0)
+  call convert_ub_to_bv(ub_d, bv_d,error)
+  call cpu_time(t1)
+  call bv_to_upper(bv_d,a1,error)
+  test_name = "Real UB to BV;"
+  call d_output_result(test_name,a0,a1,rmax,bv_d%ubw,t0,t1,tol2,error)
   ! bv to ub
   a=a0
   call upper_to_bv(a,bv_d,lbw,tol,error)
-  if (error == 1) then
-     print *, "orthogonalization error in real BV"
-  else
-     call cpu_time(t1)
-     call convert_bv_to_ub(bv_d, ub_d, error)
-     call cpu_time(t2)
-     if (error > 0) then
-        print *, "Error in upper_convert_bv_to_ub:", error
-     else
-        call ub_to_upper(ub_d,a1,error)
-        test_name="Real BV to UB;"
-        write (*,fmt) test_name, t2-t1, ub_d%ubw, maxabs(a1-a0)/maxabs(a0)
-     end if
-  end if
-
-! complex
-
+  call cpu_time(t0)
+  call convert_bv_to_ub(bv_d, ub_d, error)
+  call cpu_time(t1)
+  call ub_to_upper(ub_d,a1,error)
+  test_name="Real BV to UB;"
+  call d_output_result(test_name,a0,a1,rmax,ub_d%ubw,t0,t1,tol2,error)
+  print *
+  print *, "--------------------------------"
+  print *
+  print *, "Real UB and BV Conversion Tests:"
+  print *
   call random_complex(u_c)
   call random_complex(v_c)
   call random_complex(d_c)
@@ -85,37 +74,21 @@ program test_convert
   call c_assemble_a(a_c, u_c, v_c, d_c, lbw)
   a0_c=a_c
   call upper_to_ub(a_c, ub_c, lbw, tol, error)
-  if (error == 1) then
-     print *, "orthogonalization error in complex UB"
-  else
-     call cpu_time(t1)
-     call convert_ub_to_bv(ub_c, bv_c, error)
-     call cpu_time(t2)
-     if (error > 0) then
-        print *, "Error in convert_ub_to_bv:", error
-     else
-        call bv_to_upper(bv_c, a1_c, error)
-        test_name="Complex UB to BV;"
-        write (*,fmt) test_name, t2-t1, bv_c%ubw, maxabs(a1_c-a0_c)/maxabs(a0_c)
-     end if
-  end if
+  call cpu_time(t0)
+  call convert_ub_to_bv(ub_c, bv_c, error)
+  call cpu_time(t1)
+  call bv_to_upper(bv_c, a1_c, error)
+  test_name="Complex UB to BV;"
+  call c_output_result(test_name,a0_c,a1_c,rmax,bv_c%ubw,t0,t1,tol2,error)
   ! bv to ub
   a_c=a0_c
   call upper_to_bv(a_c, bv_c, lbw, tol, error)
-  if (error == 1) then
-     print *, "orthogonalization error in complex BV"
-  else
-     call cpu_time(t1)
-     call convert_bv_to_ub(bv_c, ub_c, error)
-     call cpu_time(t2)
-     if (error > 0) then
-        print *, "Error in convert_bv_to_ub:", error
-     else
-        call ub_to_upper(ub_c, a1_c, error)
-        test_name="Complex BV to UB;"
-        write (*,fmt) test_name, t2-t1, ub_c%ubw, maxabs(a1_c-a0_c)/maxabs(a0_c)
-     end if
-  end if
+  call cpu_time(t0)
+  call convert_bv_to_ub(bv_c, ub_c, error)
+  call cpu_time(t1)
+  call ub_to_upper(ub_c, a1_c, error)
+  test_name="Complex BV to UB;"
+  call c_output_result(test_name,a0_c,a1_c,rmax,ub_c%ubw,t0,t1,tol2,error)
   print *
 
 end program test_convert

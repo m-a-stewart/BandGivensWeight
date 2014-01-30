@@ -12,8 +12,7 @@ program test_compress
   use test_data
   implicit none
   real(kind=dp) :: t0, t1
-  integer(kind=int32) :: error, na
-  character(len=40) :: test_name
+  integer(kind=int32) :: error, na, lbwa
   !
   real(kind=dp), dimension(n,n) :: a, a0, a1
   real(kind=dp), dimension(n,rmax) :: u, u0
@@ -43,7 +42,7 @@ program test_compress
   print *
   print *, "--------------------------------"
   print *
-  print *, "Real UB to BV tests:"
+  print *, "Real UB to BV Compression Tests:"
   print *
   ! Test 3; case 1 termination test.
   u=u0; v=v0; d=d0
@@ -121,12 +120,13 @@ program test_compress
   call d_output_result(test_name,a0,a1,rmax,bv_d%ubw,t0,t1,tol2,error)
   ! small matrices
   na=1
+  lbwa=min(na-1,lbw)
   ub_na_d=d_new_ub(na,lbwmax,ubwmax)
   bv_na_d=d_new_bv(na,lbwmax,ubwmax)
   u=u0; v=v0; d=d0
-  call d_assemble_a(a(1:na,1:na),u(1:na,:),v(:,1:na),d(1:na),0)
+  call d_assemble_a(a(1:na,1:na),u(1:na,:),v(:,1:na),d(1:na),lbwa)
   a0(1:na,1:na)=a(1:na,1:na)
-  call upper_to_ub(a(1:na,1:na),ub_na_d,0, tol1,error)
+  call upper_to_ub(a(1:na,1:na),ub_na_d,lbwa, tol1,error)
   call cpu_time(t0)
   call compress_ub_to_bv(ub_na_d, bv_na_d,tol2,tol2,0,error)
   call cpu_time(t1)
@@ -136,12 +136,13 @@ program test_compress
   call d_deallocate_ub(ub_na_d)
   call d_deallocate_bv(bv_na_d)
   na=2
+  lbwa=min(na-1,lbw)
   ub_na_d=d_new_ub(na,lbwmax,ubwmax)
   bv_na_d=d_new_bv(na,lbwmax,ubwmax)
   u=u0; v=v0; d=d0
-  call d_assemble_a(a(1:na,1:na),u(1:na,:),v(:,1:na),d(1:na),lbw)
+  call d_assemble_a(a(1:na,1:na),u(1:na,:),v(:,1:na),d(1:na),lbwa)
   a0(1:na,1:na)=a(1:na,1:na)
-  call upper_to_ub(a(1:na,1:na),ub_na_d,lbw, tol1,error)
+  call upper_to_ub(a(1:na,1:na),ub_na_d,lbwa, tol1,error)
   call cpu_time(t0)
   call compress_ub_to_bv(ub_na_d, bv_na_d,tol2,tol2,0,error)
   call cpu_time(t1)
@@ -152,12 +153,13 @@ program test_compress
   call d_deallocate_bv(bv_na_d)
   !
   na=3
+  lbwa=min(na-1,lbw)
   ub_na_d=d_new_ub(na,lbwmax,ubwmax)
   bv_na_d=d_new_bv(na,lbwmax,ubwmax)
   u=u0; v=v0; d=d0
-  call d_assemble_a(a(1:na,1:na),u(1:na,:),v(:,1:na),d(1:na),lbw)
+  call d_assemble_a(a(1:na,1:na),u(1:na,:),v(:,1:na),d(1:na),lbwa)
   a0(1:na,1:na)=a(1:na,1:na)
-  call upper_to_ub(a(1:na,1:na),ub_na_d,lbw, tol1,error)
+  call upper_to_ub(a(1:na,1:na),ub_na_d,lbwa, tol1,error)
   call cpu_time(t0)
   call compress_ub_to_bv(ub_na_d, bv_na_d,tol2,tol2,0,error)
   call cpu_time(t1)
@@ -168,12 +170,13 @@ program test_compress
   call d_deallocate_bv(bv_na_d)
   !
   na=4
+  lbwa=min(na-1,lbw)
   ub_na_d=d_new_ub(na,lbwmax,ubwmax)
   bv_na_d=d_new_bv(na,lbwmax,ubwmax)
   u=u0; v=v0; d=d0
-  call d_assemble_a(a(1:na,1:na),u(1:na,:),v(:,1:na),d(1:na),lbw)
+  call d_assemble_a(a(1:na,1:na),u(1:na,:),v(:,1:na),d(1:na),lbwa)
   a0(1:na,1:na)=a(1:na,1:na)
-  call upper_to_ub(a(1:na,1:na),ub_na_d,lbw, tol1,error)
+  call upper_to_ub(a(1:na,1:na),ub_na_d,lbwa, tol1,error)
   call cpu_time(t0)
   call compress_ub_to_bv(ub_na_d, bv_na_d,tol2,tol2,0,error)
   call cpu_time(t1)
@@ -187,7 +190,7 @@ program test_compress
   print *
   print *, "--------------------------------"
   print *
-  print *, "Real BV to UB tests:"
+  print *, "Real BV to UB Compression Tests:"
   print *
   ! Test 9; case 1 termination test.
   u=u0; v=v0; d=d0
@@ -264,12 +267,13 @@ program test_compress
   call d_output_result(test_name,a0,a1,rmax,ub_d%ubw,t0,t1,tol2,error)
   ! small matrices
   na=1
+  lbwa=min(na-1,lbw)
   ub_na_d=d_new_ub(na,lbwmax,ubwmax)
   bv_na_d=d_new_bv(na,lbwmax,ubwmax)
   u=u0; v=v0; d=d0
-  call d_assemble_a(a(1:na,1:na),u(1:na,:),v(:,1:na),d(1:na),0)
+  call d_assemble_a(a(1:na,1:na),u(1:na,:),v(:,1:na),d(1:na),lbwa)
   a0(1:na,1:na)=a(1:na,1:na)
-  call upper_to_bv(a(1:na,1:na),bv_na_d,0, tol1,error)
+  call upper_to_bv(a(1:na,1:na),bv_na_d,lbwa, tol1,error)
   call cpu_time(t0)
   call compress_bv_to_ub(bv_na_d, ub_na_d,tol2,tol2,0,error)
   call cpu_time(t1)
@@ -279,12 +283,13 @@ program test_compress
   call d_deallocate_ub(ub_na_d)
   call d_deallocate_bv(bv_na_d)
   na=2
+  lbwa=min(na-1,lbw)
   ub_na_d=d_new_ub(na,lbwmax,ubwmax)
   bv_na_d=d_new_bv(na,lbwmax,ubwmax)
   u=u0; v=v0; d=d0
-  call d_assemble_a(a(1:na,1:na),u(1:na,:),v(:,1:na),d(1:na),lbw)
+  call d_assemble_a(a(1:na,1:na),u(1:na,:),v(:,1:na),d(1:na),lbwa)
   a0(1:na,1:na)=a(1:na,1:na)
-  call upper_to_bv(a(1:na,1:na),bv_na_d,lbw, tol1,error)
+  call upper_to_bv(a(1:na,1:na),bv_na_d,lbwa, tol1,error)
   call cpu_time(t0)
   call compress_bv_to_ub(bv_na_d, ub_na_d,tol2,tol2,0,error)
   call cpu_time(t1)
@@ -294,12 +299,13 @@ program test_compress
   call d_deallocate_ub(ub_na_d)
   call d_deallocate_bv(bv_na_d)
   na=3
+  lbwa=min(na-1,lbw)
   ub_na_d=d_new_ub(na,lbwmax,ubwmax)
   bv_na_d=d_new_bv(na,lbwmax,ubwmax)
   u=u0; v=v0; d=d0
-  call d_assemble_a(a(1:na,1:na),u(1:na,:),v(:,1:na),d(1:na),lbw)
+  call d_assemble_a(a(1:na,1:na),u(1:na,:),v(:,1:na),d(1:na),lbwa)
   a0(1:na,1:na)=a(1:na,1:na)
-  call upper_to_bv(a(1:na,1:na),bv_na_d,lbw, tol1,error)
+  call upper_to_bv(a(1:na,1:na),bv_na_d,lbwa, tol1,error)
   call cpu_time(t0)
   call compress_bv_to_ub(bv_na_d, ub_na_d,tol2,tol2,0,error)
   call cpu_time(t1)
@@ -309,18 +315,19 @@ program test_compress
   call d_deallocate_ub(ub_na_d)
   call d_deallocate_bv(bv_na_d)
   na=4
+  lbwa=min(na-1,lbw)
   ub_na_d=d_new_ub(na,lbwmax,ubwmax)
   bv_na_d=d_new_bv(na,lbwmax,ubwmax)
   u=u0; v=v0; d=d0
-  call d_assemble_a(a(1:na,1:na),u(1:na,:),v(:,1:na),d(1:na),lbw)
+  call d_assemble_a(a(1:na,1:na),u(1:na,:),v(:,1:na),d(1:na),lbwa)
   a0(1:na,1:na)=a(1:na,1:na)
-  call upper_to_bv(a(1:na,1:na),bv_na_d,lbw, tol1,error)
+  call upper_to_bv(a(1:na,1:na),bv_na_d,lbwa, tol1,error)
   call cpu_time(t0)
   call compress_bv_to_ub(bv_na_d, ub_na_d,tol2,tol2,0,error)
   call cpu_time(t1)
   call ub_to_upper(ub_na_d,a1(1:na,1:na),error)
   test_name = "Real BV to UB (n=4);"
-  call d_output_result(test_name,a0(1:na,1:na),a1(1:na,1:na),1,ub_na_d%ubw,t0,t1,tol2,error)
+  call d_output_result(test_name,a0(1:na,1:na),a1(1:na,1:na),2,ub_na_d%ubw,t0,t1,tol2,error)
   call d_deallocate_ub(ub_na_d)
   call d_deallocate_bv(bv_na_d)
 
@@ -336,7 +343,7 @@ program test_compress
   print *
   print *, "--------------------------------"
   print *
-  print *, "Complex UB to BV tests:"
+  print *, "Complex UB to BV Compression Tests"
   print *
   ! case 1 termination test.
   u_c=u0_c; v_c=v0_c; d_c=d0_c
@@ -413,12 +420,13 @@ program test_compress
   call c_output_result(test_name,a0_c,a1_c,rmax,bv_c%ubw,t0,t1,tol2,error)
   ! small matrices
   na=1
+  lbwa=min(na-1,lbw)
   ub_na_c=c_new_ub(na,lbwmax,ubwmax)
   bv_na_c=c_new_bv(na,lbwmax,ubwmax)
   u_c=u0_c; v_c=v0_c; d_c=d0_c
-  call c_assemble_a(a_c(1:na,1:na),u_c(1:na,:),v_c(:,1:na),d_c(1:na),0)
+  call c_assemble_a(a_c(1:na,1:na),u_c(1:na,:),v_c(:,1:na),d_c(1:na),lbwa)
   a0_c(1:na,1:na)=a_c(1:na,1:na)
-  call upper_to_ub(a_c(1:na,1:na),ub_na_c,0, tol1,error)
+  call upper_to_ub(a_c(1:na,1:na),ub_na_c,lbwa, tol1,error)
   call cpu_time(t0)
   call compress_ub_to_bv(ub_na_c, bv_na_c,tol2,tol2,0,error)
   call cpu_time(t1)
@@ -428,12 +436,13 @@ program test_compress
   call c_deallocate_ub(ub_na_c)
   call c_deallocate_bv(bv_na_c)
   na=2
+  lbwa=min(na-1,lbw)
   ub_na_c=c_new_ub(na,lbwmax,ubwmax)
   bv_na_c=c_new_bv(na,lbwmax,ubwmax)
   u_c=u0_c; v_c=v0_c; d_c=d0_c
-  call c_assemble_a(a_c(1:na,1:na),u_c(1:na,:),v_c(:,1:na),d_c(1:na),lbw)
+  call c_assemble_a(a_c(1:na,1:na),u_c(1:na,:),v_c(:,1:na),d_c(1:na),lbwa)
   a0_c(1:na,1:na)=a_c(1:na,1:na)
-  call upper_to_ub(a_c(1:na,1:na),ub_na_c,lbw, tol1,error)
+  call upper_to_ub(a_c(1:na,1:na),ub_na_c,lbwa, tol1,error)
   call cpu_time(t0)
   call compress_ub_to_bv(ub_na_c, bv_na_c,tol2,tol2,0,error)
   call cpu_time(t1)
@@ -443,12 +452,13 @@ program test_compress
   call c_deallocate_ub(ub_na_c)
   call c_deallocate_bv(bv_na_c)
   na=3
+  lbwa=min(na-1,lbw)
   ub_na_c=c_new_ub(na,lbwmax,ubwmax)
   bv_na_c=c_new_bv(na,lbwmax,ubwmax)
   u_c=u0_c; v_c=v0_c; d_c=d0_c
-  call c_assemble_a(a_c(1:na,1:na),u_c(1:na,:),v_c(:,1:na),d_c(1:na),lbw)
+  call c_assemble_a(a_c(1:na,1:na),u_c(1:na,:),v_c(:,1:na),d_c(1:na),lbwa)
   a0_c(1:na,1:na)=a_c(1:na,1:na)
-  call upper_to_ub(a_c(1:na,1:na),ub_na_c,lbw, tol1,error)
+  call upper_to_ub(a_c(1:na,1:na),ub_na_c,lbwa, tol1,error)
   call cpu_time(t0)
   call compress_ub_to_bv(ub_na_c, bv_na_c,tol2,tol2,0,error)
   call cpu_time(t1)
@@ -458,12 +468,13 @@ program test_compress
   call c_deallocate_ub(ub_na_c)
   call c_deallocate_bv(bv_na_c)
   na=4
+  lbwa=min(na-1,lbw)
   ub_na_c=c_new_ub(na,lbwmax,ubwmax)
   bv_na_c=c_new_bv(na,lbwmax,ubwmax)
   u_c=u0_c; v_c=v0_c; d_c=d0_c
-  call c_assemble_a(a_c(1:na,1:na),u_c(1:na,:),v_c(:,1:na),d_c(1:na),lbw)
+  call c_assemble_a(a_c(1:na,1:na),u_c(1:na,:),v_c(:,1:na),d_c(1:na),lbwa)
   a0_c(1:na,1:na)=a_c(1:na,1:na)
-  call upper_to_ub(a_c(1:na,1:na),ub_na_c,lbw, tol1,error)
+  call upper_to_ub(a_c(1:na,1:na),ub_na_c,lbwa, tol1,error)
   call cpu_time(t0)
   call compress_ub_to_bv(ub_na_c, bv_na_c,tol2,tol2,0,error)
   call cpu_time(t1)
@@ -477,7 +488,7 @@ program test_compress
   print *
   print *, "--------------------------------"
   print *
-  print *, "Complex BV to UB tests:"
+  print *, "Complex BV to UB Compression Tests"
   print *
   ! case 1 termination test.
   u_c=u0_c; v_c=v0_c; d_c=d0_c
@@ -554,12 +565,13 @@ program test_compress
   call c_output_result(test_name,a0_c,a1_c,rmax,ub_c%ubw,t0,t1,tol2,error)
   ! small matrices
   na=1
+  lbwa=min(na-1,lbw)
   ub_na_c=c_new_ub(na,lbwmax,ubwmax)
   bv_na_c=c_new_bv(na,lbwmax,ubwmax)
   u_c=u0_c; v_c=v0_c; d_c=d0_c
-  call c_assemble_a(a_c(1:na,1:na),u_c(1:na,:),v_c(:,1:na),d_c(1:na),0)
+  call c_assemble_a(a_c(1:na,1:na),u_c(1:na,:),v_c(:,1:na),d_c(1:na),lbwa)
   a0_c(1:na,1:na)=a_c(1:na,1:na)
-  call upper_to_bv(a_c(1:na,1:na),bv_na_c,0, tol1,error)
+  call upper_to_bv(a_c(1:na,1:na),bv_na_c,lbwa, tol1,error)
   call cpu_time(t0)
   call compress_bv_to_ub(bv_na_c, ub_na_c,tol2,tol2,0,error)
   call cpu_time(t1)
@@ -569,12 +581,13 @@ program test_compress
   call c_deallocate_ub(ub_na_c)
   call c_deallocate_bv(bv_na_c)
   na=2
+  lbwa=min(na-1,lbw)
   ub_na_c=c_new_ub(na,lbwmax,ubwmax)
   bv_na_c=c_new_bv(na,lbwmax,ubwmax)
   u_c=u0_c; v_c=v0_c; d_c=d0_c
-  call c_assemble_a(a_c(1:na,1:na),u_c(1:na,:),v_c(:,1:na),d_c(1:na),lbw)
+  call c_assemble_a(a_c(1:na,1:na),u_c(1:na,:),v_c(:,1:na),d_c(1:na),lbwa)
   a0_c(1:na,1:na)=a_c(1:na,1:na)
-  call upper_to_bv(a_c(1:na,1:na),bv_na_c,lbw, tol1,error)
+  call upper_to_bv(a_c(1:na,1:na),bv_na_c,lbwa, tol1,error)
   call cpu_time(t0)
   call compress_bv_to_ub(bv_na_c, ub_na_c,tol2,tol2,0,error)
   call cpu_time(t1)
@@ -584,12 +597,13 @@ program test_compress
   call c_deallocate_ub(ub_na_c)
   call c_deallocate_bv(bv_na_c)
   na=3
+  lbwa=min(na-1,lbw)
   ub_na_c=c_new_ub(na,lbwmax,ubwmax)
   bv_na_c=c_new_bv(na,lbwmax,ubwmax)
   u_c=u0_c; v_c=v0_c; d_c=d0_c
-  call c_assemble_a(a_c(1:na,1:na),u_c(1:na,:),v_c(:,1:na),d_c(1:na),lbw)
+  call c_assemble_a(a_c(1:na,1:na),u_c(1:na,:),v_c(:,1:na),d_c(1:na),lbwa)
   a0_c(1:na,1:na)=a_c(1:na,1:na)
-  call upper_to_bv(a_c(1:na,1:na),bv_na_c,lbw, tol1,error)
+  call upper_to_bv(a_c(1:na,1:na),bv_na_c,lbwa, tol1,error)
   call cpu_time(t0)
   call compress_bv_to_ub(bv_na_c, ub_na_c,tol2,tol2,0,error)
   call cpu_time(t1)
@@ -599,12 +613,13 @@ program test_compress
   call c_deallocate_ub(ub_na_c)
   call c_deallocate_bv(bv_na_c)
   na=4
+  lbwa=min(na-1,lbw)
   ub_na_c=c_new_ub(na,lbwmax,ubwmax)
   bv_na_c=c_new_bv(na,lbwmax,ubwmax)
   u_c=u0_c; v_c=v0_c; d_c=d0_c
-  call c_assemble_a(a_c(1:na,1:na),u_c(1:na,:),v_c(:,1:na),d_c(1:na),lbw)
+  call c_assemble_a(a_c(1:na,1:na),u_c(1:na,:),v_c(:,1:na),d_c(1:na),lbwa)
   a0_c(1:na,1:na)=a_c(1:na,1:na)
-  call upper_to_bv(a_c(1:na,1:na),bv_na_c,lbw, tol1,error)
+  call upper_to_bv(a_c(1:na,1:na),bv_na_c,lbwa, tol1,error)
   call cpu_time(t0)
   call compress_bv_to_ub(bv_na_c, ub_na_c,tol2,tol2,0,error)
   call cpu_time(t1)
@@ -613,6 +628,6 @@ program test_compress
   call c_output_result(test_name,a0_c(1:na,1:na),a1_c(1:na,1:na),2,ub_na_c%ubw,t0,t1,tol2,error)
   call c_deallocate_ub(ub_na_c)
   call c_deallocate_bv(bv_na_c)
-
+  print *
 
 end program test_compress
