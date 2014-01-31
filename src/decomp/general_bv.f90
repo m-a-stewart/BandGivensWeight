@@ -30,10 +30,10 @@ contains
     integer(kind=int32), intent(out) :: error
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), intent(in) :: lbw
-    if (bv%n /= size(a,1) .or. bv%n /= size(a,2)) then
+    if (get_n(bv) /= size(a,1) .or. get_n(bv) /= size(a,2)) then
        error=3; return
     end if
-    call f_d_upper_to_bv(a,bv%n,bv%b, lbw, bv%ubw, bv%lbwmax, bv%ubwmax, &
+    call f_d_upper_to_bv(a,get_n(bv),bv%b, lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
          bv%numrotsv, bv%ksv, bv%csv, bv%ssv, tol, error)
     bv%lbw=lbw
   end subroutine d_upper_to_bv
@@ -379,10 +379,10 @@ contains
     integer(kind=int32), intent(out) :: error
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), intent(in) :: lbw
-    if (bv%n /= size(a,1) .or. bv%n /= size(a,2)) then
+    if (get_n(bv) /= size(a,1) .or. get_n(bv) /= size(a,2)) then
        error=3; return
     end if
-    call f_c_upper_to_bv(a,bv%n,bv%b, lbw, bv%ubw, bv%lbwmax, bv%ubwmax, &
+    call f_c_upper_to_bv(a,get_n(bv),bv%b, lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
          bv%numrotsv, bv%ksv, bv%csv, bv%ssv, tol, error)
     bv%lbw=lbw
   end subroutine c_upper_to_bv

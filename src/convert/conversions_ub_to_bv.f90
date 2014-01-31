@@ -25,16 +25,17 @@ contains
     type(d_ub) :: ub
     type(d_bv) :: bv
     integer(kind=int32), intent(out) :: error
-    if (ub%n /= bv%n) then
+    if (get_n(ub) /= get_n(bv)) then
        error = 3; return
     end if
-    call f_d_convert_ub_to_bv(ub%b, ub%n, ub%lbw, ub%ubw, ub%lbwmax, ub%ubwmax, ub%numrotsu, ub%jsu, &
-         ub%csu, ub%ssu, bv%b, bv%lbwmax, bv%ubwmax, bv%numrotsv, bv%ksv, bv%csv, bv%ssv, error)
-    bv%lbw=ub%lbw; bv%ubw=ub%ubw; bv%n=ub%n
+    call f_d_convert_ub_to_bv(ub%b, get_n(ub), ub%lbw, ub%ubw, get_lbwmax(ub), &
+         get_ubwmax(ub), ub%numrotsu, ub%jsu, ub%csu, ub%ssu, bv%b, get_lbwmax(bv), &
+         get_ubwmax(bv), bv%numrotsv, bv%ksv, bv%csv, bv%ssv, error)
+    bv%lbw=ub%lbw; bv%ubw=ub%ubw
   end subroutine d_convert_ub_to_bv
 
-  subroutine f_d_convert_ub_to_bv(b_ub, n, lbw, ubw, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, cs_ub, ss_ub, &
-       b_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, error)
+  subroutine f_d_convert_ub_to_bv(b_ub, n, lbw, ubw, lbwmax_ub, ubwmax_ub, numrots_ub, &
+       js_ub, cs_ub, ss_ub, b_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, error)
     real(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(inout) :: b_ub
     integer(kind=int32), intent(in) :: n, lbw, ubw, lbwmax_ub, ubwmax_ub, lbwmax_bv, ubwmax_bv
     integer(kind=int32), dimension(n), intent(in) :: numrots_ub
@@ -142,16 +143,18 @@ contains
     type(c_ub) :: ub
     type(c_bv) :: bv
     integer(kind=int32), intent(out) :: error
-    if (ub%n /= bv%n) then
+    if (get_n(ub) /= get_n(bv)) then
        error = 3; return
     end if
-    call f_c_convert_ub_to_bv(ub%b, ub%n, ub%lbw, ub%ubw, ub%lbwmax, ub%ubwmax, ub%numrotsu, ub%jsu, &
-         ub%csu, ub%ssu, bv%b, bv%lbwmax, bv%ubwmax, bv%numrotsv, bv%ksv, bv%csv, bv%ssv, error)
-    bv%lbw=ub%lbw; bv%ubw=ub%ubw; bv%n=ub%n
+    call f_c_convert_ub_to_bv(ub%b, get_n(ub), ub%lbw, ub%ubw, get_lbwmax(ub), &
+         get_ubwmax(ub), ub%numrotsu, ub%jsu, ub%csu, ub%ssu, bv%b, get_lbwmax(bv), &
+         get_ubwmax(bv), bv%numrotsv, bv%ksv, bv%csv, bv%ssv, error)
+    bv%lbw=ub%lbw; bv%ubw=ub%ubw
   end subroutine c_convert_ub_to_bv
 
-  subroutine f_c_convert_ub_to_bv(b_ub, n, lbw, ubw, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, cs_ub, ss_ub, &
-       b_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, error)
+  subroutine f_c_convert_ub_to_bv(b_ub, n, lbw, ubw, lbwmax_ub, ubwmax_ub, numrots_ub, &
+       js_ub, cs_ub, ss_ub, b_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, &
+       ss_bv, error)
     complex(kind=dp), dimension(lbwmax_ub+ubwmax_bv+1,n), intent(inout) :: b_ub
     integer(kind=int32), intent(in) :: n, lbw, ubw, lbwmax_ub, ubwmax_ub, lbwmax_bv, ubwmax_bv
     integer(kind=int32), dimension(n), intent(in) :: numrots_ub

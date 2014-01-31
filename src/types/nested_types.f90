@@ -3,7 +3,8 @@ use prec
 implicit none
 
 type d_ub
-   integer(kind=int32) :: n, lbw, ubw, lbwmax, ubwmax
+   integer(kind=int32) :: lbw, ubw
+   integer(kind=int32), private :: n, lbwmax, ubwmax
    real(kind=dp), dimension(:,:), allocatable :: b
    integer(kind=int32), dimension(:), allocatable :: numrotsu
    integer(kind=int32), dimension(:,:), allocatable :: jsu
@@ -11,7 +12,8 @@ type d_ub
 end type d_ub
 
 type c_ub
-   integer(kind=int32) :: n, lbw, ubw, lbwmax, ubwmax
+   integer(kind=int32) :: lbw, ubw
+   integer(kind=int32), private :: n, lbwmax, ubwmax
    complex(kind=dp), dimension(:,:), allocatable :: b
    integer(kind=int32), dimension(:), allocatable :: numrotsu
    integer(kind=int32), dimension(:,:), allocatable :: jsu
@@ -19,7 +21,8 @@ type c_ub
 end type c_ub
 
 type d_bv
-   integer(kind=int32) :: n, lbw, ubw, lbwmax, ubwmax
+   integer(kind=int32) :: lbw, ubw
+   integer(kind=int32), private :: n, lbwmax, ubwmax
    real(kind=dp), dimension(:,:), allocatable :: b
    integer(kind=int32), dimension(:), allocatable :: numrotsv
    integer(kind=int32), dimension(:,:), allocatable :: ksv
@@ -27,7 +30,8 @@ type d_bv
 end type d_bv
 
 type c_bv
-   integer(kind=int32) :: n, lbw, ubw, lbwmax, ubwmax
+   integer(kind=int32) :: lbw, ubw
+   integer(kind=int32), private :: n, lbwmax, ubwmax
    complex(kind=dp), dimension(:,:), allocatable :: b
    integer(kind=int32), dimension(:), allocatable :: numrotsv
    integer(kind=int32), dimension(:,:), allocatable :: ksv
@@ -41,6 +45,18 @@ end interface deallocate_ub
 interface deallocate_bv
    module procedure d_deallocate_bv, c_deallocate_bv
 end interface deallocate_bv
+
+interface get_n
+   module procedure d_ub_get_n, d_bv_get_n, c_ub_get_n, c_bv_get_n
+end interface get_n
+
+interface get_lbwmax
+   module procedure d_ub_get_lbwmax, d_bv_get_lbwmax, c_ub_get_lbwmax, c_bv_get_lbwmax
+end interface get_lbwmax
+
+interface get_ubwmax
+   module procedure d_ub_get_ubwmax, d_bv_get_ubwmax, c_ub_get_ubwmax, c_bv_get_ubwmax
+end interface get_ubwmax
 
 contains
 
@@ -64,6 +80,7 @@ subroutine d_deallocate_ub(ub)
   deallocate(ub%ssu)
   deallocate(ub%jsu)
   deallocate(ub%numrotsu)
+  ub%n=0; ub%lbwmax=0; ub%ubwmax=0
 end subroutine d_deallocate_ub
 
 type(c_ub) function c_new_ub(n,lbwmax,ubwmax) result(ub)
@@ -86,6 +103,7 @@ subroutine c_deallocate_ub(ub)
   deallocate(ub%ssu)
   deallocate(ub%jsu)
   deallocate(ub%numrotsu)
+  ub%n=0; ub%lbwmax=0; ub%ubwmax=0
 end subroutine c_deallocate_ub
 
 ! BV
@@ -110,6 +128,7 @@ subroutine d_deallocate_bv(bv)
   deallocate(bv%ssv)
   deallocate(bv%ksv)
   deallocate(bv%numrotsv)
+  bv%n=0; bv%lbwmax=0; bv%ubwmax=0
 end subroutine d_deallocate_bv
 
 type(c_bv) function c_new_bv(n,lbwmax,ubwmax) result(bv)
@@ -132,6 +151,75 @@ subroutine c_deallocate_bv(bv)
   deallocate(bv%ssv)
   deallocate(bv%ksv)
   deallocate(bv%numrotsv)
+  bv%n=0; bv%lbwmax=0; bv%ubwmax=0
 end subroutine c_deallocate_bv
+
+integer(kind=int32) function d_ub_get_n(ub) result(n)
+  type(d_ub) :: ub
+  n=ub%n
+end function d_ub_get_n
+
+integer(kind=int32) function d_bv_get_n(bv) result(n)
+  type(d_bv) :: bv
+  n=bv%n
+end function d_bv_get_n
+
+integer(kind=int32) function c_ub_get_n(ub) result(n)
+  type(c_ub) :: ub
+  n=ub%n
+end function c_ub_get_n
+
+integer(kind=int32) function c_bv_get_n(bv) result(n)
+  type(c_bv) :: bv
+  n=bv%n
+end function c_bv_get_n
+
+! lbwmax
+
+integer(kind=int32) function d_ub_get_lbwmax(ub) result(n)
+  type(d_ub) :: ub
+  n=ub%lbwmax
+end function d_ub_get_lbwmax
+
+integer(kind=int32) function d_bv_get_lbwmax(bv) result(n)
+  type(d_bv) :: bv
+  n=bv%lbwmax
+end function d_bv_get_lbwmax
+
+integer(kind=int32) function c_ub_get_lbwmax(ub) result(n)
+  type(c_ub) :: ub
+  n=ub%lbwmax
+end function c_ub_get_lbwmax
+
+integer(kind=int32) function c_bv_get_lbwmax(bv) result(n)
+  type(c_bv) :: bv
+  n=bv%lbwmax
+end function c_bv_get_lbwmax
+
+! ubwmax
+
+integer(kind=int32) function d_ub_get_ubwmax(ub) result(n)
+  type(d_ub) :: ub
+  n=ub%ubwmax
+end function d_ub_get_ubwmax
+
+integer(kind=int32) function d_bv_get_ubwmax(bv) result(n)
+  type(d_bv) :: bv
+  n=bv%ubwmax
+end function d_bv_get_ubwmax
+
+integer(kind=int32) function c_ub_get_ubwmax(ub) result(n)
+  type(c_ub) :: ub
+  n=ub%ubwmax
+end function c_ub_get_ubwmax
+
+integer(kind=int32) function c_bv_get_ubwmax(bv) result(n)
+  type(c_bv) :: bv
+  n=bv%ubwmax
+end function c_bv_get_ubwmax
+
+
+
+
 
 end module nested_types

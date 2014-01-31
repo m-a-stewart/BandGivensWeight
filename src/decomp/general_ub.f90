@@ -31,10 +31,10 @@ contains
     integer(kind=int32), intent(out) :: error
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), intent(in) :: lbw
-    if (ub%n /= size(a,1) .or. ub%n /= size(a,2)) then
+    if (get_n(ub) /= size(a,1) .or. get_n(ub) /= size(a,2)) then
        error=3; return
     end if
-    call f_d_upper_to_ub(a,ub%n,ub%b, lbw, ub%ubw, ub%lbwmax, ub%ubwmax, &
+    call f_d_upper_to_ub(a,get_n(ub),ub%b, lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
          ub%numrotsu, ub%jsu, ub%csu, ub%ssu, tol, error)
     ub%lbw=lbw
   end subroutine d_upper_to_ub
@@ -390,10 +390,10 @@ contains
     integer(kind=int32), intent(out) :: error
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), intent(in) :: lbw
-    if (ub%n /= size(a,1) .or. ub%n /= size(a,2)) then
+    if (get_n(ub) /= size(a,1) .or. get_n(ub) /= size(a,2)) then
        error=3; return
     end if
-    call f_c_upper_to_ub(a,ub%n,ub%b, lbw, ub%ubw, ub%lbwmax, ub%ubwmax, &
+    call f_c_upper_to_ub(a,get_n(ub),ub%b, lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
          ub%numrotsu, ub%jsu, ub%csu, ub%ssu, tol, error)
     ub%lbw=lbw
   end subroutine c_upper_to_ub

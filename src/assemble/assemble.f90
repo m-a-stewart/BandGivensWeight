@@ -31,11 +31,11 @@ contains
     real(kind=dp), dimension(:,:), intent(out) :: a
     integer(kind=int32), intent(out) :: error
     error=0
-    if (ub%n /= size(a,1) .or. ub%n /= size(a,2)) then
+    if (get_n(ub) /= size(a,1) .or. get_n(ub) /= size(a,2)) then
        error=3; return
     end if
-    call f_d_ub_to_upper(ub%b, ub%n, ub%lbw, ub%ubw, ub%lbwmax, ub%ubwmax, ub%numrotsu, &
-         ub%jsu, ub%csu, ub%ssu, a)
+    call f_d_ub_to_upper(ub%b, get_n(ub), ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
+         ub%numrotsu, ub%jsu, ub%csu, ub%ssu, a)
   end subroutine d_ub_to_upper
 
   subroutine f_d_ub_to_upper(b, n, lbw, ubw, lbwmax, ubwmax, numrots, js, cs, ss, a)
@@ -77,11 +77,11 @@ contains
     complex(kind=dp), dimension(:,:), intent(out) :: a
     integer(kind=int32), intent(out) :: error
     error=0
-    if (ub%n /= size(a,1) .or. ub%n /= size(a,2)) then
+    if (get_n(ub) /= size(a,1) .or. get_n(ub) /= size(a,2)) then
        error=3; return
     end if
-    call f_c_ub_to_upper(ub%b, ub%n, ub%lbw, ub%ubw, ub%lbwmax, ub%ubwmax, ub%numrotsu, &
-         ub%jsu, ub%csu, ub%ssu, a)
+    call f_c_ub_to_upper(ub%b, get_n(ub), ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
+         ub%numrotsu, ub%jsu, ub%csu, ub%ssu, a)
   end subroutine c_ub_to_upper
 
   subroutine f_c_ub_to_upper(b, n, lbw, ubw, lbwmax, ubwmax, numrots, js, cs, ss, a)
@@ -124,11 +124,11 @@ contains
     real(kind=dp), dimension(:,:), intent(out) :: a
     integer(kind=int32), intent(out) :: error
     error=0
-    if (bv%n /= size(a,1) .or. bv%n /= size(a,2)) then
+    if (get_n(bv) /= size(a,1) .or. get_n(bv) /= size(a,2)) then
        error=3; return
     end if
-    call f_d_bv_to_upper(bv%b, bv%n, bv%lbw, bv%ubw, bv%lbwmax, bv%ubwmax, bv%numrotsv, &
-         bv%ksv, bv%csv, bv%ssv, a)
+    call f_d_bv_to_upper(bv%b, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
+         bv%numrotsv, bv%ksv, bv%csv, bv%ssv, a)
   end subroutine d_bv_to_upper
 
   subroutine f_d_bv_to_upper(b, n, lbw, ubw, lbwmax, ubwmax, numrots, ks, cs, ss, a)
@@ -170,11 +170,11 @@ contains
     complex(kind=dp), dimension(:,:), intent(out) :: a
     integer(kind=int32), intent(out) :: error
     error=0
-    if (bv%n /= size(a,1) .or. bv%n /= size(a,2)) then
+    if (get_n(bv) /= size(a,1) .or. get_n(bv) /= size(a,2)) then
        error=3; return
     end if
-    call f_c_bv_to_upper(bv%b, bv%n, bv%lbw, bv%ubw, bv%lbwmax, bv%ubwmax, bv%numrotsv, &
-         bv%ksv, bv%csv, bv%ssv, a)
+    call f_c_bv_to_upper(bv%b, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
+         bv%numrotsv, bv%ksv, bv%csv, bv%ssv, a)
   end subroutine c_bv_to_upper
 
   subroutine f_c_bv_to_upper(b, n, lbw, ubw, lbwmax, ubwmax, numrots, ks, cs, ss, a)

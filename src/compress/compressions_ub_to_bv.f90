@@ -38,14 +38,15 @@ contains
     integer(kind=int32), intent(out) :: error
     integer(kind=int32), intent(in) :: dr
     real(kind=dp), intent(in) :: tol, told
-    if (ub%n /= bv%n) then
+    if (get_n(ub) /= get_n(bv)) then
        error = 3; return
     end if
-    call f_d_compress_ub_to_bv(ub%b, ub%n, ub%lbw, ub%ubw, ub%lbwmax, ub%ubwmax, ub%numrotsu, ub%jsu, &
-         ub%csu, ub%ssu, bv%b, bv%ubw, bv%lbwmax, bv%ubwmax, bv%numrotsv, bv%ksv, bv%csv, bv%ssv, &
+    call f_d_compress_ub_to_bv(ub%b, get_n(ub), ub%lbw, ub%ubw, get_lbwmax(ub), &
+         get_ubwmax(ub), ub%numrotsu, ub%jsu, ub%csu, ub%ssu, bv%b, bv%ubw, &
+         get_lbwmax(bv), get_ubwmax(bv), bv%numrotsv, bv%ksv, bv%csv, bv%ssv, &
          told, tol, dr, error)
     if (error == 0) then
-       bv%lbw=ub%lbw; bv%n=ub%n
+       bv%lbw=ub%lbw
     end if
   end subroutine d_compress_ub_to_bv
 
@@ -66,7 +67,8 @@ contains
     real(kind=dp), dimension(n,ubwmax_bv), intent(out) :: cs_bv, ss_bv
     integer(kind=int32), intent(out) :: error, ubw_bv
 
-    integer(kind=int32) :: j, k, kk, roffs, coffs, qoffs, ubw2, nullerr, d, minindex, ml, nl, dnl, mq
+    integer(kind=int32) :: j, k, kk, roffs, coffs, qoffs, ubw2, nullerr, d, minindex, &
+         ml, nl, dnl, mq
     type(d_rotation) :: rot
     real(kind=dp), target, dimension(ubw+1,ubw+1) :: q
     real(kind=dp), pointer, dimension(:,:) :: pq
@@ -146,7 +148,8 @@ contains
           ubws(j)=nl-1
           numrots_bv(j)=nl-minindex
           do k=minindex,nl-1
-             rot=rgivens(get_el_bc(b_ub,ubw2,roffs+k+1,coffs+k),get_el_bc(b_ub,ubw2,roffs+k+1,coffs+k+1))
+             rot=rgivens(get_el_bc(b_ub,ubw2,roffs+k+1,coffs+k), &
+                  get_el_bc(b_ub,ubw2,roffs+k+1,coffs+k+1))
              call tbc_times_rotation(b_ub,n,lbw,ubw2,j,rot,coffs+k)
              cs_bv(j,nl-k)=rot%cosine; ss_bv(j,nl-k)=rot%sine
              ks_bv(j,nl-k)=coffs+k
@@ -180,7 +183,8 @@ contains
                 call tbc_times_rotation(b_ub,n,lbw,ubw2,j,rot,coffs+k)
                 cs_bv(j,nl-k)=rot%cosine; ss_bv(j,nl-k)=rot%sine
                 ks_bv(j,nl-k)=coffs+k
-                rot=lgivens2(get_el_bc(b_ub,ubw2,roffs+k,coffs+k+1),get_el_bc(b_ub,ubw2,roffs+k+1,coffs+k+1))
+                rot=lgivens2(get_el_bc(b_ub,ubw2,roffs+k,coffs+k+1), &
+                     get_el_bc(b_ub,ubw2,roffs+k+1,coffs+k+1))
                 call rotation_times_tbc(trp_rot(rot),b_ub,n,lbw,ubw2,n-j,roffs+k)
                 call general_times_rotation(pq,rot,roffs-qoffs+k,roffs-qoffs+k+1)
                 call set_el_bc(b_ub,ubw2,roffs+k,coffs+k+1,0.0_dp)
@@ -211,7 +215,8 @@ contains
        ! Eliminate a diagonal.
        if (dnl==0) then
           do k=nl-1,1,-1
-             rot=lgivens2(get_el_bc(b_ub,ubw2,roffs+k-1,coffs+k),get_el_bc(b_ub,ubw2,roffs+k,coffs+k))
+             rot=lgivens2(get_el_bc(b_ub,ubw2,roffs+k-1,coffs+k), &
+                  get_el_bc(b_ub,ubw2,roffs+k,coffs+k))
              call rotation_times_tbc(trp_rot(rot),b_ub,n,lbw,ubw2,n-j,roffs+k-1)
              call general_times_rotation(pq,rot,roffs-qoffs+k-1,roffs-qoffs+k)
              call set_el_bc(b_ub,ubw2,roffs+k-1,coffs+k,0.0_dp)
@@ -314,14 +319,15 @@ contains
     integer(kind=int32), intent(out) :: error
     integer(kind=int32), intent(in) :: dr
     real(kind=dp), intent(in) :: tol, told
-    if (ub%n /= bv%n) then
+    if (get_n(ub) /= get_n(bv)) then
        error = 3; return
     end if
-    call f_c_compress_ub_to_bv(ub%b, ub%n, ub%lbw, ub%ubw, ub%lbwmax, ub%ubwmax, ub%numrotsu, ub%jsu, &
-         ub%csu, ub%ssu, bv%b, bv%ubw, bv%lbwmax, bv%ubwmax, bv%numrotsv, bv%ksv, bv%csv, bv%ssv, &
+    call f_c_compress_ub_to_bv(ub%b, get_n(ub), ub%lbw, ub%ubw, get_lbwmax(ub), &
+         get_ubwmax(ub), ub%numrotsu, ub%jsu, ub%csu, ub%ssu, bv%b, bv%ubw, &
+         get_lbwmax(bv), get_ubwmax(bv), bv%numrotsv, bv%ksv, bv%csv, bv%ssv, &
          told, tol, dr, error)
     if (error == 0) then
-       bv%lbw=ub%lbw; bv%n=ub%n
+       bv%lbw=ub%lbw
     end if
   end subroutine c_compress_ub_to_bv
 
@@ -341,7 +347,8 @@ contains
     complex(kind=dp), dimension(n,ubwmax_bv), intent(out) :: cs_bv, ss_bv
     integer(kind=int32), intent(out) :: error, ubw_bv
 
-    integer(kind=int32) :: j, k, kk, roffs, coffs, qoffs, ubw2, nullerr, d, minindex, ml, nl, dnl, mq
+    integer(kind=int32) :: j, k, kk, roffs, coffs, qoffs, ubw2, nullerr, d, &
+         minindex, ml, nl, dnl, mq
     type(c_rotation) :: rot
     complex(kind=dp), target, dimension(ubw+1,ubw+1) :: q
     complex(kind=dp), pointer, dimension(:,:) :: pq
@@ -421,7 +428,8 @@ contains
           ubws(j)=nl-1
           numrots_bv(j)=nl-minindex
           do k=minindex,nl-1
-             rot=rgivens(get_el_bc(b_ub,ubw2,roffs+k+1,coffs+k),get_el_bc(b_ub,ubw2,roffs+k+1,coffs+k+1))
+             rot=rgivens(get_el_bc(b_ub,ubw2,roffs+k+1,coffs+k), &
+                  get_el_bc(b_ub,ubw2,roffs+k+1,coffs+k+1))
              call tbc_times_rotation(b_ub,n,lbw,ubw2,j,rot,coffs+k)
              cs_bv(j,nl-k)=rot%cosine; ss_bv(j,nl-k)=rot%sine
              ks_bv(j,nl-k)=coffs+k
@@ -455,7 +463,8 @@ contains
                 call tbc_times_rotation(b_ub,n,lbw,ubw2,j,rot,coffs+k)
                 cs_bv(j,nl-k)=rot%cosine; ss_bv(j,nl-k)=rot%sine
                 ks_bv(j,nl-k)=coffs+k
-                rot=lgivens2(get_el_bc(b_ub,ubw2,roffs+k,coffs+k+1),get_el_bc(b_ub,ubw2,roffs+k+1,coffs+k+1))
+                rot=lgivens2(get_el_bc(b_ub,ubw2,roffs+k,coffs+k+1), &
+                     get_el_bc(b_ub,ubw2,roffs+k+1,coffs+k+1))
                 call rotation_times_tbc(trp_rot(rot),b_ub,n,lbw,ubw2,n-j,roffs+k)
                 call general_times_rotation(pq,rot,roffs-qoffs+k,roffs-qoffs+k+1)
                 call set_el_bc(b_ub,ubw2,roffs+k,coffs+k+1,(0.0_dp, 0.0_dp))
@@ -486,7 +495,8 @@ contains
        ! Eliminate a diagonal.
        if (dnl==0) then
           do k=nl-1,1,-1
-             rot=lgivens2(get_el_bc(b_ub,ubw2,roffs+k-1,coffs+k),get_el_bc(b_ub,ubw2,roffs+k,coffs+k))
+             rot=lgivens2(get_el_bc(b_ub,ubw2,roffs+k-1,coffs+k), &
+                  get_el_bc(b_ub,ubw2,roffs+k,coffs+k))
              call rotation_times_tbc(trp_rot(rot),b_ub,n,lbw,ubw2,n-j,roffs+k-1)
              call general_times_rotation(pq,rot,roffs-qoffs+k-1,roffs-qoffs+k)
              call set_el_bc(b_ub,ubw2,roffs+k-1,coffs+k,(0.0_dp, 0.0_dp))
