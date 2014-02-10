@@ -22,6 +22,10 @@ $(OBJDIR)/compressions_ub_to_bv.o : $(OBJDIR)/prec.o $(OBJDIR)/band_types.o $(OB
 			$(OBJDIR)/rotation.o
 $(OBJDIR)/compressions_bv_to_ub.o : $(OBJDIR)/prec.o $(OBJDIR)/band_types.o $(OBJDIR)/shift.o $(OBJDIR)/nested_types.o \
 			$(OBJDIR)/rotation.o
+$(OBJDIR)/qr_iteration.o : $(OBJDIR)/prec.o $(OBJDIR)/band_types.o $(OBJDIR)/shift.o $(OBJDIR)/nested_types.o \
+			$(OBJDIR)/rotation.o
+
+
 
 $(OBJDIR)/%.o : %.f90
 	$(FC) $(CFLAGS) $(PROFCFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@
@@ -46,6 +50,10 @@ $(OBJDIR)/%.o : convert/%.f90
 
 $(OBJDIR)/%.o : compress/%.f90
 	$(FC) $(CFLAGS) $(PROFCFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@
+
+$(OBJDIR)/%.o : qr_iteration/%.f90
+	$(FC) $(CFLAGS) $(PROFCFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@
+
 
 
 $(OBJDIR)/%.o : assemble/%.f90

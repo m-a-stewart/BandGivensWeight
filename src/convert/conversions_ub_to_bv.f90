@@ -75,7 +75,7 @@ contains
     ! apply u_{n-1}
     do j=1,numrots_ub(n-1)
        rot%cosine=cs_ub(j,n-1); rot%sine=ss_ub(j,n-1)
-       call rotation_times_tbc(rot,b_ub,n,lbw1,ubw1,n-1,js_ub(j,n-1))
+       call rotation_times_tbc(rot,b_ub,n,lbw1,ubw1,n-1,0,js_ub(j,n-1))
     end do
     ! Generate a ubw x (ubw+1) lower trapezoidal submatrix
     do k=2,ubw1-1
@@ -85,12 +85,12 @@ contains
           rot=rgivens(get_el_bc(b_ub,ubw1,roffs+j,coffs+j-1),get_el_bc(b_ub,ubw1,roffs+j,coffs+j))
           cs_bv(k,k+1-j)=rot%cosine; ss_bv(k,k+1-j)=rot%sine
           ks_bv(k,k+1-j)=coffs+j-1
-          call tbc_times_rotation(b_ub,n,lbw1,ubw1,k,rot,coffs+j-1)
+          call tbc_times_rotation(b_ub,n,lbw1,ubw1,0,k,rot,coffs+j-1)
           call set_el_bc(b_ub, ubw1, roffs+j,coffs+j,0.0_dp)
        end do
        do j=1,numrots_ub(n-k)
           rot%cosine=cs_ub(j,n-k); rot%sine=ss_ub(j,n-k)
-          call rotation_times_tbc(rot,b_ub,n,lbw1,ubw1,n-k,js_ub(j,n-k))
+          call rotation_times_tbc(rot,b_ub,n,lbw1,ubw1,n-k,0,js_ub(j,n-k))
        end do
     end do
     do k=ubw1,n-ubw1
@@ -100,12 +100,12 @@ contains
           rot=rgivens(get_el_bc(b_ub,ubw1,roffs+j,coffs+j-1),get_el_bc(b_ub,ubw1,roffs+j,coffs+j))
           cs_bv(k,ubw1-j+1)=rot%cosine; ss_bv(k,ubw1-j+1)=rot%sine
           ks_bv(k,ubw1-j+1)=coffs+j-1
-          call tbc_times_rotation(b_ub,n,lbw1,ubw1,k,rot,coffs+j-1)
+          call tbc_times_rotation(b_ub,n,lbw1,ubw1,0,k,rot,coffs+j-1)
           call set_el_bc(b_ub, ubw1, roffs+j,coffs+j,0.0_dp)
        end do
        do j=1,numrots_ub(n-k)
           rot%cosine=cs_ub(j,n-k); rot%sine=ss_ub(j,n-k)
-          call rotation_times_tbc(rot,b_ub,n,lbw1,ubw1,n-k,js_ub(j,n-k))
+          call rotation_times_tbc(rot,b_ub,n,lbw1,ubw1,n-k,0,js_ub(j,n-k))
        end do
     end do
     coffs=ubw1-1
@@ -116,12 +116,12 @@ contains
              rot=rgivens(get_el_bc(b_ub,ubw1,j,coffs+j),get_el_bc(b_ub,ubw1,j,coffs+j+1))
              cs_bv(k,n-k-j+1)=rot%cosine; ss_bv(k,n-k-j+1)=rot%sine
              ks_bv(k,n-k-j+1)=coffs+j
-             call tbc_times_rotation(b_ub,n,lbw1,ubw1,k,rot,coffs+j)
+             call tbc_times_rotation(b_ub,n,lbw1,ubw1,0,k,rot,coffs+j)
              call set_el_bc(b_ub,ubw1,j,coffs+j+1,0.0_dp)
           end do
           do j=1,numrots_ub(n-k)
              rot%cosine=cs_ub(j,n-k); rot%sine=ss_ub(j,n-k)
-             call rotation_times_tbc(rot,b_ub,n,lbw1,ubw1,n-k,js_ub(j,n-k))
+             call rotation_times_tbc(rot,b_ub,n,lbw1,ubw1,n-k,0,js_ub(j,n-k))
           end do
        end do
     end if
@@ -194,7 +194,7 @@ contains
     ! apply u_{n-1}
     do j=1,numrots_ub(n-1)
        rot%cosine=cs_ub(j,n-1); rot%sine=ss_ub(j,n-1)
-       call rotation_times_tbc(rot,b_ub,n,lbw1,ubw1,n-1,js_ub(j,n-1))
+       call rotation_times_tbc(rot,b_ub,n,lbw1,ubw1,n-1,0,js_ub(j,n-1))
     end do
     ! Generate a ubw x (ubw+1) lower trapezoidal submatrix
     do k=2,ubw1-1
@@ -204,12 +204,12 @@ contains
           rot=rgivens(get_el_bc(b_ub,ubw1,roffs+j,coffs+j-1),get_el_bc(b_ub,ubw1,roffs+j,coffs+j))
           cs_bv(k,k+1-j)=rot%cosine; ss_bv(k,k+1-j)=rot%sine
           ks_bv(k,k+1-j)=coffs+j-1
-          call tbc_times_rotation(b_ub,n,lbw1,ubw1,k,rot,coffs+j-1)
+          call tbc_times_rotation(b_ub,n,lbw1,ubw1,0,k,rot,coffs+j-1)
           call set_el_bc(b_ub, ubw1, roffs+j,coffs+j,(0.0_dp, 0.0_dp))
        end do
        do j=1,numrots_ub(n-k)
           rot%cosine=cs_ub(j,n-k); rot%sine=ss_ub(j,n-k)
-          call rotation_times_tbc(rot,b_ub,n,lbw1,ubw1,n-k,js_ub(j,n-k))
+          call rotation_times_tbc(rot,b_ub,n,lbw1,ubw1,n-k,0,js_ub(j,n-k))
        end do
     end do
     do k=ubw1,n-ubw1
@@ -219,12 +219,12 @@ contains
           rot=rgivens(get_el_bc(b_ub,ubw1,roffs+j,coffs+j-1),get_el_bc(b_ub,ubw1,roffs+j,coffs+j))
           cs_bv(k,ubw1-j+1)=rot%cosine; ss_bv(k,ubw1-j+1)=rot%sine
           ks_bv(k,ubw1-j+1)=coffs+j-1
-          call tbc_times_rotation(b_ub,n,lbw1,ubw1,k,rot,coffs+j-1)
+          call tbc_times_rotation(b_ub,n,lbw1,ubw1,0,k,rot,coffs+j-1)
           call set_el_bc(b_ub, ubw1, roffs+j,coffs+j,(0.0_dp, 0.0_dp))
        end do
        do j=1,numrots_ub(n-k)
           rot%cosine=cs_ub(j,n-k); rot%sine=ss_ub(j,n-k)
-          call rotation_times_tbc(rot,b_ub,n,lbw1,ubw1,n-k,js_ub(j,n-k))
+          call rotation_times_tbc(rot,b_ub,n,lbw1,ubw1,n-k,0,js_ub(j,n-k))
        end do
     end do
     coffs=ubw1-1
@@ -235,12 +235,12 @@ contains
              rot=rgivens(get_el_bc(b_ub,ubw1,j,coffs+j),get_el_bc(b_ub,ubw1,j,coffs+j+1))
              cs_bv(k,n-k-j+1)=rot%cosine; ss_bv(k,n-k-j+1)=rot%sine
              ks_bv(k,n-k-j+1)=coffs+j
-             call tbc_times_rotation(b_ub,n,lbw1,ubw1,k,rot,coffs+j)
+             call tbc_times_rotation(b_ub,n,lbw1,ubw1,0,k,rot,coffs+j)
              call set_el_bc(b_ub,ubw1,j,coffs+j+1,(0.0_dp, 0.0_dp))
           end do
           do j=1,numrots_ub(n-k)
              rot%cosine=cs_ub(j,n-k); rot%sine=ss_ub(j,n-k)
-             call rotation_times_tbc(rot,b_ub,n,lbw1,ubw1,n-k,js_ub(j,n-k))
+             call rotation_times_tbc(rot,b_ub,n,lbw1,ubw1,n-k,0,js_ub(j,n-k))
           end do
        end do
     end if

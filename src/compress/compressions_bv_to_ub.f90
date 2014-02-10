@@ -110,7 +110,7 @@ contains
     roffs=0; coffs=1
     do j=ubw-1,1,-1
        rot=rgivens(get_el_br(b_bv,lbw,1,coffs+j),get_el_br(b_bv,lbw,1,coffs+j+1))
-       call tbr_times_rotation(b_bv,n,lbw,ubw2,n-1,rot,coffs+j)
+       call tbr_times_rotation(b_bv,n,lbw,ubw2,0,n-1,rot,coffs+j)
        call rotation_times_general(trp_rot(rot), q, j,j+1)
        call set_el_br(b_bv,lbw,1,coffs+j+1,0.0_dp)
     end do
@@ -141,7 +141,7 @@ contains
           do j=minindex,2,-1
              rot=lgivens2(get_el_br(b_bv,lbw,roffs+j-1,coffs+j-1), &
                   get_el_br(b_bv,lbw,roffs+j,coffs+j-1))
-             call rotation_times_tbr(trp_rot(rot), b_bv,n,lbw,ubw2,coffs,roffs+j-1)
+             call rotation_times_tbr(trp_rot(rot), b_bv,n,lbw,ubw2,coffs,0,roffs+j-1)
              cs_ub(j-1,k)=rot%cosine; ss_ub(j-1,k)=rot%sine
              js_ub(j-1,k)=roffs+j-1
              call set_el_br(b_bv,lbw,roffs+j-1,coffs+j-1,0.0_dp)
@@ -171,12 +171,12 @@ contains
              do j=nl-1,1,-1
                 rot=rgivens(x(j),x(j+1))
                 call general_times_rotation(x,rot,j,j+1)
-                call rotation_times_tbr(trp_rot(rot),b_bv,n,lbw,ubw2,coffs,roffs+j)
+                call rotation_times_tbr(trp_rot(rot),b_bv,n,lbw,ubw2,coffs,0,roffs+j)
                 cs_ub(j,k)=rot%cosine; ss_ub(j,k)=rot%sine
                 js_ub(j,k)=roffs+j
                 rot=rgivens(get_el_br(b_bv,lbw,roffs+j,coffs+j), &
                      get_el_br(b_bv,lbw,roffs+j,coffs+j+1))
-                call tbr_times_rotation(b_bv,n,lbw,ubw2,n-k,rot,coffs+j)
+                call tbr_times_rotation(b_bv,n,lbw,ubw2,0,n-k,rot,coffs+j)
                 call rotation_times_general(trp_rot(rot),q,j,j+1)
                 call set_el_br(b_bv,lbw,roffs+j,coffs+j+1,0.0_dp)
              end do
@@ -194,7 +194,7 @@ contains
           rot=lgivens(q(j,1),q(j+1,1))
           call rotation_times_general(trp_rot(rot),q,j,j+1)
           q(j+1,1)=0.0_dp
-          call tbr_times_rotation(b_bv,n,lbw,ubw2,n-k,rot,coffs+j)
+          call tbr_times_rotation(b_bv,n,lbw,ubw2,0,n-k,rot,coffs+j)
        end do
        do j=1,nl
           tmp=get_el_br(b_bv,lbw,roffs+j,coffs+1)
@@ -210,7 +210,7 @@ contains
        if (dnl==0) then
           do j=2,nl
              rot=rgivens(get_el_br(b_bv,lbw,roffs+j,coffs+j),get_el_br(b_bv,lbw,roffs+j,coffs+j+1))
-             call tbr_times_rotation(b_bv,n,lbw,ubw2,n-k-1,rot,coffs+j)
+             call tbr_times_rotation(b_bv,n,lbw,ubw2,0,n-k-1,rot,coffs+j)
              call rotation_times_general(trp_rot(rot),q,j-1,j)
              call set_el_br(b_bv,lbw,roffs+j,coffs+j+1,0.0_dp)
           end do
@@ -218,7 +218,7 @@ contains
        ! compress row k+1
        do j=nq-1,nl+1+dnl,-1
           rot=rgivens(get_el_br(b_bv,lbw,k+1,coffs+j), get_el_br(b_bv,lbw,k+1,coffs+j+1))
-          call tbr_times_rotation(b_bv,n,lbw,ubw2,n-k-1,rot,coffs+j)
+          call tbr_times_rotation(b_bv,n,lbw,ubw2,0,n-k-1,rot,coffs+j)
           call rotation_times_general(trp_rot(rot),q,j-1,j)
           call set_el_br(b_bv,lbw,k+1,coffs+j+1,0.0_dp)
        end do
@@ -264,7 +264,7 @@ contains
        numrots_ub(k) = nl
        do j=nl,1,-1
           rot=lgivens2(get_el_br(b_bv,lbw,roffs+j,coffs+j),get_el_br(b_bv,lbw,roffs+j+1,coffs+j))
-          call rotation_times_tbr(trp_rot(rot), b_bv,n,lbw,ubw2,coffs,roffs+j)
+          call rotation_times_tbr(trp_rot(rot), b_bv,n,lbw,ubw2,coffs,0,roffs+j)
           cs_ub(j,k)=rot%cosine; ss_ub(j,k)=rot%sine
           js_ub(j,k)=roffs+j
           call set_el_br(b_bv,lbw,roffs+j,coffs+j,0.0_dp)
@@ -274,7 +274,7 @@ contains
           rot=lgivens(q(j,1),q(j+1,1))
           call rotation_times_general(trp_rot(rot),q,j,j+1)
           q(j+1,1)=0.0_dp
-          call tbr_times_rotation(b_bv,n,lbw,ubw2,n-k,rot,coffs+j)
+          call tbr_times_rotation(b_bv,n,lbw,ubw2,0,n-k,rot,coffs+j)
        end do
        do j=1,ml
           tmp=get_el_br(b_bv,lbw,roffs+j,coffs+1)
@@ -388,7 +388,7 @@ contains
     roffs=0; coffs=1
     do j=ubw-1,1,-1
        rot=rgivens(get_el_br(b_bv,lbw,1,coffs+j),get_el_br(b_bv,lbw,1,coffs+j+1))
-       call tbr_times_rotation(b_bv,n,lbw,ubw2,n-1,rot,coffs+j)
+       call tbr_times_rotation(b_bv,n,lbw,ubw2,0,n-1,rot,coffs+j)
        call rotation_times_general(trp_rot(rot), q, j,j+1)
        call set_el_br(b_bv,lbw,1,coffs+j+1,(0.0_dp,0.0_dp))
     end do
@@ -419,7 +419,7 @@ contains
           do j=minindex,2,-1
              rot=lgivens2(get_el_br(b_bv,lbw,roffs+j-1,coffs+j-1), &
                   get_el_br(b_bv,lbw,roffs+j,coffs+j-1))
-             call rotation_times_tbr(trp_rot(rot), b_bv,n,lbw,ubw2,coffs,roffs+j-1)
+             call rotation_times_tbr(trp_rot(rot), b_bv,n,lbw,ubw2,coffs,0,roffs+j-1)
              cs_ub(j-1,k)=rot%cosine; ss_ub(j-1,k)=rot%sine
              js_ub(j-1,k)=roffs+j-1
              call set_el_br(b_bv,lbw,roffs+j-1,coffs+j-1,(0.0_dp,0.0_dp))
@@ -449,12 +449,12 @@ contains
              do j=nl-1,1,-1
                 rot=rgivens(x(j),x(j+1))
                 call general_times_rotation(x,rot,j,j+1)
-                call rotation_times_tbr(trp_rot(rot),b_bv,n,lbw,ubw2,coffs,roffs+j)
+                call rotation_times_tbr(trp_rot(rot),b_bv,n,lbw,ubw2,coffs,0,roffs+j)
                 cs_ub(j,k)=rot%cosine; ss_ub(j,k)=rot%sine
                 js_ub(j,k)=roffs+j
                 rot=rgivens(get_el_br(b_bv,lbw,roffs+j,coffs+j), &
                      get_el_br(b_bv,lbw,roffs+j,coffs+j+1))
-                call tbr_times_rotation(b_bv,n,lbw,ubw2,n-k,rot,coffs+j)
+                call tbr_times_rotation(b_bv,n,lbw,ubw2,0,n-k,rot,coffs+j)
                 call rotation_times_general(trp_rot(rot),q,j,j+1)
                 call set_el_br(b_bv,lbw,roffs+j,coffs+j+1,(0.0_dp,0.0_dp))
              end do
@@ -472,7 +472,7 @@ contains
           rot=lgivens(q(j,1),q(j+1,1))
           call rotation_times_general(trp_rot(rot),q,j,j+1)
           q(j+1,1)=(0.0_dp,0.0_dp)
-          call tbr_times_rotation(b_bv,n,lbw,ubw2,n-k,rot,coffs+j)
+          call tbr_times_rotation(b_bv,n,lbw,ubw2,0,n-k,rot,coffs+j)
        end do
        do j=1,nl
           tmp=get_el_br(b_bv,lbw,roffs+j,coffs+1)
@@ -488,7 +488,7 @@ contains
        if (dnl==0) then
           do j=2,nl
              rot=rgivens(get_el_br(b_bv,lbw,roffs+j,coffs+j),get_el_br(b_bv,lbw,roffs+j,coffs+j+1))
-             call tbr_times_rotation(b_bv,n,lbw,ubw2,n-k-1,rot,coffs+j)
+             call tbr_times_rotation(b_bv,n,lbw,ubw2,0,n-k-1,rot,coffs+j)
              call rotation_times_general(trp_rot(rot),q,j-1,j)
              call set_el_br(b_bv,lbw,roffs+j,coffs+j+1,(0.0_dp,0.0_dp))
           end do
@@ -496,7 +496,7 @@ contains
        ! compress row k+1
        do j=nq-1,nl+1+dnl,-1
           rot=rgivens(get_el_br(b_bv,lbw,k+1,coffs+j), get_el_br(b_bv,lbw,k+1,coffs+j+1))
-          call tbr_times_rotation(b_bv,n,lbw,ubw2,n-k-1,rot,coffs+j)
+          call tbr_times_rotation(b_bv,n,lbw,ubw2,0,n-k-1,rot,coffs+j)
           call rotation_times_general(trp_rot(rot),q,j-1,j)
           call set_el_br(b_bv,lbw,k+1,coffs+j+1,(0.0_dp,0.0_dp))
        end do
@@ -542,7 +542,7 @@ contains
        numrots_ub(k) = nl
        do j=nl,1,-1
           rot=lgivens2(get_el_br(b_bv,lbw,roffs+j,coffs+j),get_el_br(b_bv,lbw,roffs+j+1,coffs+j))
-          call rotation_times_tbr(trp_rot(rot), b_bv,n,lbw,ubw2,coffs,roffs+j)
+          call rotation_times_tbr(trp_rot(rot), b_bv,n,lbw,ubw2,coffs,0,roffs+j)
           cs_ub(j,k)=rot%cosine; ss_ub(j,k)=rot%sine
           js_ub(j,k)=roffs+j
           call set_el_br(b_bv,lbw,roffs+j,coffs+j,(0.0_dp,0.0_dp))
@@ -552,7 +552,7 @@ contains
           rot=lgivens(q(j,1),q(j+1,1))
           call rotation_times_general(trp_rot(rot),q,j,j+1)
           q(j+1,1)=(0.0_dp,0.0_dp)
-          call tbr_times_rotation(b_bv,n,lbw,ubw2,n-k,rot,coffs+j)
+          call tbr_times_rotation(b_bv,n,lbw,ubw2,0,n-k,rot,coffs+j)
        end do
        do j=1,ml
           tmp=get_el_br(b_bv,lbw,roffs+j,coffs+1)

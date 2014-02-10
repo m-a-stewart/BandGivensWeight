@@ -1,9 +1,11 @@
 include ../include/vars.mk
 
-run_test : test_compress test_decomp test_convert
-	./test_decomp
+run_test : test_compress test_decomp test_convert test_qr_iteration
 	./test_convert
-	./test_compress
+	./test_qr_iteration
+#	./test_decomp
+#	./test_compress
+
 
 test_decomp : $(OBJDIR)/test_decomp.o $(OBJS) $(OBJDIR)/test_data.o
 	$(FC) $(LFLAGS) $(PROFLFLAGS) $(OBJDIR)/test_decomp.o $(OBJS) $(OBJDIR)/test_data.o -o test_decomp
@@ -14,7 +16,10 @@ test_convert : $(OBJDIR)/test_convert.o $(OBJS) $(OBJDIR)/test_data.o
 test_compress : $(OBJDIR)/test_compress.o $(OBJS) $(OBJDIR)/test_data.o
 	$(FC) $(LFLAGS) $(PROFLFLAGS) $(OBJDIR)/test_compress.o $(OBJS) $(OBJDIR)/test_data.o -o test_compress
 
-$(OBJDIR)/test_data.o : $(OBJDIR)/prec.o $(OBJDIR)/test_data.o
+test_qr_iteration : $(OBJDIR)/test_qr_iteration.o $(OBJS) $(OBJDIR)/test_data.o
+	$(FC) $(LFLAGS) $(PROFLFLAGS) $(OBJDIR)/test_qr_iteration.o $(OBJS) $(OBJDIR)/test_data.o -o test_qr_iteration
+
+$(OBJDIR)/test_data.o : $(OBJDIR)/prec.o
 $(OBJDIR)/test_decomp.o : $(OBJDIR)/prec.o $(OBJDIR)/test_data.o
 $(OBJDIR)/test_compress.o : $(OBJDIR)/prec.o $(OBJDIR)/test_data.o
 $(OBJDIR)/test_convert.o : $(OBJDIR)/prec.o $(OBJDIR)/test_data.o

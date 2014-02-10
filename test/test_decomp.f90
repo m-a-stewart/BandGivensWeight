@@ -8,7 +8,6 @@ program test_decomp
   implicit none
   real(kind=dp) :: t0, t1
   integer(kind=int32) :: error
-  character(len=*), parameter :: fmt="(A40, 'Time: ',ES8.2,', ubw: ',I3,', error: ',ES8.2)"
   !
   real(kind=dp), dimension(n,n) :: a, a0, a1
   real(kind=dp), dimension(n,rmax) :: u, u0

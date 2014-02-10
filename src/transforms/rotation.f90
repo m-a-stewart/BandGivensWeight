@@ -50,7 +50,7 @@ type(d_rotation) function d_lgivens(x,y) result(r)
    real(kind=dp), intent(in) :: x, y
    real(kind=dp) :: w, z
    z=max(abs(x), abs(y))
-   if (z .eq. 0.0_dp) then
+   if (z == 0.0_dp) then
       r%cosine=1.0_dp
       r%sine=0.0_dp
    else
@@ -65,11 +65,14 @@ type(c_rotation) function c_lgivens(x,y) result(r)
    complex(kind=dp), intent(in) :: x, y
    real(kind=dp) :: w, z, xabs
    xabs=abs(x)
-   if (xabs .eq. 0.0_dp) then
+   z=max(xabs, abs(y))
+   if (z == 0.0_dp) then
+      r%cosine=(1.0_dp,0.0_dp)
+      r%sine=(0.0_dp, 0.0_dp)
+   else if (xabs == 0.0_dp) then
       r%cosine=(0.0_dp,0.0_dp)
-      r%sine=1.0_dp
+      r%sine=(1.0_dp,0.0_dp)
    else
-      z=max(xabs, abs(y))
       w=z*sqrt(abs(x/z)**2+abs(y/z)**2)
       r%cosine=xabs/w
       r%sine=y * conjg(x)/xabs/w
@@ -81,7 +84,7 @@ type(d_rotation) function d_lgivens2(x,y) result(r)
    real(kind=dp), intent(in) :: x, y
    real(kind=dp) :: w, z
    z=max(abs(x), abs(y))
-   if (z .eq. 0.0_dp) then
+   if (z == 0.0_dp) then
       r%cosine=1.0_dp
       r%sine=0.0_dp
    else
@@ -96,11 +99,14 @@ type(c_rotation) function c_lgivens2(x,y) result(r)
    complex(kind=dp), intent(in) :: x, y
    real(kind=dp) :: w, z, yabs
    yabs=abs(y)
-   if (yabs .eq. 0.0_dp) then
+   z=max(yabs, abs(x))
+   if (z == 0.0_dp) then
+      r%cosine=(1.0_dp,0.0_dp)
+      r%sine=(0.0_dp,0.0_dp)
+   else if (yabs == 0.0_dp) then
       r%cosine=(0.0_dp,0.0_dp)
-      r%sine=1.0_dp
+      r%sine=(1.0_dp,0.0_dp)
    else
-      z=max(yabs, abs(x))
       w=z*sqrt(abs(x/z)**2+abs(y/z)**2)
       r%cosine=yabs/w
       r%sine=-conjg(x) * y/yabs/w
@@ -113,7 +119,7 @@ type(d_rotation) function d_rgivens(x,y) result(r)
    real(kind=dp), intent(in) :: x, y
    real(kind=dp) :: w, z
    z=max(abs(x), abs(y))
-   if (z .eq. 0.0_dp) then
+   if (z == 0.0_dp) then
       r%cosine=1.0_dp
       r%sine=0.0_dp
    else
@@ -128,11 +134,14 @@ type(c_rotation) function c_rgivens(x,y) result(r)
    complex(kind=dp), intent(in) :: x, y
    real(kind=dp) :: w, z, xabs
    xabs=abs(x)
-   if (xabs .eq. 0.0_dp) then
+   z=max(xabs, abs(y))
+   if (z == 0.0_dp) then
+      r%cosine=(1.0_dp,0.0_dp)
+      r%sine=(0.0_dp,0.0_dp)
+   else if (xabs == 0.0_dp) then
       r%cosine=(0.0_dp,0.0_dp)
-      r%sine=1.0_dp
+      r%sine=(1.0_dp,0.0_dp)
    else
-      z=max(xabs, abs(y))
       w=z*sqrt(abs(x/z)**2+abs(y/z)**2)
       r%cosine=xabs/w
       r%sine=conjg(y) * x/xabs/w
@@ -144,7 +153,7 @@ type(d_rotation) function d_rgivens2(x,y) result(r)
    real(kind=dp), intent(in) :: x, y
    real(kind=dp) :: w, z
    z=max(abs(x), abs(y))
-   if (z .eq. 0.0_dp) then
+   if (z == 0.0_dp) then
       r%cosine=1.0_dp
       r%sine=0.0_dp
    else
@@ -159,11 +168,14 @@ type(c_rotation) function c_rgivens2(x,y) result(r)
    complex(kind=dp), intent(in) :: x, y
    real(kind=dp) :: w, z, yabs
    yabs=abs(y)
-   if (yabs .eq. 0.0_dp) then
+   z=max(yabs, abs(x))
+   if (z == 0.0_dp) then
+      r%cosine=(1.0_dp,0.0_dp)
+      r%sine=(0.0_dp,0.0_dp)
+   else if (yabs == 0.0_dp) then
       r%cosine=(0.0_dp,0.0_dp)
-      r%sine=1.0_dp
+      r%sine=(1.0_dp,0.0_dp)
    else
-      z=max(yabs, abs(x))
       w=z*sqrt(abs(x/z)**2+abs(y/z)**2)
       r%cosine=yabs/w
       r%sine=-x * conjg(y)/yabs/w

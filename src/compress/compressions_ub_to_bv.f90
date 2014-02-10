@@ -117,7 +117,7 @@ contains
     ! Initial QL Factorization
     do k=1,ubw-1
        rot=lgivens2(get_el_bc(b_ub,ubw2,roffs+k,coffs+1),get_el_bc(b_ub,ubw2,roffs+k+1,coffs+1))
-       call rotation_times_tbc(trp_rot(rot),b_ub,n,lbw,ubw2,n-1,roffs+k)
+       call rotation_times_tbc(trp_rot(rot),b_ub,n,lbw,ubw2,n-1,0,roffs+k)
        call general_times_rotation(q,rot,roffs-qoffs+k,roffs-qoffs+k+1)
        call set_el_bc(b_ub,ubw2,roffs+k,coffs+1,0.0_dp)
     end do
@@ -150,7 +150,7 @@ contains
           do k=minindex,nl-1
              rot=rgivens(get_el_bc(b_ub,ubw2,roffs+k+1,coffs+k), &
                   get_el_bc(b_ub,ubw2,roffs+k+1,coffs+k+1))
-             call tbc_times_rotation(b_ub,n,lbw,ubw2,j,rot,coffs+k)
+             call tbc_times_rotation(b_ub,n,lbw,ubw2,0,j,rot,coffs+k)
              cs_bv(j,nl-k)=rot%cosine; ss_bv(j,nl-k)=rot%sine
              ks_bv(j,nl-k)=coffs+k
              call set_el_bc(b_ub,ubw2,roffs+k+1,coffs+k+1,0.0_dp)
@@ -180,12 +180,12 @@ contains
              do k=1,nl-1
                 rot=lgivens2(x(k),x(k+1))
                 call rotation_times_general(trp_rot(rot),x,k,k+1)
-                call tbc_times_rotation(b_ub,n,lbw,ubw2,j,rot,coffs+k)
+                call tbc_times_rotation(b_ub,n,lbw,ubw2,0,j,rot,coffs+k)
                 cs_bv(j,nl-k)=rot%cosine; ss_bv(j,nl-k)=rot%sine
                 ks_bv(j,nl-k)=coffs+k
                 rot=lgivens2(get_el_bc(b_ub,ubw2,roffs+k,coffs+k+1), &
                      get_el_bc(b_ub,ubw2,roffs+k+1,coffs+k+1))
-                call rotation_times_tbc(trp_rot(rot),b_ub,n,lbw,ubw2,n-j,roffs+k)
+                call rotation_times_tbc(trp_rot(rot),b_ub,n,lbw,ubw2,n-j,0,roffs+k)
                 call general_times_rotation(pq,rot,roffs-qoffs+k,roffs-qoffs+k+1)
                 call set_el_bc(b_ub,ubw2,roffs+k,coffs+k+1,0.0_dp)
              end do
@@ -203,7 +203,7 @@ contains
           rot=rgivens2(pq(mq,k),pq(mq,k+1))
           call general_times_rotation(pq,rot,k,k+1)
           pq(mq,k)=0.0_dp
-          call rotation_times_tbc(trp_rot(rot),b_ub,n,lbw,ubw2,n-j,qoffs+k)
+          call rotation_times_tbc(trp_rot(rot),b_ub,n,lbw,ubw2,n-j,0,qoffs+k)
        end do
        do k=1,nl
           tmp=get_el_bc(b_ub,ubw2,roffs+nl,coffs+k)
@@ -217,7 +217,7 @@ contains
           do k=nl-1,1,-1
              rot=lgivens2(get_el_bc(b_ub,ubw2,roffs+k-1,coffs+k), &
                   get_el_bc(b_ub,ubw2,roffs+k,coffs+k))
-             call rotation_times_tbc(trp_rot(rot),b_ub,n,lbw,ubw2,n-j,roffs+k-1)
+             call rotation_times_tbc(trp_rot(rot),b_ub,n,lbw,ubw2,n-j,0,roffs+k-1)
              call general_times_rotation(pq,rot,roffs-qoffs+k-1,roffs-qoffs+k)
              call set_el_bc(b_ub,ubw2,roffs+k-1,coffs+k,0.0_dp)
           end do
@@ -227,7 +227,7 @@ contains
        ! compress column n-j
        do k=-(mq-nl)+2,-dnl
           rot=lgivens2(get_el_bc(b_ub,ubw2,roffs+k-1,n-j), get_el_bc(b_ub,ubw2,roffs+k,n-j))
-          call rotation_times_tbc(trp_rot(rot),b_ub,n,lbw,ubw2,n-j-1,roffs+k-1)
+          call rotation_times_tbc(trp_rot(rot),b_ub,n,lbw,ubw2,n-j-1,0,roffs+k-1)
           call general_times_rotation(pq,rot,roffs-qoffs+k-1,roffs-qoffs+k)
           call set_el_bc(b_ub,ubw2,roffs+k-1,n-j,0.0_dp)
        end do
@@ -268,7 +268,7 @@ contains
        numrots_bv(j)=ml
        do k=1,ml
           rot=rgivens(get_el_bc(b_ub,ubw2,k,coffs+nl-ml+k-1),get_el_bc(b_ub,ubw2,k,coffs+nl-ml+k))
-          call tbc_times_rotation(b_ub,n,lbw,ubw2,j,rot,coffs+nl-ml+k-1)
+          call tbc_times_rotation(b_ub,n,lbw,ubw2,0,j,rot,coffs+nl-ml+k-1)
           cs_bv(j,ml-k+1)=rot%cosine; ss_bv(j,ml-k+1)=rot%sine
           ks_bv(j,ml-k+1)=coffs+nl-ml+k-1
           call set_el_bc(b_ub,ubw2,k,coffs+nl-ml+k,0.0_dp)
@@ -278,7 +278,7 @@ contains
           rot=rgivens2(pq(ml,k),pq(ml,k+1))
           call general_times_rotation(pq,rot,k,k+1)
           pq(ml,k)=0.0_dp
-          call rotation_times_tbc(trp_rot(rot),b_ub,n,lbw,ubw2,ml,k)
+          call rotation_times_tbc(trp_rot(rot),b_ub,n,lbw,ubw2,ml,0,k)
        end do
        do k=1,nl
           tmp=get_el_bc(b_ub,ubw2,ml,ml+k)
@@ -397,7 +397,7 @@ contains
     ! Initial QL Factorization
     do k=1,ubw-1
        rot=lgivens2(get_el_bc(b_ub,ubw2,roffs+k,coffs+1),get_el_bc(b_ub,ubw2,roffs+k+1,coffs+1))
-       call rotation_times_tbc(trp_rot(rot),b_ub,n,lbw,ubw2,n-1,roffs+k)
+       call rotation_times_tbc(trp_rot(rot),b_ub,n,lbw,ubw2,n-1,0,roffs+k)
        call general_times_rotation(q,rot,roffs-qoffs+k,roffs-qoffs+k+1)
        call set_el_bc(b_ub,ubw2,roffs+k,coffs+1,(0.0_dp, 0.0_dp))
     end do
@@ -430,7 +430,7 @@ contains
           do k=minindex,nl-1
              rot=rgivens(get_el_bc(b_ub,ubw2,roffs+k+1,coffs+k), &
                   get_el_bc(b_ub,ubw2,roffs+k+1,coffs+k+1))
-             call tbc_times_rotation(b_ub,n,lbw,ubw2,j,rot,coffs+k)
+             call tbc_times_rotation(b_ub,n,lbw,ubw2,0,j,rot,coffs+k)
              cs_bv(j,nl-k)=rot%cosine; ss_bv(j,nl-k)=rot%sine
              ks_bv(j,nl-k)=coffs+k
              call set_el_bc(b_ub,ubw2,roffs+k+1,coffs+k+1,(0.0_dp, 0.0_dp))
@@ -460,12 +460,12 @@ contains
              do k=1,nl-1
                 rot=lgivens2(x(k),x(k+1))
                 call rotation_times_general(trp_rot(rot),x,k,k+1)
-                call tbc_times_rotation(b_ub,n,lbw,ubw2,j,rot,coffs+k)
+                call tbc_times_rotation(b_ub,n,lbw,ubw2,0,j,rot,coffs+k)
                 cs_bv(j,nl-k)=rot%cosine; ss_bv(j,nl-k)=rot%sine
                 ks_bv(j,nl-k)=coffs+k
                 rot=lgivens2(get_el_bc(b_ub,ubw2,roffs+k,coffs+k+1), &
                      get_el_bc(b_ub,ubw2,roffs+k+1,coffs+k+1))
-                call rotation_times_tbc(trp_rot(rot),b_ub,n,lbw,ubw2,n-j,roffs+k)
+                call rotation_times_tbc(trp_rot(rot),b_ub,n,lbw,ubw2,n-j,0,roffs+k)
                 call general_times_rotation(pq,rot,roffs-qoffs+k,roffs-qoffs+k+1)
                 call set_el_bc(b_ub,ubw2,roffs+k,coffs+k+1,(0.0_dp, 0.0_dp))
              end do
@@ -483,7 +483,7 @@ contains
           rot=rgivens2(pq(mq,k),pq(mq,k+1))
           call general_times_rotation(pq,rot,k,k+1)
           pq(mq,k)=(0.0_dp, 0.0_dp)
-          call rotation_times_tbc(trp_rot(rot),b_ub,n,lbw,ubw2,n-j,qoffs+k)
+          call rotation_times_tbc(trp_rot(rot),b_ub,n,lbw,ubw2,n-j,0,qoffs+k)
        end do
        do k=1,nl
           tmp=get_el_bc(b_ub,ubw2,roffs+nl,coffs+k)
@@ -497,7 +497,7 @@ contains
           do k=nl-1,1,-1
              rot=lgivens2(get_el_bc(b_ub,ubw2,roffs+k-1,coffs+k), &
                   get_el_bc(b_ub,ubw2,roffs+k,coffs+k))
-             call rotation_times_tbc(trp_rot(rot),b_ub,n,lbw,ubw2,n-j,roffs+k-1)
+             call rotation_times_tbc(trp_rot(rot),b_ub,n,lbw,ubw2,n-j,0,roffs+k-1)
              call general_times_rotation(pq,rot,roffs-qoffs+k-1,roffs-qoffs+k)
              call set_el_bc(b_ub,ubw2,roffs+k-1,coffs+k,(0.0_dp, 0.0_dp))
           end do
@@ -507,7 +507,7 @@ contains
        ! compress column n-j
        do k=-(mq-nl)+2,-dnl
           rot=lgivens2(get_el_bc(b_ub,ubw2,roffs+k-1,n-j), get_el_bc(b_ub,ubw2,roffs+k,n-j))
-          call rotation_times_tbc(trp_rot(rot),b_ub,n,lbw,ubw2,n-j-1,roffs+k-1)
+          call rotation_times_tbc(trp_rot(rot),b_ub,n,lbw,ubw2,n-j-1,0,roffs+k-1)
           call general_times_rotation(pq,rot,roffs-qoffs+k-1,roffs-qoffs+k)
           call set_el_bc(b_ub,ubw2,roffs+k-1,n-j,(0.0_dp, 0.0_dp))
        end do
@@ -548,7 +548,7 @@ contains
        numrots_bv(j)=ml
        do k=1,ml
           rot=rgivens(get_el_bc(b_ub,ubw2,k,coffs+nl-ml+k-1),get_el_bc(b_ub,ubw2,k,coffs+nl-ml+k))
-          call tbc_times_rotation(b_ub,n,lbw,ubw2,j,rot,coffs+nl-ml+k-1)
+          call tbc_times_rotation(b_ub,n,lbw,ubw2,0,j,rot,coffs+nl-ml+k-1)
           cs_bv(j,ml-k+1)=rot%cosine; ss_bv(j,ml-k+1)=rot%sine
           ks_bv(j,ml-k+1)=coffs+nl-ml+k-1
           call set_el_bc(b_ub,ubw2,k,coffs+nl-ml+k,(0.0_dp, 0.0_dp))
@@ -558,7 +558,7 @@ contains
           rot=rgivens2(pq(ml,k),pq(ml,k+1))
           call general_times_rotation(pq,rot,k,k+1)
           pq(ml,k)=(0.0_dp, 0.0_dp)
-          call rotation_times_tbc(trp_rot(rot),b_ub,n,lbw,ubw2,ml,k)
+          call rotation_times_tbc(trp_rot(rot),b_ub,n,lbw,ubw2,ml,0,k)
        end do
        do k=1,nl
           tmp=get_el_bc(b_ub,ubw2,ml,ml+k)
@@ -589,6 +589,7 @@ contains
           b_bv(j,d)=get_el_bc(b_ub,ubw2,j,d+j-lbw-1)
        end do
     end do
+
   end subroutine f_c_compress_ub_to_bv
 
 

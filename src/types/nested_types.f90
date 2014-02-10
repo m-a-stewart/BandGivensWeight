@@ -46,6 +46,14 @@ interface deallocate_bv
    module procedure d_deallocate_bv, c_deallocate_bv
 end interface deallocate_bv
 
+interface copy_ub
+   module procedure d_copy_ub, c_copy_ub
+end interface copy_ub
+
+interface copy_bv
+   module procedure d_copy_bv, c_copy_bv
+end interface copy_bv
+
 interface get_n
    module procedure d_ub_get_n, d_bv_get_n, c_ub_get_n, c_bv_get_n
 end interface get_n
@@ -153,6 +161,107 @@ subroutine c_deallocate_bv(bv)
   deallocate(bv%numrotsv)
   bv%n=0; bv%lbwmax=0; bv%ubwmax=0
 end subroutine c_deallocate_bv
+
+subroutine d_copy_ub(ub1,ub2)
+  type(d_ub), intent(in) :: ub1
+  type(d_ub) :: ub2
+  ub2%n=ub1%n
+  ub2%lbw=ub1%lbw
+  ub2%ubw=ub1%ubw
+  if ( ub2%ubwmax < ub1%ubwmax .or. ub2%ubwmax < ub1%ubwmax .or. &
+       size(ub2%b,2) /= ub1%n ) then
+     deallocate(ub2%b); deallocate(ub2%jsu); deallocate(ub2%numrotsu)
+     deallocate(ub2%csu); deallocate(ub2%ssu)
+     allocate(ub2%b(ub1%lbwmax+ub1%ubwmax+1,ub1%n))
+     allocate(ub2%csu(ub1%ubwmax,ub1%n))
+     allocate(ub2%ssu(ub1%ubwmax,ub1%n))
+     allocate(ub2%jsu(ub1%ubwmax,ub1%n))
+     allocate(ub2%numrotsu(ub1%n))
+     ub2%lbwmax=ub1%lbwmax
+     ub2%ubwmax=ub1%lbwmax
+  end if
+  ub2%b(1:ub1%lbw+ub1%ubw+1,:)=ub1%b(1:ub1%lbw+ub1%ubw+1,:)
+  ub2%numrotsu=ub1%numrotsu
+  ub2%csu(1:ub1%ubw,:)=ub1%csu(1:ub1%ubw,:)
+  ub2%ssu(1:ub1%ubw,:)=ub1%ssu(1:ub1%ubw,:)
+  ub2%jsu(1:ub1%ubw,:)=ub1%jsu(1:ub1%ubw,:)
+end subroutine d_copy_ub
+
+subroutine c_copy_ub(ub1,ub2)
+  type(c_ub), intent(in) :: ub1
+  type(c_ub) :: ub2
+  ub2%n=ub1%n
+  ub2%lbw=ub1%lbw
+  ub2%ubw=ub1%ubw
+  if ( ub2%ubwmax < ub1%ubwmax .or. ub2%ubwmax < ub1%ubwmax .or. &
+       size(ub2%b,2) /= ub1%n ) then
+     deallocate(ub2%b); deallocate(ub2%jsu); deallocate(ub2%numrotsu)
+     deallocate(ub2%csu); deallocate(ub2%ssu)
+     allocate(ub2%b(ub1%lbwmax+ub1%ubwmax+1,ub1%n))
+     allocate(ub2%csu(ub1%ubwmax,ub1%n))
+     allocate(ub2%ssu(ub1%ubwmax,ub1%n))
+     allocate(ub2%jsu(ub1%ubwmax,ub1%n))
+     allocate(ub2%numrotsu(ub1%n))
+     ub2%lbwmax=ub1%lbwmax
+     ub2%ubwmax=ub1%lbwmax
+  end if
+  ub2%b(1:ub1%lbw+ub1%ubw+1,:)=ub1%b(1:ub1%lbw+ub1%ubw+1,:)
+  ub2%numrotsu=ub1%numrotsu
+  ub2%csu(1:ub1%ubw,:)=ub1%csu(1:ub1%ubw,:)
+  ub2%ssu(1:ub1%ubw,:)=ub1%ssu(1:ub1%ubw,:)
+  ub2%jsu(1:ub1%ubw,:)=ub1%jsu(1:ub1%ubw,:)
+end subroutine c_copy_ub
+
+subroutine d_copy_bv(bv1,bv2)
+  type(d_bv), intent(in) :: bv1
+  type(d_bv) :: bv2
+  bv2%n=bv1%n
+  bv2%lbw=bv1%lbw
+  bv2%ubw=bv1%ubw
+  if ( bv2%ubwmax < bv1%ubwmax .or. bv2%ubwmax < bv1%ubwmax .or. &
+       size(bv2%b,1) /= bv1%n ) then
+     deallocate(bv2%b); deallocate(bv2%ksv); deallocate(bv2%numrotsv)
+     deallocate(bv2%csv); deallocate(bv2%ssv)
+     allocate(bv2%b(bv1%n,bv1%lbwmax+bv1%ubwmax+1))
+     allocate(bv2%csv(bv1%n,bv1%ubwmax))
+     allocate(bv2%ssv(bv1%n,bv1%ubwmax))
+     allocate(bv2%ksv(bv1%n,bv1%ubwmax))
+     allocate(bv2%numrotsv(bv1%n))
+     bv2%lbwmax=bv1%lbwmax
+     bv2%ubwmax=bv1%lbwmax
+  end if
+  bv2%b(:,1:bv1%lbw+bv1%ubw+1)=bv1%b(:,1:bv1%lbw+bv1%ubw+1)
+  bv2%numrotsv=bv1%numrotsv
+  bv2%csv(:,1:bv1%ubw)=bv1%csv(:,1:bv1%ubw)
+  bv2%ssv(:,1:bv1%ubw)=bv1%ssv(:,1:bv1%ubw)
+  bv2%ksv(:,1:bv1%ubw)=bv1%ksv(:,1:bv1%ubw)
+end subroutine d_copy_bv
+
+subroutine c_copy_bv(bv1,bv2)
+  type(c_bv), intent(in) :: bv1
+  type(c_bv) :: bv2
+  bv2%n=bv1%n
+  bv2%lbw=bv1%lbw
+  bv2%ubw=bv1%ubw
+
+  if ( bv2%ubwmax < bv1%ubwmax .or. bv2%ubwmax < bv1%ubwmax .or. &
+       size(bv2%b,1) /= bv1%n ) then
+     deallocate(bv2%b); deallocate(bv2%ksv); deallocate(bv2%numrotsv)
+     deallocate(bv2%csv); deallocate(bv2%ssv)
+     allocate(bv2%b(bv1%n,bv1%lbwmax+bv1%ubwmax+1))
+     allocate(bv2%csv(bv1%n,bv1%ubwmax))
+     allocate(bv2%ssv(bv1%n,bv1%ubwmax))
+     allocate(bv2%ksv(bv1%n,bv1%ubwmax))
+     allocate(bv2%numrotsv(bv1%n))
+     bv2%lbwmax=bv1%lbwmax
+     bv2%ubwmax=bv1%lbwmax
+  end if
+  bv2%b(:,1:bv1%lbw+bv1%ubw+1)=bv1%b(:,1:bv1%lbw+bv1%ubw+1)
+  bv2%numrotsv=bv1%numrotsv
+  bv2%csv(:,1:bv1%ubw)=bv1%csv(:,1:bv1%ubw)
+  bv2%ssv(:,1:bv1%ubw)=bv1%ssv(:,1:bv1%ubw)
+  bv2%ksv(:,1:bv1%ubw)=bv1%ksv(:,1:bv1%ubw)
+end subroutine c_copy_bv
 
 integer(kind=int32) function d_ub_get_n(ub) result(n)
   type(d_ub) :: ub

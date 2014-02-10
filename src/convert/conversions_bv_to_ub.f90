@@ -75,7 +75,7 @@ contains
     ! apply v_{n-1}
     do j=1, numrots_bv(n-1)
        rot%cosine=cs_bv(n-1,j); rot%sine=ss_bv(n-1,j)
-       call tbr_times_rotation(b_bv,n,lbw1,ubw1,n-1,trp_rot(rot),ks_bv(n-1,j))
+       call tbr_times_rotation(b_bv,n,lbw1,ubw1,0,n-1,trp_rot(rot),ks_bv(n-1,j))
     end do
     ! Generate a (ubw+1) x ubw lower triangular matrix.
     do k=2,ubw1-1
@@ -85,12 +85,12 @@ contains
           rot=lgivens2(get_el_br(b_bv,lbw1,j,coffs+j), get_el_br(b_bv,lbw1,j+1,coffs+j))
           cs_ub(j,k)=rot%cosine; ss_ub(j,k)=rot%sine
           js_ub(j,k)=j
-          call rotation_times_tbr(trp_rot(rot),b_bv,n,lbw1,ubw1,k,j)
+          call rotation_times_tbr(trp_rot(rot),b_bv,n,lbw1,ubw1,k,0,j)
           call set_el_br(b_bv,lbw1,j,coffs+j, 0.0_dp)
        end do
        do j=1,numrots_bv(n-k)
           rot%cosine=cs_bv(n-k,j); rot%sine=ss_bv(n-k,j)
-          call tbr_times_rotation(b_bv,n,lbw1,ubw1,n-k,trp_rot(rot),ks_bv(n-k,j))
+          call tbr_times_rotation(b_bv,n,lbw1,ubw1,0,n-k,trp_rot(rot),ks_bv(n-k,j))
        end do
     end do
     do k=ubw1,n-ubw1
@@ -100,12 +100,12 @@ contains
           rot=lgivens2(get_el_br(b_bv,lbw1,roffs+j,coffs+j), get_el_br(b_bv,lbw1,roffs+j+1,coffs+j))
           cs_ub(j,k)=rot%cosine; ss_ub(j,k)=rot%sine
           js_ub(j,k)=roffs+j
-          call rotation_times_tbr(trp_rot(rot), b_bv,n,lbw1,ubw1, k, roffs+j)
+          call rotation_times_tbr(trp_rot(rot), b_bv,n,lbw1,ubw1, k, 0, roffs+j)
           call set_el_br(b_bv,lbw1,roffs+j,coffs+j, 0.0_dp)
        end do
        do j=1,numrots_bv(n-k)
           rot%cosine=cs_bv(n-k,j); rot%sine=ss_bv(n-k,j)
-          call tbr_times_rotation(b_bv,n,lbw1,ubw1,n-k,trp_rot(rot),ks_bv(n-k,j))
+          call tbr_times_rotation(b_bv,n,lbw1,ubw1,0,n-k,trp_rot(rot),ks_bv(n-k,j))
        end do
     end do
     if (n-ubw>ubw) then ! if n-ubw=ubw, there is a square upper triangular matrix already.
@@ -117,12 +117,12 @@ contains
              rot=lgivens2(get_el_br(b_bv,lbw1,roffs+j,coffs+j),get_el_br(b_bv,lbw1,roffs+j+1,coffs+j))
              cs_ub(j,k)=rot%cosine; ss_ub(j,k)=rot%sine
              js_ub(j,k)=roffs+j
-             call rotation_times_tbr(trp_rot(rot), b_bv,n,lbw1,ubw1, k, roffs+j)
+             call rotation_times_tbr(trp_rot(rot), b_bv,n,lbw1,ubw1, k, 0, roffs+j)
              call set_el_br(b_bv,lbw1,roffs+j,coffs+j, 0.0_dp)
           end do
           do j=1,numrots_bv(n-k)
              rot%cosine=cs_bv(n-k,j); rot%sine=ss_bv(n-k,j)
-             call tbr_times_rotation(b_bv,n,lbw1,ubw1,n-k,trp_rot(rot),ks_bv(n-k,j))
+             call tbr_times_rotation(b_bv,n,lbw1,ubw1,0,n-k,trp_rot(rot),ks_bv(n-k,j))
           end do
        end do
     end if
@@ -194,7 +194,7 @@ contains
     ! apply v_{n-1}
     do j=1, numrots_bv(n-1)
        rot%cosine=cs_bv(n-1,j); rot%sine=ss_bv(n-1,j)
-       call tbr_times_rotation(b_bv,n,lbw1,ubw1,n-1,trp_rot(rot),ks_bv(n-1,j))
+       call tbr_times_rotation(b_bv,n,lbw1,ubw1,0,n-1,trp_rot(rot),ks_bv(n-1,j))
     end do
     ! Generate a (ubw+1) x ubw lower triangular matrix.
     do k=2,ubw1-1
@@ -204,12 +204,12 @@ contains
           rot=lgivens2(get_el_br(b_bv,lbw1,j,coffs+j), get_el_br(b_bv,lbw1,j+1,coffs+j))
           cs_ub(j,k)=rot%cosine; ss_ub(j,k)=rot%sine
           js_ub(j,k)=j
-          call rotation_times_tbr(trp_rot(rot),b_bv,n,lbw1,ubw1,k,j)
+          call rotation_times_tbr(trp_rot(rot),b_bv,n,lbw1,ubw1,k,0,j)
           call set_el_br(b_bv,lbw1,j,coffs+j, (0.0_dp, 0.0_dp))
        end do
        do j=1,numrots_bv(n-k)
           rot%cosine=cs_bv(n-k,j); rot%sine=ss_bv(n-k,j)
-          call tbr_times_rotation(b_bv,n,lbw1,ubw1,n-k,trp_rot(rot),ks_bv(n-k,j))
+          call tbr_times_rotation(b_bv,n,lbw1,ubw1,0,n-k,trp_rot(rot),ks_bv(n-k,j))
        end do
     end do
     do k=ubw1,n-ubw1
@@ -219,12 +219,12 @@ contains
           rot=lgivens2(get_el_br(b_bv,lbw1,roffs+j,coffs+j), get_el_br(b_bv,lbw1,roffs+j+1,coffs+j))
           cs_ub(j,k)=rot%cosine; ss_ub(j,k)=rot%sine
           js_ub(j,k)=roffs+j
-          call rotation_times_tbr(trp_rot(rot), b_bv,n,lbw1,ubw1, k, roffs+j)
+          call rotation_times_tbr(trp_rot(rot), b_bv,n,lbw1,ubw1, k, 0, roffs+j)
           call set_el_br(b_bv,lbw1,roffs+j,coffs+j, (0.0_dp, 0.0_dp))
        end do
        do j=1,numrots_bv(n-k)
           rot%cosine=cs_bv(n-k,j); rot%sine=ss_bv(n-k,j)
-          call tbr_times_rotation(b_bv,n,lbw1,ubw1,n-k,trp_rot(rot),ks_bv(n-k,j))
+          call tbr_times_rotation(b_bv,n,lbw1,ubw1,0,n-k,trp_rot(rot),ks_bv(n-k,j))
        end do
     end do
     if (n-ubw>ubw) then ! if n-ubw=ubw, there is a square upper triangular matrix already.
@@ -236,12 +236,12 @@ contains
              rot=lgivens2(get_el_br(b_bv,lbw1,roffs+j,coffs+j),get_el_br(b_bv,lbw1,roffs+j+1,coffs+j))
              cs_ub(j,k)=rot%cosine; ss_ub(j,k)=rot%sine
              js_ub(j,k)=roffs+j
-             call rotation_times_tbr(trp_rot(rot), b_bv,n,lbw1,ubw1, k, roffs+j)
+             call rotation_times_tbr(trp_rot(rot), b_bv,n,lbw1,ubw1, k, 0, roffs+j)
              call set_el_br(b_bv,lbw1,roffs+j,coffs+j, (0.0_dp, 0.0_dp))
           end do
           do j=1,numrots_bv(n-k)
              rot%cosine=cs_bv(n-k,j); rot%sine=ss_bv(n-k,j)
-             call tbr_times_rotation(b_bv,n,lbw1,ubw1,n-k,trp_rot(rot),ks_bv(n-k,j))
+             call tbr_times_rotation(b_bv,n,lbw1,ubw1,0,n-k,trp_rot(rot),ks_bv(n-k,j))
           end do
        end do
     end if
