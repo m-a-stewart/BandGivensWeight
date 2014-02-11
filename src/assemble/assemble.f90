@@ -52,19 +52,7 @@ contains
     if (n==1) then
        return
     end if
-    do k=n-1,n-lbw,-1
-       do j=1,numrots(k)
-          rot%cosine=cs(j,k); rot%sine=ss(j,k)
-          call rotation_times_general(rot,a(:,k+1:n),js(j,k),js(j,k)+1)
-       end do
-    end do
-    do k=n-lbw-1, ubw+1,-1
-       do j=1,numrots(k)
-          rot%cosine=cs(j,k); rot%sine=ss(j,k)
-          call rotation_times_general(rot,a(:,k+1:n),js(j,k),js(j,k)+1)
-       end do
-    end do
-    do k=ubw,1,-1
+    do k=n-1,1,-1
        do j=1,numrots(k)
           rot%cosine=cs(j,k); rot%sine=ss(j,k)
           call rotation_times_general(rot,a(:,k+1:n),js(j,k),js(j,k)+1)
@@ -99,19 +87,7 @@ contains
     if (n==1) then
        return
     end if
-    do k=n-1,n-lbw,-1
-       do j=1,numrots(k)
-          rot%cosine=cs(j,k); rot%sine=ss(j,k)
-          call rotation_times_general(rot,a(:,k+1:n),js(j,k),js(j,k)+1)
-       end do
-    end do
-    do k=n-lbw-1, ubw+1,-1
-       do j=1,numrots(k)
-          rot%cosine=cs(j,k); rot%sine=ss(j,k)
-          call rotation_times_general(rot,a(:,k+1:n),js(j,k),js(j,k)+1)
-       end do
-    end do
-    do k=ubw,1,-1
+    do k=n-1,1,-1
        do j=1,numrots(k)
           rot%cosine=cs(j,k); rot%sine=ss(j,k)
           call rotation_times_general(rot,a(:,k+1:n),js(j,k),js(j,k)+1)
@@ -145,19 +121,7 @@ contains
     if (n==1) then
        return
     end if
-    do j=1,lbw
-       do k=1,numrots(n-j)
-          rot%cosine=cs(n-j,k); rot%sine=ss(n-j,k)
-          call general_times_rotation(a(1:j,:),trp_rot(rot),ks(n-j,k), ks(n-j,k)+1)
-       end do
-    end do
-    do j=lbw+1,n-ubw-1
-       do k=1,numrots(n-j)
-          rot%cosine=cs(n-j,k); rot%sine=ss(n-j,k)
-          call general_times_rotation(a(1:j,:),trp_rot(rot),ks(n-j,k), ks(n-j,k)+1)
-       end do
-    end do
-    do j=n-ubw,n-1
+    do j=1,n-2
        do k=1,numrots(n-j)
           rot%cosine=cs(n-j,k); rot%sine=ss(n-j,k)
           call general_times_rotation(a(1:j,:),trp_rot(rot),ks(n-j,k), ks(n-j,k)+1)
@@ -191,19 +155,7 @@ contains
     if (n==1) then
        return
     end if
-    do j=1,lbw
-       do k=1,numrots(n-j)
-          rot%cosine=cs(n-j,k); rot%sine=ss(n-j,k)
-          call general_times_rotation(a(1:j,:),trp_rot(rot),ks(n-j,k), ks(n-j,k)+1)
-       end do
-    end do
-    do j=lbw+1,n-ubw-1
-       do k=1,numrots(n-j)
-          rot%cosine=cs(n-j,k); rot%sine=ss(n-j,k)
-          call general_times_rotation(a(1:j,:),trp_rot(rot),ks(n-j,k), ks(n-j,k)+1)
-       end do
-    end do
-    do j=n-ubw,n-1
+    do j=1,n-2
        do k=1,numrots(n-j)
           rot%cosine=cs(n-j,k); rot%sine=ss(n-j,k)
           call general_times_rotation(a(1:j,:),trp_rot(rot),ks(n-j,k), ks(n-j,k)+1)

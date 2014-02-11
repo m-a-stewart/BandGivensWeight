@@ -54,6 +54,57 @@ program test_convert
   test_name = "Real UB to BV;"
   call d_output_result(test_name,a0,a1,rmax,bv_d%ubw,t0,t1,tol2,error)
   !
+  na=1
+  lbwa=min(na-1,lbw)
+  ub_na_d=d_new_ub(na,lbwmax,ubwmax)
+  bv_na_d=d_new_bv(na,lbwmax,ubwmax)
+  u=u0; v=v0; d=d0
+  call d_assemble_a(a(1:na,1:na),u(1:na,:),v(:,1:na),d(1:na),lbwa)
+  a0(1:na,1:na)=a(1:na,1:na)
+  call upper_to_ub(a(1:na,1:na),ub_na_d,lbwa, tol1,error)
+  call cpu_time(t0)
+  call convert_ub_to_bv(ub_na_d, bv_na_d,error)
+  call cpu_time(t1)
+  call bv_to_upper(bv_na_d,a1(1:na,1:na),error)
+  test_name = "Real UB to BV (n=1);"
+  call d_output_result(test_name,a0(1:na,1:na),a1(1:na,1:na),0,bv_na_d%ubw,t0,t1,tol2,error)
+  call d_deallocate_ub(ub_na_d)
+  call d_deallocate_bv(bv_na_d)
+  !
+  na=2
+  lbwa=min(na-1,lbw)
+  ub_na_d=d_new_ub(na,lbwmax,ubwmax)
+  bv_na_d=d_new_bv(na,lbwmax,ubwmax)
+  u=u0; v=v0; d=d0
+  call d_assemble_a(a(1:na,1:na),u(1:na,:),v(:,1:na),d(1:na),lbwa)
+  a0(1:na,1:na)=a(1:na,1:na)
+  call upper_to_ub(a(1:na,1:na),ub_na_d,lbwa, tol1,error)
+  call cpu_time(t0)
+  call convert_ub_to_bv(ub_na_d, bv_na_d,error)
+  call cpu_time(t1)
+  call bv_to_upper(bv_na_d,a1(1:na,1:na),error)
+  test_name = "Real UB to BV (n=2);"
+  call d_output_result(test_name,a0(1:na,1:na),a1(1:na,1:na),1,bv_na_d%ubw,t0,t1,tol2,error)
+  call d_deallocate_ub(ub_na_d)
+  call d_deallocate_bv(bv_na_d)
+  !
+  na=3
+  lbwa=min(na-1,lbw)
+  ub_na_d=d_new_ub(na,lbwmax,ubwmax)
+  bv_na_d=d_new_bv(na,lbwmax,ubwmax)
+  u=u0; v=v0; d=d0
+  call d_assemble_a(a(1:na,1:na),u(1:na,:),v(:,1:na),d(1:na),lbwa)
+  a0(1:na,1:na)=a(1:na,1:na)
+  call upper_to_ub(a(1:na,1:na),ub_na_d,lbwa, tol1,error)
+  call cpu_time(t0)
+  call convert_ub_to_bv(ub_na_d, bv_na_d,error)
+  call cpu_time(t1)
+  call bv_to_upper(bv_na_d,a1(1:na,1:na),error)
+  test_name = "Real UB to BV (n=3);"
+  call d_output_result(test_name,a0(1:na,1:na),a1(1:na,1:na),1,bv_na_d%ubw,t0,t1,tol2,error)
+  call d_deallocate_ub(ub_na_d)
+  call d_deallocate_bv(bv_na_d)
+  !
   na=4
   lbwa=min(na-1,lbw)
   ub_na_d=d_new_ub(na,lbwmax,ubwmax)
@@ -67,7 +118,7 @@ program test_convert
   call cpu_time(t1)
   call bv_to_upper(bv_na_d,a1(1:na,1:na),error)
   test_name = "Real UB to BV (n=4);"
-  call d_output_result(test_name,a0(1:na,1:na),a1(1:na,1:na),0,bv_na_d%ubw,t0,t1,tol2,error)
+  call d_output_result(test_name,a0(1:na,1:na),a1(1:na,1:na),2,bv_na_d%ubw,t0,t1,tol2,error)
   call d_deallocate_ub(ub_na_d)
   call d_deallocate_bv(bv_na_d)
   ! bv to ub
@@ -82,6 +133,57 @@ program test_convert
   test_name="Real BV to UB;"
   call d_output_result(test_name,a0,a1,rmax,ub_d%ubw,t0,t1,tol2,error)
   !
+  na=1
+  lbwa=min(na-1,lbw)
+  ub_na_d=d_new_ub(na,lbwmax,ubwmax)
+  bv_na_d=d_new_bv(na,lbwmax,ubwmax)
+  u=u0; v=v0; d=d0
+  call d_assemble_a(a(1:na,1:na),u(1:na,:),v(:,1:na),d(1:na),lbwa)
+  a0(1:na,1:na)=a(1:na,1:na)
+  call upper_to_bv(a(1:na,1:na),bv_na_d, lbwa, tol1, error)
+  call cpu_time(t0)
+  call convert_bv_to_ub(bv_na_d, ub_na_d,error)
+  call cpu_time(t1)
+  call ub_to_upper(ub_na_d,a1(1:na,1:na),error)
+  test_name = "Real BV to UB (n=1);"
+  call d_output_result(test_name,a0(1:na,1:na),a1(1:na,1:na),0,ub_na_d%ubw,t0,t1,tol2,error)
+  call d_deallocate_ub(ub_na_d)
+  call d_deallocate_bv(bv_na_d)
+  !
+  na=2
+  lbwa=min(na-1,lbw)
+  ub_na_d=d_new_ub(na,lbwmax,ubwmax)
+  bv_na_d=d_new_bv(na,lbwmax,ubwmax)
+  u=u0; v=v0; d=d0
+  call d_assemble_a(a(1:na,1:na),u(1:na,:),v(:,1:na),d(1:na),lbwa)
+  a0(1:na,1:na)=a(1:na,1:na)
+  call upper_to_bv(a(1:na,1:na),bv_na_d, lbwa, tol1, error)
+  call cpu_time(t0)
+  call convert_bv_to_ub(bv_na_d, ub_na_d,error)
+  call cpu_time(t1)
+  call ub_to_upper(ub_na_d,a1(1:na,1:na),error)
+  test_name = "Real BV to UB (n=2);"
+  call d_output_result(test_name,a0(1:na,1:na),a1(1:na,1:na),1,ub_na_d%ubw,t0,t1,tol2,error)
+  call d_deallocate_ub(ub_na_d)
+  call d_deallocate_bv(bv_na_d)
+  !
+  na=3
+  lbwa=min(na-1,lbw)
+  ub_na_d=d_new_ub(na,lbwmax,ubwmax)
+  bv_na_d=d_new_bv(na,lbwmax,ubwmax)
+  u=u0; v=v0; d=d0
+  call d_assemble_a(a(1:na,1:na),u(1:na,:),v(:,1:na),d(1:na),lbwa)
+  a0(1:na,1:na)=a(1:na,1:na)
+  call upper_to_bv(a(1:na,1:na),bv_na_d, lbwa, tol1, error)
+  call cpu_time(t0)
+  call convert_bv_to_ub(bv_na_d, ub_na_d,error)
+  call cpu_time(t1)
+  call ub_to_upper(ub_na_d,a1(1:na,1:na),error)
+  test_name = "Real BV to UB (n=3);"
+  call d_output_result(test_name,a0(1:na,1:na),a1(1:na,1:na),1,ub_na_d%ubw,t0,t1,tol2,error)
+  call d_deallocate_ub(ub_na_d)
+  call d_deallocate_bv(bv_na_d)
+  !
   na=4
   lbwa=min(na-1,lbw)
   ub_na_d=d_new_ub(na,lbwmax,ubwmax)
@@ -89,7 +191,7 @@ program test_convert
   u=u0; v=v0; d=d0
   call d_assemble_a(a(1:na,1:na),u(1:na,:),v(:,1:na),d(1:na),lbwa)
   a0(1:na,1:na)=a(1:na,1:na)
-  call upper_to_bv(a(1:na,1:na),bv_na_d,lbwa, tol1,error)
+  call upper_to_bv(a(1:na,1:na),bv_na_d, lbwa, tol1, error)
   call cpu_time(t0)
   call convert_bv_to_ub(bv_na_d, ub_na_d,error)
   call cpu_time(t1)
@@ -118,6 +220,57 @@ program test_convert
   test_name="Complex UB to BV;"
   call c_output_result(test_name,a0_c,a1_c,rmax,bv_c%ubw,t0,t1,tol2,error)
   !
+  na=1
+  lbwa=min(na-1,lbw)
+  ub_na_c=c_new_ub(na,lbwmax,ubwmax)
+  bv_na_c=c_new_bv(na,lbwmax,ubwmax)
+  u_c=u0_c; v_c=v0_c; d_c=d0_c
+  call c_assemble_a(a_c(1:na,1:na),u_c(1:na,:),v_c(:,1:na),d_c(1:na),lbwa)
+  a0_c(1:na,1:na)=a_c(1:na,1:na)
+  call upper_to_ub(a_c(1:na,1:na),ub_na_c,lbwa, tol1,error)
+  call cpu_time(t0)
+  call convert_ub_to_bv(ub_na_c, bv_na_c,error)
+  call cpu_time(t1)
+  call bv_to_upper(bv_na_c,a1_c(1:na,1:na),error)
+  test_name = "Complex UB to BV (n=1);"
+  call c_output_result(test_name,a0_c(1:na,1:na),a1_c(1:na,1:na),0,bv_na_c%ubw,t0,t1,tol2,error)
+  call c_deallocate_ub(ub_na_c)
+  call c_deallocate_bv(bv_na_c)
+  !
+  na=2
+  lbwa=min(na-1,lbw)
+  ub_na_c=c_new_ub(na,lbwmax,ubwmax)
+  bv_na_c=c_new_bv(na,lbwmax,ubwmax)
+  u_c=u0_c; v_c=v0_c; d_c=d0_c
+  call c_assemble_a(a_c(1:na,1:na),u_c(1:na,:),v_c(:,1:na),d_c(1:na),lbwa)
+  a0_c(1:na,1:na)=a_c(1:na,1:na)
+  call upper_to_ub(a_c(1:na,1:na),ub_na_c,lbwa, tol1,error)
+  call cpu_time(t0)
+  call convert_ub_to_bv(ub_na_c, bv_na_c,error)
+  call cpu_time(t1)
+  call bv_to_upper(bv_na_c,a1_c(1:na,1:na),error)
+  test_name = "Complex UB to BV (n=2);"
+  call c_output_result(test_name,a0_c(1:na,1:na),a1_c(1:na,1:na),1,bv_na_c%ubw,t0,t1,tol2,error)
+  call c_deallocate_ub(ub_na_c)
+  call c_deallocate_bv(bv_na_c)
+  !
+  na=3
+  lbwa=min(na-1,lbw)
+  ub_na_c=c_new_ub(na,lbwmax,ubwmax)
+  bv_na_c=c_new_bv(na,lbwmax,ubwmax)
+  u_c=u0_c; v_c=v0_c; d_c=d0_c
+  call c_assemble_a(a_c(1:na,1:na),u_c(1:na,:),v_c(:,1:na),d_c(1:na),lbwa)
+  a0_c(1:na,1:na)=a_c(1:na,1:na)
+  call upper_to_ub(a_c(1:na,1:na),ub_na_c,lbwa, tol1,error)
+  call cpu_time(t0)
+  call convert_ub_to_bv(ub_na_c, bv_na_c,error)
+  call cpu_time(t1)
+  call bv_to_upper(bv_na_c,a1_c(1:na,1:na),error)
+  test_name = "Complex UB to BV (n=3);"
+  call c_output_result(test_name,a0_c(1:na,1:na),a1_c(1:na,1:na),1,bv_na_c%ubw,t0,t1,tol2,error)
+  call c_deallocate_ub(ub_na_c)
+  call c_deallocate_bv(bv_na_c)
+  !
   na=4
   lbwa=min(na-1,lbw)
   ub_na_c=c_new_ub(na,lbwmax,ubwmax)
@@ -145,6 +298,57 @@ program test_convert
   call ub_to_upper(ub_c, a1_c, error)
   test_name="Complex BV to UB;"
   call c_output_result(test_name,a0_c,a1_c,rmax,ub_c%ubw,t0,t1,tol2,error)
+  !
+  na=1
+  lbwa=min(na-1,lbw)
+  ub_na_c=c_new_ub(na,lbwmax,ubwmax)
+  bv_na_c=c_new_bv(na,lbwmax,ubwmax)
+  u_c=u0_c; v_c=v0_c; d_c=d0_c
+  call c_assemble_a(a_c(1:na,1:na),u_c(1:na,:),v_c(:,1:na),d_c(1:na),lbwa)
+  a0_c(1:na,1:na)=a_c(1:na,1:na)
+  call upper_to_bv(a_c(1:na,1:na),bv_na_c,lbwa, tol1,error)
+  call cpu_time(t0)
+  call convert_bv_to_ub(bv_na_c, ub_na_c,error)
+  call cpu_time(t1)
+  call ub_to_upper(ub_na_c,a1_c(1:na,1:na),error)
+  test_name = "Complex BV to UB (n=1);"
+  call c_output_result(test_name,a0_c(1:na,1:na),a1_c(1:na,1:na),0,ub_na_c%ubw,t0,t1,tol2,error)
+  call c_deallocate_ub(ub_na_c)
+  call c_deallocate_bv(bv_na_c)
+  !
+  na=2
+  lbwa=min(na-1,lbw)
+  ub_na_c=c_new_ub(na,lbwmax,ubwmax)
+  bv_na_c=c_new_bv(na,lbwmax,ubwmax)
+  u_c=u0_c; v_c=v0_c; d_c=d0_c
+  call c_assemble_a(a_c(1:na,1:na),u_c(1:na,:),v_c(:,1:na),d_c(1:na),lbwa)
+  a0_c(1:na,1:na)=a_c(1:na,1:na)
+  call upper_to_bv(a_c(1:na,1:na),bv_na_c,lbwa, tol1,error)
+  call cpu_time(t0)
+  call convert_bv_to_ub(bv_na_c, ub_na_c,error)
+  call cpu_time(t1)
+  call ub_to_upper(ub_na_c,a1_c(1:na,1:na),error)
+  test_name = "Complex BV to UB (n=2);"
+  call c_output_result(test_name,a0_c(1:na,1:na),a1_c(1:na,1:na),1,ub_na_c%ubw,t0,t1,tol2,error)
+  call c_deallocate_ub(ub_na_c)
+  call c_deallocate_bv(bv_na_c)
+  !
+  na=3
+  lbwa=min(na-1,lbw)
+  ub_na_c=c_new_ub(na,lbwmax,ubwmax)
+  bv_na_c=c_new_bv(na,lbwmax,ubwmax)
+  u_c=u0_c; v_c=v0_c; d_c=d0_c
+  call c_assemble_a(a_c(1:na,1:na),u_c(1:na,:),v_c(:,1:na),d_c(1:na),lbwa)
+  a0_c(1:na,1:na)=a_c(1:na,1:na)
+  call upper_to_bv(a_c(1:na,1:na),bv_na_c,lbwa, tol1,error)
+  call cpu_time(t0)
+  call convert_bv_to_ub(bv_na_c, ub_na_c,error)
+  call cpu_time(t1)
+  call ub_to_upper(ub_na_c,a1_c(1:na,1:na),error)
+  test_name = "Complex BV to UB (n=3);"
+  call c_output_result(test_name,a0_c(1:na,1:na),a1_c(1:na,1:na),1,ub_na_c%ubw,t0,t1,tol2,error)
+  call c_deallocate_ub(ub_na_c)
+  call c_deallocate_bv(bv_na_c)
   !
   na=4
   lbwa=min(na-1,lbw)

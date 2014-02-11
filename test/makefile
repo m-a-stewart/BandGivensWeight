@@ -1,10 +1,10 @@
 include ../include/vars.mk
 
 run_test : test_compress test_decomp test_convert test_qr_iteration
+	./test_decomp
 	./test_convert
+	./test_compress
 	./test_qr_iteration
-#	./test_decomp
-#	./test_compress
 
 
 test_decomp : $(OBJDIR)/test_decomp.o $(OBJS) $(OBJDIR)/test_data.o
