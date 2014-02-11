@@ -18,29 +18,48 @@ end type c_shift
 
 real(kind=dp), private, parameter :: tol=1.0e-15
 
+type(routine_info), parameter :: info_ss_qr=routine_info(id_ss_qr, &
+     'ss_qr', &
+     [ character(len=error_message_length) :: '', '', 'size(q,2) /= bv%n', 'bv%lbw /= 1'  ])
+
+type(routine_info), parameter :: info_f_ss_qr=routine_info(id_f_ss_qr, &
+     'f_ss_qr', &
+     [ character(len=error_message_length) :: '' ])
+
+type(routine_info), parameter :: info_ss_qr_iteration=routine_info(id_ss_qr_iteration, &
+     'ss_qr_iteration', &
+     [ character(len=error_message_length) :: 'ub%n /= bv%n', 'bv%lbw /= 1'  ])
+
+type(routine_info), parameter :: info_f_ss_qr_iteration=routine_info(id_f_ss_qr_iteration, &
+     'f_ss_qr_iteration', &
+     [ character(len=error_message_length) :: 'n < 1', 'insufficient temporary storage in b_bv'  ])
+
 contains
 
+! Errors: 3: size(q,2) /= bv%n
+!         4: bv%lbw /= 1
+!         
 subroutine ss_qr(bv,q,told,tol,error)
   type(c_bv), intent(inout) :: bv
   complex(kind=dp), dimension(:,:), intent(out) :: q
-  integer(kind=int32), intent(out) :: error
+  type(error_info), intent(out) :: error
   real(kind=dp), intent(in) :: told, tol
 
   type(c_shift), dimension(:), allocatable :: shifts
-  integer(kind=int32) :: j, k, numshifts, n, lbw, ubw
+  integer(kind=int32) :: k, numshifts, n, lbw, ubw
   type(c_bv) :: bv_tmp
   type(c_ub) :: ub
   complex(kind=dp) :: subd, sigma
 
-  error=0
+  call clear_error(error)
   n=get_n(bv); lbw=bv%lbw; ubw=bv%ubw
   allocate(shifts(n))
 
   if (size(q,2) /= n) then
-     error = 3; return
+     call set_error(error, 3, id_ss_qr); return
   end if
   if (lbw /= 1) then
-     error =4; return
+     call set_error(error, 4, id_ss_qr); return
   end if
   bv_tmp=c_new_bv(n,get_lbwmax(bv), get_ubwmax(bv))
 
@@ -114,7 +133,7 @@ subroutine f_ss_qr(b_bv,n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_
   integer(kind=int32), dimension(ubwmax_bv,n), intent(out) :: ks_bv
   complex(kind=dp), dimension(ubwmax_bv,n), intent(out) :: cs_bv, ss_bv
   complex(kind=dp), dimension(p,n), intent(out) :: q
-  integer(kind=int32), intent(out) :: error
+  type(error_info), intent(out) :: error
   real(kind=dp), intent(in) :: told, tol
 
   type (c_bv) :: bv
@@ -138,8 +157,6 @@ subroutine f_ss_qr(b_bv,n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_
 end subroutine f_ss_qr
 
 ! Errors:
-! 0: no error
-! 1: n<1
 ! 3: ub%n /= bv%n
 ! 4: Not Hessenberg: bv%lbw /= 1
 
@@ -147,20 +164,20 @@ subroutine ss_qr_iteration(bv,ub,shifts, q, error)
   type(c_bv), intent(inout) :: bv
   type(c_ub) :: ub
   type(c_shift), dimension(:), intent(in) :: shifts
-  integer(kind=int32), intent(out) :: error
+  type(error_info), intent(out) :: error
   complex(kind=dp), dimension(:,:), intent(out) :: q
   
   integer :: n, j
   integer(kind=int32), dimension(size(shifts)) :: shifts_i
   complex(kind=dp), dimension(size(shifts)) :: shifts_c
   
-  error=0
+  call clear_error(error)
   n=get_n(ub)
   if (get_n(bv) /= n .or. size(shifts) /= n .or. size(q,2) /= n) then
-     error = 3; return
+     call set_error(error, 3, id_ss_qr_iteration); return
   end if
   if (bv%lbw /= 1) then
-     error =4; return
+     call set_error(error, 4, id_ss_qr_iteration); return
   end if
   shifts_i=0
   do j=1,n
@@ -177,6 +194,9 @@ subroutine ss_qr_iteration(bv,ub,shifts, q, error)
   ub%lbw=1
 end subroutine ss_qr_iteration
 
+! Errors:
+!  1: n<1
+!  2: insufficient temporary storage in b_bv
 subroutine f_ss_qr_iteration(b_bv,n, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, &
      cs_bv, ss_bv, b_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, cs_ub, &
      ss_ub, shifts_i, shifts_c, q, p, error)
@@ -195,12 +215,12 @@ subroutine f_ss_qr_iteration(b_bv,n, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, k
     integer(kind=int32), dimension(n) :: shifts_i
     complex(kind=dp), dimension(n) :: shifts_c
 
-    integer(kind=int32), intent(out) :: error
+    type(error_info), intent(out) :: error
 
     integer(kind=int32) :: j, k, ubw, lbw, d, ubw_ub, k0,k1
     type(c_rotation) :: rot
 
-    error=0
+    call clear_error(error)
     numrots_ub=0
     ss_ub=(0.0_dp, 0.0_dp); cs_ub=(0.0_dp, 0.0_dp)
     js_ub=0
@@ -209,8 +229,7 @@ subroutine f_ss_qr_iteration(b_bv,n, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, k
     lbw=2 ! 1 extra subdiagonal for the bulge.
 
     if (n < 1) then
-       error = 1
-       return
+       call set_error(error, 1, id_f_ss_qr_iteration); return
     end if
     if (n == 1) then
         b_ub(1,1)=b_bv(1,1)
@@ -218,8 +237,7 @@ subroutine f_ss_qr_iteration(b_bv,n, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, k
     end if
 
     if (lbwmax_bv+ubwmax_bv+1<ubw+lbw+1) then
-       error = 2
-       return
+       call set_error(error, 2, id_f_ss_qr_iteration); return
     end if
     ! create room for the extra subdiagonal
     call right_shift(b_bv)

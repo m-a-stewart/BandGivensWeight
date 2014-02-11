@@ -11,7 +11,8 @@ program test_convert
   implicit none
 
   real(kind=dp) :: t0, t1
-  integer(kind=int32) :: error, na, lbwa
+  integer(kind=int32) :: na, lbwa
+  type(error_info) :: error
   !
   real(kind=dp), dimension(n,n) :: a, a0, a1
   real(kind=dp), dimension(n,rmax) :: u, u0

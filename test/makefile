@@ -1,23 +1,23 @@
 include ../include/vars.mk
 
-run_test : test_compress test_decomp test_convert test_qr_iteration
-	./test_decomp
-	./test_convert
-	./test_compress
-	./test_qr_iteration
+run_test : $(OBJDIR)/test_compress $(OBJDIR)/test_decomp $(OBJDIR)/test_convert $(OBJDIR)/test_qr_iteration
+	$(OBJDIR)/test_decomp
+	$(OBJDIR)/test_convert
+	$(OBJDIR)/test_compress
+	$(OBJDIR)/test_qr_iteration
 
 
-test_decomp : $(OBJDIR)/test_decomp.o $(OBJS) $(OBJDIR)/test_data.o
-	$(FC) $(LFLAGS) $(PROFLFLAGS) $(OBJDIR)/test_decomp.o $(OBJS) $(OBJDIR)/test_data.o -o test_decomp
+$(OBJDIR)/test_decomp : $(OBJDIR)/test_decomp.o $(OBJS) $(OBJDIR)/test_data.o
+	$(FC) $(LFLAGS) $(PROFLFLAGS) $(OBJDIR)/test_decomp.o $(OBJS) $(OBJDIR)/test_data.o -o $(OBJDIR)/test_decomp
 
-test_convert : $(OBJDIR)/test_convert.o $(OBJS) $(OBJDIR)/test_data.o
-	$(FC) $(LFLAGS) $(PROFLFLAGS) $(OBJDIR)/test_convert.o $(OBJS) $(OBJDIR)/test_data.o -o test_convert
+$(OBJDIR)/test_convert : $(OBJDIR)/test_convert.o $(OBJS) $(OBJDIR)/test_data.o
+	$(FC) $(LFLAGS) $(PROFLFLAGS) $(OBJDIR)/test_convert.o $(OBJS) $(OBJDIR)/test_data.o -o $(OBJDIR)/test_convert
 
-test_compress : $(OBJDIR)/test_compress.o $(OBJS) $(OBJDIR)/test_data.o
-	$(FC) $(LFLAGS) $(PROFLFLAGS) $(OBJDIR)/test_compress.o $(OBJS) $(OBJDIR)/test_data.o -o test_compress
+$(OBJDIR)/test_compress : $(OBJDIR)/test_compress.o $(OBJS) $(OBJDIR)/test_data.o
+	$(FC) $(LFLAGS) $(PROFLFLAGS) $(OBJDIR)/test_compress.o $(OBJS) $(OBJDIR)/test_data.o -o $(OBJDIR)/test_compress
 
-test_qr_iteration : $(OBJDIR)/test_qr_iteration.o $(OBJS) $(OBJDIR)/test_data.o
-	$(FC) $(LFLAGS) $(PROFLFLAGS) $(OBJDIR)/test_qr_iteration.o $(OBJS) $(OBJDIR)/test_data.o -o test_qr_iteration
+$(OBJDIR)/test_qr_iteration : $(OBJDIR)/test_qr_iteration.o $(OBJS) $(OBJDIR)/test_data.o
+	$(FC) $(LFLAGS) $(PROFLFLAGS) $(OBJDIR)/test_qr_iteration.o $(OBJS) $(OBJDIR)/test_data.o -o $(OBJDIR)/test_qr_iteration
 
 $(OBJDIR)/test_data.o : $(OBJDIR)/prec.o
 $(OBJDIR)/test_decomp.o : $(OBJDIR)/prec.o $(OBJDIR)/test_data.o
@@ -35,7 +35,7 @@ force_look :
 	true
 
 clean :
-	rm $(OBJDIR)/*.o $(OBJDIR)/*.mod test_decomp test_convert test_compress
+	rm $(OBJDIR)/*.o $(OBJDIR)/*.mod $(OBJDIR)/test_decomp $(OBJDIR)/test_convert $(OBJDIR)/test_compress $(OBJDIR)/test_qr_iteration
 
 prof : test_compress
 	gprof -c -q --no-time='__general_ub_MOD_f_d_upper_to_ub' -no-time='__assemble_MOD_d_bv_to_upper' test_compress | less

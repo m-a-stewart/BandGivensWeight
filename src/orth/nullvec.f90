@@ -1,5 +1,6 @@
 module nullvec
 use prec
+use error_id
 use utility
 use triangular
 implicit none
@@ -12,17 +13,31 @@ interface lower_right_nullvec
    module procedure f_c_lower_right_nullvec, f_d_lower_right_nullvec
 end interface lower_right_nullvec
 
+type(routine_info), parameter :: info_d_lower_left_nullvec=routine_info(id_d_lower_left_nullvec, &
+     'd_lower_left_nullvec', &
+     [ character(len=error_message_length) :: 'Failure to find a null vector.' ])
+type(routine_info), parameter :: info_d_lower_right_nullvec=routine_info(id_d_lower_right_nullvec, &
+     'd_lower_right_nullvec', &
+     [ character(len=error_message_length) :: 'Failure to find a null vector.' ])
+type(routine_info), parameter :: info_c_lower_left_nullvec=routine_info(id_c_lower_left_nullvec, &
+     'c_lower_left_nullvec', &
+     [ character(len=error_message_length) :: 'Failure to find a null vector.' ])
+type(routine_info), parameter :: info_c_lower_right_nullvec=routine_info(id_c_lower_right_nullvec, &
+     'c_lower_right_nullvec', &
+     [ character(len=error_message_length) :: 'Failure to find a null vector.' ])
+
+
 contains
 
   ! null vector of a lower triangular matrix.
-  ! error: >= 0 no error
-  !        -1 no null vector within tolerance
+  ! error: <= 0 no error
+  !           1 no null vector within tolerance
   ! If tol=0 try to get the best possible null vector.
   subroutine f_d_lower_left_nullvec(x,l,tol,maxit, error)
     real(kind=dp), dimension(:,:), intent(in) :: l
     real(kind=dp), dimension(:), intent(out) :: x
     real(kind=dp), intent(in) :: tol
-    integer(kind=int32), intent(out) :: error
+    type(error_info), intent(out) :: error
     integer(kind=int32), intent(in) :: maxit
     !
     integer(kind=int32) :: n, j, k, p
@@ -30,19 +45,20 @@ contains
     real(kind=dp) :: d, tmp
     real(kind=dp), dimension(size(x)) :: y
     !
+    call clear_error(error)
     n=size(l,1)
     x=0.0_dp
     y=0.0_dp
     p=first_zero_diagonal(l, 1.0e-1_dp*tol)
     if (p==1) then
        x(1)=1.0_dp
-       error=1
+       call set_error(error,-1, id_d_lower_left_nullvec)
     else if (p <= n) then
        ! if a small enough diagonal element is found, solve
        ! for a null vector directly.
        x(p)=1.0_dp
        call lower_right_invert(x(1:p-1),l(1:p-1, 1:p-1), -l(p,1:p-1))
-       error = p
+       call set_error(error,-p, id_d_lower_left_nullvec)
     else
        ! Otherwise use the Linpack condition estimator approach.
        x(n)=1.0_dp/l(n,n)
@@ -66,10 +82,10 @@ contains
        nrmx=norm2(x)
        x=x/nrmx
        k=1
-       error=-1
+       call set_error(error,1, id_d_lower_left_nullvec)
        do while (k < maxit)
           if (1/nrmx < tol) then
-             error=0
+             call clear_error(error)
              return
           end if
           call lower_tr_right_invert(y,l,x)
@@ -80,7 +96,7 @@ contains
           k=k+1
        end do
        if (tol==0.0_dp) then
-          error=0
+          call clear_error(error)
        end if
     end if
   end subroutine f_d_lower_left_nullvec
@@ -90,7 +106,7 @@ contains
     complex(kind=dp), dimension(:,:), intent(in) :: l
     complex(kind=dp), dimension(:), intent(out) :: x
     real(kind=dp), intent(in) :: tol
-    integer(kind=int32), intent(out) :: error
+    type(error_info), intent(out) :: error
     integer(kind=int32), intent(in) :: maxit
     !
     integer(kind=int32) :: n, j, k, p
@@ -99,18 +115,19 @@ contains
     complex(kind=dp), dimension(size(x)) :: y
     !
     n=size(l,1)
+    call clear_error(error)
     x=(0.0_dp, 0.0_dp)
     y=(0.0_dp, 0.0_dp)
     p=first_zero_diagonal(l, 1.0e-1_dp*tol)
     if (p==1) then
        x(p)=(1.0_dp, 0.0_dp)
-       error=1
+       call set_error(error, -1, id_c_lower_left_nullvec)
     else if (p <= n) then
        ! if a small enough diagonal element is found, solve
        ! for a null vector directly.
        x(p)=(1.0_dp, 0.0_dp)
        call lower_right_invert(x(1:p-1),l(1:p-1, 1:p-1), -l(p,1:p-1))
-       error=p
+       call set_error(error, -p, id_c_lower_left_nullvec)
     else
        ! Otherwise use the Linpack condition estimator approach.
        x(n)=(1.0_dp,0.0_dp)/l(n,n)
@@ -134,10 +151,10 @@ contains
        nrmx=norm2(x)
        x=x/nrmx
        k=1
-       error=-1
+       call set_error(error, 1, id_c_lower_left_nullvec)
        do while (k < maxit)
           if (1/nrmx < tol) then
-             error=0
+             call clear_error(error)
              return
           end if
           call lower_tr_right_invert(y,l,x)
@@ -148,7 +165,7 @@ contains
           k=k+1
        end do
        if (tol==0.0_dp) then
-          error=0
+          call clear_error(error)
        end if
     end if
   end subroutine f_c_lower_left_nullvec
@@ -159,7 +176,7 @@ contains
     real(kind=dp), dimension(:,:), intent(in) :: l
     real(kind=dp), dimension(:), intent(out) :: x
     real(kind=dp), intent(in) :: tol
-    integer(kind=int32), intent(out) :: error
+    type(error_info), intent(out) :: error
     integer(kind=int32), intent(in) :: maxit
     !
     integer(kind=int32) :: n, j, k, p
@@ -168,18 +185,19 @@ contains
     real(kind=dp), dimension(size(x)) :: y
     !
     n=size(l,1)
+    call clear_error(error)
     x=0.0_dp
     y=0.0_dp
     p=last_zero_diagonal(l, 1.0e-1_dp*tol)
     if (p==n) then
        x(n)=1.0_dp
-       error=n
+       call set_error(error, -n, id_d_lower_right_nullvec)
     else if (p >= 1) then
        ! if a small enough diagonal element is found, solve
        ! for a null vector directly.
        x(p)=1.0_dp
        call lower_left_invert(l(p+1:n,p+1:n),x(p+1:n),-l(p+1:n,p))
-       error = p
+       call set_error(error, -p, id_d_lower_right_nullvec)
     else
        ! Otherwise use the Linpack condition estimator approach.
        x(1)=1.0_dp/l(1,1)
@@ -204,10 +222,10 @@ contains
        nrmx=norm2(x)
        x=x/nrmx
        k=1
-       error=-1
+       call set_error(error, 1, id_d_lower_right_nullvec)
        do while (k < maxit)
           if (1/nrmx < tol) then
-             error=0
+             call clear_error(error)
              return
           end if
           call lower_tr_left_invert(l,y,x)
@@ -218,7 +236,7 @@ contains
           k=k+1
        end do
        if (tol==0.0_dp) then
-          error=0
+          call clear_error(error)
        end if
     end if
   end subroutine f_d_lower_right_nullvec
@@ -228,7 +246,7 @@ contains
     complex(kind=dp), dimension(:,:), intent(in) :: l
     complex(kind=dp), dimension(:), intent(out) :: x
     real(kind=dp), intent(in) :: tol
-    integer(kind=int32), intent(out) :: error
+    type(error_info), intent(out) :: error
     integer(kind=int32), intent(in) :: maxit
     !
     integer(kind=int32) :: n, j, k, p
@@ -237,18 +255,19 @@ contains
     complex(kind=dp), dimension(size(x)) :: y
     !
     n=size(l,1)
+    call clear_error(error)
     x=(0.0_dp, 0.0_dp)
     y=(0.0_dp, 0.0_dp)
     p=last_zero_diagonal(l, 1.0e-1_dp*tol)
     if (p==n) then
        x(n)=(1.0_dp, 0.0_dp)
-       error=n
+       call set_error(error, -n, id_c_lower_right_nullvec)
     else if (p >= 1) then
        ! if a small enough diagonal element is found, solve
        ! for a null vector directly.
        x(p)=(1.0_dp, 0.0_dp)
        call lower_left_invert(l(p+1:n,p+1:n),x(p+1:n),-l(p+1:n,p))
-       error = p
+       call set_error(error, -p, id_c_lower_right_nullvec)
     else
        ! Otherwise use the Linpack condition estimator approach.
        x(1)=(1.0_dp,0.0_dp)/l(1,1)
@@ -273,10 +292,10 @@ contains
        nrmx=norm2(x)
        x=x/nrmx
        k=1
-       error=-1
+       call set_error(error, 1, id_c_lower_right_nullvec)
        do while (k < maxit)
           if (1/nrmx < tol) then
-             error=0
+             call clear_error(error)
              return
           end if
           call lower_tr_left_invert(l,y,x)
@@ -287,7 +306,7 @@ contains
           k=k+1
        end do
        if (tol==0.0_dp) then
-          error=0
+          call clear_error(error)
        end if
     end if
   end subroutine f_c_lower_right_nullvec

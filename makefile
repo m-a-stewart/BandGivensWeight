@@ -7,4 +7,5 @@ force_look :
 	true
 
 clean :
-	rm $(OBJDIR)/*.o $(OBJDIR)/*.mod ./test/test_decomp ./test/test_convert ./test/test_compress
+	rm $(OBJDIR)/*.o $(OBJDIR)/*.mod $(OBJDIR)/test_decomp $(OBJDIR)/test_convert \
+		$(OBJDIR)/test_compress $(OBJDIR)/test_qr_iteration

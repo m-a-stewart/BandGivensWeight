@@ -1,5 +1,6 @@
 module gs
   use prec
+  use error_id
   use utility
   implicit none
   real(kind=dp), parameter :: eta=1.414_dp
@@ -13,9 +14,28 @@ module gs
      module procedure d_extend_gs_columns, c_extend_gs_columns
   end interface extend_gs_columns
 
+type(routine_info), parameter :: info_d_extend_gs_rows=routine_info(id_d_extend_gs_rows, &
+     'd_extend_gs_rows', &
+     [ character(len=error_message_length) :: 'MGS Orthogonalization Error' ])
+
+type(routine_info), parameter :: info_c_extend_gs_rows=routine_info(id_c_extend_gs_rows, &
+     'c_extend_gs_rows', &
+     [ character(len=error_message_length) :: 'MGS Orthogonalization Error' ])
+
+type(routine_info), parameter :: info_d_extend_gs_columns=routine_info(id_d_extend_gs_columns, &
+     'd_extend_gs_columns', &
+     [ character(len=error_message_length) :: 'MGS Orthogonalization Error' ])
+
+type(routine_info), parameter :: info_c_extend_gs_columns=routine_info(id_c_extend_gs_columns, &
+     'c_extend_gs_columns', &
+     [ character(len=error_message_length) :: 'MGS Orthogonalization Error' ])
+
+
 contains
 
+  ! Error 1: failure to orthogonalize
   ! Extend a Gram-Schmidt LQ decomposition
+
   subroutine d_extend_gs_rows(q1, l, rho, q2, error)
     ! orthogonalize q2 against q1.  Return error = 1 if
     ! too many iterations are required.
@@ -23,7 +43,7 @@ contains
     real(kind=dp), intent(out) :: rho
     real(kind=dp), dimension(:), intent(out) :: l
     real(kind=dp), dimension(:), intent(inout) :: q2
-    integer(kind=int32), intent(out) :: error
+    type(error_info), intent(out) :: error
     !
     real(kind=dp), dimension(size(l)) :: x
     real(kind=dp) :: nrm1, nrm2
@@ -35,7 +55,7 @@ contains
     nrm2=norm2(q2)
     rho=nrm2
     ! reorthogonalize as needed
-    error=0
+    call clear_error(error)
     k=0
     do while (nrm1 > eta * nrm2 .and. nrm2 > 0 .and. k < orthmaxits)
        k=k+1
@@ -62,7 +82,7 @@ contains
     end do
     q2=q2/nrm2
     if (k >= orthmaxits) then
-       error = 1
+       call set_error(error, 1, id_d_extend_gs_rows)
     end if
   end subroutine d_extend_gs_rows
 
@@ -74,7 +94,7 @@ contains
     complex(kind=dp), intent(out) :: rho
     complex(kind=dp), dimension(:), intent(out) :: l
     complex(kind=dp), dimension(:), intent(inout) :: q2
-    integer(kind=int32), intent(out) :: error
+    type(error_info), intent(out) :: error
     !
     complex(kind=dp), dimension(size(l)) :: x
     real(kind=dp) :: nrm1, nrm2
@@ -87,7 +107,7 @@ contains
     nrm2=norm2(q2)
     rho=nrm2
     ! reorthogonalize as needed
-    error=0
+    call clear_error(error)
     k=0
     do while (nrm1 > eta * nrm2 .and. nrm2 > 0 .and. k < orthmaxits)
        k=k+1
@@ -116,7 +136,7 @@ contains
     end do
     q2=q2/nrm2
     if (k >= orthmaxits) then
-       error = 1
+       call set_error(error, 1, id_c_extend_gs_rows)
     end if
   end subroutine c_extend_gs_rows
 
@@ -128,7 +148,7 @@ contains
     real(kind=dp), intent(out) :: rho
     real(kind=dp), dimension(:), intent(out) :: l
     real(kind=dp), dimension(:), intent(inout) :: q2
-    integer(kind=int32), intent(out) :: error
+    type(error_info), intent(out) :: error
     !
     real(kind=dp), dimension(size(l)) :: x
     real(kind=dp) :: nrm1, nrm2
@@ -140,7 +160,7 @@ contains
     nrm2=norm2(q2)
     rho=nrm2
     ! reorthogonalize as needed
-    error=0
+    call clear_error(error)
     k=0
     do while (nrm1 > eta * nrm2 .and. nrm2 > 0 .and. k < orthmaxits)
        k=k+1
@@ -167,7 +187,7 @@ contains
     end do
     q2=q2/nrm2
     if (k >= orthmaxits) then
-       error = 1
+       call set_error(error, 1, id_d_extend_gs_columns)
     end if
   end subroutine d_extend_gs_columns
 
@@ -179,7 +199,7 @@ contains
     complex(kind=dp), intent(out) :: rho
     complex(kind=dp), dimension(:), intent(out) :: l
     complex(kind=dp), dimension(:), intent(inout) :: q2
-    integer(kind=int32), intent(out) :: error
+    type(error_info), intent(out) :: error
     !
     complex(kind=dp), dimension(size(l)) :: x
     real(kind=dp) :: nrm1, nrm2
@@ -192,7 +212,7 @@ contains
     nrm2=norm2(q2)
     rho=nrm2
     ! reorthogonalize as needed
-    error=0
+    call clear_error(error)
     k=0
     do while (nrm1 > eta * nrm2 .and. nrm2 > 0 .and. k < orthmaxits)
        k=k+1
@@ -221,7 +241,7 @@ contains
     end do
     q2=q2/nrm2
     if (k >= orthmaxits) then
-       error = 1
+       call set_error(error, 1, id_c_extend_gs_columns)
     end if
   end subroutine c_extend_gs_columns
 

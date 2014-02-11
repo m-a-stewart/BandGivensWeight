@@ -7,7 +7,7 @@ program test_decomp
   use test_data
   implicit none
   real(kind=dp) :: t0, t1
-  integer(kind=int32) :: error
+  type(error_info) :: error
   !
   real(kind=dp), dimension(n,n) :: a, a0, a1
   real(kind=dp), dimension(n,rmax) :: u, u0

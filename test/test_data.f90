@@ -1,9 +1,10 @@
 module test_data
 use prec
 use utility
+use error_id
 implicit none
 
-integer, parameter :: n=10, rmax=4, ubwmax=rmax+1, lbw=2, lbwmax=3
+integer, parameter :: n=50, rmax=13, ubwmax=rmax+1, lbw=2, lbwmax=3
 real(kind=dp), parameter :: tol=1e-14, tol1=1e-14, tol2=1e-10
 character(len=40) :: test_name
 character(len=*), parameter :: fmt="(A40, 'Time: ',ES8.2,', ubw: ',I3,', error: ',ES8.2, ', ', A10)"
@@ -52,12 +53,13 @@ contains
     character(len=*) :: name
     real(kind=dp), dimension(:,:) :: a0, a1     
     real(kind=dp) :: bnd, t0, t1
-    integer(kind=int32) :: error, ubw0, ubw1
+    integer(kind=int32) :: ubw0, ubw1
+    type(error_info) :: error
 
     real(kind=dp) :: berr
     character(len=10) :: test_result
 
-    if (error > 0) then
+    if (error%code > 0) then
        print *, "Calling error in test: ", name
     else
        berr = maxabs(a1-a0)
@@ -74,12 +76,13 @@ contains
     character(len=*) :: name
     complex(kind=dp), dimension(:,:) :: a0, a1     
     real(kind=dp) :: bnd, t0, t1
-    integer(kind=int32) :: error, ubw0, ubw1
+    integer(kind=int32) :: ubw0, ubw1
+    type(error_info) :: error
 
     real(kind=dp) :: berr
     character(len=10) :: test_result
 
-    if (error > 0) then
+    if (error%code > 0) then
        print *, "Calling error in test: ", name
     else
        berr = maxabs(a1-a0)
@@ -96,13 +99,14 @@ contains
     character(len=*) :: name
     complex(kind=dp), dimension(:,:) :: a0, a1, q
     real(kind=dp) :: bnd, t0, t1
-    integer(kind=int32) :: error, ubw0, ubw1
+    integer(kind=int32) :: ubw0, ubw1
+    type(error_info) :: error
 
     real(kind=dp) :: berr, qerr, subd_err
     character(len=10) :: test_result
     complex(kind=dp), dimension(size(a0,1),size(a0,2)) :: f
     integer(kind=int32) :: j
-    if (error > 0) then
+    if (error%code > 0) then
        print *, "Calling error in test: ", name
     else
        berr = maxabs(matmul(matmul(transpose(conjg(q)),a0),q) - a1)

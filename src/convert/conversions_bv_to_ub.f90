@@ -1,5 +1,6 @@
 module conversions_bv_to_ub
 use prec
+use error_id
 use shift
 use rotation
 use band_types
@@ -14,6 +15,22 @@ interface f_convert_bv_to_ub
    module procedure f_d_convert_bv_to_ub, f_c_convert_bv_to_ub
 end interface f_convert_bv_to_ub
 
+type(routine_info), parameter :: info_d_convert_bv_to_ub=routine_info(id_d_convert_bv_to_ub, &
+     'd_convert_bv_to_ub', &
+     [ character(len=error_message_length) :: '', '', 'ub%n /= bv%n' ] )
+
+type(routine_info), parameter :: info_f_d_convert_bv_to_ub=routine_info(id_f_d_convert_bv_to_ub, &
+     'f_d_convert_bv_to_ub', &
+     [ character(len=error_message_length) :: 'n<1', 'Insufficient storage in b%bv' ] )
+
+type(routine_info), parameter :: info_c_convert_bv_to_ub=routine_info(id_c_convert_bv_to_ub, &
+     'c_convert_bv_to_ub', &
+     [ character(len=error_message_length) :: '', '', 'ub%n /= bv%n' ] )
+
+type(routine_info), parameter :: info_f_c_convert_bv_to_ub=routine_info(id_f_c_convert_bv_to_ub, &
+     'f_c_convert_bv_to_ub', &
+     [ character(len=error_message_length) :: 'n<1', 'Insufficient storage in b%bv' ] )
+
 contains
 
   ! Errors:
@@ -23,9 +40,9 @@ contains
   subroutine d_convert_bv_to_ub(bv, ub, error)
     type(d_bv) :: bv
     type(d_ub) :: ub
-    integer(kind=int32), intent(out) :: error
+    type(error_info), intent(out) :: error
     if (get_n(ub) /= get_n(bv)) then
-       error = 3; return
+       call set_error(error, 3, id_d_convert_bv_to_ub); return
     end if
     call f_d_convert_bv_to_ub(bv%b, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), &
          get_ubwmax(bv), bv%numrotsv, bv%ksv, bv%csv, bv%ssv, ub%b,  get_lbwmax(ub), &
@@ -33,6 +50,10 @@ contains
     ub%lbw=bv%lbw; ub%ubw=bv%ubw
   end subroutine d_convert_bv_to_ub
 
+  ! Errors:
+  ! 0: no error
+  ! 1: n<1
+  ! 2: Insufficient storage in b%bv
   subroutine f_d_convert_bv_to_ub(b_bv, n, lbw, ubw, lbwmax_bv, ubwmax_bv, &
        numrots_bv, ks_bv, cs_bv, ss_bv, b_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, &
        cs_ub, ss_ub, error)
@@ -46,19 +67,18 @@ contains
     integer(kind=int32), dimension(n), intent(out) :: numrots_ub
     integer(kind=int32), dimension(ubwmax_ub,n), intent(out) :: js_ub
     real(kind=dp), dimension(ubwmax_ub,n), intent(out) :: cs_ub, ss_ub
-    integer(kind=int32), intent(out) :: error
+    type(error_info), intent(out) :: error
 
     integer(kind=int32) :: j, k, ubw1, lbw1, d, k0, k1
     type(d_rotation) :: rot
 
-    error = 0
+    call clear_error(error)
     b_ub=0.0_dp; numrots_ub=0
     ss_ub=0.0_dp; cs_ub=0.0_dp
     js_ub=0
     ubw1=ubw+1; lbw1=lbw
     if (n < 1) then
-       error = 1
-       return
+       call set_error(error, 1, id_f_d_convert_bv_to_ub); return
     end if
     if (n == 1) then
        b_ub(1,1)=b_bv(1,1)
@@ -66,8 +86,7 @@ contains
     end if
     ! must allow for temporary fill-in
     if (lbwmax_bv+ubwmax_bv+1<ubw1+lbw1+1) then
-       error = 2
-       return
+       call set_error(error, 2, id_f_d_convert_bv_to_ub); return
     end if
     b_bv(:,ubw1+lbw1+1)=0.0_dp
     do k=1,n-1
@@ -101,9 +120,9 @@ contains
   subroutine c_convert_bv_to_ub(bv, ub, error)
     type(c_bv) :: bv
     type(c_ub) :: ub
-    integer(kind=int32), intent(out) :: error
+    type(error_info), intent(out) :: error
     if (get_n(ub) /= get_n(bv)) then
-       error = 3; return
+       call set_error(error, 3, id_c_convert_bv_to_ub); return
     end if
     call f_c_convert_bv_to_ub(bv%b, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), &
          get_ubwmax(bv), bv%numrotsv, bv%ksv, &
@@ -124,20 +143,19 @@ contains
     integer(kind=int32), dimension(n), intent(out) :: numrots_ub
     integer(kind=int32), dimension(ubwmax_ub,n), intent(out) :: js_ub
     complex(kind=dp), dimension(ubwmax_ub,n), intent(out) :: cs_ub, ss_ub
-    integer(kind=int32), intent(out) :: error
+    type(error_info), intent(out) :: error
 
     integer(kind=int32) :: j, k, ubw1, lbw1, d, k0, k1
     type(c_rotation) :: rot
 
-    error = 0
+    call clear_error(error)
     b_ub=(0.0_dp, 0.0_dp); numrots_ub=0
     ss_ub=(0.0_dp, 0.0_dp); cs_ub=(0.0_dp, 0.0_dp)
     js_ub=0
     ubw1=ubw+1; lbw1=lbw
     
     if (n < 1) then
-       error = 1
-       return
+       call set_error(error, 1, id_f_c_convert_bv_to_ub); return
     end if
     if (n == 1) then
        b_ub(1,1)=b_bv(1,1)
@@ -145,8 +163,7 @@ contains
     end if
     ! must allow for temporary fill-in
     if (lbwmax_bv+ubwmax_bv+1<ubw1+lbw1+1) then
-       error = 2
-       return
+       call set_error(error, 2, id_f_c_convert_bv_to_ub); return
     end if
     b_bv(:,ubw1+lbw1+1)=(0.0_dp, 0.0_dp)
     ! apply v_{n-1}

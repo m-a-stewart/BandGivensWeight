@@ -1,5 +1,6 @@
 module compressions_bv_to_ub
 use prec
+use error_id
 use shift
 use rotation
 use band_types
@@ -17,15 +18,28 @@ interface f_compress_bv_to_ub
    module procedure f_d_compress_bv_to_ub, f_c_compress_bv_to_ub
 end interface f_compress_bv_to_ub
 
+
+type(routine_info), parameter :: info_d_compress_bv_to_ub=routine_info(id_d_compress_bv_to_ub, &
+     'd_compress_bv_to_ub', &
+     [ character(len=error_message_length) :: '', '', 'ub%n /= bv%n' ] )
+type(routine_info), parameter :: info_f_d_compress_bv_to_ub=routine_info(id_f_d_compress_bv_to_ub, &
+     'f_d_compress_bv_to_ub', &
+     [ character(len=error_message_length) :: 'n<1', 'Insufficient temporary storage in bv%b', &
+     'Insufficient Upper Bandwidth in ub', 'Insufficient Lower Bandwidth in ub' ] )
+type(routine_info), parameter :: info_c_compress_bv_to_ub=routine_info(id_c_compress_bv_to_ub, &
+     'c_compress_bv_to_ub', &
+     [ character(len=error_message_length) :: '', '', 'ub%n /= bv%n' ] )
+type(routine_info), parameter :: info_f_c_compress_bv_to_ub=routine_info(id_f_c_compress_bv_to_ub, &
+     'f_c_compress_bv_to_ub', &
+     [ character(len=error_message_length) :: 'n<1', 'Insufficient temporary storage in bv%b', &
+     'Insufficient Upper Bandwidth in ub', 'Insufficient Lower Bandwidth in ub' ] )
+
 contains
 
 !
 ! Errors:
 ! 0: no error
-! 1: n<1
 ! 3: ub%n /= bv%n
-! 4: compression error, no compression achieved
-!    or less compression within the specified tolderance than requested.
 ! 
 ! told governs whether a diagonal of L is considered small enough to move to the
 ! lower right corner of L.  If this tolerance is not met, the algorithm looks
@@ -36,21 +50,27 @@ contains
   subroutine d_compress_bv_to_ub(bv, ub, told, tol, dr, error)
     type(d_ub) :: ub
     type(d_bv) :: bv
-    integer(kind=int32), intent(out) :: error
+    type(error_info), intent(out) :: error
     integer(kind=int32), intent(in)  :: dr
     real(kind=dp), intent(in) :: tol, told
     if (get_n(ub) /= get_n(bv)) then
-       error = 3; return
+       call set_error(error, 3, id_d_compress_bv_to_ub); return
     end if
     call f_d_compress_bv_to_ub(bv%b, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), &
          get_ubwmax(bv), bv%numrotsv, bv%ksv, bv%csv, bv%ssv, ub%b, ub%ubw, & 
          get_lbwmax(ub), get_ubwmax(ub), ub%numrotsu, ub%jsu, ub%csu, ub%ssu, &
          told, tol, dr, error)
-    if (error == 0) then
+    if (error%code == 0) then
        ub%lbw=bv%lbw
     end if
   end subroutine d_compress_bv_to_ub
 
+  ! Errors:
+  ! 0: no error
+  ! 1: n<1
+  ! 2: insufficient storage in bv%b
+  ! 3: insufficient Upper BW in ub%b
+  ! 4: insufficient Lower BW in ub%b
   subroutine f_d_compress_bv_to_ub(b_bv, n, lbw, ubw, lbwmax_bv, ubwmax_bv, numrots_bv, &
        ks_bv, cs_bv, ss_bv, &
        b_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, cs_ub, ss_ub, told, tol, dr, error)
@@ -66,9 +86,10 @@ contains
     real(kind=dp), dimension(ubwmax_ub,n), intent(out) :: cs_ub, ss_ub
 
     real(kind=dp), intent(in) :: tol, told
-    integer(kind=int32), intent(out) :: error, ubw_ub
+    integer(kind=int32), intent(out) :: ubw_ub
+    type(error_info), intent(out) :: error
 
-    integer(kind=int32) :: j, k, jj, roffs, coffs, ubw2, nullerr, d, minindex, ml, nl, dnl, nq
+    integer(kind=int32) :: j, k, jj, roffs, coffs, ubw2, d, minindex, ml, nl, dnl, nq
     type(d_rotation) :: rot
     real(kind=dp), target, dimension(ubw+1,ubw+1) :: q
     real(kind=dp), dimension(ubw+1,ubw+1) :: l
@@ -76,7 +97,7 @@ contains
     real(kind=dp) :: nrma, tmp, mindiag
     integer(kind=int32), dimension(n) :: ubws
 
-    error = 0
+    call clear_error(error)
     numrots_ub=0
     ss_ub=0.0_dp; cs_ub=0.0_dp
     js_ub=0
@@ -86,8 +107,7 @@ contains
     ubws=0
 
     if (n < 1) then
-       error = 1
-       return
+       call set_error(error, 1, id_f_d_compress_bv_to_ub); return
     end if
     if (n == 1) then
         b_ub(1,1)=b_bv(1,1)
@@ -95,8 +115,10 @@ contains
     end if
     ! must allow for temporary fill-in of one extra superdiagonal in b_bv.
     if (lbwmax_bv+ubwmax_bv+1<ubw2+lbw+1) then
-       error = 2
-       return
+       call set_error(error, 2, id_f_d_compress_bv_to_ub); return
+    end if
+    if (lbwmax_ub < lbw) then
+       call set_error(error, 4, id_f_d_compress_bv_to_ub); return
     end if
     nl=1
     ml=1
@@ -161,8 +183,8 @@ contains
           call set_el_br(b_bv,lbw,roffs+1,coffs+1,0.0_dp)
        else ! find a null vector
           call submatrix_br(b_bv,lbw,ubw2, roffs+1,roffs+nl,coffs+1,coffs+nl,l(1:nl,1:nl))
-          call f_d_lower_left_nullvec(x(1:nl),l(1:nl,1:nl),tol*nrma,nullmaxits, nullerr)
-          if ((nullerr >= 0 .and. tol > 0.0_dp) .or. &
+          call f_d_lower_left_nullvec(x(1:nl),l(1:nl,1:nl),tol*nrma,nullmaxits, error)
+          if ((error%code <= 0 .and. tol > 0.0_dp) .or. &
                (tol==0.0_dp .and. told == 0.0_dp .and. nl > ubw-dr)) then ! null vector found
              dnl=0
              ubws(k)=nl-1
@@ -183,6 +205,7 @@ contains
              call set_el_br(b_bv,lbw,roffs+1,coffs+1,0.0_dp)
           else
              ! Compression has failed; increase nl.
+             call clear_error(error)
              ubws(k)=nl
              dnl=1
           end if
@@ -297,6 +320,9 @@ contains
     ! Extract diagonals
     !
     ubw_ub=maxval(ubws)
+    if (ubw_ub > ubwmax_ub) then
+       call set_error(error, 3, id_f_d_compress_bv_to_ub); return
+    end if
     ! put diagonals in b
     do d=1,ubw_ub+1
        do k=ubw_ub-d+2,n
@@ -313,17 +339,17 @@ contains
   subroutine c_compress_bv_to_ub(bv, ub, told, tol, dr, error)
     type(c_ub) :: ub
     type(c_bv) :: bv
-    integer(kind=int32), intent(out) :: error
+    type(error_info), intent(out) :: error
     integer(kind=int32), intent(in)  :: dr
     real(kind=dp), intent(in) :: tol, told
     if (get_n(ub) /= get_n(bv)) then
-       error = 3; return
+       call set_error(error, 3, id_c_compress_bv_to_ub); return
     end if
     call f_c_compress_bv_to_ub(bv%b, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), &
          get_ubwmax(bv), bv%numrotsv, bv%ksv, bv%csv, bv%ssv, ub%b, ub%ubw, & 
          get_lbwmax(ub), get_ubwmax(ub), ub%numrotsu, ub%jsu, ub%csu, ub%ssu, &
          told, tol, dr, error)
-    if (error == 0) then
+    if (error%code == 0) then
        ub%lbw=bv%lbw
     end if
   end subroutine c_compress_bv_to_ub
@@ -343,9 +369,10 @@ contains
     complex(kind=dp), dimension(ubwmax_ub,n), intent(out) :: cs_ub, ss_ub
 
     real(kind=dp), intent(in) :: tol, told
-    integer(kind=int32), intent(out) :: error, ubw_ub
+    integer(kind=int32), intent(out) :: ubw_ub
+    type(error_info), intent(out) :: error
 
-    integer(kind=int32) :: j, k, jj, roffs, coffs, ubw2, nullerr, d, minindex, ml, nl, dnl, nq
+    integer(kind=int32) :: j, k, jj, roffs, coffs, ubw2, d, minindex, ml, nl, dnl, nq
     type(c_rotation) :: rot
     complex(kind=dp), target, dimension(ubw+1,ubw+1) :: q
     complex(kind=dp), dimension(ubw+1,ubw+1) :: l
@@ -354,7 +381,7 @@ contains
     complex(kind=dp) :: tmp
     integer(kind=int32), dimension(n) :: ubws
 
-    error = 0
+    call clear_error(error)
     numrots_ub=0
     ss_ub=(0.0_dp,0.0_dp); cs_ub=(0.0_dp,0.0_dp)
     js_ub=0
@@ -364,8 +391,7 @@ contains
     ubws=0
 
     if (n < 1) then
-       error = 1
-       return
+       call set_error(error, 1, id_f_c_compress_bv_to_ub); return
     end if
     if (n == 1) then
         b_ub(1,1)=b_bv(1,1)
@@ -373,8 +399,10 @@ contains
     end if
     ! must allow for temporary fill-in of one extra superdiagonal in b_bv.
     if (lbwmax_bv+ubwmax_bv+1<ubw2+lbw+1) then
-       error = 2
-       return
+       call set_error(error, 2, id_f_c_compress_bv_to_ub); return
+    end if
+    if (lbwmax_ub < lbw) then
+       call set_error(error, 4, id_f_c_compress_bv_to_ub); return
     end if
     nl=1
     ml=1
@@ -439,8 +467,8 @@ contains
           call set_el_br(b_bv,lbw,roffs+1,coffs+1,(0.0_dp,0.0_dp))
        else ! find a null vector
           call submatrix_br(b_bv,lbw,ubw2, roffs+1,roffs+nl,coffs+1,coffs+nl,l(1:nl,1:nl))
-          call f_c_lower_left_nullvec(x(1:nl),l(1:nl,1:nl),tol*nrma,nullmaxits, nullerr)
-          if ((nullerr >= 0 .and. tol > 0.0_dp) .or. &
+          call f_c_lower_left_nullvec(x(1:nl),l(1:nl,1:nl),tol*nrma,nullmaxits, error)
+          if ((error%code <= 0 .and. tol > 0.0_dp) .or. &
                (tol==0.0_dp .and. told == 0.0_dp .and. nl > ubw-dr)) then ! null vector found
              dnl=0
              ubws(k)=nl-1
@@ -461,6 +489,7 @@ contains
              call set_el_br(b_bv,lbw,roffs+1,coffs+1,(0.0_dp,0.0_dp))
           else
              ! Compression has failed; increase nl.
+             call clear_error(error)
              ubws(k)=nl
              dnl=1
           end if
@@ -575,6 +604,9 @@ contains
     ! Extract diagonals
     !
     ubw_ub=maxval(ubws)
+    if (ubw_ub > ubwmax_ub) then
+       call set_error(error, 3, id_f_c_compress_bv_to_ub); return
+    end if
     ! put diagonals in b
     do d=1,ubw_ub+1
        do k=ubw_ub-d+2,n

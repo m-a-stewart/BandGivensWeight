@@ -1,18 +1,19 @@
 include ../include/vars.mk
 all : $(OBJS)
 
-$(OBJDIR)/general_ub.o : $(OBJDIR)/prec.o $(OBJDIR)/nullvec.o $(OBJDIR)/rotation.o $(OBJDIR)/shift.o \
+$(OBJDIR)/general_ub.o : $(OBJDIR)/error_id.o $(OBJDIR)/nullvec.o $(OBJDIR)/rotation.o $(OBJDIR)/shift.o \
 		           $(OBJDIR)/gs.o $(OBJDIR)/nested_types.o
-$(OBJDIR)/general_bv.o : $(OBJDIR)/prec.o $(OBJDIR)/nullvec.o $(OBJDIR)/rotation.o $(OBJDIR)/shift.o \
+$(OBJDIR)/general_bv.o : $(OBJDIR)/error_id.o $(OBJDIR)/nullvec.o $(OBJDIR)/rotation.o $(OBJDIR)/shift.o \
 		           $(OBJDIR)/gs.o $(OBJDIR)/nested_types.o
-$(OBJDIR)/nullvec.o : $(OBJDIR)/utility.o $(OBJDIR)/triangular.o $(OBJDIR)/prec.o
+$(OBJDIR)/nullvec.o : $(OBJDIR)/utility.o $(OBJDIR)/triangular.o $(OBJDIR)/error_id.o
 $(OBJDIR)/utility.o : $(OBJDIR)/prec.o
 $(OBJDIR)/triangular.o : $(OBJDIR)/prec.o
 $(OBJDIR)/shift.o : $(OBJDIR)/prec.o
+$(OBJDIR)/error_id.o : $(OBJDIR)/prec.o
 $(OBJDIR)/rotation.o : $(OBJDIR)/prec.o
 $(OBJDIR)/nested_types.o : $(OBJDIR)/prec.o
 $(OBJDIR)/gs.o : $(OBJDIR)/prec.o $(OBJDIR)/utility.o
-$(OBJDIR)/assemble.o : $(OBJDIR)/prec.o $(OBJDIR)/rotation.o $(OBJDIR)/band_types.o $(OBJDIR)/nested_types.o
+$(OBJDIR)/assemble.o : $(OBJDIR)/error_id.o $(OBJDIR)/rotation.o $(OBJDIR)/band_types.o $(OBJDIR)/nested_types.o
 $(OBJDIR)/band_types.o : $(OBJDIR)/prec.o $(OBJDIR)/rotation.o
 $(OBJDIR)/conversions_ub_to_bv.o : $(OBJDIR)/prec.o $(OBJDIR)/band_types.o $(OBJDIR)/shift.o $(OBJDIR)/nested_types.o \
 				$(OBJDIR)/rotation.o

@@ -1,5 +1,6 @@
 module general_bv
   use prec
+  use error_id
   use nullvec
   use utility
   use rotation
@@ -17,28 +18,48 @@ module general_bv
      module procedure f_d_upper_to_bv, f_c_upper_to_bv
   end interface f_upper_to_bv
 
+type(routine_info), parameter :: info_d_upper_to_bv=routine_info(id_d_upper_to_bv, &
+     'd_upper_to_bv', &
+     [ character(len=error_message_length) :: '', '', 'ub%n /= bv%n' ] )
+
+type(routine_info), parameter :: info_f_d_upper_to_bv=routine_info(id_f_d_upper_to_bv, &
+     'f_d_upper_to_bv', &
+     [ character(len=error_message_length) :: 'n<1', 'Insufficient Upper Bandwidth in bv', &
+     'Insufficient Lower Bandwidth in bv' ] )
+
+type(routine_info), parameter :: info_c_upper_to_bv=routine_info(id_c_upper_to_bv, &
+     'c_upper_to_bv', &
+     [ character(len=error_message_length) :: '', '', 'ub%n /= bv%n' ] )
+
+type(routine_info), parameter :: info_f_c_upper_to_bv=routine_info(id_f_c_upper_to_bv, &
+     'f_c_upper_to_bv', &
+     [ character(len=error_message_length) :: 'n<1', 'Insufficient Upper Bandwidth in bv', &
+     'Insufficient Lower Bandwidth in bv' ] )
+
 contains
   
   ! Errors:
   ! 0: no error
-  ! 1: n<1
-  ! 2: ortherror
   ! 3: n is not the same for a and ub or bv.
   subroutine d_upper_to_bv(a,bv,lbw,tol,error)
     real(kind=dp), target, dimension(:,:), intent(inout) :: a
     type(d_bv), intent(inout) :: bv
-    integer(kind=int32), intent(out) :: error
+    type(error_info), intent(out) :: error
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), intent(in) :: lbw
     if (get_n(bv) /= size(a,1) .or. get_n(bv) /= size(a,2)) then
-       error=3; return
+       call set_error(error, 3, id_d_upper_to_bv)
     end if
     call f_d_upper_to_bv(a,get_n(bv),bv%b, lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
          bv%numrotsv, bv%ksv, bv%csv, bv%ssv, tol, error)
     bv%lbw=lbw
   end subroutine d_upper_to_bv
 
-  ! BV
+  ! Errors:
+  ! 0: no error
+  ! 1: n<1
+  ! 2: insufficient upper bw in bv%b
+  ! 3: insufficient lower bw in bv%b
   subroutine f_d_upper_to_bv(a, n, b, lbw, ubw, lbwmax, ubwmax, &
        numrots, ks, cs, ss, tol, error)
     real(kind=dp), target, dimension(n,n), intent(inout) :: a
@@ -47,31 +68,35 @@ contains
     real(kind=dp), dimension(n,lbwmax+ubwmax+1), intent(out) :: b
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), dimension(n), intent(out) :: numrots
-    integer(kind=int32), intent(out) :: ubw, error
+    integer(kind=int32), intent(out) :: ubw
+    type(error_info) :: error
     integer(kind=int32), intent(in) :: n, lbw, lbwmax, ubwmax
     !
     real(kind=dp), target, dimension(n,ubwmax+1) :: q
     real(kind=dp), dimension(ubwmax+1) :: x
     real(kind=dp) :: nrma, nrmq1
     real(kind=dp), pointer, dimension(:,:) :: pl, pq
-    integer(kind=int32) :: i, j, k, nullerr, ortherror, roffs, coffs, nl, klast
+    integer(kind=int32) :: i, j, k, roffs, coffs, nl, klast
     integer(kind=int32), dimension(n) :: ubws
     type(d_rotation) :: rot
     !
     q=0.0_dp; numrots=0;
     ss=0.0_dp; cs=0.0_dp; ks=0
     ubw=0; ubws=0
-    error = 0
+    call clear_error(error)
     nrma = maxabs(a)*sqrt(real(n))
     !
     if (n < 1) then
-       error = 1
-       return
+       call set_error(error, 1, id_f_d_upper_to_bv); return
     end if
     if (n == 1) then
        b(1,1)=a(1,1)
        return
     end if
+    if (lbwmax < lbw) then
+       call set_error(error, 3, id_f_d_upper_to_bv); return
+    end if
+
     ! Compute an initial trivial QL factorization
     q(1:n-1,1) = a(1:n-1,n)
     a(1:n-1,n)=0.0_dp
@@ -140,9 +165,10 @@ contains
                    call right_shift(pq)
                    pq(:,1)=a(1:n-k-1,coffs)
                    pl => a(roffs-1:roffs,coffs:coffs+1)
-                   call extend_gs_columns(pq(:,2:2),pl(2:2,1), pl(1,1), pq(:,1), ortherror)
-                   if (ortherror == 1) then
-                      error = 2; return
+                   call extend_gs_columns(pq(:,2:2),pl(2:2,1), pl(1,1), pq(:,1), error)
+                   if (error%code > 0) then
+                      call add_id(error,id_f_d_upper_to_bv)
+                      return
                    end if
                    if (n-k-3 >= 1) then
                       a(1:n-k-3,coffs)=0.0_dp
@@ -156,23 +182,25 @@ contains
              end if
           end if
        else ! nl > 1
-          call lower_right_nullvec(x(1:nl),pl,tol*nrma,nullmaxits,nullerr)
-          if (nullerr >= 0) then ! if there is a left null vector then introduce a zero row.
+          call lower_right_nullvec(x(1:nl),pl,tol*nrma,nullmaxits,error)
+          if (error%code <= 0) then ! if there is a left null vector then introduce a zero row.
              ubws(k)=nl-1
-             if (nullerr == nl) then
+             if (error%code == -nl) then
                 pl(nl,nl)=0.0_dp
                 numrots(k)=0
-             else if (nullerr >= 1) then
-                numrots(k)=nl-nullerr
-                pl(nullerr,nullerr)=0.0_dp
-                do j=nullerr,nl-1
+             call clear_error(error)
+             else if (error%code <= -1) then
+                numrots(k)=nl+error%code
+                pl(-error%code,-error%code)=0.0_dp
+                do j=-error%code,nl-1
                    rot=rgivens(pl(j+1,j),pl(j+1,j+1))
                    call general_times_rotation(pl(j+1:nl,:),rot,j,j+1)
                    pl(j+1,j+1)=0.0_dp
                    cs(k,nl-j)=rot%cosine; ss(k,nl-j)=rot%sine
                    ks(k,nl-j)=coffs+j
                 end do
-             else ! nullerr=0
+             call clear_error(error)
+             else ! error=0
                 numrots(k)=nl-1;
                 do j=2,nl ! apply v_k while preserving the triangular structure of L
                    rot=lgivens2(x(j-1),x(j))
@@ -213,9 +241,10 @@ contains
                 exit kloop ! terminate
              else
                 pq(:,nl)=0.0_dp; pq(n-k,nl)=1.0_dp
-                call extend_gs_columns(pq(:,1:nl-1), x(1:nl-1), x(nl), pq(:,nl), ortherror)
-                if (ortherror == 1) then
-                   error = 2; return
+                call extend_gs_columns(pq(:,1:nl-1), x(1:nl-1), x(nl), pq(:,nl), error)
+                if (error%code > 0) then
+                   call add_id(error,id_f_d_upper_to_bv)
+                   return
                 end if
                 do j=1,nl-1
                    rot=rgivens2(pq(n-k,j),pq(n-k,nl))
@@ -228,9 +257,10 @@ contains
                 pq => q(1:n-k-1,1:nl)
                 pq(:,1)=a(1:n-k-1,coffs)
                 pl => a(roffs:roffs+nl-1, coffs:coffs+nl-1)
-                call extend_gs_columns(pq(:,2:nl),pl(2:nl,1),pl(1,1),pq(:,1),ortherror)
-                if (ortherror == 1) then
-                   error = 2; return
+                call extend_gs_columns(pq(:,2:nl),pl(2:nl,1),pl(1,1),pq(:,1),error)
+                if (error%code > 0) then
+                   call add_id(error,id_f_d_upper_to_bv)
+                   return
                 end if
                 if (roffs>1) then
                    a(1:roffs-1,coffs)=0.0_dp
@@ -248,9 +278,10 @@ contains
                 call up_shift(pl)
                 pq => q(1:n-k,1:nl+1)
                 pq(:,nl+1)=0.0_dp; pq(n-k,nl+1)=1.0_dp
-                call extend_gs_columns(pq(:,1:nl),x(1:nl), x(nl+1),pq(:,nl+1),ortherror)
-                if (ortherror==1) then
-                   error = 2; return
+                call extend_gs_columns(pq(:,1:nl),x(1:nl), x(nl+1),pq(:,nl+1),error)
+                if (error%code > 0) then
+                   call add_id(error,id_f_d_upper_to_bv)
+                   return
                 end if
                 do j=1,nl
                    rot=rgivens2(pq(n-k,j),pq(n-k,nl+1))
@@ -274,9 +305,10 @@ contains
                    call right_shift(pq)
                    pq(:,1)=a(1:n-k-1,coffs)
                    pl => a(roffs-1:roffs-1+nl,coffs:coffs+nl)
-                   call extend_gs_columns(pq(:,2:nl+1), pl(2:nl+1,1), pl(1,1), pq(:,1), ortherror)
-                   if (ortherror==1) then
-                      error=2; return
+                   call extend_gs_columns(pq(:,2:nl+1), pl(2:nl+1,1), pl(1,1), pq(:,1), error)
+                   if (error%code>0) then
+                      call add_id(error,id_f_d_upper_to_bv)
+                      return
                    end if
                    if (roffs-2 >= 1) then
                       a(1:roffs-2,coffs)=0.0_dp
@@ -345,7 +377,12 @@ contains
           pl(nl,:)=pq(nl,nl)*pl(nl,:)
        end do
     end if
-    call d_extract_diagonals_bv(a, n, b, lbw, ubw, lbwmax, ubwmax, ubws)
+    if (maxval(ubws) > ubwmax) then
+       call set_error(error, 2, id_f_d_upper_to_bv)
+    else
+       call d_extract_diagonals_bv(a, n, b, lbw, ubw, lbwmax, ubwmax, ubws)
+    end if
+
   end subroutine f_d_upper_to_bv
 
   subroutine d_extract_diagonals_bv(a, n, b, lbw, ubw, lbwmax, ubwmax, ubws)
@@ -376,11 +413,11 @@ contains
   subroutine c_upper_to_bv(a,bv,lbw,tol,error)
     complex(kind=dp), target, dimension(:,:), intent(inout) :: a
     type(c_bv), intent(inout) :: bv
-    integer(kind=int32), intent(out) :: error
+    type(error_info), intent(out) :: error
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), intent(in) :: lbw
     if (get_n(bv) /= size(a,1) .or. get_n(bv) /= size(a,2)) then
-       error=3; return
+       call set_error(error, 3, id_c_upper_to_bv); return
     end if
     call f_c_upper_to_bv(a,get_n(bv),bv%b, lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
          bv%numrotsv, bv%ksv, bv%csv, bv%ssv, tol, error)
@@ -396,30 +433,33 @@ contains
     complex(kind=dp), dimension(n,lbwmax+ubwmax+1), intent(out) :: b
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), dimension(n), intent(out) :: numrots
-    integer(kind=int32), intent(out) :: ubw, error
+    integer(kind=int32), intent(out) :: ubw
+    type(error_info), intent(out) :: error
     integer(kind=int32), intent(in) :: n, lbw, lbwmax, ubwmax
     !
     complex(kind=dp), target, dimension(n,ubwmax+1) :: q
     complex(kind=dp), dimension(ubwmax+1) :: x
     real(kind=dp) :: nrma, nrmq1
     complex(kind=dp), pointer, dimension(:,:) :: pl, pq
-    integer(kind=int32) :: i, j, k, nullerr, ortherror, roffs, coffs, nl, klast
+    integer(kind=int32) :: i, j, k, roffs, coffs, nl, klast
     integer(kind=int32), dimension(n) :: ubws
     type(c_rotation) :: rot
     !
     q=(0.0_dp, 0.0_dp); numrots=0;
     ss=(0.0_dp, 0.0_dp); cs=(0.0_dp,0.0_dp); ks=0
     ubw=0; ubws=0
-    error = 0
+    call clear_error(error)
     nrma = maxabs(a)*sqrt(real(n))
     !
     if (n < 1) then
-       error = 1
-       return
+       call set_error(error, 1, id_f_c_upper_to_bv); return
     end if
     if (n == 1) then
        b(1,1)=a(1,1)
        return
+    end if
+    if (lbwmax < lbw) then
+       call set_error(error, 3, id_f_c_upper_to_bv); return
     end if
     ! Compute an initial trivial QL factorization
     q(1:n-1,1) = a(1:n-1,n)
@@ -489,9 +529,10 @@ contains
                    call right_shift(pq)
                    pq(:,1)=a(1:n-k-1,coffs)
                    pl => a(roffs-1:roffs,coffs:coffs+1)
-                   call extend_gs_columns(pq(:,2:2),pl(2:2,1), pl(1,1), pq(:,1), ortherror)
-                   if (ortherror == 1) then
-                      error = 2; return
+                   call extend_gs_columns(pq(:,2:2),pl(2:2,1), pl(1,1), pq(:,1), error)
+                   if (error%code > 0 ) then
+                      call add_id(error,id_f_c_upper_to_bv)
+                      return
                    end if
                    if (n-k-3 >= 1) then
                       a(1:n-k-3,coffs)=(0.0_dp, 0.0_dp)
@@ -505,22 +546,24 @@ contains
              end if
           end if
        else ! nl > 1
-          call lower_right_nullvec(x(1:nl),pl,tol*nrma,nullmaxits,nullerr)
-          if (nullerr >= 0) then ! if there is a left null vector then introduce a zero row.
+          call lower_right_nullvec(x(1:nl),pl,tol*nrma,nullmaxits,error)
+          if (error%code <= 0) then ! if there is a left null vector then introduce a zero row.
              ubws(k)=nl-1
-             if (nullerr == nl) then
+             if (error%code == -nl) then
                 pl(nl,nl)=(0.0_dp, 0.0_dp)
                 numrots(k)=0
-             else if (nullerr >= 1) then
-                numrots(k)=nl-nullerr
-                pl(nullerr,nullerr)=(0.0_dp, 0.0_dp)
-                do j=nullerr,nl-1
+                call clear_error(error)
+             else if (error%code <= -1) then
+                numrots(k)=nl+error%code
+                pl(-error%code,-error%code)=(0.0_dp, 0.0_dp)
+                do j=-error%code,nl-1
                    rot=rgivens(pl(j+1,j),pl(j+1,j+1))
                    call general_times_rotation(pl(j+1:nl,:),rot,j,j+1)
                    pl(j+1,j+1)=(0.0_dp, 0.0_dp)
                    cs(k,nl-j)=rot%cosine; ss(k,nl-j)=rot%sine
                    ks(k,nl-j)=coffs+j
                 end do
+                call clear_error(error)
              else ! nullerr=0
                 numrots(k)=nl-1;
                 do j=2,nl ! apply v_k while preserving the triangular structure of L
@@ -562,9 +605,10 @@ contains
                 exit kloop ! terminate
              else
                 pq(:,nl)=(0.0_dp, 0.0_dp); pq(n-k,nl)=(1.0_dp, 0.0_dp)
-                call extend_gs_columns(pq(:,1:nl-1), x(1:nl-1), x(nl), pq(:,nl), ortherror)
-                if (ortherror == 1) then
-                   error = 2; return
+                call extend_gs_columns(pq(:,1:nl-1), x(1:nl-1), x(nl), pq(:,nl), error)
+                if (error%code > 0) then
+                   call add_id(error,id_f_c_upper_to_bv)
+                   return
                 end if
                 do j=1,nl-1
                    rot=rgivens2(pq(n-k,j),pq(n-k,nl))
@@ -577,9 +621,10 @@ contains
                 pq => q(1:n-k-1,1:nl)
                 pq(:,1)=a(1:n-k-1,coffs)
                 pl => a(roffs:roffs+nl-1, coffs:coffs+nl-1)
-                call extend_gs_columns(pq(:,2:nl),pl(2:nl,1),pl(1,1),pq(:,1),ortherror)
-                if (ortherror == 1) then
-                   error = 2; return
+                call extend_gs_columns(pq(:,2:nl),pl(2:nl,1),pl(1,1),pq(:,1),error)
+                if (error%code > 0) then
+                   call add_id(error,id_f_c_upper_to_bv)
+                   return
                 end if
                 if (roffs>1) then
                    a(1:roffs-1,coffs)=(0.0_dp, 0.0_dp)
@@ -597,9 +642,10 @@ contains
                 call up_shift(pl)
                 pq => q(1:n-k,1:nl+1)
                 pq(:,nl+1)=(0.0_dp, 0.0_dp); pq(n-k,nl+1)=(1.0_dp, 0.0_dp)
-                call extend_gs_columns(pq(:,1:nl),x(1:nl), x(nl+1),pq(:,nl+1),ortherror)
-                if (ortherror==1) then
-                   error = 2; return
+                call extend_gs_columns(pq(:,1:nl),x(1:nl), x(nl+1),pq(:,nl+1),error)
+                if (error%code > 0) then
+                   call add_id(error,id_f_c_upper_to_bv)
+                   return
                 end if
                 do j=1,nl
                    rot=rgivens2(pq(n-k,j),pq(n-k,nl+1))
@@ -623,9 +669,10 @@ contains
                    call right_shift(pq)
                    pq(:,1)=a(1:n-k-1,coffs)
                    pl => a(roffs-1:roffs-1+nl,coffs:coffs+nl)
-                   call extend_gs_columns(pq(:,2:nl+1), pl(2:nl+1,1), pl(1,1), pq(:,1), ortherror)
-                   if (ortherror==1) then
-                      error=2; return
+                   call extend_gs_columns(pq(:,2:nl+1), pl(2:nl+1,1), pl(1,1), pq(:,1), error)
+                   if (error%code > 0) then
+                      call add_id(error,id_f_c_upper_to_bv)
+                      return
                    end if
                    if (roffs-2 >= 1) then
                       a(1:roffs-2,coffs)=(0.0_dp, 0.0_dp)
@@ -694,7 +741,11 @@ contains
           pl(nl,:)=pq(nl,nl)*pl(nl,:)
        end do
     end if
-    call c_extract_diagonals_bv(a,n,b,lbw,ubw,lbwmax, ubwmax,ubws)
+    if (maxval(ubws) > ubwmax) then
+       call set_error(error, 2, id_f_c_upper_to_bv)
+    else
+       call c_extract_diagonals_bv(a,n,b,lbw,ubw,lbwmax, ubwmax,ubws)
+    end if
   end subroutine f_c_upper_to_bv
 
   subroutine c_extract_diagonals_bv(a, n, b, lbw, ubw, lbwmax, ubwmax, ubws)

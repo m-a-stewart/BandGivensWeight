@@ -12,7 +12,8 @@ program test_compress
   use test_data
   implicit none
   real(kind=dp) :: t0, t1
-  integer(kind=int32) :: error, na, lbwa
+  integer(kind=int32) :: na, lbwa
+  type(error_info) :: error
   !
   real(kind=dp), dimension(n,n) :: a, a0, a1
   real(kind=dp), dimension(n,rmax) :: u, u0
@@ -397,7 +398,7 @@ program test_compress
   call c_output_result(test_name,a0_c,a1_c,1,bv_c%ubw,t0,t1,tol2,error)
   ! compress to zero test.
   u_c=u0_c; v_c=v0_c; d_c=d0_c
-  u_c=0.1*tol2*u_c
+  u_c=0.05*tol2*u_c
   call c_assemble_a(a_c,u_c,v_c,d_c,lbw)
   a0_c=a_c
   call upper_to_ub(a_c,ub_c,lbw,tol1,error)
@@ -542,7 +543,7 @@ program test_compress
   call c_output_result(test_name,a0_c,a1_c,1,ub_c%ubw,t0,t1,tol2,error)
   ! compress to zero test.  
   u_c=u0_c; v_c=v0_c; d_c=d0_c
-  u_c=0.1*tol2*u_c
+  u_c=0.05*tol2*u_c
   call c_assemble_a(a_c,u_c,v_c,d_c,lbw)
   a0_c=a_c
   call upper_to_bv(a_c,bv_c,lbw,tol1,error)
