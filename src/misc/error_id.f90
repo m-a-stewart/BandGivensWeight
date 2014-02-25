@@ -86,6 +86,10 @@ integer(int32), parameter :: id_f_ss_qr=091
 integer(int32), parameter :: id_ss_qr_iteration=092
 integer(int32), parameter :: id_f_ss_qr_iteration=093
 
+! src/qr_factorization/qr_factorization 100s
+integer(int32), parameter :: id_d_reduce_lbw_bv_to_ub=100
+integer(int32), parameter :: id_f_d_reduce_lbw_bv_to_ub=101
+
 contains
 
 subroutine add_id(err,id)

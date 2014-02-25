@@ -277,4 +277,23 @@ contains
     a=cmplx(x,y)
   end subroutine random_complex_s
     
+
+  real(kind=dp) function d_delta(j,k)
+    integer(kind=int32), intent(in) :: j,k
+    if (j==k) then
+       d_delta=1.0_dp
+    else
+       d_delta=0.0_dp
+    end if
+  end function d_delta
+
+  complex(kind=dp) function c_delta(j,k)
+    integer(kind=int32), intent(in) :: j,k
+    if (j==k) then
+       c_delta=(1.0_dp,0.0_dp)
+    else
+       c_delta=(0.0_dp,0.0_dp)
+    end if
+  end function c_delta
+
 end module utility

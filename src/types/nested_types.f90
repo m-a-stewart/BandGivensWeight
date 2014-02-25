@@ -72,22 +72,15 @@ type(d_ub) function d_new_ub(n,lbwmax,ubwmax) result(ub)
   integer(kind=int32), intent(in) :: n, lbwmax, ubwmax
   ub%n=n; ub%lbwmax=lbwmax; ub%ubwmax=ubwmax
   ub%ubw=0; ub%lbw=0
-  allocate(ub%b(lbwmax+ubwmax+1,n))
-  allocate(ub%csu(ubwmax,n))
-  allocate(ub%ssu(ubwmax,n))
-  allocate(ub%jsu(ubwmax,n))
-  allocate(ub%numrotsu(n))
+  allocate(ub%b(lbwmax+ubwmax+1,n), ub%csu(ubwmax,n), ub%ssu(ubwmax,n), &
+       ub%jsu(ubwmax,n), ub%numrotsu(n))
   ub%b=0.0_dp; ub%csu=0.0_dp; ub%ssu=0.0_dp
   ub%jsu=0; ub%numrotsu=0
 end function d_new_ub
 
 subroutine d_deallocate_ub(ub)
   type(d_ub), intent(inout) :: ub
-  deallocate(ub%b)
-  deallocate(ub%csu)
-  deallocate(ub%ssu)
-  deallocate(ub%jsu)
-  deallocate(ub%numrotsu)
+  deallocate(ub%b, ub%csu, ub%ssu, ub%jsu, ub%numrotsu)
   ub%n=0; ub%lbwmax=0; ub%ubwmax=0
 end subroutine d_deallocate_ub
 
@@ -95,22 +88,15 @@ type(c_ub) function c_new_ub(n,lbwmax,ubwmax) result(ub)
   integer(kind=int32), intent(in) :: n, lbwmax, ubwmax
   ub%n=n; ub%lbwmax=lbwmax; ub%ubwmax=ubwmax
   ub%ubw=0; ub%lbw=0
-  allocate(ub%b(lbwmax+ubwmax+1,n))
-  allocate(ub%csu(ubwmax,n))
-  allocate(ub%ssu(ubwmax,n))
-  allocate(ub%jsu(ubwmax,n))
-  allocate(ub%numrotsu(n))
+  allocate(ub%b(lbwmax+ubwmax+1,n), ub%csu(ubwmax,n), ub%ssu(ubwmax,n), &
+       ub%jsu(ubwmax,n), ub%numrotsu(n))
   ub%b=(0.0_dp,0.0_dp); ub%csu=(0.0_dp,0.0_dp); ub%ssu=(0.0_dp,0.0_dp)
   ub%jsu=0; ub%numrotsu=0
 end function c_new_ub
 
 subroutine c_deallocate_ub(ub)
   type(c_ub), intent(inout) :: ub
-  deallocate(ub%b)
-  deallocate(ub%csu)
-  deallocate(ub%ssu)
-  deallocate(ub%jsu)
-  deallocate(ub%numrotsu)
+  deallocate(ub%b, ub%csu, ub%ssu, ub%jsu, ub%numrotsu)
   ub%n=0; ub%lbwmax=0; ub%ubwmax=0
 end subroutine c_deallocate_ub
 
@@ -120,22 +106,15 @@ type(d_bv) function d_new_bv(n,lbwmax,ubwmax) result(bv)
   integer(kind=int32), intent(in) :: n, lbwmax, ubwmax
   bv%n=n; bv%lbwmax=lbwmax; bv%ubwmax=ubwmax
   bv%ubw=0; bv%lbw=0
-  allocate(bv%b(n,lbwmax+ubwmax+1))
-  allocate(bv%csv(n,ubwmax))
-  allocate(bv%ssv(n,ubwmax))
-  allocate(bv%ksv(n,ubwmax))
-  allocate(bv%numrotsv(n))
+  allocate(bv%b(n,lbwmax+ubwmax+1), bv%csv(n,ubwmax), bv%ssv(n,ubwmax), &
+       bv%ksv(n,ubwmax), bv%numrotsv(n))
   bv%b=0.0_dp; bv%csv=0.0_dp; bv%ssv=0.0_dp
   bv%ksv=0; bv%numrotsv=0
 end function d_new_bv
 
 subroutine d_deallocate_bv(bv)
   type(d_bv), intent(inout) :: bv
-  deallocate(bv%b)
-  deallocate(bv%csv)
-  deallocate(bv%ssv)
-  deallocate(bv%ksv)
-  deallocate(bv%numrotsv)
+  deallocate(bv%b, bv%csv, bv%ssv, bv%ksv, bv%numrotsv)
   bv%n=0; bv%lbwmax=0; bv%ubwmax=0
 end subroutine d_deallocate_bv
 
@@ -143,22 +122,15 @@ type(c_bv) function c_new_bv(n,lbwmax,ubwmax) result(bv)
   integer(kind=int32), intent(in) :: n, lbwmax, ubwmax
   bv%n=n; bv%lbwmax=lbwmax; bv%ubwmax=ubwmax
   bv%ubw=0; bv%lbw=0
-  allocate(bv%b(n,lbwmax+ubwmax+1))
-  allocate(bv%csv(n,ubwmax))
-  allocate(bv%ssv(n,ubwmax))
-  allocate(bv%ksv(n,ubwmax))
-  allocate(bv%numrotsv(n))
+  allocate(bv%b(n,lbwmax+ubwmax+1), bv%csv(n,ubwmax), bv%ssv(n,ubwmax), &
+       bv%ksv(n,ubwmax), bv%numrotsv(n))
   bv%b=(0.0_dp, 0.0_dp); bv%csv=(0.0_dp, 0.0_dp); bv%ssv=(0.0_dp, 0.0_dp)
   bv%ksv=0; bv%numrotsv=0
 end function c_new_bv
 
 subroutine c_deallocate_bv(bv)
   type(c_bv), intent(inout) :: bv
-  deallocate(bv%b)
-  deallocate(bv%csv)
-  deallocate(bv%ssv)
-  deallocate(bv%ksv)
-  deallocate(bv%numrotsv)
+  deallocate(bv%b, bv%csv, bv%ssv, bv%ksv, bv%numrotsv)
   bv%n=0; bv%lbwmax=0; bv%ubwmax=0
 end subroutine c_deallocate_bv
 
@@ -170,13 +142,9 @@ subroutine d_copy_ub(ub1,ub2)
   ub2%ubw=ub1%ubw
   if ( ub2%ubwmax < ub1%ubwmax .or. ub2%ubwmax < ub1%ubwmax .or. &
        size(ub2%b,2) /= ub1%n ) then
-     deallocate(ub2%b); deallocate(ub2%jsu); deallocate(ub2%numrotsu)
-     deallocate(ub2%csu); deallocate(ub2%ssu)
-     allocate(ub2%b(ub1%lbwmax+ub1%ubwmax+1,ub1%n))
-     allocate(ub2%csu(ub1%ubwmax,ub1%n))
-     allocate(ub2%ssu(ub1%ubwmax,ub1%n))
-     allocate(ub2%jsu(ub1%ubwmax,ub1%n))
-     allocate(ub2%numrotsu(ub1%n))
+     deallocate(ub2%b, ub2%jsu, ub2%numrotsu, ub2%csu,ub2%ssu)
+     allocate(ub2%b(ub1%lbwmax+ub1%ubwmax+1,ub1%n), ub2%csu(ub1%ubwmax,ub1%n), &
+          ub2%ssu(ub1%ubwmax,ub1%n), ub2%jsu(ub1%ubwmax,ub1%n), ub2%numrotsu(ub1%n))
      ub2%lbwmax=ub1%lbwmax
      ub2%ubwmax=ub1%lbwmax
   end if
@@ -195,13 +163,9 @@ subroutine c_copy_ub(ub1,ub2)
   ub2%ubw=ub1%ubw
   if ( ub2%ubwmax < ub1%ubwmax .or. ub2%ubwmax < ub1%ubwmax .or. &
        size(ub2%b,2) /= ub1%n ) then
-     deallocate(ub2%b); deallocate(ub2%jsu); deallocate(ub2%numrotsu)
-     deallocate(ub2%csu); deallocate(ub2%ssu)
-     allocate(ub2%b(ub1%lbwmax+ub1%ubwmax+1,ub1%n))
-     allocate(ub2%csu(ub1%ubwmax,ub1%n))
-     allocate(ub2%ssu(ub1%ubwmax,ub1%n))
-     allocate(ub2%jsu(ub1%ubwmax,ub1%n))
-     allocate(ub2%numrotsu(ub1%n))
+     deallocate(ub2%b, ub2%jsu, ub2%numrotsu, ub2%csu, ub2%ssu)
+     allocate(ub2%b(ub1%lbwmax+ub1%ubwmax+1,ub1%n), ub2%csu(ub1%ubwmax,ub1%n), &
+          ub2%ssu(ub1%ubwmax,ub1%n), ub2%jsu(ub1%ubwmax,ub1%n), ub2%numrotsu(ub1%n))
      ub2%lbwmax=ub1%lbwmax
      ub2%ubwmax=ub1%lbwmax
   end if
@@ -220,13 +184,9 @@ subroutine d_copy_bv(bv1,bv2)
   bv2%ubw=bv1%ubw
   if ( bv2%ubwmax < bv1%ubwmax .or. bv2%ubwmax < bv1%ubwmax .or. &
        size(bv2%b,1) /= bv1%n ) then
-     deallocate(bv2%b); deallocate(bv2%ksv); deallocate(bv2%numrotsv)
-     deallocate(bv2%csv); deallocate(bv2%ssv)
-     allocate(bv2%b(bv1%n,bv1%lbwmax+bv1%ubwmax+1))
-     allocate(bv2%csv(bv1%n,bv1%ubwmax))
-     allocate(bv2%ssv(bv1%n,bv1%ubwmax))
-     allocate(bv2%ksv(bv1%n,bv1%ubwmax))
-     allocate(bv2%numrotsv(bv1%n))
+     deallocate(bv2%b, bv2%ksv, bv2%numrotsv, bv2%csv, bv2%ssv)
+     allocate(bv2%b(bv1%n,bv1%lbwmax+bv1%ubwmax+1), bv2%csv(bv1%n,bv1%ubwmax), &
+          bv2%ssv(bv1%n,bv1%ubwmax), bv2%ksv(bv1%n,bv1%ubwmax), bv2%numrotsv(bv1%n))
      bv2%lbwmax=bv1%lbwmax
      bv2%ubwmax=bv1%lbwmax
   end if
@@ -246,13 +206,9 @@ subroutine c_copy_bv(bv1,bv2)
 
   if ( bv2%ubwmax < bv1%ubwmax .or. bv2%ubwmax < bv1%ubwmax .or. &
        size(bv2%b,1) /= bv1%n ) then
-     deallocate(bv2%b); deallocate(bv2%ksv); deallocate(bv2%numrotsv)
-     deallocate(bv2%csv); deallocate(bv2%ssv)
-     allocate(bv2%b(bv1%n,bv1%lbwmax+bv1%ubwmax+1))
-     allocate(bv2%csv(bv1%n,bv1%ubwmax))
-     allocate(bv2%ssv(bv1%n,bv1%ubwmax))
-     allocate(bv2%ksv(bv1%n,bv1%ubwmax))
-     allocate(bv2%numrotsv(bv1%n))
+     deallocate(bv2%b, bv2%ksv, bv2%numrotsv, bv2%csv, bv2%ssv)
+     allocate(bv2%b(bv1%n,bv1%lbwmax+bv1%ubwmax+1), bv2%csv(bv1%n,bv1%ubwmax), &
+          bv2%ssv(bv1%n,bv1%ubwmax), bv2%ksv(bv1%n,bv1%ubwmax), bv2%numrotsv(bv1%n))
      bv2%lbwmax=bv1%lbwmax
      bv2%ubwmax=bv1%lbwmax
   end if

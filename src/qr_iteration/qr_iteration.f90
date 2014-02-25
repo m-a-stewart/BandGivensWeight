@@ -197,6 +197,7 @@ end subroutine ss_qr_iteration
 ! Errors:
 !  1: n<1
 !  2: insufficient temporary storage in b_bv
+!  3: insufficient storage in b_ub
 subroutine f_ss_qr_iteration(b_bv,n, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, &
      cs_bv, ss_bv, b_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, cs_ub, &
      ss_ub, shifts_i, shifts_c, q, p, error)
@@ -238,6 +239,9 @@ subroutine f_ss_qr_iteration(b_bv,n, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, k
 
     if (lbwmax_bv+ubwmax_bv+1<ubw+lbw+1) then
        call set_error(error, 2, id_f_ss_qr_iteration); return
+    end if
+    if (lbwmax_bv < 1 .or. ubwmax_ub < ubw_bv+1) then
+       call set_error(error, 3, id_f_ss_qr_iteration); return
     end if
     ! create room for the extra subdiagonal
     call right_shift(b_bv)

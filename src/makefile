@@ -11,21 +11,24 @@ $(OBJDIR)/triangular.o : $(OBJDIR)/prec.o
 $(OBJDIR)/shift.o : $(OBJDIR)/prec.o
 $(OBJDIR)/error_id.o : $(OBJDIR)/prec.o
 $(OBJDIR)/rotation.o : $(OBJDIR)/prec.o
+$(OBJDIR)/sweeps.o : $(OBJDIR)/prec.o $(OBJDIR)/rotation.o
 $(OBJDIR)/nested_types.o : $(OBJDIR)/prec.o
 $(OBJDIR)/gs.o : $(OBJDIR)/prec.o $(OBJDIR)/utility.o
 $(OBJDIR)/assemble.o : $(OBJDIR)/error_id.o $(OBJDIR)/rotation.o $(OBJDIR)/band_types.o $(OBJDIR)/nested_types.o
 $(OBJDIR)/band_types.o : $(OBJDIR)/prec.o $(OBJDIR)/rotation.o
-$(OBJDIR)/conversions_ub_to_bv.o : $(OBJDIR)/prec.o $(OBJDIR)/band_types.o $(OBJDIR)/shift.o $(OBJDIR)/nested_types.o \
-				$(OBJDIR)/rotation.o
-$(OBJDIR)/conversions_bv_to_ub.o : $(OBJDIR)/prec.o $(OBJDIR)/band_types.o $(OBJDIR)/shift.o $(OBJDIR)/nested_types.o \
-				$(OBJDIR)/rotation.o
-$(OBJDIR)/compressions_ub_to_bv.o : $(OBJDIR)/prec.o $(OBJDIR)/band_types.o $(OBJDIR)/shift.o $(OBJDIR)/nested_types.o \
-			$(OBJDIR)/rotation.o
-$(OBJDIR)/compressions_bv_to_ub.o : $(OBJDIR)/prec.o $(OBJDIR)/band_types.o $(OBJDIR)/shift.o $(OBJDIR)/nested_types.o \
-			$(OBJDIR)/rotation.o
+$(OBJDIR)/conversions_ub_to_bv.o : $(OBJDIR)/prec.o $(OBJDIR)/band_types.o $(OBJDIR)/shift.o \
+	$(OBJDIR)/nested_types.o $(OBJDIR)/rotation.o
+$(OBJDIR)/conversions_bv_to_ub.o : $(OBJDIR)/prec.o $(OBJDIR)/band_types.o \
+	$(OBJDIR)/shift.o $(OBJDIR)/nested_types.o $(OBJDIR)/rotation.o
+$(OBJDIR)/compressions_ub_to_bv.o : $(OBJDIR)/prec.o $(OBJDIR)/band_types.o \
+	$(OBJDIR)/shift.o $(OBJDIR)/nested_types.o $(OBJDIR)/rotation.o
+$(OBJDIR)/compressions_bv_to_ub.o : $(OBJDIR)/prec.o $(OBJDIR)/band_types.o $(OBJDIR)/shift.o \
+	$(OBJDIR)/nested_types.o $(OBJDIR)/rotation.o
 $(OBJDIR)/qr_iteration.o : $(OBJDIR)/prec.o $(OBJDIR)/band_types.o $(OBJDIR)/shift.o $(OBJDIR)/nested_types.o \
-			$(OBJDIR)/rotation.o
+	$(OBJDIR)/rotation.o
 
+$(OBJDIR)/qr_factorization.o : $(OBJDIR)/prec.o $(OBJDIR)/band_types.o $(OBJDIR)/shift.o $(OBJDIR)/nested_types.o \
+	$(OBJDIR)/rotation.o
 
 
 $(OBJDIR)/%.o : %.f90
@@ -55,7 +58,8 @@ $(OBJDIR)/%.o : compress/%.f90
 $(OBJDIR)/%.o : qr_iteration/%.f90
 	$(FC) $(CFLAGS) $(PROFCFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@
 
-
+$(OBJDIR)/%.o : qr_factorization/%.f90
+	$(FC) $(CFLAGS) $(PROFCFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@
 
 $(OBJDIR)/%.o : assemble/%.f90
 	$(FC) $(CFLAGS) $(PROFCFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@

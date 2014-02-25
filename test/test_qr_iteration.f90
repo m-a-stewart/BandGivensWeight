@@ -136,24 +136,4 @@ program test_qr_iteration
   deallocate(a_c, q, a0_c, a1_c)
   call deallocate_ub(ub_c); call deallocate_bv(bv_c)
 
-contains
-
-  real(kind=dp) function d_delta(j,k)
-    integer(kind=int32), intent(in) :: j,k
-    if (j==k) then
-       d_delta=1.0_dp
-    else
-       d_delta=0.0_dp
-    end if
-  end function d_delta
-
-  complex(kind=dp) function c_delta(j,k)
-    integer(kind=int32), intent(in) :: j,k
-    if (j==k) then
-       c_delta=(1.0_dp,0.0_dp)
-    else
-       c_delta=(0.0_dp,0.0_dp)
-    end if
-  end function c_delta
-
 end program test_qr_iteration
