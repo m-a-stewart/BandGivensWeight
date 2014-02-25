@@ -89,6 +89,12 @@ integer(int32), parameter :: id_f_ss_qr_iteration=093
 ! src/qr_factorization/qr_factorization 100s
 integer(int32), parameter :: id_d_reduce_lbw_bv_to_ub=100
 integer(int32), parameter :: id_f_d_reduce_lbw_bv_to_ub=101
+integer(int32), parameter :: id_c_reduce_lbw_bv_to_ub=102
+integer(int32), parameter :: id_f_c_reduce_lbw_bv_to_ub=103
+integer(int32), parameter :: id_d_qr_bv_to_ub=104
+integer(int32), parameter :: id_f_d_qr_bv_to_ub=105
+integer(int32), parameter :: id_c_qr_bv_to_ub=106
+integer(int32), parameter :: id_f_c_qr_bv_to_ub=107
 
 contains
 

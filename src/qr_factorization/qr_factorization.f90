@@ -1,26 +1,26 @@
 module qr_factorization
-use prec
-use assemble
-use shift
-use rotation
-use band_types
-use nested_types
-use nullvec
-use compressions_ub_to_bv
-use conversions_ub_to_bv
-
-implicit none
+  use prec
+  use assemble
+  use shift
+  use rotation
+  use band_types
+  use nested_types
+  use nullvec
+  use conversions_bv_to_ub
+  use conversions_ub_to_bv
+  use sweeps
+  implicit none
 
 contains
 
-!
-! Errors
-! 0: no error
-! 1: ub%n /= bv%n
-! 2: bv%lbw <= 0
-! 3: dimension of cs or ss /= n
-!
-subroutine d_reduce_lbw_bv_to_ub(bv,ub,cs,ss,error)
+  !
+  ! Errors
+  ! 0: no error
+  ! 1: ub%n /= bv%n
+  ! 2: bv%lbw <= 0
+  ! 3: dimension of cs or ss /= n
+  !
+  subroutine d_reduce_lbw_bv_to_ub(bv,ub,cs,ss,error)
     type(d_ub) :: ub
     type(d_bv) :: bv
     type(error_info), intent(out) :: error
@@ -64,7 +64,7 @@ subroutine d_reduce_lbw_bv_to_ub(bv,ub,cs,ss,error)
 
     integer(kind=int32) :: j, k, d, k0,k1, lbw, ubw
     type(d_rotation) :: rot
-    
+
     call clear_error(error)
     numrots_ub=0
     ss_ub=0.0_dp; cs_ub=0.0_dp
@@ -73,7 +73,7 @@ subroutine d_reduce_lbw_bv_to_ub(bv,ub,cs,ss,error)
     b_ub=0.0_dp
     ubw=ubw_bv+2
     lbw=lbw_bv
-    
+
     if (n < 1) then
        call set_error(error, 1, id_f_d_reduce_lbw_bv_to_ub); return
     end if
@@ -98,6 +98,7 @@ subroutine d_reduce_lbw_bv_to_ub(bv,ub,cs,ss,error)
           rot=lgivens(get_el_br(b_bv,lbw,k,k-lbw+1),get_el_br(b_bv,lbw,k+1,k-lbw+1))
           call rotation_times_tbr(trp_rot(rot),b_bv,n,lbw,ubw,0,0,k)
           cs(k)=rot%cosine; ss(k)=rot%sine
+          call set_el_br(b_bv,lbw,k+1,k-lbw+1,0.0_dp)
        end if
        ! Eliminate superdiagonal ubw.
        ! columns that have a nonzero in superdiagonal ubw
@@ -116,6 +117,7 @@ subroutine d_reduce_lbw_bv_to_ub(bv,ub,cs,ss,error)
           js_ub(j-k0+1,k)=j-ubw
           cs_ub(j-k0+1,k)=rot%cosine; ss_ub(j-k0+1,k)=rot%sine
           call rotation_times_tbr(trp_rot(rot),b_bv,n,lbw,ubw,k,0,j-ubw)
+          call set_el_br(b_bv,lbw,j-ubw,j, 0.0_dp)
        end do
     end do
     ubw_ub=ubw_bv+1
@@ -140,13 +142,13 @@ subroutine d_reduce_lbw_bv_to_ub(bv,ub,cs,ss,error)
     type(error_info), intent(out) :: error
     complex(kind=dp), dimension(:) :: cs, ss
     if (get_n(ub) /= get_n(bv)) then
-       call set_error(error, 1, id_d_reduce_lbw_bv_to_ub); return
+       call set_error(error, 1, id_c_reduce_lbw_bv_to_ub); return
     end if
     if (bv%lbw <= 0) then
-       call set_error(error, 2, id_d_reduce_lbw_bv_to_ub); return
+       call set_error(error, 2, id_c_reduce_lbw_bv_to_ub); return
     end if
     if (size(cs) /= get_n(ub) .or. size(ss) /= get_n(ub)) then
-       call set_error(error, 3, id_d_reduce_lbw_bv_to_ub); return
+       call set_error(error, 3, id_c_reduce_lbw_bv_to_ub); return
     end if
     call f_c_reduce_lbw_bv_to_ub(bv%b, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), &
          get_ubwmax(bv), bv%numrotsv, bv%ksv, bv%csv, bv%ssv, & 
@@ -178,7 +180,7 @@ subroutine d_reduce_lbw_bv_to_ub(bv,ub,cs,ss,error)
 
     integer(kind=int32) :: j, k, d, k0,k1, lbw, ubw
     type(c_rotation) :: rot
-    
+
     call clear_error(error)
     numrots_ub=0
     ss_ub=(0.0_dp, 0.0_dp); cs_ub=(0.0_dp, 0.0_dp)
@@ -187,19 +189,19 @@ subroutine d_reduce_lbw_bv_to_ub(bv,ub,cs,ss,error)
     b_ub=(0.0_dp, 0.0_dp)
     ubw=ubw_bv+2
     lbw=lbw_bv
-    
+
     if (n < 1) then
-       call set_error(error, 1, id_f_d_reduce_lbw_bv_to_ub); return
+       call set_error(error, 1, id_f_c_reduce_lbw_bv_to_ub); return
     end if
     if (n==1) then
        b_ub(1,1)=b_bv(1,1)
     end if
 
     if (lbwmax_bv+ubwmax_bv+1<ubw+lbw+1) then
-       call set_error(error, 2, id_f_d_reduce_lbw_bv_to_ub); return
+       call set_error(error, 2, id_f_c_reduce_lbw_bv_to_ub); return
     end if
     if (lbwmax_ub < lbw_bv-1 .or. ubwmax_ub < ubw_bv+1) then
-       call set_error(error, 3, id_f_d_reduce_lbw_bv_to_ub); return
+       call set_error(error, 3, id_f_c_reduce_lbw_bv_to_ub); return
     end if
     do k=1,n-1
        ! apply v_{n-k}
@@ -212,6 +214,7 @@ subroutine d_reduce_lbw_bv_to_ub(bv,ub,cs,ss,error)
           rot=lgivens(get_el_br(b_bv,lbw,k,k-lbw+1),get_el_br(b_bv,lbw,k+1,k-lbw+1))
           call rotation_times_tbr(trp_rot(rot),b_bv,n,lbw,ubw,0,0,k)
           cs(k)=rot%cosine; ss(k)=rot%sine
+          call set_el_br(b_bv,lbw,k+1,k-lbw+1,(0.0_dp, 0.0_dp))
        end if
        ! Eliminate superdiagonal ubw.
        ! columns that have a nonzero in superdiagonal ubw
@@ -230,6 +233,7 @@ subroutine d_reduce_lbw_bv_to_ub(bv,ub,cs,ss,error)
           js_ub(j-k0+1,k)=j-ubw
           cs_ub(j-k0+1,k)=rot%cosine; ss_ub(j-k0+1,k)=rot%sine
           call rotation_times_tbr(trp_rot(rot),b_bv,n,lbw,ubw,k,0,j-ubw)
+          call set_el_br(b_bv,lbw,j-ubw,j, (0.0_dp, 0.0_dp))
        end do
     end do
     ubw_ub=ubw_bv+1
@@ -247,6 +251,151 @@ subroutine d_reduce_lbw_bv_to_ub(bv,ub,cs,ss,error)
     end do
   end subroutine f_c_reduce_lbw_bv_to_ub
 
+  !
+  ! Errors
+  ! 0: no error
+  ! 1: ub%n /= bv%n .or. sw%n /= ub%n
+  !
+  subroutine d_qr_bv_to_ub(bv,ub,sw,error)
+    type(d_ub) :: ub
+    type(d_bv) :: bv
+    type(d_sweeps) :: sw
+    type(error_info), intent(out) :: error
+
+    integer(kind=int32) :: lbw
+    sw%transposed=.false.
+    lbw=bv%lbw
+    sw%numsweeps=lbw
+    if (get_n(ub) /= get_n(bv) .or. get_n(ub) /= get_n(sw)) then
+       call set_error(error, 1, id_d_qr_bv_to_ub); return
+    end if
+    if (lbw <= 0) then
+       call convert_bv_to_ub(bv,ub,error); return
+    end if
+    if (get_maxsweeps(sw) < lbw) then
+       call set_error(error, 2, id_d_qr_bv_to_ub); return
+    end if
+    call f_d_qr_bv_to_ub(bv%b, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), &
+         get_ubwmax(bv), bv%numrotsv, bv%ksv, bv%csv, bv%ssv, & 
+         ub%b, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), ub%numrotsu, ub%jsu, ub%csu, ub%ssu, &
+         sw%cs(:,1:lbw), sw%ss(:,1:lbw), error)
+  end subroutine d_qr_bv_to_ub
+
+  subroutine f_d_qr_bv_to_ub(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, &
+       ks_bv, cs_bv, ss_bv, &
+       b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, cs_ub, ss_ub, cs, ss, error)
+    integer(kind=int32), intent(in) :: n, lbw_bv, ubw_bv, lbwmax_ub, ubwmax_ub, lbwmax_bv, ubwmax_bv
+    real(kind=dp), dimension(n,lbwmax_bv+ubwmax_bv+1), intent(inout) :: b_bv
+    integer(kind=int32), dimension(n), intent(inout) :: numrots_bv
+    integer(kind=int32), dimension(n,ubwmax_bv), intent(inout) :: ks_bv
+    real(kind=dp), dimension(n,ubwmax_bv), intent(inout) :: cs_bv, ss_bv
+
+    real(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(out) :: b_ub
+    integer(kind=int32), dimension(n), intent(out) :: numrots_ub
+    integer(kind=int32), dimension(ubwmax_ub,n), intent(out) :: js_ub
+    real(kind=dp), dimension(ubwmax_ub,n), intent(out) :: cs_ub, ss_ub
+
+    real(kind=dp), dimension(n,lbw_bv) :: cs, ss
+    integer(kind=int32), intent(out) :: lbw_ub, ubw_ub
+    type(error_info), intent(out) :: error
+    integer(kind=int32) :: j, lbw, ubw
+    lbw=lbw_bv; ubw=ubw_bv
+    if (n < 1) then
+       call set_error(error, 1, id_f_d_qr_bv_to_ub); return
+    end if
+    if (n == 1) then
+       b_ub(1,1)=b_bv(1,1)
+       return
+    end if
+    if (lbw <= 0) then
+       call f_convert_bv_to_ub(b_bv, n, lbw, ubw, lbwmax_bv, ubwmax_bv, &
+            numrots_bv, ks_bv, cs_bv, ss_bv, b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, &
+            cs_ub, ss_ub, error)
+       return
+    end if
+    do j=1,lbw-1
+       call f_d_reduce_lbw_bv_to_ub(b_bv, n, lbw, ubw, lbwmax_bv, ubwmax_bv, numrots_bv, &
+            ks_bv, cs_bv, ss_bv, &
+            b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, cs_ub, ss_ub, cs(:,j), ss(:,j), error)
+       call f_d_convert_ub_to_bv(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, &
+            js_ub, cs_ub, ss_ub, b_bv, lbw, ubw, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, &
+            cs_bv, ss_bv, error)
+    end do
+    call f_d_reduce_lbw_bv_to_ub(b_bv, n, lbw, ubw, lbwmax_bv, ubwmax_bv, numrots_bv, &
+         ks_bv, cs_bv, ss_bv, &
+         b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, cs_ub, ss_ub, cs(:,j), ss(:,j), error)
+  end subroutine f_d_qr_bv_to_ub
+
+
+  subroutine c_qr_bv_to_ub(bv,ub,sw,error)
+    type(c_ub) :: ub
+    type(c_bv) :: bv
+    type(c_sweeps) :: sw
+    type(error_info), intent(out) :: error
+
+    integer(kind=int32) :: lbw
+    sw%transposed=.false.
+    lbw=bv%lbw
+    sw%numsweeps=lbw
+    if (get_n(ub) /= get_n(bv) .or. get_n(ub) /= get_n(sw)) then
+       call set_error(error, 1, id_d_qr_bv_to_ub); return
+    end if
+    if (lbw <= 0) then
+       call convert_bv_to_ub(bv,ub,error); return
+    end if
+    if (get_maxsweeps(sw) < lbw) then
+       call set_error(error, 2, id_d_qr_bv_to_ub); return
+    end if
+    call f_c_qr_bv_to_ub(bv%b, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), &
+         get_ubwmax(bv), bv%numrotsv, bv%ksv, bv%csv, bv%ssv, & 
+         ub%b, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), ub%numrotsu, ub%jsu, ub%csu, ub%ssu, &
+         sw%cs(:,1:lbw), sw%ss(:,1:lbw), error)
+  end subroutine c_qr_bv_to_ub
+
+  subroutine f_c_qr_bv_to_ub(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, &
+       ks_bv, cs_bv, ss_bv, &
+       b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, cs_ub, ss_ub, cs, ss, error)
+    integer(kind=int32), intent(in) :: n, lbw_bv, ubw_bv, lbwmax_ub, ubwmax_ub, lbwmax_bv, ubwmax_bv
+    complex(kind=dp), dimension(n,lbwmax_bv+ubwmax_bv+1), intent(inout) :: b_bv
+    integer(kind=int32), dimension(n), intent(inout) :: numrots_bv
+    integer(kind=int32), dimension(n,ubwmax_bv), intent(inout) :: ks_bv
+    complex(kind=dp), dimension(n,ubwmax_bv), intent(inout) :: cs_bv, ss_bv
+
+    complex(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(out) :: b_ub
+    integer(kind=int32), dimension(n), intent(out) :: numrots_ub
+    integer(kind=int32), dimension(ubwmax_ub,n), intent(out) :: js_ub
+    complex(kind=dp), dimension(ubwmax_ub,n), intent(out) :: cs_ub, ss_ub
+
+    complex(kind=dp), dimension(n,lbw_bv) :: cs, ss
+    integer(kind=int32), intent(out) :: lbw_ub, ubw_ub
+    type(error_info), intent(out) :: error
+    integer(kind=int32) :: j, lbw, ubw
+    lbw=lbw_bv; ubw=ubw_bv
+    if (n < 1) then
+       call set_error(error, 1, id_f_c_qr_bv_to_ub); return
+    end if
+    if (n == 1) then
+       b_ub(1,1)=b_bv(1,1)
+       return
+    end if
+    if (lbw <= 0) then
+       call f_convert_bv_to_ub(b_bv, n, lbw, ubw, lbwmax_bv, ubwmax_bv, &
+            numrots_bv, ks_bv, cs_bv, ss_bv, b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, &
+            cs_ub, ss_ub, error)
+       return
+    end if
+    do j=1,lbw-1
+       call f_c_reduce_lbw_bv_to_ub(b_bv, n, lbw, ubw, lbwmax_bv, ubwmax_bv, numrots_bv, &
+            ks_bv, cs_bv, ss_bv, &
+            b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, cs_ub, ss_ub, cs(:,j), ss(:,j), error)
+       call f_c_convert_ub_to_bv(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, &
+            js_ub, cs_ub, ss_ub, b_bv, lbw, ubw, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, &
+            cs_bv, ss_bv, error)
+    end do
+    call f_c_reduce_lbw_bv_to_ub(b_bv, n, lbw, ubw, lbwmax_bv, ubwmax_bv, numrots_bv, &
+         ks_bv, cs_bv, ss_bv, &
+         b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, cs_ub, ss_ub, cs(:,j), ss(:,j), error)
+  end subroutine f_c_qr_bv_to_ub
 
 end module qr_factorization
 

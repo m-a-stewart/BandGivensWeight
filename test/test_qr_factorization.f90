@@ -30,10 +30,10 @@ program test_qr_factorization
   complex(kind=dp), dimension(:,:), allocatable :: a_c, a0_c, a1_c, q_c
   complex(kind=dp), dimension(:), allocatable :: cs_c, ss_c
 
-  type(d_ub) :: ub_d, ub_na_d
-  type(c_ub) :: ub_c, ub_na_c
-  type(d_bv) :: bv_d, bv_na_d
-  type(c_bv) :: bv_c, bv_na_c
+  type(d_ub) :: ub_d
+  type(c_ub) :: ub_c
+  type(d_bv) :: bv_d
+  type(c_bv) :: bv_c
   type(d_sweeps) :: sw_d
   type(c_sweeps) :: sw_c
 
@@ -49,9 +49,9 @@ program test_qr_factorization
   print *, "Real QR Factorization Tests"
   print *
   ! ub to bv
-  na=10; lbwa=3; ubwa=2
+  na=100; lbwa=3; ubwa=2
   u_d=u0_d; v_d=v0_d; d_d=d0_d
-  allocate(a_d(1:na,1:na), a0_d(1:na,1:na), a1_d(1:na,1:na), q_d(1:na,1:na), cs_d(1:na), ss_d(1:na))
+  allocate(a_d(na,na), a0_d(na,na), a1_d(na,na), q_d(na,na), cs_d(na), ss_d(na))
   ub_d=d_new_ub(na,lbwmax,ubwmax)
   bv_d=d_new_bv(na,lbwmax,ubwmax)
   sw_d=d_new_sweeps(na,lbwmax)
@@ -67,10 +67,32 @@ program test_qr_factorization
   q_d=reshape([ real(kind=dp) :: ((d_delta(j,k), j=1,na), k=1,na) ], shape(q_d))
   call sweeps_times_general(sw_d,a1_d)
   test_name = "Real Lower Band Reduction"
-  print *, bv_d%ubw
   call d_output_result(test_name,a0_d,a1_d,ubwa+1,ub_d%ubw,t0,t1,tol2,error)
   deallocate(a_d, a0_d, a1_d, q_d, cs_d, ss_d)
   call deallocate_ub(ub_d); call deallocate_bv(bv_d)
+  !
+  ! full qr factorization
+  !
+  na=100; lbwa=5; ubwa=7
+  u_d=u0_d; v_d=v0_d; d_d=d0_d
+  allocate(a_d(na,na), a0_d(na,na), a1_d(na,na), q_d(na,na))
+  ub_d=d_new_ub(na,lbwmax,ubwmax)
+  bv_d=d_new_bv(na,lbwmax,ubwmax)
+  sw_d=d_new_sweeps(na,lbwmax)
+  call d_assemble_a(a_d,u_d(1:na,1:ubwa),v_d(1:ubwa,1:na),d_d(1:na),lbwa)
+  a0_d=a_d
+  call upper_to_bv(a_d,bv_d,lbwa, tol,error)
+  call cpu_time(t0)
+  call d_qr_bv_to_ub(bv_d,ub_d,sw_d,error)
+  call cpu_time(t1)
+  call ub_to_upper(ub_d,a1_d,error)
+  q_d=reshape([ real(kind=dp) :: ((d_delta(j,k), j=1,na), k=1,na) ], shape(q_d))
+  call sweeps_times_general(sw_d,a1_d)
+  test_name = "Real QR Factorization"
+  call d_output_result(test_name,a0_d,a1_d,ubwa+lbwa,ub_d%ubw,t0,t1,tol2,error)
+  deallocate(a_d, a0_d, a1_d, q_d)
+  call deallocate_ub(ub_d); call deallocate_bv(bv_d)
+  call deallocate_sweeps(sw_d)
   !
   print *
   print *, "--------------------------------"
@@ -82,9 +104,9 @@ program test_qr_factorization
   call random_complex(d_c)
   u0_c=u_c; v0_c=v_c; d0_c=d_c
   ! ub to bv
-  na=10; lbwa=3; ubwa=2
+  na=100; lbwa=3; ubwa=2
   u_c=u0_c; v_c=v0_c; d_c=d0_c
-  allocate(a_c(1:na,1:na), a0_c(1:na,1:na), a1_c(1:na,1:na), q_c(1:na,1:na), cs_c(1:na), ss_c(1:na))
+  allocate(a_c(na,na), a0_c(na,na), a1_c(na,na), q_c(na,na), cs_c(na), ss_c(na))
   ub_c=c_new_ub(na,lbwmax,ubwmax)
   bv_c=c_new_bv(na,lbwmax,ubwmax)
   sw_c=c_new_sweeps(na,lbwmax)
@@ -99,15 +121,32 @@ program test_qr_factorization
   call ub_to_upper(ub_c,a1_c,error)
   q_c=reshape([ complex(kind=dp) :: ((c_delta(j,k), j=1,na), k=1,na) ], shape(q_c))
   call sweeps_times_general(sw_c,a1_c)
-  test_name = "Real Lower Band Reduction"
-  print *, bv_c%ubw
+  test_name = "Complex Lower Band Reduction"
   call c_output_result(test_name,a0_c,a1_c,ubwa+1,ub_c%ubw,t0,t1,tol2,error)
   deallocate(a_c, a0_c, a1_c, q_c, cs_c, ss_c)
   call deallocate_ub(ub_c); call deallocate_bv(bv_c)
-
-
-
-contains
-
+  !
+  ! full qr factorization
+  !
+  na=100; lbwa=7; ubwa=5
+  u_c=u0_c; v_c=v0_c; d_c=d0_c
+  allocate(a_c(na,na), a0_c(na,na), a1_c(na,na), q_c(na,na))
+  ub_c=c_new_ub(na,lbwmax,ubwmax)
+  bv_c=c_new_bv(na,lbwmax,ubwmax)
+  sw_c=c_new_sweeps(na,lbwmax)
+  call c_assemble_a(a_c,u_c(1:na,1:ubwa),v_c(1:ubwa,1:na),d_c(1:na),lbwa)
+  a0_c=a_c
+  call upper_to_bv(a_c,bv_c,lbwa, tol,error)
+  call cpu_time(t0)
+  call c_qr_bv_to_ub(bv_c,ub_c,sw_c,error)
+  call cpu_time(t1)
+  call ub_to_upper(ub_c,a1_c,error)
+  q_c=reshape([ complex(kind=dp) :: ((c_delta(j,k), j=1,na), k=1,na) ], shape(q_c))
+  call sweeps_times_general(sw_c,a1_c)
+  test_name = "Complex QR Factorization"
+  call c_output_result(test_name,a0_c,a1_c,ubwa+lbwa,ub_c%ubw,t0,t1,tol2,error)
+  deallocate(a_c, a0_c, a1_c, q_c)
+  call deallocate_ub(ub_c); call deallocate_bv(bv_c)
+  call deallocate_sweeps(sw_c)
 
 end program test_qr_factorization

@@ -57,12 +57,9 @@ contains
        call set_error(error, 3, id_d_compress_bv_to_ub); return
     end if
     call f_d_compress_bv_to_ub(bv%b, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), &
-         get_ubwmax(bv), bv%numrotsv, bv%ksv, bv%csv, bv%ssv, ub%b, ub%ubw, & 
+         get_ubwmax(bv), bv%numrotsv, bv%ksv, bv%csv, bv%ssv, ub%b, ub%lbw, ub%ubw, & 
          get_lbwmax(ub), get_ubwmax(ub), ub%numrotsu, ub%jsu, ub%csu, ub%ssu, &
          told, tol, dr, error)
-    if (error%code == 0) then
-       ub%lbw=bv%lbw
-    end if
   end subroutine d_compress_bv_to_ub
 
   ! Errors:
@@ -73,7 +70,7 @@ contains
   ! 4: insufficient Lower BW in ub%b
   subroutine f_d_compress_bv_to_ub(b_bv, n, lbw, ubw, lbwmax_bv, ubwmax_bv, numrots_bv, &
        ks_bv, cs_bv, ss_bv, &
-       b_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, cs_ub, ss_ub, told, tol, dr, error)
+       b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, cs_ub, ss_ub, told, tol, dr, error)
     integer(kind=int32), intent(in) :: n, lbw, ubw, lbwmax_ub, ubwmax_ub, lbwmax_bv, ubwmax_bv, dr
     real(kind=dp), dimension(n,lbwmax_bv+ubwmax_bv+1), intent(inout) :: b_bv
     integer(kind=int32), dimension(n), intent(in) :: numrots_bv
@@ -86,7 +83,7 @@ contains
     real(kind=dp), dimension(ubwmax_ub,n), intent(out) :: cs_ub, ss_ub
 
     real(kind=dp), intent(in) :: tol, told
-    integer(kind=int32), intent(out) :: ubw_ub
+    integer(kind=int32), intent(out) :: lbw_ub, ubw_ub
     type(error_info), intent(out) :: error
 
     integer(kind=int32) :: j, k, jj, roffs, coffs, ubw2, d, minindex, ml, nl, dnl, nq
@@ -105,12 +102,14 @@ contains
     ubw2=ubw+2
     nrma = maxabs(b_bv)*sqrt(real(n))
     ubws=0
+    lbw_ub=lbw
 
     if (n < 1) then
        call set_error(error, 1, id_f_d_compress_bv_to_ub); return
     end if
     if (n == 1) then
         b_ub(1,1)=b_bv(1,1)
+        lbw_ub=0; ubw_ub=0
         return
     end if
     ! must allow for temporary fill-in of one extra superdiagonal in b_bv.
@@ -346,17 +345,14 @@ contains
        call set_error(error, 3, id_c_compress_bv_to_ub); return
     end if
     call f_c_compress_bv_to_ub(bv%b, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), &
-         get_ubwmax(bv), bv%numrotsv, bv%ksv, bv%csv, bv%ssv, ub%b, ub%ubw, & 
+         get_ubwmax(bv), bv%numrotsv, bv%ksv, bv%csv, bv%ssv, ub%b, ub%lbw, ub%ubw, & 
          get_lbwmax(ub), get_ubwmax(ub), ub%numrotsu, ub%jsu, ub%csu, ub%ssu, &
          told, tol, dr, error)
-    if (error%code == 0) then
-       ub%lbw=bv%lbw
-    end if
   end subroutine c_compress_bv_to_ub
 
   subroutine f_c_compress_bv_to_ub(b_bv, n, lbw, ubw, lbwmax_bv, ubwmax_bv, numrots_bv, &
        ks_bv, cs_bv, ss_bv, &
-       b_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, cs_ub, ss_ub, told, tol, dr, error)
+       b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, cs_ub, ss_ub, told, tol, dr, error)
     integer(kind=int32), intent(in) :: n, lbw, ubw, lbwmax_ub, ubwmax_ub, lbwmax_bv, ubwmax_bv, dr
     complex(kind=dp), dimension(n,lbwmax_bv+ubwmax_bv+1), intent(inout) :: b_bv
     integer(kind=int32), dimension(n), intent(in) :: numrots_bv
@@ -369,7 +365,7 @@ contains
     complex(kind=dp), dimension(ubwmax_ub,n), intent(out) :: cs_ub, ss_ub
 
     real(kind=dp), intent(in) :: tol, told
-    integer(kind=int32), intent(out) :: ubw_ub
+    integer(kind=int32), intent(out) :: lbw_ub, ubw_ub
     type(error_info), intent(out) :: error
 
     integer(kind=int32) :: j, k, jj, roffs, coffs, ubw2, d, minindex, ml, nl, dnl, nq
@@ -389,12 +385,14 @@ contains
     ubw2=ubw+2
     nrma = maxabs(b_bv)*sqrt(real(n))
     ubws=0
+    lbw_ub=lbw
 
     if (n < 1) then
        call set_error(error, 1, id_f_c_compress_bv_to_ub); return
     end if
     if (n == 1) then
         b_ub(1,1)=b_bv(1,1)
+        lbw_ub=0; ubw_ub=0
         return
     end if
     ! must allow for temporary fill-in of one extra superdiagonal in b_bv.

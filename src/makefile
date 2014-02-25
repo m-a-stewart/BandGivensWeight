@@ -17,18 +17,19 @@ $(OBJDIR)/gs.o : $(OBJDIR)/prec.o $(OBJDIR)/utility.o
 $(OBJDIR)/assemble.o : $(OBJDIR)/error_id.o $(OBJDIR)/rotation.o $(OBJDIR)/band_types.o $(OBJDIR)/nested_types.o
 $(OBJDIR)/band_types.o : $(OBJDIR)/prec.o $(OBJDIR)/rotation.o
 $(OBJDIR)/conversions_ub_to_bv.o : $(OBJDIR)/prec.o $(OBJDIR)/band_types.o $(OBJDIR)/shift.o \
-	$(OBJDIR)/nested_types.o $(OBJDIR)/rotation.o
+	$(OBJDIR)/nested_types.o $(OBJDIR)/rotation.o $(OBJDIR)/error_id.o
 $(OBJDIR)/conversions_bv_to_ub.o : $(OBJDIR)/prec.o $(OBJDIR)/band_types.o \
-	$(OBJDIR)/shift.o $(OBJDIR)/nested_types.o $(OBJDIR)/rotation.o
+	$(OBJDIR)/shift.o $(OBJDIR)/nested_types.o $(OBJDIR)/rotation.o $(OBJDIR)/error_id.o
 $(OBJDIR)/compressions_ub_to_bv.o : $(OBJDIR)/prec.o $(OBJDIR)/band_types.o \
-	$(OBJDIR)/shift.o $(OBJDIR)/nested_types.o $(OBJDIR)/rotation.o
+	$(OBJDIR)/shift.o $(OBJDIR)/nested_types.o $(OBJDIR)/rotation.o $(OBJDIR)/error_id.o
 $(OBJDIR)/compressions_bv_to_ub.o : $(OBJDIR)/prec.o $(OBJDIR)/band_types.o $(OBJDIR)/shift.o \
-	$(OBJDIR)/nested_types.o $(OBJDIR)/rotation.o
+	$(OBJDIR)/nested_types.o $(OBJDIR)/rotation.o $(OBJDIR)/error_id.o
 $(OBJDIR)/qr_iteration.o : $(OBJDIR)/prec.o $(OBJDIR)/band_types.o $(OBJDIR)/shift.o $(OBJDIR)/nested_types.o \
-	$(OBJDIR)/rotation.o
+	$(OBJDIR)/rotation.o $(OBJDIR)/error_id.o
 
 $(OBJDIR)/qr_factorization.o : $(OBJDIR)/prec.o $(OBJDIR)/band_types.o $(OBJDIR)/shift.o $(OBJDIR)/nested_types.o \
-	$(OBJDIR)/rotation.o
+	$(OBJDIR)/rotation.o $(OBJDIR)/error_id.o $(OBJDIR)/sweeps.o $(OBJDIR)/conversions_ub_to_bv.o \
+	$(OBJDIR)/conversions_bv_to_ub.o
 
 
 $(OBJDIR)/%.o : %.f90
@@ -65,7 +66,7 @@ $(OBJDIR)/%.o : assemble/%.f90
 	$(FC) $(CFLAGS) $(PROFCFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@
 
 clean :
-	rm $(OBJDIR)/*.o $(OBJDIR)/*.mod
+	rm $(OBJDIR)/*.o $(OBJDIR)/*.mod $(OBJDIR)/$(TEST_EXECS)
 
 kill :
 	kill -9 `ps -e | grep test_nest | sed -e "s/ pts.*//"`

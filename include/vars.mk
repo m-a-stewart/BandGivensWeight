@@ -13,3 +13,6 @@ OBJS =  $(OBJDIR)/utility.o $(OBJDIR)/shift.o $(OBJDIR)/nullvec.o $(OBJDIR)/prec
 	$(OBJDIR)/conversions_bv_to_ub.o $(OBJDIR)/nested_types.o \
 	$(OBJDIR)/compressions_ub_to_bv.o $(OBJDIR)/compressions_bv_to_ub.o $(OBJDIR)/qr_iteration.o \
 	$(OBJDIR)/qr_factorization.o $(OBJDIR)/sweeps.o
+
+TEST_EXECS =  $(OBJDIR)/test_decomp $(OBJDIR)/test_convert $(OBJDIR)/test_compress \
+	$(OBJDIR)/test_qr_iteration $(OBJDIR)/test_qr_factorization

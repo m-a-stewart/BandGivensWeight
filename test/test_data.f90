@@ -4,7 +4,7 @@ use utility
 use error_id
 implicit none
 
-integer, parameter :: n=50, rmax=13, ubwmax=rmax+1, lbw=2, lbwmax=3
+integer, parameter :: n=50, rmax=13, ubwmax=rmax+1, lbw=2, lbwmax=10
 real(kind=dp), parameter :: tol=1e-14, tol1=1e-14, tol2=1e-10
 character(len=40) :: test_name
 character(len=*), parameter :: fmt="(A40, 'Time: ',ES8.2,', ubw: ',I3,', error: ',ES8.2, ', ', A10)"
