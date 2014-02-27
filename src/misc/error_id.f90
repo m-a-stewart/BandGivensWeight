@@ -96,6 +96,17 @@ integer(int32), parameter :: id_f_d_qr_bv_to_ub=105
 integer(int32), parameter :: id_c_qr_bv_to_ub=106
 integer(int32), parameter :: id_f_c_qr_bv_to_ub=107
 
+! src/solve/back_substitution 110s and 120s
+integer(int32), parameter :: id_d_back_substitution_ub=110
+integer(int32), parameter :: id_f_d_back_substitution_ub=111
+integer(int32), parameter :: id_c_back_substitution_ub=112
+integer(int32), parameter :: id_f_c_back_substitution_ub=113
+integer(int32), parameter :: id_d_v_back_substitution_ub=114
+integer(int32), parameter :: id_f_d_v_back_substitution_ub=115
+integer(int32), parameter :: id_c_v_back_substitution_ub=116
+integer(int32), parameter :: id_f_c_v_back_substitution_ub=117
+
+
 contains
 
 subroutine add_id(err,id)

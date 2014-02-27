@@ -59,7 +59,6 @@ program test_qr_factorization
   a0_d=a_d
   call upper_to_bv(a_d,bv_d,lbwa, tol,error)
   call cpu_time(t0)
-  !  call convert_ub_to_bv(ub_d, bv_d,error)
   call d_reduce_lbw_bv_to_ub(bv_d,ub_d,sw_d%cs(:,1),sw_d%ss(:,1),error)
   sw_d%numsweeps=1
   call cpu_time(t1)
@@ -114,7 +113,6 @@ program test_qr_factorization
   a0_c=a_c
   call upper_to_bv(a_c,bv_c,lbwa, tol,error)
   call cpu_time(t0)
-  !  call convert_ub_to_bv(ub_c, bv_c,error)
   call c_reduce_lbw_bv_to_ub(bv_c,ub_c,sw_c%cs(:,1),sw_c%ss(:,1),error)
   sw_c%numsweeps=1
   call cpu_time(t1)

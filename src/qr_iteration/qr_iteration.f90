@@ -1,6 +1,5 @@
 module qr_iteration
 use prec
-use assemble
 use shift
 use rotation
 use band_types

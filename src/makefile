@@ -31,6 +31,8 @@ $(OBJDIR)/qr_factorization.o : $(OBJDIR)/prec.o $(OBJDIR)/band_types.o $(OBJDIR)
 	$(OBJDIR)/rotation.o $(OBJDIR)/error_id.o $(OBJDIR)/sweeps.o $(OBJDIR)/conversions_ub_to_bv.o \
 	$(OBJDIR)/conversions_bv_to_ub.o
 
+$(OBJDIR)/back_substitution.o : $(OBJDIR)/prec.o $(OBJDIR)/band_types.o $(OBJDIR)/shift.o $(OBJDIR)/nested_types.o \
+	$(OBJDIR)/rotation.o $(OBJDIR)/error_id.o $(OBJDIR)/sweeps.o
 
 $(OBJDIR)/%.o : %.f90
 	$(FC) $(CFLAGS) $(PROFCFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@
@@ -60,6 +62,9 @@ $(OBJDIR)/%.o : qr_iteration/%.f90
 	$(FC) $(CFLAGS) $(PROFCFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@
 
 $(OBJDIR)/%.o : qr_factorization/%.f90
+	$(FC) $(CFLAGS) $(PROFCFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@
+
+$(OBJDIR)/%.o : solve/%.f90
 	$(FC) $(CFLAGS) $(PROFCFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@
 
 $(OBJDIR)/%.o : assemble/%.f90
