@@ -1,8 +1,6 @@
 module nullvec
-use prec
-use error_id
-use utility
 use triangular
+use misc
 implicit none
 
 interface lower_left_nullvec

@@ -1,11 +1,8 @@
 module compressions_ub_to_bv
-use prec
-use error_id
-use shift
-use rotation
-use band_types
-use nested_types
-use nullvec
+use misc
+use transforms
+use types
+use orth
 implicit none
 
 integer(kind=int32), private, parameter :: nullmaxits=5

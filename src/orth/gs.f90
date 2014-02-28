@@ -1,7 +1,5 @@
 module gs
-  use prec
-  use error_id
-  use utility
+  use misc
   implicit none
   real(kind=dp), parameter :: eta=1.414_dp
   integer(kind=int32), parameter :: orthmaxits=5

@@ -1,10 +1,7 @@
 module conversions_bv_to_ub
-use prec
-use error_id
-use shift
-use rotation
-use band_types
-use nested_types
+use misc
+use transforms
+use types
 implicit none
 
 interface convert_bv_to_ub

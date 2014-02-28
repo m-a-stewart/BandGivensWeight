@@ -1,7 +1,5 @@
 module assemble
-use prec
-use error_id
-use rotation
+use misc
 use band_types
 use nested_types
 implicit none

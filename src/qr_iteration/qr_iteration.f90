@@ -1,12 +1,6 @@
 module qr_iteration
-use prec
-use shift
-use rotation
-use band_types
-use nested_types
-use nullvec
-use compressions_ub_to_bv
-use conversions_ub_to_bv
+use compressions
+use conversions
 
 implicit none
 

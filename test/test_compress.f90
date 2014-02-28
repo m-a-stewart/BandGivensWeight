@@ -1,14 +1,5 @@
 program test_compress
-  use general_ub
-  use general_bv
-  use utility
-  use assemble
-  use conversions_ub_to_bv
-  use conversions_bv_to_ub
-  use compressions_ub_to_bv
-  use compressions_bv_to_ub
-  use band_types
-  use nested_types
+  use nested
   use test_data
   implicit none
   real(kind=dp) :: t0, t1

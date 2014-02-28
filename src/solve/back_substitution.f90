@@ -1,11 +1,7 @@
 module back_substitution
-  use prec
-  use shift
-  use rotation
-  use band_types
-  use nested_types
-  use sweeps
-  use error_id
+  use transforms
+  use misc
+  use types
   implicit none
 
   interface back_substitution_ub
@@ -18,42 +14,49 @@ module back_substitution
           f_d_v_back_substitution_ub, f_c_v_back_substitution_ub
   end interface f_back_substitution_ub
 
-type(routine_info), parameter :: info_d_back_substitution_ub=routine_info(id_d_back_substitution_ub, &
+type(routine_info), parameter :: info_d_back_substitution_ub= &
+     routine_info(id_d_back_substitution_ub, &
      'd_back_substitution_ub', &
      [ character(len=error_message_length) :: 'ub%n /= size(c,1)', 'bv%lbw /= 0', 'n < 1', &
      'x is not the same size as c.' ])
 
-type(routine_info), parameter :: info_f_d_back_substitution_ub=routine_info(id_f_d_back_substitution_ub, &
+type(routine_info), parameter :: info_f_d_back_substitution_ub= &
+     routine_info(id_f_d_back_substitution_ub, &
      'f_d_back_substitution_ub', &
      [ character(len=error_message_length) :: '' ])
 
-type(routine_info), parameter :: info_c_back_substitution_ub=routine_info(id_c_back_substitution_ub, &
+type(routine_info), parameter :: info_c_back_substitution_ub= &
+     routine_info(id_c_back_substitution_ub, &
      'd_back_substitution_ub', &
      [ character(len=error_message_length) :: 'ub%n /= size(c,1)', 'bv%lbw /= 0', 'n < 1', &
      'x is not the same size as c.' ])
 
-type(routine_info), parameter :: info_f_c_back_substitution_ub=routine_info(id_f_c_back_substitution_ub, &
+type(routine_info), parameter :: info_f_c_back_substitution_ub= &
+     routine_info(id_f_c_back_substitution_ub, &
      'f_c_back_substitution_ub', &
      [ character(len=error_message_length) :: '' ])
 
-type(routine_info), parameter :: info_d_v_back_substitution_ub=routine_info(id_d_v_back_substitution_ub, &
+type(routine_info), parameter :: info_d_v_back_substitution_ub= &
+     routine_info(id_d_v_back_substitution_ub, &
      'd_v_back_substitution_ub', &
      [ character(len=error_message_length) :: 'ub%n /= size(c,1)', 'bv%lbw /= 0', 'n < 1', &
      'x is not the same size as c.' ])
 
-type(routine_info), parameter :: info_f_d_v_back_substitution_ub=routine_info(id_f_d_v_back_substitution_ub, &
+type(routine_info), parameter :: info_f_d_v_back_substitution_ub= &
+     routine_info(id_f_d_v_back_substitution_ub, &
      'f_d_v_back_substitution_ub', &
      [ character(len=error_message_length) :: '' ])
 
-type(routine_info), parameter :: info_c_v_back_substitution_ub=routine_info(id_c_v_back_substitution_ub, &
+type(routine_info), parameter :: info_c_v_back_substitution_ub= &
+     routine_info(id_c_v_back_substitution_ub, &
      'd_back_substitution_ub', &
      [ character(len=error_message_length) :: 'ub%n /= size(c,1)', 'bv%lbw /= 0', 'n < 1', &
      'x is not the same size as c.' ])
 
-type(routine_info), parameter :: info_f_c_v_back_substitution_ub=routine_info(id_f_c_v_back_substitution_ub, &
+type(routine_info), parameter :: info_f_c_v_back_substitution_ub= &
+     routine_info(id_f_c_v_back_substitution_ub, &
      'f_c_v_back_substitution_ub', &
      [ character(len=error_message_length) :: '' ])
-
 
 contains
 

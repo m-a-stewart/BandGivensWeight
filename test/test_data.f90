@@ -1,7 +1,5 @@
 module test_data
-use prec
-use utility
-use error_id
+use misc
 implicit none
 
 integer, parameter :: n=50, rmax=13, ubwmax=rmax+1, lbw=2, lbwmax=10

@@ -1,5 +1,4 @@
 module band_types
-use prec
 use rotation
 use utility
 implicit none

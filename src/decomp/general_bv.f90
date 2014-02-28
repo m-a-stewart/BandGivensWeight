@@ -1,12 +1,7 @@
 module general_bv
-  use prec
-  use error_id
-  use nullvec
-  use utility
-  use rotation
-  use shift
-  use gs
-  use nested_types
+  use orth
+  use transforms
+  use types
   implicit none
   integer(kind=int32), private, parameter :: nullmaxits=5
 

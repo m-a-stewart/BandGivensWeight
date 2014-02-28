@@ -1,11 +1,5 @@
 module qr_factorization
-  use prec
-  use rotation
-  use band_types
-  use nested_types
-  use conversions_bv_to_ub
-  use conversions_ub_to_bv
-  use sweeps
+  use conversions
   implicit none
 
   interface reduce_lbw_bv_to_ub

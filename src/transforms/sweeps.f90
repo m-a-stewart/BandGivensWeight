@@ -1,5 +1,4 @@
 module sweeps
-  use prec
   use rotation
   implicit none
 
