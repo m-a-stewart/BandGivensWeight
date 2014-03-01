@@ -18,43 +18,24 @@ module qr_factorization
      module procedure f_d_qr_bv_to_ub, f_c_qr_bv_to_ub
   end interface f_qr_bv_to_ub
 
-type(routine_info), parameter :: info_d_reduce_lbw_bv_to_ub=routine_info(id_d_reduce_lbw_bv_to_ub, &
-     'd_reduce_lbw_bv_to_ub', &
-     [ character(len=error_message_length) :: 'ub%n /= bv%n', 'bv%lbw <= 0', 'n < 1', &
-     'not enough temp. storage in bv', 'not enough storage in ub', 'dim. of cs or ss /= n' ])
+  type(routine_info), parameter :: info_d_reduce_lbw_bv_to_ub=routine_info(id_d_reduce_lbw_bv_to_ub, &
+       'd_reduce_lbw_bv_to_ub', &
+       [ character(len=error_message_length) :: 'ub%n /= bv%n', 'bv%lbw <= 0', 'n < 1', &
+       'not enough temp. storage in bv', 'not enough storage in ub', 'dim. of cs or ss /= n' ])
 
-type(routine_info), parameter :: info_f_d_reduce_lbw_bv_to_ub=routine_info(id_f_d_reduce_lbw_bv_to_ub, &
-     'f_d_reduce_lbw_bv_to_ub', &
-     [ character(len=error_message_length) :: '' ])
+  type(routine_info), parameter :: info_c_reduce_lbw_bv_to_ub=routine_info(id_c_reduce_lbw_bv_to_ub, &
+       'c_reduce_lbw_bv_to_ub', &
+       [ character(len=error_message_length) :: 'ub%n /= bv%n', 'bv%lbw <= 0', 'n < 1', &
+       'not enough temp. storage in bv', 'not enough storage in ub', 'dim. of cs or ss /= n' ])
 
-type(routine_info), parameter :: info_c_reduce_lbw_bv_to_ub=routine_info(id_c_reduce_lbw_bv_to_ub, &
-     'c_reduce_lbw_bv_to_ub', &
-     [ character(len=error_message_length) :: 'ub%n /= bv%n', 'bv%lbw <= 0', 'n < 1', &
-     'not enough temp. storage in bv', 'not enough storage in ub', 'dim. of cs or ss /= n' ])
+  type(routine_info), parameter :: info_d_qr_bv_to_ub=routine_info(id_d_qr_bv_to_ub, &
+       'd_qr_bv_to_ub', &
+       [ character(len=error_message_length) :: 'ub%n /= bv%n or sw%n /= ub%n', &
+       'Not enough stroage for sweeps' ])
 
-type(routine_info), parameter :: info_f_c_reduce_lbw_bv_to_ub=routine_info(id_f_c_reduce_lbw_bv_to_ub, &
-     'f_c_reduce_lbw_bv_to_ub', &
-     [ character(len=error_message_length) :: '' ])
-
-type(routine_info), parameter :: info_d_qr_bv_to_ub=routine_info(id_d_qr_bv_to_ub, &
-     'd_qr_bv_to_ub', &
-     [ character(len=error_message_length) :: 'ub%n /= bv%n or sw%n /= ub%n', &
-     'Not enough stroage for sweeps' ])
-
-type(routine_info), parameter :: info_f_d_qr_bv_to_ub=routine_info(id_f_d_qr_bv_to_ub, &
-     'f_d_qr_bv_to_ub', &
-     [ character(len=error_message_length) :: '' ])
-
-type(routine_info), parameter :: info_c_qr_bv_to_ub=routine_info(id_c_qr_bv_to_ub, &
-     'c_qr_bv_to_ub', &
-     [ character(len=error_message_length) :: 'ub%n /= bv%n', 'bv%lbw <= 0', 'dim. of cs or ss /= n' ])
-
-type(routine_info), parameter :: info_f_c_qr_bv_to_ub=routine_info(id_f_c_qr_bv_to_ub, &
-     'f_c_qr_bv_to_ub', &
-     [ character(len=error_message_length) :: '' ])
-
-
-
+  type(routine_info), parameter :: info_c_qr_bv_to_ub=routine_info(id_c_qr_bv_to_ub, &
+       'c_qr_bv_to_ub', &
+       [ character(len=error_message_length) :: 'ub%n /= bv%n', 'bv%lbw <= 0', 'dim. of cs or ss /= n' ])
 
 contains
 
@@ -73,6 +54,7 @@ contains
     type(d_bv) :: bv
     type(error_info), intent(out) :: error
     real(kind=dp), dimension(:) :: cs, ss
+    call clear_error(error)
     if (get_n(ub) /= get_n(bv)) then
        call set_error(error, 1, id_d_reduce_lbw_bv_to_ub); return
     end if
@@ -80,7 +62,7 @@ contains
        call set_error(error, 2, id_d_reduce_lbw_bv_to_ub); return
     end if
     if (get_n(ub) < 1) then
-       call set_error(error, 3, id_f_d_reduce_lbw_bv_to_ub); return
+       call set_error(error, 3, id_d_reduce_lbw_bv_to_ub); return
     end if
     if (get_lbwmax(bv)+get_ubwmax(bv)+1<bv%ubw+bv%lbw+3) then
        call set_error(error, 4, id_d_reduce_lbw_bv_to_ub); return
@@ -97,10 +79,6 @@ contains
          ub%b, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), ub%numrotsu, ub%jsu, ub%csu, ub%ssu, &
          cs, ss, error)
   end subroutine d_reduce_lbw_bv_to_ub
-
-  ! 1: n < 1
-  ! 2: Insufficient temp storage in b_bv
-  ! 3: Insufficient storage in b_ub
 
   subroutine f_d_reduce_lbw_bv_to_ub(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, &
        ks_bv, cs_bv, ss_bv, &
@@ -190,23 +168,24 @@ contains
     type(c_bv) :: bv
     type(error_info), intent(out) :: error
     complex(kind=dp), dimension(:) :: cs, ss
+    call clear_error(error)
     if (get_n(ub) /= get_n(bv)) then
-       call set_error(error, 1, id_c_reduce_lbw_bv_to_ub); return
+       call set_error(error, 1, id_d_reduce_lbw_bv_to_ub); return
     end if
     if (bv%lbw <= 0) then
-       call set_error(error, 2, id_c_reduce_lbw_bv_to_ub); return
+       call set_error(error, 2, id_d_reduce_lbw_bv_to_ub); return
     end if
     if (get_n(ub) < 1) then
-       call set_error(error, 3, id_f_c_reduce_lbw_bv_to_ub); return
+       call set_error(error, 3, id_f_d_reduce_lbw_bv_to_ub); return
     end if
     if (get_lbwmax(bv)+get_ubwmax(bv)+1<bv%ubw+bv%lbw+3) then
-       call set_error(error, 4, id_c_reduce_lbw_bv_to_ub); return
+       call set_error(error, 4, id_d_reduce_lbw_bv_to_ub); return
     end if
     if (get_lbwmax(ub) < bv%lbw-1 .or. get_ubwmax(ub) < bv%ubw+1) then
-       call set_error(error, 5, id_c_reduce_lbw_bv_to_ub); return
+       call set_error(error, 5, id_d_reduce_lbw_bv_to_ub); return
     end if
     if (size(cs) /= get_n(ub) .or. size(ss) /= get_n(ub)) then
-       call set_error(error, 6, id_c_reduce_lbw_bv_to_ub); return
+       call set_error(error, 6, id_d_reduce_lbw_bv_to_ub); return
     end if
     call f_c_reduce_lbw_bv_to_ub(bv%b, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), &
          get_ubwmax(bv), bv%numrotsv, bv%ksv, bv%csv, bv%ssv, & 
@@ -248,19 +227,10 @@ contains
     ubw=ubw_bv+2
     lbw=lbw_bv
 
-    if (n < 1) then
-       call set_error(error, 1, id_f_c_reduce_lbw_bv_to_ub); return
-    end if
     if (n==1) then
        b_ub(1,1)=b_bv(1,1)
     end if
 
-    if (lbwmax_bv+ubwmax_bv+1<ubw+lbw+1) then
-       call set_error(error, 2, id_f_c_reduce_lbw_bv_to_ub); return
-    end if
-    if (lbwmax_ub < lbw_bv-1 .or. ubwmax_ub < ubw_bv+1) then
-       call set_error(error, 3, id_f_c_reduce_lbw_bv_to_ub); return
-    end if
     do k=1,n-1
        ! apply v_{n-k}
        do j=1,numrots_bv(n-k)
@@ -325,6 +295,7 @@ contains
     sw%transposed=.false.
     lbw=bv%lbw
     sw%numsweeps=lbw
+    call clear_error(error)
     if (get_n(ub) /= get_n(bv) .or. get_n(ub) /= get_n(sw)) then
        call set_error(error, 1, id_d_qr_bv_to_ub); return
     end if
@@ -358,6 +329,8 @@ contains
     integer(kind=int32), intent(out) :: lbw_ub, ubw_ub
     type(error_info), intent(out) :: error
     integer(kind=int32) :: j, lbw, ubw
+
+    call clear_error(error)
     lbw=lbw_bv; ubw=ubw_bv
     if (n == 1) then
        b_ub(1,1)=b_bv(1,1)
@@ -393,6 +366,7 @@ contains
     sw%transposed=.false.
     lbw=bv%lbw
     sw%numsweeps=lbw
+    call clear_error(error)
     if (get_n(ub) /= get_n(bv) .or. get_n(ub) /= get_n(sw)) then
        call set_error(error, 1, id_d_qr_bv_to_ub); return
     end if
@@ -429,6 +403,8 @@ contains
     integer(kind=int32), intent(out) :: lbw_ub, ubw_ub
     type(error_info), intent(out) :: error
     integer(kind=int32) :: j, lbw, ubw
+
+    call clear_error(error)
     lbw=lbw_bv; ubw=ubw_bv
     if (n == 1) then
        b_ub(1,1)=b_bv(1,1)

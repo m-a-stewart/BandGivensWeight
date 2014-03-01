@@ -11,7 +11,7 @@ $(OBJDIR)/nested_types.o : $(OBJDIR)/prec.o
 
 $(OBJDIR)/transforms.o : $(OBJDIR)/sweeps.o $(OBJDIR)/rotation.o $(OBJDIR)/shift.o
 $(OBJDIR)/rotation.o : $(OBJDIR)/prec.o
-$(OBJDIR)/sweeps.o : $(OBJDIR)/rotation.o
+$(OBJDIR)/sweeps.o : $(OBJDIR)/types.o $(OBJDIR)/misc.o
 $(OBJDIR)/shift.o : $(OBJDIR)/prec.o
 
 $(OBJDIR)/orth.o : $(OBJDIR)/triangular.o $(OBJDIR)/gs.o $(OBJDIR)/nullvec.o

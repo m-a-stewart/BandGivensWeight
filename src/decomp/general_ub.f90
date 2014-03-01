@@ -13,28 +13,28 @@ module general_ub
      module procedure f_d_upper_to_ub, f_c_upper_to_ub
   end interface f_upper_to_ub
 
-type(routine_info), parameter :: info_d_upper_to_ub=routine_info(id_d_upper_to_ub, &
-     'd_upper_to_ub', &
-     [ character(len=error_message_length) :: '', '', 'ub%n /= bv%n' ] )
+  type(routine_info), parameter :: info_d_upper_to_ub=routine_info(id_d_upper_to_ub, &
+       'd_upper_to_ub', &
+       [ character(len=error_message_length) :: 'n<1', 'ub%lbwmax < lbw', 'Size of a and ub not the same.' ] )
 
-type(routine_info), parameter :: info_f_d_upper_to_ub=routine_info(id_f_d_upper_to_ub, &
-     'f_d_upper_to_ub', &
-     [ character(len=error_message_length) :: 'n<1', 'Insufficient Upper Bandwidth in ub', &
-     'Insufficient Lower Bandwidth in ub' ] )
+  type(routine_info), parameter :: info_f_d_upper_to_ub=routine_info(id_f_d_upper_to_ub, &
+       'f_d_upper_to_ub', &
+       [ character(len=error_message_length) :: 'Insufficient Upper Bandwidth in ub' ])
 
-type(routine_info), parameter :: info_c_upper_to_ub=routine_info(id_c_upper_to_ub, &
-     'c_upper_to_ub', &
-     [ character(len=error_message_length) :: '', '', 'ub%n /= bv%n' ] )
+  type(routine_info), parameter :: info_c_upper_to_ub=routine_info(id_c_upper_to_ub, &
+       'c_upper_to_ub', &
+       [ character(len=error_message_length) :: 'n<1', 'ub%lbwmax < lbw', 'Size of a and ub not the same.' ] )
 
-type(routine_info), parameter :: info_f_c_upper_to_ub=routine_info(id_f_c_upper_to_ub, &
-     'f_c_upper_to_ub', &
-     [ character(len=error_message_length) :: 'n<1', 'Insufficient Upper Bandwidth in ub', &
-     'Insufficient Lower Bandwidth in ub'] )
+  type(routine_info), parameter :: info_f_c_upper_to_ub=routine_info(id_f_c_upper_to_ub, &
+       'f_c_upper_to_ub', &
+       [ character(len=error_message_length) :: 'Insufficient Upper Bandwidth in ub' ])
 
 contains
-  
+
   ! Errors:
   ! 0: no error
+  ! 1: n < 1
+  ! 2: ub%lbwmax < lbw
   ! 3: n is not the same for a and ub or bv.
   subroutine d_upper_to_ub(a,ub,lbw,tol,error)
     real(kind=dp), target, dimension(:,:), intent(inout) :: a
@@ -43,6 +43,12 @@ contains
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), intent(in) :: lbw
     call clear_error(error)
+    if (size(a,1) < 1) then
+       call set_error(error, 1, id_d_upper_to_ub); return
+    end if
+    if (get_lbwmax(ub) < lbw) then
+       call set_error(error, 2, id_d_upper_to_ub); return
+    end if
     if (get_n(ub) /= size(a,1) .or. get_n(ub) /= size(a,2)) then
        call set_error(error, 3, id_d_upper_to_ub); return
     end if
@@ -53,10 +59,7 @@ contains
 
   ! Errors:
   ! 0: no error
-  ! 1: n<1
-  ! 2: insufficient upper bandwidth in ub
-  ! 3: insufficient lower bandwidth in ub
-  ! Updating procedure to compute a UB factorization from a general matrix.
+  ! 1: insufficient upper bw in bv%b
   subroutine f_d_upper_to_ub(a, n, b, lbw, ubw, lbwmax, ubwmax, &
        numrots, js, cs, ss, tol, error)
     real(kind=dp), target, dimension(n,n), intent(inout) :: a
@@ -77,18 +80,12 @@ contains
     integer(kind=int32), dimension(n) :: ubws
     type(d_rotation) :: rot
     !
+    call clear_error(error)
     q=0.0_dp; numrots=0;
     ss=0.0_dp; cs=0.0_dp; js=0
     ubw=0; ubws=0
-    call clear_error(error)
     nrma = maxabs(a)*sqrt(real(n))
     !
-    if (n < 1) then
-       call set_error(error, 1, id_f_d_upper_to_ub); return
-    end if
-    if (lbwmax < lbw) then
-       call set_error(error, 3, id_f_d_upper_to_ub); return
-    end if
     if (n == 1) then
        b(1,1)=a(1,1)
        return
@@ -374,7 +371,7 @@ contains
        end do
     end if
     if (maxval(ubws) > ubwmax) then
-       call set_error(error, 2, id_f_d_upper_to_ub)
+       call set_error(error, 1, id_f_d_upper_to_ub)
     else
        call d_extract_diagonals_ub(a, n, b, lbw, ubw, lbwmax, ubwmax, ubws)
     end if
@@ -416,8 +413,15 @@ contains
     type(error_info), intent(out) :: error
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), intent(in) :: lbw
+    call clear_error(error)
+    if (size(a,1) < 1) then
+       call set_error(error, 1, id_c_upper_to_ub); return
+    end if
+    if (get_lbwmax(ub) < lbw) then
+       call set_error(error, 2, id_c_upper_to_ub); return
+    end if
     if (get_n(ub) /= size(a,1) .or. get_n(ub) /= size(a,2)) then
-       call set_error(error, 3, id_c_upper_to_ub)
+       call set_error(error, 3, id_c_upper_to_ub); return
     end if
     call f_c_upper_to_ub(a,get_n(ub),ub%b, lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
          ub%numrotsu, ub%jsu, ub%csu, ub%ssu, tol, error)
@@ -444,21 +448,15 @@ contains
     integer(kind=int32), dimension(n) :: ubws
     type(c_rotation) :: rot
     !
+    call clear_error(error)
     q=(0.0_dp, 0.0_dp); numrots=0;
     ss=(0.0_dp, 0.0_dp); cs=(0.0_dp, 0.0_dp); js=0
     ubw=0; ubws=0
-    call clear_error(error)
     nrma = maxabs(a)*sqrt(real(n))
     !
-    if (n < 1) then
-       call set_error(error, 1, id_f_c_upper_to_ub); return
-    end if
     if (n == 1) then
        b(1,1)=a(1,1)
        return
-    end if
-    if (lbwmax < lbw) then
-       call set_error(error, 3, id_f_c_upper_to_ub)
     end if
     ! Compute an initial trivial LQ factorization
     q(1,1:n-1) = a(1,2:n)
@@ -561,7 +559,7 @@ contains
                    cs(j,k)=rot%cosine; ss(j,k)=rot%sine
                    js(j,k)=roffs+j
                 end do
-             call clear_error(error)
+                call clear_error(error)
              else ! error=0
                 numrots(k)=nl-1;
                 do j=nl,2,-1 ! apply u_k while preserving the triangular structure of L
@@ -741,7 +739,7 @@ contains
        end do
     end if
     if (maxval(ubws) > ubwmax) then
-       call set_error(error, 2, id_f_c_upper_to_ub)
+       call set_error(error, 1, id_f_c_upper_to_ub)
     else
        call c_extract_diagonals_ub(a,n,b,lbw,ubw,lbwmax, ubwmax, ubws)
     end if

@@ -22,21 +22,13 @@ end interface f_bv_to_upper
 
 type(routine_info), parameter :: info_d_ub_to_upper=routine_info(id_d_ub_to_upper, 'd_ub_to_upper', &
      [ character(len=error_message_length) :: 'Size error in A.' ] )
-type(routine_info), parameter :: info_f_d_ub_to_upper=routine_info(id_f_d_ub_to_upper, 'f_d_ub_to_upper', &
-     [ character(len=error_message_length) :: '' ] )
 type(routine_info), parameter :: info_c_ub_to_upper=routine_info(id_c_ub_to_upper, 'c_ub_to_upper', &
      [ character(len=error_message_length) :: 'Size error in A.' ] )
-type(routine_info), parameter :: info_f_c_ub_to_upper=routine_info(id_f_c_ub_to_upper, 'f_c_ub_to_upper', &
-     [ character(len=error_message_length) :: '' ] )
 
 type(routine_info), parameter :: info_d_bv_to_upper=routine_info(id_d_bv_to_upper, 'd_bv_to_upper', &
      [ character(len=error_message_length) :: 'Size error in A.' ] )
-type(routine_info), parameter :: info_f_d_bv_to_upper=routine_info(id_f_d_bv_to_upper, 'f_d_bv_to_upper', &
-     [ character(len=error_message_length) :: '' ] )
 type(routine_info), parameter :: info_c_bv_to_upper=routine_info(id_c_bv_to_upper, 'c_bv_to_upper', &
      [ character(len=error_message_length) :: 'Size error in A.' ] )
-type(routine_info), parameter :: info_f_c_bv_to_upper=routine_info(id_f_c_bv_to_upper, 'f_c_bv_to_upper', &
-     [ character(len=error_message_length) :: '' ] )
 
 contains
 

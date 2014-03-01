@@ -1,5 +1,6 @@
 module sweeps
-  use rotation
+  use misc
+  use types
   implicit none
 
   !

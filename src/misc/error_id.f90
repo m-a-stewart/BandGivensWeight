@@ -106,6 +106,13 @@ integer(int32), parameter :: id_f_d_v_back_substitution_ub=115
 integer(int32), parameter :: id_c_v_back_substitution_ub=116
 integer(int32), parameter :: id_f_c_v_back_substitution_ub=117
 
+! src/sweeps 130s
+integer(int32), parameter :: id_d_sweeps_times_ub=130
+integer(int32), parameter :: id_f_d_sweeps_times_ub=131
+integer(int32), parameter :: id_c_sweeps_times_ub=132
+integer(int32), parameter :: id_f_c_sweeps_times_ub=133
+
+
 
 contains
 

@@ -3,7 +3,7 @@ module gs
   implicit none
   real(kind=dp), parameter :: eta=1.414_dp
   integer(kind=int32), parameter :: orthmaxits=5
-  
+
   interface extend_gs_rows
      module procedure d_extend_gs_rows, c_extend_gs_rows
   end interface extend_gs_rows
@@ -12,21 +12,21 @@ module gs
      module procedure d_extend_gs_columns, c_extend_gs_columns
   end interface extend_gs_columns
 
-type(routine_info), parameter :: info_d_extend_gs_rows=routine_info(id_d_extend_gs_rows, &
-     'd_extend_gs_rows', &
-     [ character(len=error_message_length) :: 'MGS Orthogonalization Error' ])
+  type(routine_info), parameter :: info_d_extend_gs_rows=routine_info(id_d_extend_gs_rows, &
+       'd_extend_gs_rows', &
+       [ character(len=error_message_length) :: 'MGS Orthogonalization Error' ])
 
-type(routine_info), parameter :: info_c_extend_gs_rows=routine_info(id_c_extend_gs_rows, &
-     'c_extend_gs_rows', &
-     [ character(len=error_message_length) :: 'MGS Orthogonalization Error' ])
+  type(routine_info), parameter :: info_c_extend_gs_rows=routine_info(id_c_extend_gs_rows, &
+       'c_extend_gs_rows', &
+       [ character(len=error_message_length) :: 'MGS Orthogonalization Error' ])
 
-type(routine_info), parameter :: info_d_extend_gs_columns=routine_info(id_d_extend_gs_columns, &
-     'd_extend_gs_columns', &
-     [ character(len=error_message_length) :: 'MGS Orthogonalization Error' ])
+  type(routine_info), parameter :: info_d_extend_gs_columns=routine_info(id_d_extend_gs_columns, &
+       'd_extend_gs_columns', &
+       [ character(len=error_message_length) :: 'MGS Orthogonalization Error' ])
 
-type(routine_info), parameter :: info_c_extend_gs_columns=routine_info(id_c_extend_gs_columns, &
-     'c_extend_gs_columns', &
-     [ character(len=error_message_length) :: 'MGS Orthogonalization Error' ])
+  type(routine_info), parameter :: info_c_extend_gs_columns=routine_info(id_c_extend_gs_columns, &
+       'c_extend_gs_columns', &
+       [ character(len=error_message_length) :: 'MGS Orthogonalization Error' ])
 
 
 contains

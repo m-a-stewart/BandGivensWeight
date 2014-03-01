@@ -1,29 +1,29 @@
 module shift
-use prec
+  use prec
 
-interface up_left_shift
-   module procedure d_up_left_shift, c_up_left_shift
-end interface up_left_shift
+  interface up_left_shift
+     module procedure d_up_left_shift, c_up_left_shift
+  end interface up_left_shift
 
-interface down_right_shift
-   module procedure d_down_right_shift, c_down_right_shift
-end interface down_right_shift
+  interface down_right_shift
+     module procedure d_down_right_shift, c_down_right_shift
+  end interface down_right_shift
 
-interface right_shift
-   module procedure d_right_shift, c_right_shift
-end interface right_shift
+  interface right_shift
+     module procedure d_right_shift, c_right_shift
+  end interface right_shift
 
-interface down_shift
-   module procedure d_down_shift, c_down_shift
-end interface down_shift
+  interface down_shift
+     module procedure d_down_shift, c_down_shift
+  end interface down_shift
 
-interface up_shift
-   module procedure d_up_shift, c_up_shift
-end interface up_shift
+  interface up_shift
+     module procedure d_up_shift, c_up_shift
+  end interface up_shift
 
-interface left_shift
-   module procedure d_left_shift, c_left_shift
-end interface left_shift
+  interface left_shift
+     module procedure d_left_shift, c_left_shift
+  end interface left_shift
 
 contains
 
@@ -111,7 +111,7 @@ contains
   end subroutine d_up_shift
 
 
-! Complex
+  ! Complex
 
   subroutine c_up_left_shift(a)
     complex(kind=dp), dimension(:,:), intent(inout) :: a

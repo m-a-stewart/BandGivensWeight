@@ -1,30 +1,30 @@
 module triangular
-use prec
-implicit none
+  use prec
+  implicit none
 
-interface lower_right_invert
-   module procedure f_c_lower_right_invert, f_d_lower_right_invert
-end interface lower_right_invert
+  interface lower_right_invert
+     module procedure f_c_lower_right_invert, f_d_lower_right_invert
+  end interface lower_right_invert
 
-interface lower_tr_right_invert
-   module procedure f_c_lower_tr_right_invert, f_d_lower_tr_right_invert
-end interface lower_tr_right_invert
+  interface lower_tr_right_invert
+     module procedure f_c_lower_tr_right_invert, f_d_lower_tr_right_invert
+  end interface lower_tr_right_invert
 
-interface lower_left_invert
-   module procedure f_c_lower_left_invert, f_d_lower_left_invert
-end interface lower_left_invert
+  interface lower_left_invert
+     module procedure f_c_lower_left_invert, f_d_lower_left_invert
+  end interface lower_left_invert
 
-interface lower_tr_left_invert
-   module procedure f_c_lower_tr_left_invert, f_d_lower_tr_left_invert
-end interface lower_tr_left_invert
+  interface lower_tr_left_invert
+     module procedure f_c_lower_tr_left_invert, f_d_lower_tr_left_invert
+  end interface lower_tr_left_invert
 
-interface first_zero_diagonal
-   module procedure c_first_zero_diagonal, d_first_zero_diagonal
-end interface first_zero_diagonal
+  interface first_zero_diagonal
+     module procedure c_first_zero_diagonal, d_first_zero_diagonal
+  end interface first_zero_diagonal
 
-interface last_zero_diagonal
-   module procedure c_last_zero_diagonal, d_last_zero_diagonal
-end interface last_zero_diagonal
+  interface last_zero_diagonal
+     module procedure c_last_zero_diagonal, d_last_zero_diagonal
+  end interface last_zero_diagonal
 
 contains
 
@@ -256,5 +256,5 @@ contains
     end do
   end function c_last_zero_diagonal
 
-    
+
 end module triangular

@@ -13,35 +13,43 @@ module general_bv
      module procedure f_d_upper_to_bv, f_c_upper_to_bv
   end interface f_upper_to_bv
 
-type(routine_info), parameter :: info_d_upper_to_bv=routine_info(id_d_upper_to_bv, &
-     'd_upper_to_bv', &
-     [ character(len=error_message_length) :: '', '', 'ub%n /= bv%n' ] )
+  type(routine_info), parameter :: info_d_upper_to_bv=routine_info(id_d_upper_to_bv, &
+       'd_upper_to_bv', &
+       [ character(len=error_message_length) :: 'n<1', 'bv%lbwmax < lbw', 'Size of a and bv not the same.' ] )
 
-type(routine_info), parameter :: info_f_d_upper_to_bv=routine_info(id_f_d_upper_to_bv, &
-     'f_d_upper_to_bv', &
-     [ character(len=error_message_length) :: 'n<1', 'Insufficient Upper Bandwidth in bv', &
-     'Insufficient Lower Bandwidth in bv' ] )
+  type(routine_info), parameter :: info_f_d_upper_to_bv=routine_info(id_f_d_upper_to_bv, &
+       'f_d_upper_to_bv', &
+       [ character(len=error_message_length) :: 'Insufficient Upper Bandwidth in bv' ])
 
-type(routine_info), parameter :: info_c_upper_to_bv=routine_info(id_c_upper_to_bv, &
-     'c_upper_to_bv', &
-     [ character(len=error_message_length) :: '', '', 'ub%n /= bv%n' ] )
 
-type(routine_info), parameter :: info_f_c_upper_to_bv=routine_info(id_f_c_upper_to_bv, &
-     'f_c_upper_to_bv', &
-     [ character(len=error_message_length) :: 'n<1', 'Insufficient Upper Bandwidth in bv', &
-     'Insufficient Lower Bandwidth in bv' ] )
+  type(routine_info), parameter :: info_c_upper_to_bv=routine_info(id_c_upper_to_bv, &
+       'c_upper_to_bv', &
+       [ character(len=error_message_length) :: 'n<1', 'bv%lbwmax < lbw', 'Size of a and bv not the same.' ] )
+
+  type(routine_info), parameter :: info_f_c_upper_to_bv=routine_info(id_f_c_upper_to_bv, &
+       'f_c_upper_to_bv', &
+       [ character(len=error_message_length) :: 'n<1', 'Insufficient Upper Bandwidth in bv' ])
 
 contains
-  
+
   ! Errors:
   ! 0: no error
-  ! 3: n is not the same for a and ub or bv.
+  ! 1: n<1
+  ! 2: bv%lbwmax < lbw
+  ! 3: n is not the same for a and bv.
   subroutine d_upper_to_bv(a,bv,lbw,tol,error)
     real(kind=dp), target, dimension(:,:), intent(inout) :: a
     type(d_bv), intent(inout) :: bv
     type(error_info), intent(out) :: error
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), intent(in) :: lbw
+    call clear_error(error)
+    if (size(a,1) < 1) then
+       call set_error(error, 1, id_d_upper_to_bv); return
+    end if
+    if (get_lbwmax(bv) < lbw) then
+       call set_error(error, 2, id_d_upper_to_bv); return
+    end if
     if (get_n(bv) /= size(a,1) .or. get_n(bv) /= size(a,2)) then
        call set_error(error, 3, id_d_upper_to_bv)
     end if
@@ -52,9 +60,7 @@ contains
 
   ! Errors:
   ! 0: no error
-  ! 1: n<1
-  ! 2: insufficient upper bw in bv%b
-  ! 3: insufficient lower bw in bv%b
+  ! 1: insufficient upper bw in bv%b
   subroutine f_d_upper_to_bv(a, n, b, lbw, ubw, lbwmax, ubwmax, &
        numrots, ks, cs, ss, tol, error)
     real(kind=dp), target, dimension(n,n), intent(inout) :: a
@@ -81,15 +87,9 @@ contains
     call clear_error(error)
     nrma = maxabs(a)*sqrt(real(n))
     !
-    if (n < 1) then
-       call set_error(error, 1, id_f_d_upper_to_bv); return
-    end if
     if (n == 1) then
        b(1,1)=a(1,1)
        return
-    end if
-    if (lbwmax < lbw) then
-       call set_error(error, 3, id_f_d_upper_to_bv); return
     end if
 
     ! Compute an initial trivial QL factorization
@@ -162,8 +162,7 @@ contains
                    pl => a(roffs-1:roffs,coffs:coffs+1)
                    call extend_gs_columns(pq(:,2:2),pl(2:2,1), pl(1,1), pq(:,1), error)
                    if (error%code > 0) then
-                      call add_id(error,id_f_d_upper_to_bv)
-                      return
+                      call add_id(error,id_f_d_upper_to_bv); return
                    end if
                    if (n-k-3 >= 1) then
                       a(1:n-k-3,coffs)=0.0_dp
@@ -183,7 +182,7 @@ contains
              if (error%code == -nl) then
                 pl(nl,nl)=0.0_dp
                 numrots(k)=0
-             call clear_error(error)
+                call clear_error(error)
              else if (error%code <= -1) then
                 numrots(k)=nl+error%code
                 pl(-error%code,-error%code)=0.0_dp
@@ -194,7 +193,7 @@ contains
                    cs(k,nl-j)=rot%cosine; ss(k,nl-j)=rot%sine
                    ks(k,nl-j)=coffs+j
                 end do
-             call clear_error(error)
+                call clear_error(error)
              else ! error=0
                 numrots(k)=nl-1;
                 do j=2,nl ! apply v_k while preserving the triangular structure of L
@@ -373,7 +372,7 @@ contains
        end do
     end if
     if (maxval(ubws) > ubwmax) then
-       call set_error(error, 2, id_f_d_upper_to_bv)
+       call set_error(error, 1, id_f_d_upper_to_bv)
     else
        call d_extract_diagonals_bv(a, n, b, lbw, ubw, lbwmax, ubwmax, ubws)
     end if
@@ -403,7 +402,7 @@ contains
     end do
   end subroutine d_extract_diagonals_bv
 
-! complex BV
+  ! complex BV
 
   subroutine c_upper_to_bv(a,bv,lbw,tol,error)
     complex(kind=dp), target, dimension(:,:), intent(inout) :: a
@@ -411,8 +410,16 @@ contains
     type(error_info), intent(out) :: error
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), intent(in) :: lbw
+    call clear_error(error)
+    !
+    if (size(a,1) < 1) then
+       call set_error(error, 1, id_c_upper_to_bv); return
+    end if
+    if (get_lbwmax(bv) < lbw) then
+       call set_error(error, 2, id_c_upper_to_bv); return
+    end if
     if (get_n(bv) /= size(a,1) .or. get_n(bv) /= size(a,2)) then
-       call set_error(error, 3, id_c_upper_to_bv); return
+       call set_error(error, 3, id_c_upper_to_bv)
     end if
     call f_c_upper_to_bv(a,get_n(bv),bv%b, lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
          bv%numrotsv, bv%ksv, bv%csv, bv%ssv, tol, error)
@@ -445,16 +452,10 @@ contains
     ubw=0; ubws=0
     call clear_error(error)
     nrma = maxabs(a)*sqrt(real(n))
-    !
-    if (n < 1) then
-       call set_error(error, 1, id_f_c_upper_to_bv); return
-    end if
+
     if (n == 1) then
        b(1,1)=a(1,1)
        return
-    end if
-    if (lbwmax < lbw) then
-       call set_error(error, 3, id_f_c_upper_to_bv); return
     end if
     ! Compute an initial trivial QL factorization
     q(1:n-1,1) = a(1:n-1,n)
