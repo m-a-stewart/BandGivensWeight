@@ -39,10 +39,10 @@ $(OBJDIR)/qr_iteration.o : $(OBJDIR)/compressions.o $(OBJDIR)/conversions.o
 
 $(OBJDIR)/qr_factorization.o : $(OBJDIR)/conversions.o
 
-$(OBJDIR)/back_substitution.o : $(OBJDIR)/transforms.o $(OBJDIR)/misc.o $(OBJDIR)/types.o
+$(OBJDIR)/substitution.o : $(OBJDIR)/transforms.o $(OBJDIR)/misc.o $(OBJDIR)/types.o
 
 $(OBJDIR)/nested.o : $(OBJDIR)/decomp.o $(OBJDIR)/assemble.o $(OBJDIR)/qr_iteration.o \
-	$(OBJDIR)/qr_factorization.o $(OBJDIR)/back_substitution.o
+	$(OBJDIR)/qr_factorization.o $(OBJDIR)/substitution.o
 
 $(OBJDIR)/%.o : %.f90
 	$(FC) $(CFLAGS) $(PROFCFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@

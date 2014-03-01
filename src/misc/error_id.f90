@@ -106,6 +106,16 @@ integer(int32), parameter :: id_f_d_v_back_substitution_ub=115
 integer(int32), parameter :: id_c_v_back_substitution_ub=116
 integer(int32), parameter :: id_f_c_v_back_substitution_ub=117
 
+integer(int32), parameter :: id_d_forward_substitution_bv=118
+integer(int32), parameter :: id_f_d_forward_substitution_bv=119
+integer(int32), parameter :: id_d_v_forward_substitution_bv=120
+integer(int32), parameter :: id_f_d_v_forward_substitution_bv=121
+integer(int32), parameter :: id_c_forward_substitution_bv=118
+integer(int32), parameter :: id_f_c_forward_substitution_bv=119
+integer(int32), parameter :: id_c_v_forward_substitution_bv=120
+integer(int32), parameter :: id_f_c_v_forward_substitution_bv=121
+
+
 ! src/sweeps 130s
 integer(int32), parameter :: id_d_sweeps_times_ub=130
 integer(int32), parameter :: id_f_d_sweeps_times_ub=131

@@ -25,7 +25,7 @@ COMPRESSIONOBJS = $(OBJDIR)/compressions.o $(OBJDIR)/compressions_ub_to_bv.o \
 
 OBJS =  $(MISCOBJS) $(TYPESOBJS) $(TRANSFORMSOBJS) $(ORTHOBJS) $(DECOMPOBJS) \
 	$(CONVERSIONOBJS) $(OBJDIR)/assemble.o $(COMPRESSIONOBJS) \
-	$(OBJDIR)/qr_iteration.o $(OBJDIR)/qr_factorization.o $(OBJDIR)/back_substitution.o \
+	$(OBJDIR)/qr_iteration.o $(OBJDIR)/qr_factorization.o $(OBJDIR)/substitution.o \
 	$(OBJDIR)/nested.o
 
 TEST_EXECS =  $(OBJDIR)/test_decomp $(OBJDIR)/test_convert $(OBJDIR)/test_compress \

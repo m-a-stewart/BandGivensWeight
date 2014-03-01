@@ -3,5 +3,5 @@ module nested
   use assemble
   use qr_factorization
   use qr_iteration
-  use back_substitution
+  use substitution
 end module nested
