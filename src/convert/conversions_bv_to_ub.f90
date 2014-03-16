@@ -100,16 +100,7 @@ contains
           call rotation_times_tbr(trp_rot(rot),b_bv,n,lbw1,ubw1,k+1,0,j-ubw1)
        end do
     end do
-    do d=1,lbw+1
-       do j=1,n-lbw+d-1
-          b_ub(ubw+lbw+2-d,j)=b_bv(lbw-d+j+1,d)
-       end do
-    end do
-    do d=lbw+2,lbw+ubw+1
-       do j=1,n-d+lbw+1
-          b_ub(ubw+lbw+2-d,j+d-lbw-1)=b_bv(j,d)
-       end do
-    end do
+    call br_to_bc(b_bv,b_ub,lbw,ubw)
   end subroutine f_d_convert_bv_to_ub
 
   subroutine c_convert_bv_to_ub(bv, ub, error)
@@ -183,17 +174,7 @@ contains
           call rotation_times_tbr(trp_rot(rot),b_bv,n,lbw1,ubw1,k+1,0,j-ubw1)
        end do
     end do
-    ! store the results in b_ub
-    do d=1,lbw+1
-       do j=1,n-lbw+d-1
-          b_ub(ubw+lbw+2-d,j)=b_bv(lbw-d+j+1,d)
-       end do
-    end do
-    do d=lbw+2,lbw+ubw+1
-       do j=1,n-d+lbw+1
-          b_ub(ubw+lbw+2-d,j+d-lbw-1)=b_bv(j,d)
-       end do
-    end do
+    call br_to_bc(b_bv,b_ub,lbw,ubw)
   end subroutine f_c_convert_bv_to_ub
 
 end module conversions_bv_to_ub

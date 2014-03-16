@@ -322,17 +322,7 @@ contains
     if (ubw_bv > ubwmax_bv) then
        call set_error(error, 1, id_f_d_compress_ub_to_bv); return
     end if
-    ! Extract diagonals
-    do d=1,lbw+1
-       do j=lbw-d+2, n
-          b_bv(j,d)=get_el_bc(b_ub,ubw2,j,d+j-lbw-1)
-       end do
-    end do
-    do d=lbw+2,ubw_bv+lbw+1
-       do j=1, n-d+lbw+1
-          b_bv(j,d)=get_el_bc(b_ub,ubw2,j,d+j-lbw-1)
-       end do
-    end do
+    call bc_to_br(b_ub,b_bv,lbw,ubw2)
   end subroutine f_d_compress_ub_to_bv
 
 
@@ -607,18 +597,7 @@ contains
     if (ubw_bv > ubwmax_bv) then
        call set_error(error, 1, id_f_c_compress_ub_to_bv); return
     end if
-    ! Extract diagonals
-    do d=1,lbw+1
-       do j=lbw-d+2, n
-          b_bv(j,d)=get_el_bc(b_ub,ubw2,j,d+j-lbw-1)
-       end do
-    end do
-    do d=lbw+2,ubw_bv+lbw+1
-       do j=1, n-d+lbw+1
-          b_bv(j,d)=get_el_bc(b_ub,ubw2,j,d+j-lbw-1)
-       end do
-    end do
-
+    call bc_to_br(b_ub,b_bv,lbw,ubw2)
   end subroutine f_c_compress_ub_to_bv
 
 

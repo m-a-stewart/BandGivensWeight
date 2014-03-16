@@ -273,17 +273,7 @@ contains
     end do
     ubw_ub=ubw_bv+1
     call left_shift(b_bv)
-    ! put diagonals in b
-    do d=1,ubw_ub+1
-       do k=ubw_ub-d+2,n
-          b_ub(d,k) = get_el_br(b_bv,1,d+k-ubw_ub-1,k)
-       end do
-    end do
-    do d=ubw_ub+2, ubw_ub+1+1
-       do k=1,n-d+ubw_ub+1
-          b_ub(d,k) = get_el_br(b_bv,1,d+k-ubw_ub-1,k)
-       end do
-    end do
+    call br_to_bc(b_bv,b_ub,1,ubw_ub)
   end subroutine f_ss_qr_iteration
 
   ! These function are destructive.  bv is modified so that it

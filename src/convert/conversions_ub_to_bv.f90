@@ -102,16 +102,7 @@ contains
     end do
     ! Store the results in b_bv
     call up_shift(b_ub)
-    do d=1,lbw+1
-       do j=1,n-lbw+d-1
-          b_bv(lbw-d+j+1,d)=b_ub(ubw+lbw+2-d,j)
-       end do
-    end do
-    do d=lbw+2,lbw+ubw+1
-       do j=1,n-d+lbw+1
-          b_bv(j,d)=b_ub(ubw+lbw+2-d,j+d-lbw-1)
-       end do
-    end do
+    call bc_to_br(b_ub, b_bv, lbw, ubw)
   end subroutine f_d_convert_ub_to_bv
 
   subroutine c_convert_ub_to_bv(ub, bv, error)
@@ -183,18 +174,8 @@ contains
           call tbc_times_rotation(b_ub,n,lbw1,ubw1,0,k+1,rot,j-1)
        end do
     end do
-    ! Store the results in b_bv
     call up_shift(b_ub)
-    do d=1,lbw+1
-       do j=1,n-lbw+d-1
-          b_bv(lbw-d+j+1,d)=b_ub(ubw+lbw+2-d,j)
-       end do
-    end do
-    do d=lbw+2,lbw+ubw+1
-       do j=1,n-d+lbw+1
-          b_bv(j,d)=b_ub(ubw+lbw+2-d,j+d-lbw-1)
-       end do
-    end do
+    call bc_to_br(b_ub, b_bv, lbw, ubw)
   end subroutine f_c_convert_ub_to_bv
 
 

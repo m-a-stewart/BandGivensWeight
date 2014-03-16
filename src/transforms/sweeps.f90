@@ -3,7 +3,6 @@ module sweeps
   use types
   use shift
   use conversions
-  use assemble
 
   implicit none
 

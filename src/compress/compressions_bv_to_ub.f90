@@ -334,17 +334,7 @@ contains
     if (ubw_ub > ubwmax_ub) then
        call set_error(error, 1, id_f_d_compress_bv_to_ub); return
     end if
-    ! put diagonals in b
-    do d=1,ubw_ub+1
-       do k=ubw_ub-d+2,n
-          b_ub(d,k) = get_el_br(b_bv,lbw,d+k-ubw_ub-1,k)
-       end do
-    end do
-    do d=ubw_ub+2, ubw_ub+lbw+1
-       do k=1,n-d+ubw_ub+1
-          b_ub(d,k) = get_el_br(b_bv,lbw,d+k-ubw_ub-1,k)
-       end do
-    end do
+    call br_to_bc(b_bv,b_ub,lbw,ubw_ub)
   end subroutine f_d_compress_bv_to_ub
 
   subroutine c_compress_bv_to_ub(bv, ub, told, tol, dr, error)
@@ -620,16 +610,7 @@ contains
        call set_error(error, 1, id_f_c_compress_bv_to_ub); return
     end if
     ! put diagonals in b
-    do d=1,ubw_ub+1
-       do k=ubw_ub-d+2,n
-          b_ub(d,k) = get_el_br(b_bv,lbw,d+k-ubw_ub-1,k)
-       end do
-    end do
-    do d=ubw_ub+2, ubw_ub+lbw+1
-       do k=1,n-d+ubw_ub+1
-          b_ub(d,k) = get_el_br(b_bv,lbw,d+k-ubw_ub-1,k)
-       end do
-    end do
+    call br_to_bc(b_bv,b_ub,lbw,ubw_ub)
   end subroutine f_c_compress_bv_to_ub
 
 
