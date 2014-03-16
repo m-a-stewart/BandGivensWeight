@@ -76,7 +76,7 @@ module substitution
 
 contains
 
-  !
+  ! Back substitution routines.
   ! ub should represent an upper triangular matrix.  Solve ub*x=c.
   ! c is overwritten.
 
@@ -359,8 +359,8 @@ contains
   end subroutine f_c_v_back_substitution_ub
 
 
-  !
-  ! ub should represent an upper triangular matrix.  Solve ub*x=c.
+  ! Forward substitution:
+  ! bv should represent an upper triangular matrix.  Solve x*ub=c.
   ! c is overwritten.
 
   ! Errors

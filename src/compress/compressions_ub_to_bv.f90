@@ -1,6 +1,7 @@
 module compressions_ub_to_bv
   use misc
-  use transforms
+  use shift
+  use rotation
   use types
   use orth
   implicit none

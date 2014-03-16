@@ -76,6 +76,16 @@ module band_types
      module procedure d_rotation_times_tbr, c_rotation_times_tbr
   end interface rotation_times_tbr
 
+  ! conversions
+
+  interface bc_to_br
+     module procedure d_bc_to_br, c_bc_to_br
+  end interface bc_to_br
+
+  interface br_to_bc
+     module procedure d_br_to_bc, c_br_to_bc
+  end interface br_to_bc
+
 contains
 
   ! Get and set functions for band row and band column.
@@ -557,5 +567,82 @@ contains
        b(j+1,d-1)=s*tmp+c*b(j+1,d-1)
     end do
   end subroutine c_rotation_times_tbr
+
+  subroutine d_bc_to_br(bc,br,lbw,ubw)
+    real(kind=dp), dimension(:,:), intent(in) :: bc
+    real(kind=dp), dimension(:,:), intent(out) :: br
+    integer(kind=int32), intent(in) :: lbw, ubw
+
+    integer(kind=int32) :: d, j, n
+    n=size(bc,2)
+    do d=1,lbw+1
+       do j=1,n-lbw+d-1
+          br(lbw-d+j+1,d)=bc(ubw+lbw+2-d,j)
+       end do
+    end do
+    do d=lbw+2,lbw+ubw+1
+       do j=1,n-d+lbw+1
+          br(j,d)=bc(ubw+lbw+2-d,j+d-lbw-1)
+       end do
+    end do
+  end subroutine d_bc_to_br
+
+  subroutine c_bc_to_br(bc,br,lbw,ubw)
+    complex(kind=dp), dimension(:,:), intent(in) :: bc
+    complex(kind=dp), dimension(:,:), intent(out) :: br
+    integer(kind=int32), intent(in) :: lbw, ubw
+
+    integer(kind=int32) :: d, j, n
+    n=size(bc,2)
+    do d=1,lbw+1
+       do j=1,n-lbw+d-1
+          br(lbw-d+j+1,d)=bc(ubw+lbw+2-d,j)
+       end do
+    end do
+    do d=lbw+2,lbw+ubw+1
+       do j=1,n-d+lbw+1
+          br(j,d)=bc(ubw+lbw+2-d,j+d-lbw-1)
+       end do
+    end do
+  end subroutine c_bc_to_br
+
+  subroutine d_br_to_bc(br,bc,lbw,ubw)
+    real(kind=dp), dimension(:,:), intent(out) :: bc
+    real(kind=dp), dimension(:,:), intent(in) :: br
+    integer(kind=int32), intent(in) :: lbw, ubw
+
+    integer(kind=int32) :: d, j, n
+
+    n=size(bc,2)
+    do d=1,lbw+1
+       do j=1,n-lbw+d-1
+          bc(ubw+lbw+2-d,j)=br(lbw-d+j+1,d)
+       end do
+    end do
+    do d=lbw+2,lbw+ubw+1
+       do j=1,n-d+lbw+1
+          bc(ubw+lbw+2-d,j+d-lbw-1)=br(j,d)
+       end do
+    end do
+  end subroutine d_br_to_bc
+
+  subroutine c_br_to_bc(br,bc,lbw,ubw)
+    complex(kind=dp), dimension(:,:), intent(out) :: bc
+    complex(kind=dp), dimension(:,:), intent(in) :: br
+    integer(kind=int32), intent(in) :: lbw, ubw
+
+    integer(kind=int32) :: d, j, n
+    n=size(bc,2)
+    do d=1,lbw+1
+       do j=1,n-lbw+d-1
+          bc(ubw+lbw+2-d,j)=br(lbw-d+j+1,d)
+       end do
+    end do
+    do d=lbw+2,lbw+ubw+1
+       do j=1,n-d+lbw+1
+          bc(ubw+lbw+2-d,j+d-lbw-1)=br(j,d)
+       end do
+    end do
+  end subroutine c_br_to_bc
 
 end module band_types

@@ -11,7 +11,7 @@ $(OBJDIR)/nested_types.o : $(OBJDIR)/prec.o
 
 $(OBJDIR)/transforms.o : $(OBJDIR)/sweeps.o $(OBJDIR)/rotation.o $(OBJDIR)/shift.o
 $(OBJDIR)/rotation.o : $(OBJDIR)/prec.o
-$(OBJDIR)/sweeps.o : $(OBJDIR)/types.o $(OBJDIR)/misc.o
+$(OBJDIR)/sweeps.o : $(OBJDIR)/types.o $(OBJDIR)/misc.o $(OBJDIR)/shift.o $(OBJDIR)/conversions.o
 $(OBJDIR)/shift.o : $(OBJDIR)/prec.o
 
 $(OBJDIR)/orth.o : $(OBJDIR)/triangular.o $(OBJDIR)/gs.o $(OBJDIR)/nullvec.o
@@ -22,17 +22,17 @@ $(OBJDIR)/gs.o : $(OBJDIR)/misc.o
 $(OBJDIR)/assemble.o : $(OBJDIR)/band_types.o $(OBJDIR)/nested_types.o $(OBJDIR)/misc.o
 
 $(OBJDIR)/decomp.o : $(OBJDIR)/general_bv.o $(OBJDIR)/general_ub.o
-$(OBJDIR)/general_bv.o : $(OBJDIR)/orth.o $(OBJDIR)/transforms.o $(OBJDIR)/types.o
-$(OBJDIR)/general_ub.o : $(OBJDIR)/orth.o $(OBJDIR)/transforms.o $(OBJDIR)/types.o
+$(OBJDIR)/general_bv.o : $(OBJDIR)/orth.o $(OBJDIR)/shift.o $(OBJDIR)/rotation.o $(OBJDIR)/types.o
+$(OBJDIR)/general_ub.o : $(OBJDIR)/orth.o $(OBJDIR)/shift.o $(OBJDIR)/rotation.o $(OBJDIR)/types.o
 
 $(OBJDIR)/conversions.o : $(OBJDIR)/conversions_bv_to_ub.o $(OBJDIR)/conversions_ub_to_bv.o
-$(OBJDIR)/conversions_bv_to_ub.o : $(OBJDIR)/misc.o $(OBJDIR)/transforms.o $(OBJDIR)/types.o
-$(OBJDIR)/conversions_ub_to_bv.o : $(OBJDIR)/misc.o $(OBJDIR)/transforms.o $(OBJDIR)/types.o
+$(OBJDIR)/conversions_bv_to_ub.o : $(OBJDIR)/misc.o $(OBJDIR)/shift.o $(OBJDIR)/rotation.o $(OBJDIR)/types.o
+$(OBJDIR)/conversions_ub_to_bv.o : $(OBJDIR)/misc.o $(OBJDIR)/shift.o $(OBJDIR)/rotation.o $(OBJDIR)/types.o
 
 $(OBJDIR)/compressions.o : $(OBJDIR)/compressions_bv_to_ub.o $(OBJDIR)/compressions_ub_to_bv.o
-$(OBJDIR)/compressions_bv_to_ub.o : $(OBJDIR)/misc.o $(OBJDIR)/transforms.o $(OBJDIR)/types.o \
+$(OBJDIR)/compressions_bv_to_ub.o : $(OBJDIR)/misc.o $(OBJDIR)/shift.o $(OBJDIR)/rotation.o $(OBJDIR)/types.o \
 	$(OBJDIR)/orth.o
-$(OBJDIR)/compressions_ub_to_bv.o : $(OBJDIR)/misc.o $(OBJDIR)/transforms.o $(OBJDIR)/types.o \
+$(OBJDIR)/compressions_ub_to_bv.o : $(OBJDIR)/misc.o $(OBJDIR)/shift.o $(OBJDIR)/rotation.o $(OBJDIR)/types.o \
 	$(OBJDIR)/orth.o
 
 $(OBJDIR)/qr_iteration.o : $(OBJDIR)/compressions.o $(OBJDIR)/conversions.o

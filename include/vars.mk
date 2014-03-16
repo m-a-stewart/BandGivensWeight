@@ -3,7 +3,8 @@ OBJDIR = ../mod
 PROFLFLAGS = -pg
 PROFCFLAGS = -pg
 LFLAGS = 
-CFLAGS = -Wall -fbounds-check -mcmodel=medium
+CFLAGS = -fbounds-check -mcmodel=medium -Waliasing -Wampersand -Wconversion -Wsurprising \
+	-Wintrinsics-std -Wno-tabs -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant -Wunused
 #CFLAGS = -Wall -O2 -mcmodel=medium
 
 MISCOBJS = $(OBJDIR)/misc.o $(OBJDIR)/prec.o $(OBJDIR)/utility.o $(OBJDIR)/error_id.o
@@ -29,4 +30,5 @@ OBJS =  $(MISCOBJS) $(TYPESOBJS) $(TRANSFORMSOBJS) $(ORTHOBJS) $(DECOMPOBJS) \
 	$(OBJDIR)/nested.o
 
 TEST_EXECS =  $(OBJDIR)/test_decomp $(OBJDIR)/test_convert $(OBJDIR)/test_compress \
-	$(OBJDIR)/test_qr_iteration $(OBJDIR)/test_qr_factorization $(OBJDIR)/test_solve
+	$(OBJDIR)/test_qr_iteration $(OBJDIR)/test_qr_factorization $(OBJDIR)/test_solve \
+	$(OBJDIR)/test_sweeps

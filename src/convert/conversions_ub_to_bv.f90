@@ -1,6 +1,7 @@
 module conversions_ub_to_bv
   use misc
-  use transforms
+  use shift
+  use rotation
   use types
   implicit none
 
@@ -91,7 +92,7 @@ contains
        end do
        k0=max(n-k+1,ubw+2)
        k1=min(n-k+ubw,n)
-       numrots_bv(k+1)=k1-k0+1
+       numrots_bv(k+1)=max(k1-k0+1,0)
        do j=k0,k1
           rot=rgivens(get_el_bc(b_ub,ubw1,j-ubw1,j-1), get_el_bc(b_ub,ubw1,j-ubw1,j))
           ks_bv(k+1,k1-j+1)=j-1
