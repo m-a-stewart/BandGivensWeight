@@ -86,10 +86,60 @@ program test_sweeps
   call d_sweeps_times_ub(sw_d,ub_d,bv_d,error)
   call cpu_time(t1)
   call d_bv_to_upper(bv_d,a_d,error)
-  test_name = "Real Sweeps Times UB"
+  test_name = "Real Sweeps Times UB (complete fill)"
   a_d = a_d/maxabs(a_d)
   a1_d = a1_d/maxabs(a1_d)
   call d_output_result(test_name,a_d,a1_d,min(bv_d%ubw,ubwa+numsweeps),min(bv_d%ubw,ubwa+numsweeps), &
+       t0,t1,tol2,error)
+  deallocate(a_d, a0_d, a1_d, q_d)
+  call deallocate_ub(ub_d); call deallocate_bv(bv_d)
+  call deallocate_sweeps(sw_d)
+
+  ! Real BV
+  na=20; numsweeps=7
+  lbwa=5; ubwa=5
+  ubwmaxa=na+1; lbwmaxa=na+1
+  u_d=u0_d; v_d=v0_d; d_d=d0_d
+  allocate(a_d(na,na), a0_d(na,na), a1_d(na,na), q_d(na,na))
+  ub_d=d_new_ub(na,lbwmaxa,ubwmaxa)
+  bv_d=d_new_bv(na,lbwmaxa,ubwmaxa)
+  sw_d=d_random_sweeps(na,numsweeps)
+  call d_assemble_a(a_d,u_d(1:na,1:ubwa),v_d(1:ubwa,1:na),d_d(1:na),lbwa)
+  a0_d=a_d
+  call upper_to_bv(a_d,bv_d,lbwa, tol,error)
+  a1_d=a0_d
+  call general_times_sweeps(a1_d,sw_d)
+  call cpu_time(t0)
+  call d_bv_times_sweeps(bv_d, sw_d, ub_d, error)
+  call cpu_time(t1)
+  call d_ub_to_upper(ub_d,a_d,error)
+  test_name = "Real BV Times Sweeps"
+  call d_output_result(test_name,a_d,a1_d,min(ub_d%ubw,ubwa+numsweeps),min(ub_d%ubw,ubwa+numsweeps), &
+       t0,t1,tol2,error)
+  deallocate(a_d, a0_d, a1_d, q_d)
+  call deallocate_ub(ub_d); call deallocate_bv(bv_d)
+  call deallocate_sweeps(sw_d)
+
+
+  na=20; numsweeps=20
+  lbwa=5; ubwa=5
+  ubwmaxa=na+1; lbwmaxa=na+1
+  u_d=u0_d; v_d=v0_d; d_d=d0_d
+  allocate(a_d(na,na), a0_d(na,na), a1_d(na,na), q_d(na,na))
+  ub_d=d_new_ub(na,lbwmaxa,ubwmaxa)
+  bv_d=d_new_bv(na,lbwmaxa,ubwmaxa)
+  sw_d=d_random_sweeps(na,numsweeps)
+  call d_assemble_a(a_d,u_d(1:na,1:ubwa),v_d(1:ubwa,1:na),d_d(1:na),lbwa)
+  a0_d=a_d
+  call upper_to_bv(a_d,bv_d,lbwa, tol,error)
+  a1_d=a0_d
+  call general_times_sweeps(a1_d,sw_d)
+  call cpu_time(t0)
+  call d_bv_times_sweeps(bv_d, sw_d, ub_d, error)
+  call cpu_time(t1)
+  call d_ub_to_upper(ub_d,a_d,error)
+  test_name = "Real BV Times Sweeps (complete fill)"
+  call d_output_result(test_name,a_d,a1_d,min(ub_d%ubw,ubwa+numsweeps),min(ub_d%ubw,ubwa+numsweeps), &
        t0,t1,tol2,error)
   deallocate(a_d, a0_d, a1_d, q_d)
   call deallocate_ub(ub_d); call deallocate_bv(bv_d)
@@ -152,6 +202,57 @@ program test_sweeps
   deallocate(a_c, a0_c, a1_c, q_c)
   call deallocate_ub(ub_c); call deallocate_bv(bv_c)
   call deallocate_sweeps(sw_c)
+
+  ! BV
+
+  na=20; numsweeps=7
+  lbwa=5; ubwa=5
+  ubwmaxa=na+1; lbwmaxa=na+1
+  u_c=u0_c; v_c=v0_c; d_c=d0_c
+  allocate(a_c(na,na), a0_c(na,na), a1_c(na,na), q_c(na,na))
+  ub_c=c_new_ub(na,lbwmaxa,ubwmaxa)
+  bv_c=c_new_bv(na,lbwmaxa,ubwmaxa)
+  sw_c=c_random_sweeps(na,numsweeps)
+  call c_assemble_a(a_c,u_c(1:na,1:ubwa),v_c(1:ubwa,1:na),d_c(1:na),lbwa)
+  a0_c=a_c
+  call upper_to_bv(a_c,bv_c,lbwa, tol,error)
+  a1_c=a0_c
+  call general_times_sweeps(a1_c,sw_c)
+  call cpu_time(t0)
+  call c_bv_times_sweeps(bv_c, sw_c, ub_c, error)
+  call cpu_time(t1)
+  call c_ub_to_upper(ub_c,a_c,error)
+  test_name = "Complex BV Times Sweeps"
+  call c_output_result(test_name,a_c,a1_c,min(ub_c%ubw,ubwa+numsweeps),min(ub_c%ubw,ubwa+numsweeps), &
+       t0,t1,tol2,error)
+  deallocate(a_c, a0_c, a1_c, q_c)
+  call deallocate_ub(ub_c); call deallocate_bv(bv_c)
+  call deallocate_sweeps(sw_c)
+
+  na=20; numsweeps=20
+  lbwa=5; ubwa=5
+  ubwmaxa=na+1; lbwmaxa=na+1
+  u_c=u0_c; v_c=v0_c; d_c=d0_c
+  allocate(a_c(na,na), a0_c(na,na), a1_c(na,na), q_c(na,na))
+  ub_c=c_new_ub(na,lbwmaxa,ubwmaxa)
+  bv_c=c_new_bv(na,lbwmaxa,ubwmaxa)
+  sw_c=c_random_sweeps(na,numsweeps)
+  call c_assemble_a(a_c,u_c(1:na,1:ubwa),v_c(1:ubwa,1:na),d_c(1:na),lbwa)
+  a0_c=a_c
+  call upper_to_bv(a_c,bv_c,lbwa, tol,error)
+  a1_c=a0_c
+  call general_times_sweeps(a1_c,sw_c)
+  call cpu_time(t0)
+  call c_bv_times_sweeps(bv_c, sw_c, ub_c, error)
+  call cpu_time(t1)
+  call c_ub_to_upper(ub_c,a_c,error)
+  test_name = "Complex BV Times Sweeps (Complete fill)"
+  call c_output_result(test_name,a_c,a1_c,min(ub_c%ubw,ubwa+numsweeps),min(ub_c%ubw,ubwa+numsweeps), &
+       t0,t1,tol2,error)
+  deallocate(a_c, a0_c, a1_c, q_c)
+  call deallocate_ub(ub_c); call deallocate_bv(bv_c)
+  call deallocate_sweeps(sw_c)
+
 
 contains
 
