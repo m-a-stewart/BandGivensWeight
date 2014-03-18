@@ -104,16 +104,19 @@ contains
     type(d_rotation) :: rot
 
     call clear_error(error)
-    b_ub(1:lbw_bv+ubw_bv+2,:)=0.0_dp
+    ubw=min(ubw_bv+1,n-1)
+    b_ub(1:lbw_bv+ubw+1,:)=0.0_dp
     numrots_ub=0
-    ss_ub(1:ubw_bv+1,:)=0.0_dp; cs_ub(1:ubw_bv+1,:)=0.0_dp
-    js_ub(1:ubw_bv+1,:)=0
+    ss_ub(1:ubw,:)=0.0_dp; cs_ub(1:ubw,:)=0.0_dp
+    js_ub(1:ubw,:)=0
 
     ss=0.0_dp; cs=1.0_dp
-
-    b_bv(:,lbw_bv+ubw_bv+2:lbw_bv+ubw_bv+3) = 0.0_dp
-    ubw=ubw_bv+2
     lbw=lbw_bv
+    ubw=min(ubw_bv+2,n-1)
+
+    if (ubw < n-1) then
+       b_bv(:,lbw_bv+ubw_bv+2:lbw_bv+ubw+1) = (0.0_dp,0.0_dp)
+    end if
 
     if (n==1) then
        b_ub(1,1)=b_bv(1,1); return
@@ -152,7 +155,7 @@ contains
           call set_el_br(b_bv,lbw,j-ubw,j, 0.0_dp)
        end do
     end do
-    ubw_ub=ubw_bv+1
+    ubw_ub=min(ubw_bv+1,n-1)
     lbw_ub=lbw_bv-1
     call br_to_bc(b_bv,b_ub,lbw_bv, ubw_ub)
   end subroutine f_d_reduce_lbw_bv_to_ub
@@ -215,18 +218,20 @@ contains
 
     call clear_error(error)
 
-    b_ub(1:lbw_bv+ubw_bv+2,:)=(0.0_dp, 0.0_dp)
+    ubw=min(ubw_bv+1,n-1)
+    b_ub(1:lbw_bv+ubw+1,:)=(0.0_dp, 0.0_dp)
     numrots_ub=0
-    ss_ub(1:ubw_bv+1,:)=(0.0_dp, 0.0_dp)
-    cs_ub(1:ubw_bv+1,:)=(0.0_dp, 0.0_dp)
-    js_ub(1:ubw_bv+1,:)=0
+    ss_ub(1:ubw,:)=(0.0_dp, 0.0_dp)
+    cs_ub(1:ubw,:)=(0.0_dp, 0.0_dp)
+    js_ub(1:ubw,:)=0
 
     ss=(0.0_dp, 0.0_dp); cs=(1.0_dp, 0.0_dp)
 
-    b_bv(:,lbw_bv+ubw_bv+2:lbw_bv+ubw_bv+3) = (0.0_dp,0.0_dp)
-    ubw=ubw_bv+2
+    ubw=min(ubw_bv+2,n-1)
     lbw=lbw_bv
-
+    if (ubw < n-1) then
+       b_bv(:,lbw_bv+ubw_bv+2:lbw_bv+ubw+1) = (0.0_dp,0.0_dp)
+    end if
     if (n==1) then
        b_ub(1,1)=b_bv(1,1); return
     end if
@@ -264,7 +269,7 @@ contains
           call set_el_br(b_bv,lbw,j-ubw,j, (0.0_dp, 0.0_dp))
        end do
     end do
-    ubw_ub=ubw_bv+1
+    ubw_ub=min(ubw_bv+1,n-1)
     lbw_ub=lbw_bv-1
     call br_to_bc(b_bv,b_ub,lbw_bv, ubw_ub)
   end subroutine f_c_reduce_lbw_bv_to_ub

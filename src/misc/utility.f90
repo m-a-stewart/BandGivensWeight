@@ -316,7 +316,7 @@ contains
     call random_number(y)
     a=cmplx(random_scale*x+random_shift,random_scale*x+random_shift)
   end subroutine c_s_random_matrix
-    
+
   real(kind=dp) function d_delta(j,k)
     integer(kind=int32), intent(in) :: j,k
     if (j==k) then

@@ -253,40 +253,4 @@ program test_sweeps
   call deallocate_ub(ub_c); call deallocate_bv(bv_c)
   call deallocate_sweeps(sw_c)
 
-
-contains
-
-type(d_sweeps) function d_random_sweeps(n,l) result(sw)
-  integer(kind=int32) :: n, l, j, k
-  real(kind=dp) :: nrm
-  sw=d_new_sweeps(n,l)
-  sw%numsweeps=l
-  call random_matrix(sw%cs)
-  call random_matrix(sw%ss)
-  do j=1,n
-     do k=1,l
-        nrm=sqrt(sw%cs(j,k)**2+sw%ss(j,k)**2)
-        sw%cs(j,k)=sw%cs(j,k)/nrm
-        sw%ss(j,k)=sw%ss(j,k)/nrm
-     end do
-  end do
-end function d_random_sweeps
-
-type(c_sweeps) function c_random_sweeps(n,l) result(sw)
-  integer(kind=int32) :: n, l, j, k
-  real(kind=dp) :: nrm
-  sw=c_new_sweeps(n,l)
-  sw%numsweeps=l
-  call random_matrix(sw%cs)
-  call random_matrix(sw%ss)
-  do j=1,n
-     do k=1,l
-        nrm=sqrt(abs(sw%cs(j,k))**2+abs(sw%ss(j,k))**2)
-        sw%cs(j,k)=sw%cs(j,k)/nrm
-        sw%ss(j,k)=sw%ss(j,k)/nrm
-     end do
-  end do
-end function c_random_sweeps
-
-
 end program test_sweeps

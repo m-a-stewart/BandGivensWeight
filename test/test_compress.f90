@@ -1,9 +1,10 @@
 program test_compress
   use nested
+  use transforms
   use test_data
   implicit none
   real(kind=dp) :: t0, t1
-  integer(kind=int32) :: na, lbwa
+  integer(kind=int32) :: na, lbwa, numsweeps
   type(error_info) :: error
   !
   real(kind=dp), dimension(n,n) :: a, a0, a1
@@ -19,6 +20,10 @@ program test_compress
   type(c_ub) :: ub_c, ub_na_c
   type(d_bv) :: bv_d, bv_na_d
   type(c_bv) :: bv_c, bv_na_c
+
+  type(d_sweeps) :: sw_d
+  type(c_sweeps) :: sw_c
+
   ub_d=d_new_ub(n,lbwmax,ubwmax)
   ub_c=c_new_ub(n,lbwmax,ubwmax)
   bv_d=d_new_bv(n,lbwmax,ubwmax)
@@ -177,6 +182,27 @@ program test_compress
   call d_output_result(test_name,a0(1:na,1:na),a1(1:na,1:na),2,bv_na_d%ubw,t0,t1,tol2,error)
   call d_deallocate_ub(ub_na_d)
   call d_deallocate_bv(bv_na_d)
+  ! maximum upper and lower bandwidth
+  na=10; lbwa=6; numsweeps=7
+  sw_d=d_random_sweeps(na,numsweeps)
+  ub_na_d=d_new_ub(na,lbwmax,ubwmax)
+  bv_na_d=d_new_bv(na,lbwmax,ubwmax)
+  u=u0; v=v0; d=d0
+  call d_assemble_a(a(1:na,1:na),u(1:na,:),v(:,1:na),d(1:na),lbwa)
+  call upper_to_bv(a(1:na,1:na),bv_na_d,lbwa, tol1,error)
+  call bv_times_sweeps(bv_na_d,sw_d,ub_na_d,error)
+  call ub_to_upper(ub_na_d,a(1:na,1:na),error)
+  a0(1:na,1:na)=a(1:na,1:na)
+  call cpu_time(t0)
+  call compress_ub_to_bv(ub_na_d, bv_na_d,tol2,tol2,0,error)
+  call cpu_time(t1)
+  call bv_to_upper(bv_na_d,a1(1:na,1:na),error)
+  test_name = "Real UB to BV (n=10; full ubw);"
+  call d_output_result(test_name,a0(1:na,1:na),a1(1:na,1:na),na/2,bv_na_d%ubw,t0,t1,tol2,error)
+  call d_deallocate_ub(ub_na_d)
+  call d_deallocate_bv(bv_na_d)
+  call d_deallocate_sweeps(sw_d)
+
 
   !! BV to UB tests
   print *
@@ -322,6 +348,26 @@ program test_compress
   call d_output_result(test_name,a0(1:na,1:na),a1(1:na,1:na),2,ub_na_d%ubw,t0,t1,tol2,error)
   call d_deallocate_ub(ub_na_d)
   call d_deallocate_bv(bv_na_d)
+  !
+  na=10; lbwa=6; numsweeps=7
+  ub_na_d=d_new_ub(na,lbwmax,ubwmax)
+  bv_na_d=d_new_bv(na,lbwmax,ubwmax)
+  sw_d=d_random_sweeps(na,numsweeps)
+  u=u0; v=v0; d=d0
+  call d_assemble_a(a(1:na,1:na),u(1:na,:),v(:,1:na),d(1:na),lbwa)
+  call upper_to_ub(a(1:na,1:na),ub_na_d,lbwa, tol1,error)
+  call sweeps_times_ub(sw_d,ub_na_d,bv_na_d,error)
+  call bv_to_upper(bv_na_d,a(1:na,1:na),error)
+  a0(1:na,1:na)=a(1:na,1:na)
+  call cpu_time(t0)
+  call compress_bv_to_ub(bv_na_d, ub_na_d,tol2,tol2,0,error)
+  call cpu_time(t1)
+  call ub_to_upper(ub_na_d,a1(1:na,1:na),error)
+  test_name = "Real BV to UB (n=10; full ubw);"
+  call d_output_result(test_name,a0(1:na,1:na),a1(1:na,1:na),na/2,ub_na_d%ubw,t0,t1,tol2,error)
+  call d_deallocate_ub(ub_na_d)
+  call d_deallocate_bv(bv_na_d)
+  call d_deallocate_sweeps(sw_d)
 
   !
   ! complex
@@ -475,6 +521,27 @@ program test_compress
   call c_output_result(test_name,a0_c(1:na,1:na),a1_c(1:na,1:na),2,bv_na_c%ubw,t0,t1,tol2,error)
   call c_deallocate_ub(ub_na_c)
   call c_deallocate_bv(bv_na_c)
+  !
+  na=10; lbwa=6; numsweeps=7
+  sw_c=c_random_sweeps(na,numsweeps)
+  ub_na_c=c_new_ub(na,lbwmax,ubwmax)
+  bv_na_c=c_new_bv(na,lbwmax,ubwmax)
+  u_c=u0_c; v_c=v0_c; d_c=d0_c
+  call c_assemble_a(a_c(1:na,1:na),u_c(1:na,:),v_c(:,1:na),d_c(1:na),lbwa)
+  call upper_to_bv(a_c(1:na,1:na),bv_na_c,lbwa, tol1,error)
+  call bv_times_sweeps(bv_na_c,sw_c,ub_na_c,error)
+  call ub_to_upper(ub_na_c,a_c(1:na,1:na),error)
+  a0_c(1:na,1:na)=a_c(1:na,1:na)
+  call cpu_time(t0)
+  call compress_ub_to_bv(ub_na_c, bv_na_c,tol2,tol2,0,error)
+  call cpu_time(t1)
+  call bv_to_upper(bv_na_c,a1_c(1:na,1:na),error)
+  test_name = "Complex UB to BV (n=10; full ubw);"
+  call c_output_result(test_name,a0_c(1:na,1:na),a1_c(1:na,1:na),na/2,bv_na_c%ubw,t0,t1,tol2,error)
+  call c_deallocate_ub(ub_na_c)
+  call c_deallocate_bv(bv_na_c)
+  call c_deallocate_sweeps(sw_c)
+
 
   !! BV to UB tests
   print *
@@ -620,6 +687,26 @@ program test_compress
   call c_output_result(test_name,a0_c(1:na,1:na),a1_c(1:na,1:na),2,ub_na_c%ubw,t0,t1,tol2,error)
   call c_deallocate_ub(ub_na_c)
   call c_deallocate_bv(bv_na_c)
+  !
+  na=10; lbwa=6; numsweeps=7
+  ub_na_c=c_new_ub(na,lbwmax,ubwmax)
+  bv_na_c=c_new_bv(na,lbwmax,ubwmax)
+  sw_c=c_random_sweeps(na,numsweeps)
+  u_c=u0_c; v_c=v0_c; d_c=d0_c
+  call c_assemble_a(a_c(1:na,1:na),u_c(1:na,:),v_c(:,1:na),d_c(1:na),lbwa)
+  call upper_to_ub(a_c(1:na,1:na),ub_na_c,lbwa, tol1,error)
+  call sweeps_times_ub(sw_c,ub_na_c,bv_na_c,error)
+  call bv_to_upper(bv_na_c,a_c(1:na,1:na),error)
+  a0_c(1:na,1:na)=a_c(1:na,1:na)
+  call cpu_time(t0)
+  call compress_bv_to_ub(bv_na_c, ub_na_c,tol2,tol2,0,error)
+  call cpu_time(t1)
+  call ub_to_upper(ub_na_c,a1_c(1:na,1:na),error)
+  test_name = "Complex BV to UB (n=10; full ubw);"
+  call c_output_result(test_name,a0_c(1:na,1:na),a1_c(1:na,1:na),na/2,ub_na_c%ubw,t0,t1,tol2,error)
+  call c_deallocate_ub(ub_na_c)
+  call c_deallocate_bv(bv_na_c)
+  call c_deallocate_sweeps(sw_c)
   print *
 
 end program test_compress

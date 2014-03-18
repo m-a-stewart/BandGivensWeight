@@ -168,7 +168,6 @@ program test_solve
   rhs_d=matmul(x_d,a0_d)
   test_name = "Real Forward Solver (n=1000)"
   scale=maxabs(a0_d)*maxabs(x_d)
-  print *, scale
   call d_output_result(test_name,rhs0_d/scale,rhs_d/scale,bv_d%ubw,bv_d%ubw,t0,t1,tol2,error)
   deallocate(a_d, a0_d, a1_d, rhs_d, rhs0_d, x_d)
   call deallocate_ub(ub_d); call deallocate_bv(bv_d)

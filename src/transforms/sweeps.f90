@@ -62,6 +62,15 @@ module sweeps
      module procedure f_d_sweeps_times_ub, f_c_sweeps_times_ub
   end interface f_sweeps_times_ub
 
+  interface bv_times_sweeps
+     module procedure d_bv_times_sweeps, c_bv_times_sweeps
+  end interface bv_times_sweeps
+
+  interface f_bv_times_sweeps
+     module procedure f_d_bv_times_sweeps, f_c_bv_times_sweeps
+  end interface f_bv_times_sweeps
+
+
   type(routine_info), parameter :: info_d_sweeps_times_ub= &
        routine_info(id_d_sweeps_times_ub, &
        'd_sweeps_times_ub', &
@@ -965,6 +974,39 @@ contains
        ubw_ub=ubw
     end if
   end subroutine f_c_bv_times_sweeps
+
+type(d_sweeps) function d_random_sweeps(n,l) result(sw)
+  integer(kind=int32) :: n, l, j, k
+  real(kind=dp) :: nrm
+  sw=d_new_sweeps(n,l)
+  sw%numsweeps=l
+  call random_matrix(sw%cs)
+  call random_matrix(sw%ss)
+  do j=1,n
+     do k=1,l
+        nrm=sqrt(sw%cs(j,k)**2+sw%ss(j,k)**2)
+        sw%cs(j,k)=sw%cs(j,k)/nrm
+        sw%ss(j,k)=sw%ss(j,k)/nrm
+     end do
+  end do
+end function d_random_sweeps
+
+type(c_sweeps) function c_random_sweeps(n,l) result(sw)
+  integer(kind=int32) :: n, l, j, k
+  real(kind=dp) :: nrm
+  sw=c_new_sweeps(n,l)
+  sw%numsweeps=l
+  call random_matrix(sw%cs)
+  call random_matrix(sw%ss)
+  do j=1,n
+     do k=1,l
+        nrm=sqrt(abs(sw%cs(j,k))**2+abs(sw%ss(j,k))**2)
+        sw%cs(j,k)=sw%cs(j,k)/nrm
+        sw%ss(j,k)=sw%ss(j,k)/nrm
+     end do
+  end do
+end function c_random_sweeps
+
 
 
 end module sweeps
