@@ -18,9 +18,16 @@ interface print_matrix
    module procedure d_print_matrix, c_print_matrix, i_print_matrix
 end interface print_matrix
 
-interface random_complex
-   module procedure random_complex_m, random_complex_v, random_complex_s
-end interface random_complex
+interface random_matrix
+   module procedure d_random_matrix, d_v_random_matrix, d_s_random_matrix, &
+        c_random_matrix, c_v_random_matrix, c_s_random_matrix
+end interface random_matrix
+
+interface includes_nan
+   module procedure d_includes_nan, d_v_includes_nan, c_includes_nan, c_v_includes_nan
+end interface includes_nan
+
+real(kind=dp), parameter :: random_shift=-1.0_dp, random_scale=2.0_dp
 
 contains
 
@@ -35,7 +42,7 @@ contains
     do j=1,m
        do k=1,n
           y=abs(a(j,k))
-          if (y > x) then
+          if (y > x .or. y /= y) then
              x=y
           end if
        end do
@@ -53,7 +60,7 @@ contains
     do j=1,m
        do k=1,n
           y=abs(a(j,k))
-          if (y > x) then
+          if (y > x .or. y /= y) then
              x=y
           end if
        end do
@@ -69,7 +76,7 @@ contains
     x=0.0_dp
     do j=1,m
        y=abs(a(j))
-       if (y > x) then
+       if (y > x .or. y /= y) then
           x=y
        end if
     end do
@@ -84,7 +91,7 @@ contains
     x=0.0_dp
     do j=1,m
        y=abs(a(j))
-       if (y > x) then
+       if (y > x .or. y /= y) then
           x=y
        end if
     end do
@@ -242,7 +249,40 @@ contains
     end do
   end subroutine i_print_matrix
 
-  subroutine random_complex_m(a)
+  subroutine d_random_matrix(a)
+    real(kind=dp), dimension(:,:), intent(out) :: a
+    real(kind=dp) :: x
+    integer(kind=int32) :: j, k, m, n
+    m=size(a,1)
+    n=size(a,2)
+    do j=1,m
+       do k=1,n
+          call random_number(x)
+          a(j,k)=random_scale*x+random_shift
+       end do
+    end do
+  end subroutine d_random_matrix
+
+  subroutine d_v_random_matrix(a)
+    real(kind=dp), dimension(:), intent(out) :: a
+    real(kind=dp) :: x
+    integer(kind=int32) :: j, m
+    m=size(a)
+    do j=1,m
+       call random_number(x)
+       a(j)=random_scale*x+random_shift
+    end do
+  end subroutine d_v_random_matrix
+
+  subroutine d_s_random_matrix(a)
+    real(kind=dp), intent(out) :: a
+    real(kind=dp) :: x
+    call random_number(x)
+    a=random_scale*x+random_shift
+  end subroutine d_s_random_matrix
+
+
+  subroutine c_random_matrix(a)
     complex(kind=dp), dimension(:,:), intent(out) :: a
     real(kind=dp) :: x,y
     integer(kind=int32) :: j, k, m, n
@@ -252,12 +292,12 @@ contains
        do k=1,n
           call random_number(x)
           call random_number(y)
-          a(j,k)=cmplx(x,y)
+          a(j,k)=cmplx(random_scale*x+random_shift,random_scale*x+random_shift)
        end do
     end do
-  end subroutine random_complex_m
+  end subroutine c_random_matrix
 
-  subroutine random_complex_v(a)
+  subroutine c_v_random_matrix(a)
     complex(kind=dp), dimension(:), intent(out) :: a
     real(kind=dp) :: x,y
     integer(kind=int32) :: j, m
@@ -265,19 +305,18 @@ contains
     do j=1,m
        call random_number(x)
        call random_number(y)
-       a(j)=cmplx(x,y)
+       a(j)=cmplx(random_scale*x+random_shift,random_scale*x+random_shift)
     end do
-  end subroutine random_complex_v
+  end subroutine c_v_random_matrix
 
-  subroutine random_complex_s(a)
+  subroutine c_s_random_matrix(a)
     complex(kind=dp), intent(out) :: a
     real(kind=dp) :: x,y
     call random_number(x)
     call random_number(y)
-    a=cmplx(x,y)
-  end subroutine random_complex_s
+    a=cmplx(random_scale*x+random_shift,random_scale*x+random_shift)
+  end subroutine c_s_random_matrix
     
-
   real(kind=dp) function d_delta(j,k)
     integer(kind=int32), intent(in) :: j,k
     if (j==k) then
@@ -295,5 +334,59 @@ contains
        c_delta=(0.0_dp,0.0_dp)
     end if
   end function c_delta
+
+  type(logical) function d_includes_nan(a) result(nanflag)
+    real(kind=dp), dimension(:,:) :: a
+    integer(kind=int32) :: m,n,j,k
+    nanflag=.false.
+    m=size(a,1)
+    n=size(a,2)
+    do j=1,m
+       do k=1,n
+          if (a(j,k) /= a(j,k)) then
+             nanflag=.true.
+          end if
+       end do
+    end do
+  end function d_includes_nan
+
+  type(logical) function d_v_includes_nan(a) result(nanflag)
+    real(kind=dp), dimension(:) :: a
+    integer(kind=int32) :: n,j
+    nanflag=.false.
+    n=size(a)
+    do j=1,n
+       if (a(j) /= a(j)) then
+          nanflag=.true.
+       end if
+    end do
+  end function d_v_includes_nan
+
+  type(logical) function c_includes_nan(a) result(nanflag)
+    complex(kind=dp), dimension(:,:) :: a
+    integer(kind=int32) :: m,n,j,k
+    nanflag=.false.
+    m=size(a,1)
+    n=size(a,2)
+    do j=1,m
+       do k=1,n
+          if (a(j,k) /= a(j,k)) then
+             nanflag=.true.
+          end if
+       end do
+    end do
+  end function c_includes_nan
+
+  type(logical) function c_v_includes_nan(a) result(nanflag)
+    complex(kind=dp), dimension(:) :: a
+    integer(kind=int32) :: n,j
+    nanflag=.false.
+    n=size(a)
+    do j=1,n
+       if (a(j) /= a(j)) then
+          nanflag=.true.
+       end if
+    end do
+  end function c_v_includes_nan
 
 end module utility

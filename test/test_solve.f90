@@ -20,6 +20,9 @@ program test_solve
   real(kind=dp), dimension(:), allocatable :: rhs_v_d, rhs0_v_d, x_v_d
   complex(kind=dp), dimension(:), allocatable :: rhs_v_c, rhs0_v_c, x_v_c
 
+  real(kind=dp), parameter :: shiftr=6.0_dp
+  complex(kind=dp), parameter :: shiftc=(6.0_dp,6.0_dp)
+
   type(d_ub) :: ub_d
   type(c_ub) :: ub_c
   type(d_bv) :: bv_d
@@ -28,9 +31,9 @@ program test_solve
   type(c_sweeps) :: sw_c
 
   call random_seed
-  call random_number(u_d)
-  call random_number(v_d)
-  call random_number(d_d)
+  call random_matrix(u_d)
+  call random_matrix(v_d)
+  call random_matrix(d_d)
   u0_d=u_d; v0_d=v_d; d0_d=d_d
 
   print *
@@ -43,12 +46,12 @@ program test_solve
   u_d=u0_d; v_d=v0_d; d_d=d0_d
   allocate(a_d(na,na), a0_d(na,na), a1_d(na,na),  &
        rhs_d(na,nc), rhs0_d(na,nc), x_d(na,nc))
-  call random_number(rhs_d)
+  call random_matrix(rhs_d)
   rhs0_d=rhs_d
   ub_d=d_new_ub(na,lbwmax,ubwmax)
   bv_d=d_new_bv(na,lbwmax,ubwmax)
   sw_d=d_new_sweeps(na,lbwmax)
-  call d_assemble_a(a_d,u_d(1:na,1:ubwa),v_d(1:ubwa,1:na),d_d(1:na),lbwa)
+  call d_assemble_a(a_d,u_d(1:na,1:ubwa),v_d(1:ubwa,1:na),d_d(1:na)+shiftr,lbwa)
   a0_d=a_d
   call upper_to_bv(a_d,bv_d,lbwa, tol,error)
   call qr_bv_to_ub(bv_d,ub_d,sw_d,error)
@@ -69,12 +72,12 @@ program test_solve
   u_d=u0_d; v_d=v0_d; d_d=d0_d
   allocate(a_d(na,na), a0_d(na,na), a1_d(na,na), &
        rhs_d(na,nc), rhs0_d(na,nc), x_d(na,nc))
-  call random_number(rhs_d)
+  call random_matrix(rhs_d)
   rhs0_d=rhs_d
   ub_d=d_new_ub(na,lbwmax,ubwmax)
   bv_d=d_new_bv(na,lbwmax,ubwmax)
   sw_d=d_new_sweeps(na,lbwmax)
-  call d_assemble_a(a_d,u_d(1:na,1:ubwa),v_d(1:ubwa,1:na),d_d(1:na),lbwa)
+  call d_assemble_a(a_d,u_d(1:na,1:ubwa),v_d(1:ubwa,1:na),d_d(1:na)+shiftr,lbwa)
   a0_d=a_d
   call upper_to_bv(a_d,bv_d,lbwa, tol,error)
   call qr_bv_to_ub(bv_d,ub_d,sw_d,error)
@@ -95,12 +98,12 @@ program test_solve
   u_d=u0_d; v_d=v0_d; d_d=d0_d
   allocate(a_d(na,na), a0_d(na,na), a1_d(na,na), &
        rhs_v_d(na), rhs0_v_d(na), x_v_d(na))
-  call random_number(rhs_v_d)
+  call random_matrix(rhs_v_d)
   rhs0_v_d=rhs_v_d
   ub_d=d_new_ub(na,lbwmax,ubwmax)
   bv_d=d_new_bv(na,lbwmax,ubwmax)
   sw_d=d_new_sweeps(na,lbwmax)
-  call d_assemble_a(a_d,u_d(1:na,1:ubwa),v_d(1:ubwa,1:na),d_d(1:na),lbwa)
+  call d_assemble_a(a_d,u_d(1:na,1:ubwa),v_d(1:ubwa,1:na),d_d(1:na)+shiftr,lbwa)
   a0_d=a_d
   call upper_to_bv(a_d,bv_d,lbwa, tol,error)
   call qr_bv_to_ub(bv_d,ub_d,sw_d,error)
@@ -128,12 +131,12 @@ program test_solve
   u_d=u0_d; v_d=v0_d; d_d=d0_d
   allocate(a_d(na,na), a0_d(na,na), a1_d(na,na),  &
        rhs_d(nc,na), rhs0_d(nc,na), x_d(nc,na))
-  call random_number(rhs_d)
+  call random_matrix(rhs_d)
   rhs0_d=rhs_d
   ub_d=d_new_ub(na,lbwmax,ubwmax)
   bv_d=d_new_bv(na,lbwmax,ubwmax)
   sw_d=d_new_sweeps(na,lbwmax)
-  call d_assemble_a(a_d,u_d(1:na,1:ubwa),v_d(1:ubwa,1:na),d_d(1:na),lbwa)
+  call d_assemble_a(a_d,u_d(1:na,1:ubwa),v_d(1:ubwa,1:na),d_d(1:na)+shiftr,lbwa)
   a0_d=a_d
   call upper_to_bv(a_d,bv_d,lbwa, tol,error)
   call cpu_time(t0)
@@ -151,12 +154,12 @@ program test_solve
   u_d=u0_d; v_d=v0_d; d_d=d0_d
   allocate(a_d(na,na), a0_d(na,na), a1_d(na,na),  &
        rhs_d(nc,na), rhs0_d(nc,na), x_d(nc,na))
-  call random_number(rhs_d)
+  call random_matrix(rhs_d)
   rhs0_d=rhs_d
   ub_d=d_new_ub(na,lbwmax,ubwmax)
   bv_d=d_new_bv(na,lbwmax,ubwmax)
   sw_d=d_new_sweeps(na,lbwmax)
-  call d_assemble_a(a_d,u_d(1:na,1:ubwa),v_d(1:ubwa,1:na),d_d(1:na),lbwa)
+  call d_assemble_a(a_d,u_d(1:na,1:ubwa),v_d(1:ubwa,1:na),d_d(1:na)+shiftr,lbwa)
   a0_d=a_d
   call upper_to_bv(a_d,bv_d,lbwa, tol,error)
   call cpu_time(t0)
@@ -165,6 +168,7 @@ program test_solve
   rhs_d=matmul(x_d,a0_d)
   test_name = "Real Forward Solver (n=1000)"
   scale=maxabs(a0_d)*maxabs(x_d)
+  print *, scale
   call d_output_result(test_name,rhs0_d/scale,rhs_d/scale,bv_d%ubw,bv_d%ubw,t0,t1,tol2,error)
   deallocate(a_d, a0_d, a1_d, rhs_d, rhs0_d, x_d)
   call deallocate_ub(ub_d); call deallocate_bv(bv_d)
@@ -174,12 +178,12 @@ program test_solve
   u_d=u0_d; v_d=v0_d; d_d=d0_d
   allocate(a_d(na,na), a0_d(na,na), a1_d(na,na),  &
        rhs_v_d(na), rhs0_v_d(na), x_v_d(na))
-  call random_number(rhs_v_d)
+  call random_matrix(rhs_v_d)
   rhs0_v_d=rhs_v_d
   ub_d=d_new_ub(na,lbwmax,ubwmax)
   bv_d=d_new_bv(na,lbwmax,ubwmax)
   sw_d=d_new_sweeps(na,lbwmax)
-  call d_assemble_a(a_d,u_d(1:na,1:ubwa),v_d(1:ubwa,1:na),d_d(1:na),lbwa)
+  call d_assemble_a(a_d,u_d(1:na,1:ubwa),v_d(1:ubwa,1:na),d_d(1:na)+shiftr,lbwa)
   a0_d=a_d
   call upper_to_bv(a_d,bv_d,lbwa, tol,error)
   call cpu_time(t0)
@@ -200,21 +204,21 @@ program test_solve
   print *
   print *, "Complex Solver Tests (Timings for back substitution)"
   print *
-  call random_complex(u_c)
-  call random_complex(v_c)
-  call random_complex(d_c)
+  call random_matrix(u_c)
+  call random_matrix(v_c)
+  call random_matrix(d_c)
   u0_c=u_c; v0_c=v_c; d0_c=d_c
 
   na=100; lbwa=5; ubwa=7; nc=3
   u_c=u0_c; v_c=v0_c; d_c=d0_c
   allocate(a_c(na,na), a0_c(na,na), a1_c(na,na), &
        rhs_c(na,nc), rhs0_c(na,nc), x_c(na,nc))
-  call random_complex(rhs_c)
+  call random_matrix(rhs_c)
   rhs0_c=rhs_c
   ub_c=c_new_ub(na,lbwmax,ubwmax)
   bv_c=c_new_bv(na,lbwmax,ubwmax)
   sw_c=c_new_sweeps(na,lbwmax)
-  call c_assemble_a(a_c,u_c(1:na,1:ubwa),v_c(1:ubwa,1:na),d_c(1:na),lbwa)
+  call c_assemble_a(a_c,u_c(1:na,1:ubwa),v_c(1:ubwa,1:na),d_c(1:na)+shiftc,lbwa)
   a0_c=a_c
   call upper_to_bv(a_c,bv_c,lbwa, tol,error)
   call qr_bv_to_ub(bv_c,ub_c,sw_c,error)
@@ -235,12 +239,12 @@ program test_solve
   u_c=u0_c; v_c=v0_c; d_c=d0_c
   allocate(a_c(na,na), a0_c(na,na), a1_c(na,na), &
        rhs_c(na,nc), rhs0_c(na,nc), x_c(na,nc))
-  call random_complex(rhs_c)
+  call random_matrix(rhs_c)
   rhs0_c=rhs_c
   ub_c=c_new_ub(na,lbwmax,ubwmax)
   bv_c=c_new_bv(na,lbwmax,ubwmax)
   sw_c=c_new_sweeps(na,lbwmax)
-  call c_assemble_a(a_c,u_c(1:na,1:ubwa),v_c(1:ubwa,1:na),d_c(1:na),lbwa)
+  call c_assemble_a(a_c,u_c(1:na,1:ubwa),v_c(1:ubwa,1:na),d_c(1:na)+shiftc,lbwa)
   a0_c=a_c
   call upper_to_bv(a_c,bv_c,lbwa, tol,error)
   call qr_bv_to_ub(bv_c,ub_c,sw_c,error)
@@ -262,12 +266,12 @@ program test_solve
   u_c=u0_c; v_c=v0_c; d_c=d0_c
   allocate(a_c(na,na), a0_c(na,na), a1_c(na,na), &
        rhs_v_c(na), rhs0_v_c(na), x_v_c(na))
-  call random_complex(rhs_v_c)
+  call random_matrix(rhs_v_c)
   rhs0_v_c=rhs_v_c
   ub_c=c_new_ub(na,lbwmax,ubwmax)
   bv_c=c_new_bv(na,lbwmax,ubwmax)
   sw_c=c_new_sweeps(na,lbwmax)
-  call c_assemble_a(a_c,u_c(1:na,1:ubwa),v_c(1:ubwa,1:na),d_c(1:na),lbwa)
+  call c_assemble_a(a_c,u_c(1:na,1:ubwa),v_c(1:ubwa,1:na),d_c(1:na)+shiftc,lbwa)
   a0_c=a_c
   call upper_to_bv(a_c,bv_c,lbwa, tol,error)
   call qr_bv_to_ub(bv_c,ub_c,sw_c,error)
@@ -295,12 +299,12 @@ program test_solve
   u_c=u0_c; v_c=v0_c; d_c=d0_c
   allocate(a_c(na,na), a0_c(na,na), a1_c(na,na),  &
        rhs_c(nc,na), rhs0_c(nc,na), x_c(nc,na))
-  call random_complex(rhs_c)
+  call random_matrix(rhs_c)
   rhs0_c=rhs_c
   ub_c=c_new_ub(na,lbwmax,ubwmax)
   bv_c=c_new_bv(na,lbwmax,ubwmax)
   sw_c=c_new_sweeps(na,lbwmax)
-  call c_assemble_a(a_c,u_c(1:na,1:ubwa),v_c(1:ubwa,1:na),d_c(1:na),lbwa)
+  call c_assemble_a(a_c,u_c(1:na,1:ubwa),v_c(1:ubwa,1:na),d_c(1:na)+shiftc,lbwa)
   a0_c=a_c
   call upper_to_bv(a_c,bv_c,lbwa, tol,error)
   call cpu_time(t0)
@@ -318,12 +322,12 @@ program test_solve
   u_c=u0_c; v_c=v0_c; d_c=d0_c
   allocate(a_c(na,na), a0_c(na,na), a1_c(na,na),  &
        rhs_c(nc,na), rhs0_c(nc,na), x_c(nc,na))
-  call random_complex(rhs_c)
+  call random_matrix(rhs_c)
   rhs0_c=rhs_c
   ub_c=c_new_ub(na,lbwmax,ubwmax)
   bv_c=c_new_bv(na,lbwmax,ubwmax)
   sw_c=c_new_sweeps(na,lbwmax)
-  call c_assemble_a(a_c,u_c(1:na,1:ubwa),v_c(1:ubwa,1:na),d_c(1:na),lbwa)
+  call c_assemble_a(a_c,u_c(1:na,1:ubwa),v_c(1:ubwa,1:na),d_c(1:na)+shiftc,lbwa)
   a0_c=a_c
   call upper_to_bv(a_c,bv_c,lbwa, tol,error)
   call cpu_time(t0)
@@ -341,12 +345,12 @@ program test_solve
   u_c=u0_c; v_c=v0_c; d_c=d0_c
   allocate(a_c(na,na), a0_c(na,na), a1_c(na,na),  &
        rhs_v_c(na), rhs0_v_c(na), x_v_c(na))
-  call random_complex(rhs_v_c)
+  call random_matrix(rhs_v_c)
   rhs0_v_c=rhs_v_c
   ub_c=c_new_ub(na,lbwmax,ubwmax)
   bv_c=c_new_bv(na,lbwmax,ubwmax)
   sw_c=c_new_sweeps(na,lbwmax)
-  call c_assemble_a(a_c,u_c(1:na,1:ubwa),v_c(1:ubwa,1:na),d_c(1:na),lbwa)
+  call c_assemble_a(a_c,u_c(1:na,1:ubwa),v_c(1:ubwa,1:na),d_c(1:na)+shiftc,lbwa)
   a0_c=a_c
   call upper_to_bv(a_c,bv_c,lbwa, tol,error)
   call cpu_time(t0)

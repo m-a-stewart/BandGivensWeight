@@ -27,14 +27,14 @@ program test_sweeps
   type(c_sweeps) :: sw_c
 
   call random_seed
-  call random_number(u_d)
-  call random_number(v_d)
-  call random_number(d_d)
+  call random_matrix(u_d)
+  call random_matrix(v_d)
+  call random_matrix(d_d)
   u0_d=u_d; v0_d=v_d; d0_d=d_d
 
-  call random_complex(u_c)
-  call random_complex(v_c)
-  call random_complex(d_c)
+  call random_matrix(u_c)
+  call random_matrix(v_c)
+  call random_matrix(d_c)
   u0_c=u_c; v0_c=v_c; d0_c=d_c
 
 
@@ -261,8 +261,8 @@ type(d_sweeps) function d_random_sweeps(n,l) result(sw)
   real(kind=dp) :: nrm
   sw=d_new_sweeps(n,l)
   sw%numsweeps=l
-  call random_number(sw%cs)
-  call random_number(sw%ss)
+  call random_matrix(sw%cs)
+  call random_matrix(sw%ss)
   do j=1,n
      do k=1,l
         nrm=sqrt(sw%cs(j,k)**2+sw%ss(j,k)**2)
@@ -277,8 +277,8 @@ type(c_sweeps) function c_random_sweeps(n,l) result(sw)
   real(kind=dp) :: nrm
   sw=c_new_sweeps(n,l)
   sw%numsweeps=l
-  call random_complex(sw%cs)
-  call random_complex(sw%ss)
+  call random_matrix(sw%cs)
+  call random_matrix(sw%ss)
   do j=1,n
      do k=1,l
         nrm=sqrt(abs(sw%cs(j,k))**2+abs(sw%ss(j,k))**2)

@@ -27,9 +27,9 @@ program test_qr_factorization
   type(c_sweeps) :: sw_c
 
   call random_seed
-  call random_number(u_d)
-  call random_number(v_d)
-  call random_number(d_d)
+  call random_matrix(u_d)
+  call random_matrix(v_d)
+  call random_matrix(d_d)
   u0_d=u_d; v0_d=v_d; d0_d=d_d
 
   print *
@@ -87,9 +87,9 @@ program test_qr_factorization
   print *
   print *, "Complex QR Factorization Tests"
   print *
-  call random_complex(u_c)
-  call random_complex(v_c)
-  call random_complex(d_c)
+  call random_matrix(u_c)
+  call random_matrix(v_c)
+  call random_matrix(d_c)
   u0_c=u_c; v0_c=v_c; d0_c=d_c
   ! ub to bv
   na=100; lbwa=3; ubwa=2

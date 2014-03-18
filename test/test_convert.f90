@@ -33,9 +33,9 @@ program test_convert
 
   ! real
   call random_seed
-  call random_number(u)
-  call random_number(v)
-  call random_number(d)
+  call random_matrix(u)
+  call random_matrix(v)
+  call random_matrix(d)
   u0=u; v0=v; d0=d
   print *
   print *, "--------------------------------"
@@ -206,9 +206,9 @@ program test_convert
   print *
   print *, "Complex UB and BV Conversion Tests:"
   print *
-  call random_complex(u_c)
-  call random_complex(v_c)
-  call random_complex(d_c)
+  call random_matrix(u_c)
+  call random_matrix(v_c)
+  call random_matrix(d_c)
   u0_c=u_c; v0_c=v_c; d0_c=d_c
   call c_assemble_a(a_c, u_c, v_c, d_c, lbw)
   a0_c=a_c

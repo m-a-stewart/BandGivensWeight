@@ -23,13 +23,13 @@ program test_decomp
   bv_c=c_new_bv(n,lbwmax,ubwmax)
 
   call random_seed
-  call random_number(u)
-  call random_number(v)
-  call random_number(d)
+  call random_matrix(u)
+  call random_matrix(v)
+  call random_matrix(d)
   u0=u; v0=v
-  call random_complex(u_c)
-  call random_complex(v_c)
-  call random_complex(dc)
+  call random_matrix(u_c)
+  call random_matrix(v_c)
+  call random_matrix(dc)
   u0_c=u_c; v0_c=v_c
 
   ! test one

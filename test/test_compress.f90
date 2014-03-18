@@ -26,9 +26,9 @@ program test_compress
 
   ! real
   call random_seed
-  call random_number(u0)
-  call random_number(v0)
-  call random_number(d0)
+  call random_matrix(u0)
+  call random_matrix(v0)
+  call random_matrix(d0)
 
   !! UB to BV tests
   print *
@@ -326,9 +326,9 @@ program test_compress
   !
   ! complex
   !
-  call random_complex(u0_c)
-  call random_complex(v0_c)
-  call random_complex(d0_c)
+  call random_matrix(u0_c)
+  call random_matrix(v0_c)
+  call random_matrix(d0_c)
   u_c=u0_c; v_c=v0_c; d_c=d0_c
 
   ! !! UB to BV tests

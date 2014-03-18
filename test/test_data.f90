@@ -128,5 +128,4 @@ contains
     end if
   end subroutine c_output_result_qr
 
-
 end module test_data

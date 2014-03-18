@@ -92,7 +92,7 @@ program test_qr_iteration
   ub_c=c_new_ub(na,lbwmaxa,ubwmaxa)
   bv_c=c_new_bv(na,lbwmaxa,ubwmaxa)
   a_c=reshape([ complex(kind=dp) :: ((c_delta(j-1,k), j=1,na), k=1,na) ], shape(a_c))
-  call random_complex(a_c(:,na))
+  call random_matrix(a_c(:,na))
   q=reshape([ complex(kind=dp) :: ((c_delta(j,k), j=1,na), k=1,na) ], shape(q))
   a0_c=a_c
   call upper_to_bv(a_c,bv_c,1,tol2,error)
@@ -111,7 +111,7 @@ program test_qr_iteration
   ub_c=c_new_ub(na,lbwmaxa,ubwmaxa)
   bv_c=c_new_bv(na,lbwmaxa,ubwmaxa)
   a_c=reshape([ complex(kind=dp) :: ((c_delta(j-1,k), j=1,na), k=1,na) ], shape(a_c))
-  call random_complex(a_c(:,na))
+  call random_matrix(a_c(:,na))
   a_c(26,25)=(0.0_dp,0.0_dp)
   q=reshape([ complex(kind=dp) :: ((c_delta(j,k), j=1,na), k=1,na) ], shape(q))
   a0_c=a_c

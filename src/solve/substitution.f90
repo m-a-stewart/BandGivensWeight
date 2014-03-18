@@ -393,6 +393,7 @@ contains
     end if
     call f_d_forward_substitution_bv(x, bv%b, n, bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
          bv%numrotsv, bv%ksv, bv%csv, bv%ssv, c, size(c,1), error)
+
   end subroutine d_forward_substitution_bv
 
   subroutine f_d_forward_substitution_bv(x, b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, &

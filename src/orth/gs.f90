@@ -67,7 +67,7 @@ contains
     do while (nrm2 == 0 .and. k < orthmaxits)
        ! got the zero vector.  Orthogonalize something random.
        k=0
-       call random_number(q2)
+       call random_matrix(q2)
        nrm2 = 1.0_dp
        nrm1=2.0_dp*eta
        do while (nrm1 > eta*nrm2 .and. nrm2 > 0.0_dp .and. k < orthmaxits)
@@ -120,7 +120,7 @@ contains
     do while (nrm2 == 0 .and. k < orthmaxits)
        ! got the zero vector.  Orthogonalize something random.
        k=0
-       call random_complex(q2)
+       call random_matrix(q2)
        nrm2 = 1.0_dp
        nrm1=2.0_dp*eta
        do while (nrm1 > eta*nrm2 .and. nrm2 > 0.0_dp .and. k < orthmaxits)
@@ -172,7 +172,7 @@ contains
     do while (nrm2 == 0 .and. k < orthmaxits)
        ! got the zero vector.  Orthogonalize something random.
        k=0
-       call random_number(q2)
+       call random_matrix(q2)
        nrm2 = 1.0_dp
        nrm1=2.0_dp*eta
        do while (nrm1 > eta*nrm2 .and. nrm2 > 0.0_dp .and. k < orthmaxits)
@@ -225,7 +225,7 @@ contains
     do while (nrm2 == 0 .and. k < orthmaxits)
        ! got the zero vector.  Orthogonalize something random.
        k=0
-       call random_complex(q2)
+       call random_matrix(q2)
        nrm2 = 1.0_dp
        nrm1=2.0_dp*eta
        do while (nrm1 > eta*nrm2 .and. nrm2 > 0.0_dp .and. k < orthmaxits)
