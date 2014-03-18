@@ -107,10 +107,10 @@ contains
     integer(kind=int32), dimension(n) :: ubws
 
     call clear_error(error)
+    b_ub(1:lbw+ubw+1,:)=0.0_dp
     numrots_ub=0
-    ss_ub=0.0_dp; cs_ub=0.0_dp
-    js_ub=0
-    b_ub=0.0_dp
+    ss_ub(1:ubw,:)=0.0_dp; cs_ub(1:ubw,:)=0.0_dp
+    js_ub(1:ubw,:)=0
     ubw2=ubw+2
     nrma = maxabs(b_bv)*sqrt(real(n))
     ubws=0
@@ -124,15 +124,7 @@ contains
        lbw_ub=0; ubw_ub=0
        return
     end if
-    ! must allow for temporary fill-in of one extra superdiagonal in b_bv.
-    if (lbwmax_bv+ubwmax_bv+1<ubw2+lbw+1) then
-       call set_error(error, 2, id_f_d_compress_bv_to_ub); return
-    end if
-    if (lbwmax_ub < lbw) then
-       call set_error(error, 4, id_f_d_compress_bv_to_ub); return
-    end if
-    nl=1
-    ml=1
+    nl=1; ml=1
     q=0.0_dp
     do j=1,ubw+1
        q(j,j)=1.0_dp
@@ -391,10 +383,10 @@ contains
     integer(kind=int32), dimension(n) :: ubws
 
     call clear_error(error)
+    b_ub(1:lbw+ubw+1,:)=(0.0_dp,0.0_dp)
     numrots_ub=0
-    ss_ub=(0.0_dp,0.0_dp); cs_ub=(0.0_dp,0.0_dp)
-    js_ub=0
-    b_ub=(0.0_dp,0.0_dp)
+    ss_ub(1:ubw,:)=(0.0_dp,0.0_dp); cs_ub(1:ubw,:)=(0.0_dp,0.0_dp)
+    js_ub(1:ubw,:)=0
     ubw2=ubw+2
     nrma = maxabs(b_bv)*sqrt(real(n))
     ubws=0

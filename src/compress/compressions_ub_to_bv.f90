@@ -106,10 +106,10 @@ contains
     integer(kind=int32), dimension(n) :: ubws
 
     call clear_error(error)
+    b_bv(:,1:lbw+ubw+1)=0.0_dp
     numrots_bv=0
-    ss_bv=0.0_dp; cs_bv=0.0_dp
-    ks_bv=0
-    b_bv=0.0_dp
+    ss_bv(:,1:ubw)=0.0_dp; cs_bv(:,1:ubw)=0.0_dp
+    ks_bv(:,1:ubw)=0
     ubw2=ubw+2
     nrma = maxabs(b_ub)*sqrt(real(n))
     ubws=0
@@ -382,10 +382,10 @@ contains
     integer(kind=int32), dimension(n) :: ubws
 
     call clear_error(error)
+    b_bv(:,1:lbw+ubw+1)=(0.0_dp, 0.0_dp)
     numrots_bv=0
-    ss_bv=(0.0_dp, 0.0_dp); cs_bv=(0.0_dp, 0.0_dp)
-    ks_bv=0
-    b_bv=(0.0_dp, 0.0_dp)
+    ss_bv(:,1:ubw)=(0.0_dp, 0.0_dp); cs_bv(:,1:ubw)=(0.0_dp, 0.0_dp)
+    ks_bv(:,1:ubw)=0
     ubw2=ubw+2
     nrma = maxabs(b_ub)*sqrt(real(n))
     ubws=0

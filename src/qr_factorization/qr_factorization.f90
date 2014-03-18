@@ -104,11 +104,14 @@ contains
     type(d_rotation) :: rot
 
     call clear_error(error)
+    b_ub(1:lbw_bv+ubw_bv+2,:)=0.0_dp
     numrots_ub=0
-    ss_ub=0.0_dp; cs_ub=0.0_dp
+    ss_ub(1:ubw_bv+1,:)=0.0_dp; cs_ub(1:ubw_bv+1,:)=0.0_dp
+    js_ub(1:ubw_bv+1,:)=0
+
     ss=0.0_dp; cs=1.0_dp
-    js_ub=0
-    b_ub=0.0_dp
+
+    b_bv(:,lbw_bv+ubw_bv+2:lbw_bv+ubw_bv+3) = 0.0_dp
     ubw=ubw_bv+2
     lbw=lbw_bv
 
@@ -211,11 +214,16 @@ contains
     type(c_rotation) :: rot
 
     call clear_error(error)
+
+    b_ub(1:lbw_bv+ubw_bv+2,:)=(0.0_dp, 0.0_dp)
     numrots_ub=0
-    ss_ub=(0.0_dp, 0.0_dp); cs_ub=(0.0_dp, 0.0_dp)
+    ss_ub(1:ubw_bv+1,:)=(0.0_dp, 0.0_dp)
+    cs_ub(1:ubw_bv+1,:)=(0.0_dp, 0.0_dp)
+    js_ub(1:ubw_bv+1,:)=0
+
     ss=(0.0_dp, 0.0_dp); cs=(1.0_dp, 0.0_dp)
-    js_ub=0
-    b_ub=(0.0_dp, 0.0_dp)
+
+    b_bv(:,lbw_bv+ubw_bv+2:lbw_bv+ubw_bv+3) = (0.0_dp,0.0_dp)
     ubw=ubw_bv+2
     lbw=lbw_bv
 

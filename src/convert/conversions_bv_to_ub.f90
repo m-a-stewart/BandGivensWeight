@@ -74,9 +74,9 @@ contains
     type(d_rotation) :: rot
 
     call clear_error(error)
-    b_ub=0.0_dp; numrots_ub=0
-    ss_ub=0.0_dp; cs_ub=0.0_dp
-    js_ub=0
+    b_ub(1:lbw+ubw+1,:)=0.0_dp; numrots_ub=0
+    ss_ub(1:ubw,:)=0.0_dp; cs_ub(1:ubw,:)=0.0_dp
+    js_ub(1:ubw,:)=0
     lbw_ub=lbw; ubw_ub=ubw
     ubw1=ubw+1; lbw1=lbw
     if (n == 1) then
@@ -146,9 +146,9 @@ contains
     type(c_rotation) :: rot
 
     call clear_error(error)
-    b_ub=(0.0_dp, 0.0_dp); numrots_ub=0
-    ss_ub=(0.0_dp, 0.0_dp); cs_ub=(0.0_dp, 0.0_dp)
-    js_ub=0
+    b_ub(1:lbw+ubw+1,:)=(0.0_dp, 0.0_dp); numrots_ub=0
+    ss_ub(1:ubw,:)=(0.0_dp, 0.0_dp); cs_ub(1:ubw,:)=(0.0_dp, 0.0_dp)
+    js_ub(1:ubw,:)=0
     lbw_ub=lbw; ubw_ub=ubw
     ubw1=ubw+1; lbw1=lbw
 

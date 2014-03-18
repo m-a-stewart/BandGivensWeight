@@ -444,9 +444,13 @@ contains
     ! Initial expansion for first sweep: one extra subdiagonal and
     ! one extra superdiagonal to fill-in.
     ! Expand as need for later sweeps.
-    b_bv=0.0_dp; numrots_bv=0
-    ss_bv=0.0_dp; cs_bv=0.0_dp
-    ks_bv=0
+    lbw=min(lbw_ub+numsweeps_sw,n-1)
+    ubw=min(ubw_ub+numsweeps_sw,n-1)
+    b_bv(:,1:lbw+ubw+1)=0.0_dp
+    numrots_bv=0
+    ss_bv(:,1:ubw)=0.0_dp
+    cs_bv(:,1:ubw)=0.0_dp
+    ks_bv(:,1:ubw)=0
     ubw=ubw_ub
     lbw=lbw_ub
 
@@ -582,9 +586,14 @@ contains
     ! Initial expansion for first sweep: one extra subdiagonal and
     ! one extra superdiagonal to fill-in.
     ! Expand as need for later sweeps.
-    b_bv=(0.0_dp, 0.0_dp); numrots_bv=0
-    ss_bv=(0.0_dp, 0.0_dp); cs_bv=(0.0_dp, 0.0_dp)
-    ks_bv=0
+    lbw=min(lbw_ub+numsweeps_sw,n-1)
+    ubw=min(ubw_ub+numsweeps_sw,n-1)
+    b_bv(:,1:lbw+ubw+1)=(0.0_dp,0.0_dp)
+    numrots_bv=0
+    ss_bv(:,1:ubw)=(0.0_dp,0.0_dp)
+    cs_bv(:,1:ubw)=(0.0_dp,0.0_dp)
+    ks_bv(:,1:ubw)=0
+
     ubw=ubw_ub
     lbw=lbw_ub
 
@@ -733,9 +742,13 @@ contains
     ! Initial expansion for first sweep: one extra subdiagonal and
     ! one extra superdiagonal to fill-in.
     ! Expand as need for later sweeps.
-    b_ub=0.0_dp; numrots_ub=0
-    ss_ub=0.0_dp; cs_ub=0.0_dp
-    js_ub=0
+    lbw=min(lbw_bv+numsweeps_sw,n-1)
+    ubw=min(ubw_bv+numsweeps_sw,n-1)
+    b_ub(1:lbw+ubw+1,:)=0.0_dp
+    numrots_ub=0
+    ss_ub(1:ubw,:)=0.0_dp; cs_ub(1:ubw,:)=0.0_dp
+    js_ub(1:ubw,:)=0
+
     ubw=ubw_bv
     lbw=lbw_bv
 
@@ -876,9 +889,14 @@ contains
     ! Initial expansion for first sweep: one extra subdiagonal and
     ! one extra superdiagonal to fill-in.
     ! Expand as need for later sweeps.
-    b_ub=(0.0_dp, 0.0_dp); numrots_ub=0
-    ss_ub=(0.0_dp, 0.0_dp); cs_ub=(0.0_dp, 0.0_dp)
-    js_ub=0
+    lbw=min(lbw_bv+numsweeps_sw,n-1)
+    ubw=min(ubw_bv+numsweeps_sw,n-1)
+    b_ub(1:lbw+ubw+1,:)=(0.0_dp,0.0_dp)
+    numrots_ub=0
+    ss_ub(1:ubw,:)=(0.0_dp,0.0_dp)
+    cs_ub(1:ubw,:)=(0.0_dp,0.0_dp)
+    js_ub(1:ubw,:)=0
+
     ubw=ubw_bv
     lbw=lbw_bv
 
