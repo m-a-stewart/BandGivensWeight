@@ -10,8 +10,8 @@ module sweeps
   ! These types represent a linear transformation
   ! Q = Q_1 Q_2 ... Q_{numsweeps}
   ! where
-  ! Q_k = G_{k,1} ... G_{k,n-1}
-  ! Thus Q is a product of upper Hessenberg matrices.
+  ! Q_k = G_{k,1} ... G_{k,n-1}.
+  ! G_{k,j} acts in rows j and j+1.  Thus Q is a product of upper Hessenberg matrices.
 
 
   type d_sweeps
@@ -441,7 +441,7 @@ contains
     integer(kind=int32), intent(out) :: lbw_bv, ubw_bv
 
     type(error_info), intent(out) :: error
-    integer(kind=int32) :: j, k, l, ubw, lbw, k0, k1, d
+    integer(kind=int32) :: j, k, l, ubw, lbw, k0, k1
     type(d_rotation) :: rot
     logical :: full_ubw, full_lbw
 
@@ -583,7 +583,7 @@ contains
     integer(kind=int32), intent(out) :: lbw_bv, ubw_bv
 
     type(error_info), intent(out) :: error
-    integer(kind=int32) :: j, k, l, ubw, lbw, k0, k1, d
+    integer(kind=int32) :: j, k, l, ubw, lbw, k0, k1
     type(c_rotation) :: rot
     logical :: full_ubw, full_lbw
 
@@ -739,7 +739,7 @@ contains
     integer(kind=int32), intent(out) :: lbw_bv, ubw_bv
 
     type(error_info), intent(out) :: error
-    integer(kind=int32) :: j, k, l, ubw, lbw, k0, k1, d
+    integer(kind=int32) :: j, k, l, ubw, lbw, k0, k1
     type(d_rotation) :: rot
     logical :: full_ubw, full_lbw
 
@@ -886,7 +886,7 @@ contains
     integer(kind=int32), intent(out) :: lbw_bv, ubw_bv
 
     type(error_info), intent(out) :: error
-    integer(kind=int32) :: j, k, l, ubw, lbw, k0, k1, d
+    integer(kind=int32) :: j, k, l, ubw, lbw, k0, k1
     type(c_rotation) :: rot
     logical :: full_ubw, full_lbw
 

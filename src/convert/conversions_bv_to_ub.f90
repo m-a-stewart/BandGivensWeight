@@ -70,7 +70,7 @@ contains
     real(kind=dp), dimension(ubwmax_ub,n), intent(out) :: cs_ub, ss_ub
     type(error_info), intent(out) :: error
 
-    integer(kind=int32) :: j, k, ubw1, lbw1, d, k0, k1
+    integer(kind=int32) :: j, k, ubw1, lbw1, k0, k1
     type(d_rotation) :: rot
 
     call clear_error(error)
@@ -142,7 +142,7 @@ contains
     complex(kind=dp), dimension(ubwmax_ub,n), intent(out) :: cs_ub, ss_ub
     type(error_info), intent(out) :: error
 
-    integer(kind=int32) :: j, k, ubw1, lbw1, d, k0, k1
+    integer(kind=int32) :: j, k, ubw1, lbw1, k0, k1
     type(c_rotation) :: rot
 
     call clear_error(error)

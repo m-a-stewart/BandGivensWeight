@@ -69,7 +69,7 @@ contains
     integer(kind=int32), intent(out) :: lbw_bv, ubw_bv
     type(error_info), intent(out) :: error
 
-    integer(kind=int32) :: j, k, k0, k1, ubw1, lbw1, d
+    integer(kind=int32) :: j, k, k0, k1, ubw1, lbw1
     type(d_rotation) :: rot
 
     call clear_error(error)
@@ -143,7 +143,7 @@ contains
     integer(kind=int32), intent(out) :: lbw_bv, ubw_bv
     type(error_info), intent(out) :: error
 
-    integer(kind=int32) :: j, k, k0, k1, ubw1, lbw1, d
+    integer(kind=int32) :: j, k, k0, k1, ubw1, lbw1
     type(c_rotation) :: rot
 
     call clear_error(error)

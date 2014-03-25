@@ -27,7 +27,8 @@ interface includes_nan
    module procedure d_includes_nan, d_v_includes_nan, c_includes_nan, c_v_includes_nan
 end interface includes_nan
 
-real(kind=dp), parameter :: random_shift=-1.0_dp, random_scale=2.0_dp
+real(kind=dp), parameter :: d_random_shift=-1.0_dp, d_random_scale=2.0_dp
+complex(kind=dp), parameter :: c_random_shift=(-1.0_dp,-1.0_dp), c_random_scale=(2.0_dp,0.0_dp)
 
 contains
 
@@ -251,48 +252,32 @@ contains
 
   subroutine d_random_matrix(a)
     real(kind=dp), dimension(:,:), intent(out) :: a
-    real(kind=dp) :: x
-    integer(kind=int32) :: j, k, m, n
-    m=size(a,1)
-    n=size(a,2)
-    do j=1,m
-       do k=1,n
-          call random_number(x)
-          a(j,k)=random_scale*x+random_shift
-       end do
-    end do
+    call random_number(a)
+    a=d_random_scale*a+d_random_shift
   end subroutine d_random_matrix
 
   subroutine d_v_random_matrix(a)
     real(kind=dp), dimension(:), intent(out) :: a
-    real(kind=dp) :: x
-    integer(kind=int32) :: j, m
-    m=size(a)
-    do j=1,m
-       call random_number(x)
-       a(j)=random_scale*x+random_shift
-    end do
+    call random_number(a)
+    a=d_random_scale*a+d_random_shift
   end subroutine d_v_random_matrix
 
   subroutine d_s_random_matrix(a)
     real(kind=dp), intent(out) :: a
-    real(kind=dp) :: x
-    call random_number(x)
-    a=random_scale*x+random_shift
+    call random_number(a)
+    a=d_random_scale*a+d_random_shift
   end subroutine d_s_random_matrix
 
 
   subroutine c_random_matrix(a)
     complex(kind=dp), dimension(:,:), intent(out) :: a
     real(kind=dp) :: x,y
-    integer(kind=int32) :: j, k, m, n
-    m=size(a,1)
-    n=size(a,2)
-    do j=1,m
-       do k=1,n
+    integer(kind=int32) :: j, k
+    do j=1,size(a,1)
+       do k=1,size(a,2)
           call random_number(x)
           call random_number(y)
-          a(j,k)=cmplx(random_scale*x+random_shift,random_scale*x+random_shift)
+          a(j,k)=c_random_scale*cmplx(x,y)+c_random_shift
        end do
     end do
   end subroutine c_random_matrix
@@ -300,12 +285,11 @@ contains
   subroutine c_v_random_matrix(a)
     complex(kind=dp), dimension(:), intent(out) :: a
     real(kind=dp) :: x,y
-    integer(kind=int32) :: j, m
-    m=size(a)
-    do j=1,m
+    integer(kind=int32) :: j
+    do j=1,size(a)
        call random_number(x)
        call random_number(y)
-       a(j)=cmplx(random_scale*x+random_shift,random_scale*x+random_shift)
+       a(j)= c_random_scale*cmplx(x,y)+c_random_shift
     end do
   end subroutine c_v_random_matrix
 
@@ -314,7 +298,7 @@ contains
     real(kind=dp) :: x,y
     call random_number(x)
     call random_number(y)
-    a=cmplx(random_scale*x+random_shift,random_scale*x+random_shift)
+    a=c_random_scale*cmplx(x,y)+c_random_shift
   end subroutine c_s_random_matrix
 
   real(kind=dp) function d_delta(j,k)

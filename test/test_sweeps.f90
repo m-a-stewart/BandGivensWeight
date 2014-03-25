@@ -3,7 +3,7 @@ program test_sweeps
   use test_data
   implicit none
   real(kind=dp) :: t0, t1
-  integer(kind=int32) :: na, lbwa, ubwa, j, k, lbwmaxa, ubwmaxa, numsweeps
+  integer(kind=int32) :: na, lbwa, ubwa, lbwmaxa, ubwmaxa, numsweeps
   integer(kind=int32), parameter :: nmax=1000, rmaxa=50
   type(error_info) :: error
   !
@@ -15,9 +15,7 @@ program test_sweeps
   complex(kind=dp), dimension(nmax) :: d_c, d0_c
 
   real(kind=dp), dimension(:,:), allocatable :: a_d, a0_d, a1_d, q_d
-  real(kind=dp), dimension(:), allocatable :: cs_d, ss_d
   complex(kind=dp), dimension(:,:), allocatable :: a_c, a0_c, a1_c, q_c
-  complex(kind=dp), dimension(:), allocatable :: cs_c, ss_c
 
   type(d_ub) :: ub_d
   type(c_ub) :: ub_c

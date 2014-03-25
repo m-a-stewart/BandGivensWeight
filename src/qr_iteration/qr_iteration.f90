@@ -216,7 +216,7 @@ contains
 
     type(error_info), intent(out) :: error
 
-    integer(kind=int32) :: j, k, ubw, lbw, d, ubw_ub, k0,k1
+    integer(kind=int32) :: j, k, ubw, lbw, ubw_ub, k0,k1
     type(c_rotation) :: rot
 
     call clear_error(error)

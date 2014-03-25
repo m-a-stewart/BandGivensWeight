@@ -3,7 +3,7 @@ program test_solve
   use test_data
   implicit none
   real(kind=dp) :: t0, t1, scale
-  integer(kind=int32) :: na, lbwa, ubwa, j, k, nc
+  integer(kind=int32) :: na, lbwa, ubwa, nc
   integer(kind=int32), parameter :: nmax=1000
   type(error_info) :: error
   !

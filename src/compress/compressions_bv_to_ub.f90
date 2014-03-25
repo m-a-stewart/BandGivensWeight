@@ -98,7 +98,7 @@ contains
     integer(kind=int32), intent(out) :: lbw_ub, ubw_ub
     type(error_info), intent(out) :: error
 
-    integer(kind=int32) :: j, k, jj, roffs, coffs, ubw2, d, minindex, ml, nl, dnl, nq
+    integer(kind=int32) :: j, k, jj, roffs, coffs, ubw2, minindex, ml, nl, dnl, nq
     type(d_rotation) :: rot
     real(kind=dp), target, dimension(ubw+1,ubw+1) :: q
     real(kind=dp), dimension(ubw+1,ubw+1) :: l
@@ -373,7 +373,7 @@ contains
     integer(kind=int32), intent(out) :: lbw_ub, ubw_ub
     type(error_info), intent(out) :: error
 
-    integer(kind=int32) :: j, k, jj, roffs, coffs, ubw2, d, minindex, ml, nl, dnl, nq
+    integer(kind=int32) :: j, k, jj, roffs, coffs, ubw2, minindex, ml, nl, dnl, nq
     type(c_rotation) :: rot
     complex(kind=dp), target, dimension(ubw+1,ubw+1) :: q
     complex(kind=dp), dimension(ubw+1,ubw+1) :: l

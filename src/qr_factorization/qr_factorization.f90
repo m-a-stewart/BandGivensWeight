@@ -100,7 +100,7 @@ contains
     integer(kind=int32), intent(out) :: lbw_ub, ubw_ub
     type(error_info), intent(out) :: error
 
-    integer(kind=int32) :: j, k, d, k0,k1, lbw, ubw
+    integer(kind=int32) :: j, k, k0,k1, lbw, ubw
     type(d_rotation) :: rot
 
     call clear_error(error)
@@ -115,7 +115,7 @@ contains
     ubw=min(ubw_bv+2,n-1)
 
     if (ubw < n-1) then
-       b_bv(:,lbw_bv+ubw_bv+2:lbw_bv+ubw+1) = (0.0_dp,0.0_dp)
+       b_bv(:,lbw_bv+ubw_bv+2:lbw_bv+ubw+1) = 0.0_dp
     end if
 
     if (n==1) then
@@ -213,7 +213,7 @@ contains
     integer(kind=int32), intent(out) :: lbw_ub, ubw_ub
     type(error_info), intent(out) :: error
 
-    integer(kind=int32) :: j, k, d, k0,k1, lbw, ubw
+    integer(kind=int32) :: j, k, k0,k1, lbw, ubw
     type(c_rotation) :: rot
 
     call clear_error(error)

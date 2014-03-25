@@ -42,7 +42,7 @@ $(OBJDIR)/qr_factorization.o : $(OBJDIR)/conversions.o
 $(OBJDIR)/substitution.o : $(OBJDIR)/transforms.o $(OBJDIR)/misc.o $(OBJDIR)/types.o
 
 $(OBJDIR)/nested.o : $(OBJDIR)/decomp.o $(OBJDIR)/assemble.o $(OBJDIR)/qr_iteration.o \
-	$(OBJDIR)/qr_factorization.o $(OBJDIR)/substitution.o
+	$(OBJDIR)/qr_factorization.o $(OBJDIR)/substitution.o $(OBJDIR)/update.o
 
 $(OBJDIR)/%.o : %.f90
 	$(FC) $(CFLAGS) $(PROFCFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@
@@ -76,6 +76,10 @@ $(OBJDIR)/%.o : qr_factorization/%.f90
 
 $(OBJDIR)/%.o : solve/%.f90
 	$(FC) $(CFLAGS) $(PROFCFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@
+
+$(OBJDIR)/%.o : update/%.f90
+	$(FC) $(CFLAGS) $(PROFCFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@
+
 
 $(OBJDIR)/%.o : assemble/%.f90
 	$(FC) $(CFLAGS) $(PROFCFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@
