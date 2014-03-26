@@ -287,7 +287,6 @@ contains
     type(error_info), intent(out) :: error
 
     integer(kind=int32) :: lbw
-    sw%transposed=.false.
     lbw=bv%lbw
     sw%numsweeps=lbw
     call clear_error(error)
@@ -358,7 +357,6 @@ contains
     type(error_info), intent(out) :: error
 
     integer(kind=int32) :: lbw
-    sw%transposed=.false.
     lbw=bv%lbw
     sw%numsweeps=lbw
     call clear_error(error)

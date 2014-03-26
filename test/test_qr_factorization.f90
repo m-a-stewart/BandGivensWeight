@@ -53,7 +53,7 @@ program test_qr_factorization
   call cpu_time(t1)
   call ub_to_upper(ub_d,a1_d,error)
   q_d=reshape([ real(kind=dp) :: ((d_delta(j,k), j=1,na), k=1,na) ], shape(q_d))
-  call sweeps_times_general(sw_d,a1_d)
+  call d_sweeps_times_general(sw_d,a1_d)
   test_name = "Real Lower Band Reduction"
   call d_output_result(test_name,a0_d,a1_d,ubwa+1,ub_d%ubw,t0,t1,tol2,error)
   deallocate(a_d, a0_d, a1_d, q_d, cs_d, ss_d)

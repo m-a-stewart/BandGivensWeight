@@ -16,14 +16,12 @@ module sweeps
 
   type d_sweeps
      integer(kind=int32), private :: maxsweeps, n
-     logical :: transposed
      integer(kind=int32) :: numsweeps
      real(kind=dp), allocatable, dimension(:,:) :: cs, ss
   end type d_sweeps
 
   type c_sweeps
      integer(kind=int32), private :: maxsweeps, n
-     logical :: transposed
      integer(kind=int32) :: numsweeps
      complex(kind=dp), allocatable, dimension(:,:) :: cs, ss
   end type c_sweeps
@@ -39,10 +37,6 @@ module sweeps
   interface get_n
      module procedure d_get_n_sweeps, c_get_n_sweeps
   end interface get_n
-
-  interface trp_sweeps
-     module procedure d_trp_sweeps, c_trp_sweeps
-  end interface trp_sweeps
 
   interface sweeps_times_general
      module procedure d_sweeps_times_general, c_sweeps_times_general, &
@@ -76,14 +70,14 @@ module sweeps
        'd_sweeps_times_ub', &
        [ character(len=error_message_length) :: 'Sizes of bv, ub, and sw do not match.', &
        'Insufficienty lbw in bv.', 'Insufficient ubw in bv.', 'Insufficient lbw in ub', &
-       'Insufficient ubw in ub', 'n<1', 'sw is transposed' ])
+       'Insufficient ubw in ub', 'n<1' ])
 
   type(routine_info), parameter :: info_c_sweeps_times_ub= &
        routine_info(id_c_sweeps_times_ub, &
        'c_sweeps_times_ub', &
        [ character(len=error_message_length) :: 'Sizes of bv, ub, and sw do not match.', &
        'Insufficienty lbw in bv.', 'Insufficient ubw in bv.', 'Insufficient lbw in ub', &
-       'Insufficient ubw in ub', 'n<1', 'sw is transposed' ])
+       'Insufficient ubw in ub', 'n<1' ])
 
   type(routine_info), parameter :: info_f_d_sweeps_times_ub= &
        routine_info(id_f_d_sweeps_times_ub, &
@@ -122,7 +116,6 @@ contains
     integer(kind=int32), intent(in) :: n, maxsweeps
     sw%n=n; sw%maxsweeps=maxsweeps
     allocate(sw%cs(n,maxsweeps), sw%ss(n,maxsweeps))
-    sw%transposed=.false.
     sw%numsweeps=0
     sw%cs=1.0_dp; sw%ss=0.0_dp
   end function d_new_sweeps
@@ -131,7 +124,6 @@ contains
     integer(kind=int32), intent(in) :: n, maxsweeps
     sw%n=n; sw%maxsweeps=maxsweeps
     allocate(sw%cs(n,maxsweeps), sw%ss(n,maxsweeps))
-    sw%transposed=.false.
     sw%numsweeps=0
     sw%cs=(1.0_dp,0.0_dp); sw%ss=(0.0_dp,0.0_dp)
   end function c_new_sweeps
@@ -146,233 +138,246 @@ contains
     deallocate(sw%cs, sw%ss)
   end subroutine c_deallocate_sweeps
 
-  subroutine d_trp_sweeps(sw)
-    type(d_sweeps), intent(inout) :: sw
-    if (sw%transposed) then
-       sw%transposed=.false.
-    else
-       sw%transposed=.true.
-    end if
-  end subroutine d_trp_sweeps
-
-  subroutine c_trp_sweeps(sw)
-    type(c_sweeps), intent(inout) :: sw
-    if (sw%transposed) then
-       sw%transposed=.false.
-    else
-       sw%transposed=.true.
-    end if
-  end subroutine c_trp_sweeps
-
   subroutine d_sweeps_times_general(sw,a)
     type(d_sweeps) :: sw
     real(kind=dp), dimension(:,:), intent(inout) :: a
     type(d_rotation) :: rot
     integer(kind=int32) :: j, m, l
-    if (sw%transposed) then
-       do l=1,sw%numsweeps
-          m=size(a,1)
-          do j=1,m-1
-             rot%cosine=sw%cs(j,l); rot%sine=sw%ss(j,l)
-             call d_rotation_times_general(trp_rot(rot),a,j,j+1)
-          end do
+    do l=sw%numsweeps,1,-1
+       m=size(a,1)
+       do j=m-1,1,-1
+          rot%cosine=sw%cs(j,l); rot%sine=sw%ss(j,l)
+          call d_rotation_times_general(rot,a,j,j+1)
        end do
-    else
-       do l=sw%numsweeps,1,-1
-          m=size(a,1)
-          do j=m-1,1,-1
-             rot%cosine=sw%cs(j,l); rot%sine=sw%ss(j,l)
-             call d_rotation_times_general(rot,a,j,j+1)
-          end do
-       end do
-    end if
+    end do
   end subroutine d_sweeps_times_general
+
+  subroutine d_trp_sweeps_times_general(sw,a)
+    type(d_sweeps) :: sw
+    real(kind=dp), dimension(:,:), intent(inout) :: a
+    type(d_rotation) :: rot
+    integer(kind=int32) :: j, m, l
+    do l=1,sw%numsweeps
+       m=size(a,1)
+       do j=1,m-1
+          rot%cosine=sw%cs(j,l); rot%sine=sw%ss(j,l)
+          call d_rotation_times_general(trp_rot(rot),a,j,j+1)
+       end do
+    end do
+  end subroutine d_trp_sweeps_times_general
 
   subroutine d_v_sweeps_times_general(sw,a)
     type(d_sweeps) :: sw
     real(kind=dp), dimension(:), intent(inout) :: a
     integer(kind=int32) :: j, m, l
     real(kind=dp) :: tmp, c, s 
-    if (sw%transposed) then
-       do l=1,sw%numsweeps
-          m=size(a)
-          do j=1,m-1
-             tmp=a(j)
-             c=sw%cs(j,l); s=sw%ss(j,l)
-             a(j)=c*tmp+s*a(j+1)
-             a(j+1)=-s*tmp+c*a(j+1)
-          end do
+    do l=sw%numsweeps,1,-1
+       m=size(a)
+       do j=m-1,1,-1
+          tmp=a(j)
+          c=sw%cs(j,l); s=sw%ss(j,l)
+          a(j)=c*tmp-s*a(j+1)
+          a(j+1)=s*tmp+c*a(j+1)
        end do
-    else
-       do l=sw%numsweeps,1,-1
-          m=size(a)
-          do j=m-1,1,-1
-             tmp=a(j)
-             c=sw%cs(j,l); s=sw%ss(j,l)
-             a(j)=c*tmp-s*a(j+1)
-             a(j+1)=s*tmp+c*a(j+1)
-          end do
-       end do
-    end if
+    end do
   end subroutine d_v_sweeps_times_general
 
+  subroutine d_v_trp_sweeps_times_general(sw,a)
+    type(d_sweeps) :: sw
+    real(kind=dp), dimension(:), intent(inout) :: a
+    integer(kind=int32) :: j, m, l
+    real(kind=dp) :: tmp, c, s 
+    do l=1,sw%numsweeps
+       m=size(a)
+       do j=1,m-1
+          tmp=a(j)
+          c=sw%cs(j,l); s=sw%ss(j,l)
+          a(j)=c*tmp+s*a(j+1)
+          a(j+1)=-s*tmp+c*a(j+1)
+       end do
+    end do
+  end subroutine d_v_trp_sweeps_times_general
 
   subroutine c_sweeps_times_general(sw,a)
     type(c_sweeps) :: sw
     complex(kind=dp), dimension(:,:), intent(inout) :: a
     type(c_rotation) :: rot
     integer(kind=int32) :: j, m, l
-    if (sw%transposed) then
-       do l=1,sw%numsweeps
-          m=size(a,1)
-          do j=1,m-1
-             rot%cosine=sw%cs(j,l); rot%sine=sw%ss(j,l)
-             call c_rotation_times_general(trp_rot(rot),a,j,j+1)
-          end do
+    do l=sw%numsweeps,1,-1
+       m=size(a,1)
+       do j=m-1,1,-1
+          rot%cosine=sw%cs(j,l); rot%sine=sw%ss(j,l)
+          call c_rotation_times_general(rot,a,j,j+1)
        end do
-    else
-       do l=sw%numsweeps,1,-1
-          m=size(a,1)
-          do j=m-1,1,-1
-             rot%cosine=sw%cs(j,l); rot%sine=sw%ss(j,l)
-             call c_rotation_times_general(rot,a,j,j+1)
-          end do
-       end do
-    end if
+    end do
   end subroutine c_sweeps_times_general
+
+  subroutine c_trp_sweeps_times_general(sw,a)
+    type(c_sweeps) :: sw
+    complex(kind=dp), dimension(:,:), intent(inout) :: a
+    type(c_rotation) :: rot
+    integer(kind=int32) :: j, m, l
+    do l=1,sw%numsweeps
+       m=size(a,1)
+       do j=1,m-1
+          rot%cosine=sw%cs(j,l); rot%sine=sw%ss(j,l)
+          call c_rotation_times_general(trp_rot(rot),a,j,j+1)
+       end do
+    end do
+  end subroutine c_trp_sweeps_times_general
 
   subroutine c_v_sweeps_times_general(sw,a)
     type(c_sweeps) :: sw
     complex(kind=dp), dimension(:), intent(inout) :: a
     integer(kind=int32) :: j, m, l
     complex(kind=dp) :: tmp, c, s 
-    if (sw%transposed) then
-       do l=1,sw%numsweeps
-          m=size(a)
-          do j=1,m-1
-             tmp=a(j)
-             c=sw%cs(j,l); s=sw%ss(j,l)
-             a(j)=c*tmp+conjg(s)*a(j+1)
-             a(j+1)=-s*tmp+c*a(j+1)
-          end do
+    do l=sw%numsweeps,1,-1
+       m=size(a)
+       do j=m-1,1,-1
+          tmp=a(j)
+          c=sw%cs(j,l); s=sw%ss(j,l)
+          a(j)=c*tmp-conjg(s)*a(j+1)
+          a(j+1)=s*tmp+c*a(j+1)
        end do
-    else
-       do l=sw%numsweeps,1,-1
-          m=size(a)
-          do j=m-1,1,-1
-             tmp=a(j)
-             c=sw%cs(j,l); s=sw%ss(j,l)
-             a(j)=c*tmp-conjg(s)*a(j+1)
-             a(j+1)=s*tmp+c*a(j+1)
-          end do
-       end do
-    end if
+    end do
   end subroutine c_v_sweeps_times_general
+
+  subroutine c_v_trp_sweeps_times_general(sw,a)
+    type(c_sweeps) :: sw
+    complex(kind=dp), dimension(:), intent(inout) :: a
+    integer(kind=int32) :: j, m, l
+    complex(kind=dp) :: tmp, c, s 
+    do l=1,sw%numsweeps
+       m=size(a)
+       do j=1,m-1
+          tmp=a(j)
+          c=sw%cs(j,l); s=sw%ss(j,l)
+          a(j)=c*tmp+conjg(s)*a(j+1)
+          a(j+1)=-s*tmp+c*a(j+1)
+       end do
+    end do
+  end subroutine c_v_trp_sweeps_times_general
 
   subroutine d_general_times_sweeps(a,sw)
     type(d_sweeps) :: sw
     real(kind=dp), dimension(:,:), intent(inout) :: a
     type(d_rotation) :: rot
     integer(kind=int32) :: j, n, l
-    if (sw%transposed) then
-       do l=sw%numsweeps,1,-1
-          n=size(a,2)
-          do j=n-1,1,-1
-             rot%cosine=sw%cs(j,l); rot%sine=sw%ss(j,l)
-             call d_general_times_rotation(a, trp_rot(rot),j,j+1)
-          end do
+    do l=1,sw%numsweeps
+       n=size(a,2)
+       do j=1,n-1
+          rot%cosine=sw%cs(j,l); rot%sine=sw%ss(j,l)
+          call d_general_times_rotation(a,rot,j,j+1)
        end do
-    else
-       do l=1,sw%numsweeps
-          n=size(a,2)
-          do j=1,n-1
-             rot%cosine=sw%cs(j,l); rot%sine=sw%ss(j,l)
-             call d_general_times_rotation(a,rot,j,j+1)
-          end do
-       end do
-    end if
+    end do
   end subroutine d_general_times_sweeps
+
+  subroutine d_general_times_trp_sweeps(a,sw)
+    type(d_sweeps) :: sw
+    real(kind=dp), dimension(:,:), intent(inout) :: a
+    type(d_rotation) :: rot
+    integer(kind=int32) :: j, n, l
+    do l=sw%numsweeps,1,-1
+       n=size(a,2)
+       do j=n-1,1,-1
+          rot%cosine=sw%cs(j,l); rot%sine=sw%ss(j,l)
+          call d_general_times_rotation(a, trp_rot(rot),j,j+1)
+       end do
+    end do
+  end subroutine d_general_times_trp_sweeps
 
   subroutine d_v_general_times_sweeps(a,sw)
     type(d_sweeps) :: sw
     real(kind=dp), dimension(:), intent(inout) :: a
     integer(kind=int32) :: j, n, l
     real(kind=dp) :: c,s,tmp
-    if (sw%transposed) then
-       do l=sw%numsweeps,1,-1
-          n=size(a)
-          do j=n-1,1,-1
-             tmp=a(j)
-             c=sw%cs(j,l); s=sw%ss(j,l)
-             a(j)=c*tmp-s*a(j+1)
-             a(j+1)=s*tmp+c*a(j+1)
-          end do
+    do l=1,sw%numsweeps
+       n=size(a)
+       do j=1,n-1
+          tmp=a(j)
+          c=sw%cs(j,l); s=sw%ss(j,l)
+          a(j)=c*tmp+s*a(j+1)
+          a(j+1)=-s*tmp+c*a(j+1)
        end do
-    else
-       do l=1,sw%numsweeps
-          n=size(a)
-          do j=1,n-1
-             tmp=a(j)
-             c=sw%cs(j,l); s=sw%ss(j,l)
-             a(j)=c*tmp+s*a(j+1)
-             a(j+1)=-s*tmp+c*a(j+1)
-          end do
-       end do
-    end if
+    end do
   end subroutine d_v_general_times_sweeps
 
+  subroutine d_v_general_times_trp_sweeps(a,sw)
+    type(d_sweeps) :: sw
+    real(kind=dp), dimension(:), intent(inout) :: a
+    integer(kind=int32) :: j, n, l
+    real(kind=dp) :: c,s,tmp
+    do l=sw%numsweeps,1,-1
+       n=size(a)
+       do j=n-1,1,-1
+          tmp=a(j)
+          c=sw%cs(j,l); s=sw%ss(j,l)
+          a(j)=c*tmp-s*a(j+1)
+          a(j+1)=s*tmp+c*a(j+1)
+       end do
+    end do
+  end subroutine d_v_general_times_trp_sweeps
 
   subroutine c_general_times_sweeps(a,sw)
     type(c_sweeps) :: sw
     complex(kind=dp), dimension(:,:), intent(inout) :: a
     type(c_rotation) :: rot
     integer(kind=int32) :: j, n, l
-    if (sw%transposed) then
-       do l=sw%numsweeps,1,-1
-          n=size(a,2)
-          do j=n-1,1,-1
-             rot%cosine=sw%cs(j,l); rot%sine=sw%ss(j,l)
-             call c_general_times_rotation(a, trp_rot(rot),j,j+1)
-          end do
+    do l=1,sw%numsweeps
+       n=size(a,2)
+       do j=1,n-1
+          rot%cosine=sw%cs(j,l); rot%sine=sw%ss(j,l)
+          call c_general_times_rotation(a,rot,j,j+1)
        end do
-    else
-       do l=1,sw%numsweeps
-          n=size(a,2)
-          do j=1,n-1
-             rot%cosine=sw%cs(j,l); rot%sine=sw%ss(j,l)
-             call c_general_times_rotation(a,rot,j,j+1)
-          end do
-       end do
-    end if
+    end do
   end subroutine c_general_times_sweeps
+
+  subroutine c_general_times_trp_sweeps(a,sw)
+    type(c_sweeps) :: sw
+    complex(kind=dp), dimension(:,:), intent(inout) :: a
+    type(c_rotation) :: rot
+    integer(kind=int32) :: j, n, l
+    do l=sw%numsweeps,1,-1
+       n=size(a,2)
+       do j=n-1,1,-1
+          rot%cosine=sw%cs(j,l); rot%sine=sw%ss(j,l)
+          call c_general_times_rotation(a, trp_rot(rot),j,j+1)
+       end do
+    end do
+  end subroutine c_general_times_trp_sweeps
 
   subroutine c_v_general_times_sweeps(a,sw)
     type(c_sweeps) :: sw
     complex(kind=dp), dimension(:), intent(inout) :: a
     integer(kind=int32) :: j, n, l
     complex(kind=dp) :: c,s,tmp
-    if (sw%transposed) then
-       do l=sw%numsweeps,1,-1
-          n=size(a)
-          do j=n-1,1,-1
-             tmp=a(j)
-             c=sw%cs(j,l); s=sw%ss(j,l)
-             a(j)=c*tmp-s*a(j+1)
-             a(j+1)=conjg(s)*tmp+c*a(j+1)
-          end do
+    do l=1,sw%numsweeps
+       n=size(a)
+       do j=1,n-1
+          tmp=a(j)
+          c=sw%cs(j,l); s=sw%ss(j,l)
+          a(j)=c*tmp+s*a(j+1)
+          a(j+1)=-conjg(s)*tmp+c*a(j+1)
        end do
-    else
-       do l=1,sw%numsweeps
-          n=size(a)
-          do j=1,n-1
-             tmp=a(j)
-             c=sw%cs(j,l); s=sw%ss(j,l)
-             a(j)=c*tmp+s*a(j+1)
-             a(j+1)=-conjg(s)*tmp+c*a(j+1)
-          end do
-       end do
-    end if
+    end do
   end subroutine c_v_general_times_sweeps
+
+  subroutine c_v_general_times_trp_sweeps(a,sw)
+    type(c_sweeps) :: sw
+    complex(kind=dp), dimension(:), intent(inout) :: a
+    integer(kind=int32) :: j, n, l
+    complex(kind=dp) :: c,s,tmp
+    do l=sw%numsweeps,1,-1
+       n=size(a)
+       do j=n-1,1,-1
+          tmp=a(j)
+          c=sw%cs(j,l); s=sw%ss(j,l)
+          a(j)=c*tmp-s*a(j+1)
+          a(j+1)=conjg(s)*tmp+c*a(j+1)
+       end do
+    end do
+  end subroutine c_v_general_times_trp_sweeps
+
 
   ! sweeps times ub
   ! Errors:
@@ -382,7 +387,6 @@ contains
   ! 4: Insufficient lbw in ub
   ! 5: Insufficient ubw in ub.
   ! 6: n < 1.
-  ! 7: sw is transposed.
 
   subroutine d_sweeps_times_ub(sw,ub,bv,error)
     type(d_sweeps) :: sw
@@ -407,9 +411,6 @@ contains
     end if
     if (get_n(bv) < 1) then
        call set_error(error,6,id_d_sweeps_times_ub); return
-    end if
-    if (sw%transposed) then
-       call set_error(error,7,id_d_sweeps_times_ub); return
     end if
     call f_d_sweeps_times_ub(sw%cs, sw%ss, sw%numsweeps, get_maxsweeps(sw), get_n(sw), &
          ub%b, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
@@ -550,9 +551,6 @@ contains
     if (get_n(bv) < 1) then
        call set_error(error,6,id_c_sweeps_times_ub); return
     end if
-    if (sw%transposed) then
-       call set_error(error,7,id_c_sweeps_times_ub); return
-    end if
     call f_c_sweeps_times_ub(sw%cs, sw%ss, sw%numsweeps, get_maxsweeps(sw), get_n(sw), &
          ub%b, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
          ub%numrotsu, ub%jsu, ub%csu, ub%ssu, &
@@ -678,7 +676,6 @@ contains
   ! 4: Insufficient lbw in bv
   ! 5: Insufficient ubw in bv.
   ! 6: n < 1.
-  ! 7: sw is transposed.
 
   subroutine d_bv_times_sweeps(bv,sw,ub,error)
     type(d_sweeps) :: sw
@@ -703,9 +700,6 @@ contains
     end if
     if (get_n(bv) < 1) then
        call set_error(error,6,id_d_bv_times_sweeps); return
-    end if
-    if (sw%transposed) then
-       call set_error(error,7,id_d_bv_times_sweeps); return
     end if
     call f_d_bv_times_sweeps(bv%b, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
          bv%numrotsv, bv%ksv, bv%csv, bv%ssv, &
@@ -850,9 +844,6 @@ contains
     end if
     if (get_n(bv) < 1) then
        call set_error(error,6,id_c_bv_times_sweeps); return
-    end if
-    if (sw%transposed) then
-       call set_error(error,7,id_c_bv_times_sweeps); return
     end if
     call f_c_bv_times_sweeps(bv%b, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
          bv%numrotsv, bv%ksv, bv%csv, bv%ssv, &

@@ -125,6 +125,15 @@ module error_id
   integer(int32), parameter :: id_f_d_bv_times_sweeps=135
   integer(int32), parameter :: id_c_bv_times_sweeps=136
   integer(int32), parameter :: id_f_c_bv_times_sweeps=137
+  integer(int32), parameter :: id_d_trp_sweeps_times_bv=138
+  integer(int32), parameter :: id_f_d_trp_sweeps_times_bv=139
+  integer(int32), parameter :: id_c_trp_sweeps_times_bv=140
+  integer(int32), parameter :: id_f_c_trp_sweeps_times_bv=141
+  integer(int32), parameter :: id_d_ub_times_trp_sweeps=142
+  integer(int32), parameter :: id_f_d_ub_times_trp_sweeps=143
+  integer(int32), parameter :: id_c_ub_times_trpsweeps=144
+  integer(int32), parameter :: id_f_c_ub_times_trp_sweeps=145
+
 
   ! src/update 150s
   integer(int32), parameter :: id_d_r1_update_ub_to_bv=150
