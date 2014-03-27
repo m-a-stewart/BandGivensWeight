@@ -104,6 +104,11 @@ contains
     type(d_rotation) :: rot
 
     call clear_error(error)
+
+    if (ubw_bv < n-1) then
+       b_bv(:,lbw_bv+1+ubw_bv+1:lbw_bv+1+min(ubw_bv+2,n-1)) = 0.0_dp
+    end if
+
     ubw=min(ubw_bv+1,n-1)
     b_ub(1:lbw_bv+ubw+1,:)=0.0_dp
     numrots_ub=0
@@ -114,14 +119,9 @@ contains
     lbw=lbw_bv
     ubw=min(ubw_bv+2,n-1)
 
-    if (ubw < n-1) then
-       b_bv(:,lbw_bv+ubw_bv+2:lbw_bv+ubw+1) = 0.0_dp
-    end if
-
     if (n==1) then
        b_ub(1,1)=b_bv(1,1); return
     end if
-
     do k=1,n-1
        ! apply v_{n-k}
        do j=1,numrots_bv(n-k)
@@ -218,6 +218,10 @@ contains
 
     call clear_error(error)
 
+    if (ubw_bv < n-1) then
+       b_bv(:,lbw_bv+1+ubw_bv+1:lbw_bv+1+min(ubw_bv+2,n-1)) = (0.0_dp,0.0_dp)
+    end if
+
     ubw=min(ubw_bv+1,n-1)
     b_ub(1:lbw_bv+ubw+1,:)=(0.0_dp, 0.0_dp)
     numrots_ub=0
@@ -229,9 +233,7 @@ contains
 
     ubw=min(ubw_bv+2,n-1)
     lbw=lbw_bv
-    if (ubw < n-1) then
-       b_bv(:,lbw_bv+ubw_bv+2:lbw_bv+ubw+1) = (0.0_dp,0.0_dp)
-    end if
+
     if (n==1) then
        b_ub(1,1)=b_bv(1,1); return
     end if
@@ -332,21 +334,24 @@ contains
     end if
     if (lbw <= 0) then
        call f_convert_bv_to_ub(b_bv, n, lbw, ubw, lbwmax_bv, ubwmax_bv, &
-            numrots_bv, ks_bv, cs_bv, ss_bv, b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, &
+            numrots_bv, ks_bv, cs_bv, ss_bv, b_ub, lbw_ub, ubw_ub, &
+            lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, &
             cs_ub, ss_ub, error)
        return
     end if
     do j=1,lbw-1
        call f_d_reduce_lbw_bv_to_ub(b_bv, n, lbw, ubw, lbwmax_bv, ubwmax_bv, numrots_bv, &
             ks_bv, cs_bv, ss_bv, &
-            b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, cs_ub, ss_ub, cs(:,j), ss(:,j), error)
+            b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, &
+            cs_ub, ss_ub, cs(:,j), ss(:,j), error)
        call f_d_convert_ub_to_bv(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, &
             js_ub, cs_ub, ss_ub, b_bv, lbw, ubw, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, &
             cs_bv, ss_bv, error)
     end do
     call f_d_reduce_lbw_bv_to_ub(b_bv, n, lbw, ubw, lbwmax_bv, ubwmax_bv, numrots_bv, &
          ks_bv, cs_bv, ss_bv, &
-         b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, cs_ub, ss_ub, cs(:,j), ss(:,j), error)
+         b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, &
+         cs_ub, ss_ub, cs(:,j), ss(:,j), error)
   end subroutine f_d_qr_bv_to_ub
 
 
