@@ -131,7 +131,7 @@ module error_id
   integer(int32), parameter :: id_f_c_trp_sweeps_times_bv=141
   integer(int32), parameter :: id_d_ub_times_trp_sweeps=142
   integer(int32), parameter :: id_f_d_ub_times_trp_sweeps=143
-  integer(int32), parameter :: id_c_ub_times_trpsweeps=144
+  integer(int32), parameter :: id_c_ub_times_trp_sweeps=144
   integer(int32), parameter :: id_f_c_ub_times_trp_sweeps=145
 
 
@@ -162,8 +162,10 @@ contains
 
   subroutine clear_error(err)
     type(error_info), intent(inout) :: err
+    err%routines(1:err%rptr)=-1
     err%rptr=1
     err%code=0
+
   end subroutine clear_error
 
 end module error_id

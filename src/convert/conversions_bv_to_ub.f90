@@ -83,6 +83,7 @@ contains
        b_ub(1,1)=b_bv(1,1)
        return
     end if
+    ! TODO: this fails if the upper triangular part fills in.
     b_bv(:,ubw1+lbw1+1)=0.0_dp
     do k=1,n-1
        do j=1,numrots_bv(n-k)

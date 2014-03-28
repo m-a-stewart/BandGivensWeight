@@ -264,6 +264,7 @@ contains
           else
              ! no null vector found.  Simply reveal row nl if there is room.
              ! Otherwise terminate with square L
+             call clear_error(error)
              ubws(k)=nl
              if (k+nl == n) then
                 klast=k ! terminate with square L
@@ -630,6 +631,7 @@ contains
           else
              ! no null vector found.  Simply reveal row nl if there is room.
              ! Otherwise terminate with square L
+             call clear_error(error)
              ubws(k)=nl
              if (k+nl == n) then
                 klast=k ! terminate with square L
