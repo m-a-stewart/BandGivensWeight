@@ -66,7 +66,7 @@ contains
     if (get_n(ub) < 1) then
        call set_error(error, 3, id_d_reduce_lbw_bv_to_ub); return
     end if
-    if (get_lbwmax(bv)+get_ubwmax(bv)+1<bv%ubw+bv%lbw+3) then
+    if (get_ubwmax(bv) < bv%ubw+2 .and. get_ubwmax(bv) < get_n(bv)-1) then
        call set_error(error, 4, id_d_reduce_lbw_bv_to_ub); return
     end if
     if (get_lbwmax(ub) < bv%lbw-1 .or. get_ubwmax(ub) < bv%ubw+1) then
@@ -105,11 +105,15 @@ contains
 
     call clear_error(error)
 
-    if (ubw_bv < n-1) then
-       b_bv(:,lbw_bv+1+ubw_bv+1:lbw_bv+1+min(ubw_bv+2,n-1)) = 0.0_dp
+    if (ubw_bv <= n-3) then
+       ubw=ubw_bv+2
+       b_bv(:,lbw_bv+ubw_bv+2:lbw_bv+ubw_bv+3) = 0.0_dp
+    else if (ubw_bv == n-2) then
+       ubw=ubw_bv+1
+       b_bv(:,lbw_bv+ubw_bv+2) = 0.0_dp
+    else
+       ubw=n-1
     end if
-
-    ubw=min(ubw_bv+1,n-1)
     b_ub(1:lbw_bv+ubw+1,:)=0.0_dp
     numrots_ub=0
     ss_ub(1:ubw,:)=0.0_dp; cs_ub(1:ubw,:)=0.0_dp
@@ -176,7 +180,7 @@ contains
     if (get_n(ub) < 1) then
        call set_error(error, 3, id_f_d_reduce_lbw_bv_to_ub); return
     end if
-    if (get_lbwmax(bv)+get_ubwmax(bv)+1<bv%ubw+bv%lbw+3) then
+    if (get_ubwmax(bv) < bv%ubw+2 .and. get_ubwmax(bv) < get_n(bv)-1) then
        call set_error(error, 4, id_d_reduce_lbw_bv_to_ub); return
     end if
     if (get_lbwmax(ub) < bv%lbw-1 .or. get_ubwmax(ub) < bv%ubw+1) then
@@ -218,11 +222,17 @@ contains
 
     call clear_error(error)
 
-    if (ubw_bv < n-1) then
-       b_bv(:,lbw_bv+1+ubw_bv+1:lbw_bv+1+min(ubw_bv+2,n-1)) = (0.0_dp,0.0_dp)
+    if (ubw_bv <= n-3) then
+       ubw=ubw_bv+2
+       b_bv(:,lbw_bv+ubw_bv+2:lbw_bv+ubw_bv+3) = (0.0_dp,0.0_dp)
+    else if (ubw_bv == n-2) then
+       ubw=ubw_bv+1
+       b_bv(:,lbw_bv+ubw_bv+2) = (0.0_dp,0.0_dp)
+    else
+       ubw=n-1
     end if
 
-    ubw=min(ubw_bv+1,n-1)
+
     b_ub(1:lbw_bv+ubw+1,:)=(0.0_dp, 0.0_dp)
     numrots_ub=0
     ss_ub(1:ubw,:)=(0.0_dp, 0.0_dp)

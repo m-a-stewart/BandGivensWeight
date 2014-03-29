@@ -60,7 +60,7 @@ contains
        call set_error(error, 1, id_d_compress_ub_to_bv); return
     end if
     ! must allow for temporary fill-in of two extra superdiagonals.
-    if (get_lbwmax(ub)+get_ubwmax(ub)+1<ub%ubw+ub%lbw+3) then
+    if (get_ubwmax(ub) < ub%ubw+2) then
        call set_error(error, 2, id_d_compress_ub_to_bv); return
     end if
     if (get_lbwmax(bv) < ub%lbw) then
@@ -338,7 +338,7 @@ contains
        call set_error(error, 1, id_c_compress_ub_to_bv); return
     end if
     ! must allow for temporary fill-in of two extra superdiagonals.
-    if (get_lbwmax(ub)+get_ubwmax(ub)+1<ub%ubw+ub%lbw+3) then
+    if (get_ubwmax(ub) < ub%ubw+2) then
        call set_error(error, 2, id_c_compress_ub_to_bv); return
     end if
     if (get_lbwmax(bv) < ub%lbw) then

@@ -39,7 +39,7 @@ contains
        call set_error(error, 1, id_d_convert_bv_to_ub); return
     end if
     ! must allow for temporary fill-in
-    if (get_lbwmax(bv)+get_ubwmax(bv)+1<bv%ubw+bv%lbw+2) then
+    if (get_ubwmax(bv) < bv%ubw+1 .and. bv%ubw < get_n(bv)-1) then
        call set_error(error, 2, id_d_convert_bv_to_ub); return
     end if
     if (get_lbwmax(ub) < bv%lbw .or. get_ubwmax(ub) < bv%ubw) then
@@ -78,13 +78,17 @@ contains
     ss_ub(1:ubw,:)=0.0_dp; cs_ub(1:ubw,:)=0.0_dp
     js_ub(1:ubw,:)=0
     lbw_ub=lbw; ubw_ub=ubw
-    ubw1=ubw+1; lbw1=lbw
     if (n == 1) then
        b_ub(1,1)=b_bv(1,1)
        return
     end if
-    ! TODO: this fails if the upper triangular part fills in.
-    b_bv(:,ubw1+lbw1+1)=0.0_dp
+    lbw1=lbw
+    if (ubw < n-1) then
+       ubw1=ubw+1
+       b_bv(:,ubw1+lbw1+1)=0.0_dp
+    else
+       ubw1=ubw
+    end if
     do k=1,n-1
        do j=1,numrots_bv(n-k)
           rot%cosine=cs_bv(n-k,j); rot%sine=ss_bv(n-k,j)
@@ -113,7 +117,7 @@ contains
        call set_error(error, 1, id_d_convert_bv_to_ub); return
     end if
     ! must allow for temporary fill-in
-    if (get_lbwmax(bv)+get_ubwmax(bv)+1<bv%ubw+bv%lbw+2) then
+    if (get_ubwmax(bv) < bv%ubw+1 .and. bv%ubw < get_n(bv)-1) then
        call set_error(error, 2, id_d_convert_bv_to_ub); return
     end if
     if (get_lbwmax(ub) < bv%lbw .or. get_ubwmax(ub) < bv%ubw) then
@@ -151,13 +155,17 @@ contains
     ss_ub(1:ubw,:)=(0.0_dp, 0.0_dp); cs_ub(1:ubw,:)=(0.0_dp, 0.0_dp)
     js_ub(1:ubw,:)=0
     lbw_ub=lbw; ubw_ub=ubw
-    ubw1=ubw+1; lbw1=lbw
-
     if (n == 1) then
        b_ub(1,1)=b_bv(1,1)
        return
     end if
-    b_bv(:,ubw1+lbw1+1)=(0.0_dp, 0.0_dp)
+    lbw1=lbw
+    if (ubw < n-1) then
+       ubw1=ubw+1
+       b_bv(:,ubw1+lbw1+1)=0.0_dp
+    else
+       ubw1=ubw
+    end if
     ! apply v_{n-1}
     do k=1,n-1
        do j=1,numrots_bv(n-k)

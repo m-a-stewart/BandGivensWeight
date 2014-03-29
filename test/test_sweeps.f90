@@ -6,6 +6,7 @@ program test_sweeps
   integer(kind=int32) :: na, lbwa, ubwa, lbwmaxa, ubwmaxa, numsweeps
   integer(kind=int32), parameter :: nmax=1000, rmaxa=50
   type(error_info) :: error
+  real(kind=dp), parameter :: tol=1e-14, tol1=1e-14, tol2=1e-10
   !
   real(kind=dp), dimension(nmax,rmaxa) :: u_d, u0_d
   real(kind=dp), dimension(rmaxa,nmax) :: v_d, v0_d
@@ -45,8 +46,8 @@ program test_sweeps
 
   na=20; numsweeps=2
   lbwa=5; ubwa=5
-  ubwmaxa=min(na,numsweeps+ubwa+1)
-  lbwmaxa=min(na,numsweeps+lbwa)
+  ubwmaxa=min(na-1,numsweeps+ubwa+1)
+  lbwmaxa=min(na-1,numsweeps+lbwa)
   u_d=u0_d; v_d=v0_d; d_d=d0_d
   allocate(a_d(na,na), a0_d(na,na), a1_d(na,na), q_d(na,na))
   ub_d=d_new_ub(na,lbwmaxa,ubwmaxa)
@@ -70,8 +71,8 @@ program test_sweeps
 
   na=20; numsweeps=20
   lbwa=10; ubwa=10
-  ubwmaxa=min(na,numsweeps+ubwa+1)
-  lbwmaxa=min(na,numsweeps+lbwa)
+  ubwmaxa=min(na-1,numsweeps+ubwa+1)
+  lbwmaxa=min(na-1,numsweeps+lbwa)
   u_d=u0_d; v_d=v0_d; d_d=d0_d
   allocate(a_d(na,na), a0_d(na,na), a1_d(na,na), q_d(na,na))
   ub_d=d_new_ub(na,lbwmaxa,ubwmaxa)
@@ -98,7 +99,7 @@ program test_sweeps
   ! Real BV
   na=20; numsweeps=7
   lbwa=5; ubwa=5
-  ubwmaxa=min(na-1,numsweeps+ubwa+2)
+  ubwmaxa=min(na-1,numsweeps+ubwa+1)
   lbwmaxa=min(na-1,numsweeps+lbwa)
   u_d=u0_d; v_d=v0_d; d_d=d0_d
   allocate(a_d(na,na), a0_d(na,na), a1_d(na,na), q_d(na,na))
@@ -124,8 +125,8 @@ program test_sweeps
 
   na=20; numsweeps=20
   lbwa=5; ubwa=5
-  ubwmaxa=min(na+1,numsweeps+ubwa+1)
-  lbwmaxa=min(na,numsweeps+lbwa)
+  ubwmaxa=min(na-1,numsweeps+ubwa+1)
+  lbwmaxa=min(na-1,numsweeps+lbwa)
   u_d=u0_d; v_d=v0_d; d_d=d0_d
   allocate(a_d(na,na), a0_d(na,na), a1_d(na,na), q_d(na,na))
   ub_d=d_new_ub(na,lbwmaxa,ubwmaxa)
@@ -157,7 +158,8 @@ program test_sweeps
 
   na=20; numsweeps=2
   lbwa=5; ubwa=5
-  ubwmaxa=na+1; lbwmaxa=na+1
+  ubwmaxa=min(na-1,numsweeps+ubwa+1)
+  lbwmaxa=min(na-1,numsweeps+lbwa)
   u_c=u0_c; v_c=v0_c; d_c=d0_c
   allocate(a_c(na,na), a0_c(na,na), a1_c(na,na), q_c(na,na))
   ub_c=c_new_ub(na,lbwmaxa,ubwmaxa)
@@ -181,7 +183,8 @@ program test_sweeps
 
   na=20; numsweeps=20
   lbwa=10; ubwa=10
-  ubwmaxa=na+1; lbwmaxa=na+1
+  ubwmaxa=min(na-1,numsweeps+ubwa+1)
+  lbwmaxa=min(na-1,numsweeps+lbwa)
   u_c=u0_c; v_c=v0_c; d_c=d0_c
   allocate(a_c(na,na), a0_c(na,na), a1_c(na,na), q_c(na,na))
   ub_c=c_new_ub(na,lbwmaxa,ubwmaxa)
@@ -209,7 +212,8 @@ program test_sweeps
 
   na=20; numsweeps=7
   lbwa=5; ubwa=5
-  ubwmaxa=na+1; lbwmaxa=na+1
+  ubwmaxa=min(na-1,numsweeps+ubwa+1)
+  lbwmaxa=min(na-1,numsweeps+lbwa)
   u_c=u0_c; v_c=v0_c; d_c=d0_c
   allocate(a_c(na,na), a0_c(na,na), a1_c(na,na), q_c(na,na))
   ub_c=c_new_ub(na,lbwmaxa,ubwmaxa)
@@ -233,7 +237,8 @@ program test_sweeps
 
   na=20; numsweeps=20
   lbwa=5; ubwa=5
-  ubwmaxa=na+1; lbwmaxa=na+1
+  ubwmaxa=min(na-1,numsweeps+ubwa+1)
+  lbwmaxa=min(na-1,numsweeps+lbwa)
   u_c=u0_c; v_c=v0_c; d_c=d0_c
   allocate(a_c(na,na), a0_c(na,na), a1_c(na,na), q_c(na,na))
   ub_c=c_new_ub(na,lbwmaxa,ubwmaxa)
@@ -268,7 +273,8 @@ program test_sweeps
   na=10;
   lbwa=3; ubwa=3
   numsweeps=lbwa
-  ubwmaxa=na+1; lbwmaxa=na+1
+  ubwmaxa=min(na-1,numsweeps+ubwa+1)
+  lbwmaxa=min(na-1,numsweeps+lbwa)
   u_d=u0_d; v_d=v0_d; d_d=d0_d
   allocate(a_d(na,na), a0_d(na,na), a1_d(na,na))
   ub_d=d_new_ub(na,lbwmaxa,ubwmaxa)
@@ -295,7 +301,8 @@ program test_sweeps
   na=5
   lbwa=2; ubwa=2
   numsweeps=lbwa
-  ubwmaxa=na+1; lbwmaxa=na+1
+  ubwmaxa=min(na-1,numsweeps+ubwa+1)
+  lbwmaxa=min(na-1,numsweeps+lbwa)
   u_d=u0_d; v_d=v0_d; d_d=d0_d
   allocate(a_d(na,na), a0_d(na,na), a1_d(na,na))
   ub_d=d_new_ub(na,lbwmaxa,ubwmaxa)
@@ -322,7 +329,8 @@ program test_sweeps
   na=10
   lbwa=9; ubwa=9
   numsweeps=lbwa
-  ubwmaxa=na+1; lbwmaxa=na+1
+  ubwmaxa=min(na-1,numsweeps+ubwa+1)
+  lbwmaxa=min(na-1,numsweeps+lbwa)
   u_d=u0_d; v_d=v0_d; d_d=d0_d
   allocate(a_d(na,na), a0_d(na,na), a1_d(na,na))
   ub_d=d_new_ub(na,lbwmaxa,ubwmaxa)
@@ -349,7 +357,8 @@ program test_sweeps
   na=100
   lbwa=3; ubwa=3
   numsweeps=lbwa
-  ubwmaxa=na+1; lbwmaxa=na+1
+  ubwmaxa=min(na-1,numsweeps+ubwa+1)
+  lbwmaxa=min(na-1,numsweeps+lbwa)
   u_d=u0_d; v_d=v0_d; d_d=d0_d
   allocate(a_d(na,na), a0_d(na,na), a1_d(na,na))
   ub_d=d_new_ub(na,lbwmaxa,ubwmaxa)
@@ -377,7 +386,8 @@ program test_sweeps
   na=10;
   lbwa=3; ubwa=3
   numsweeps=2
-  ubwmaxa=na+1; lbwmaxa=na+1
+  ubwmaxa=min(na-1,numsweeps+ubwa+1)
+  lbwmaxa=min(na-1,numsweeps+lbwa)
   u_d=u0_d; v_d=v0_d; d_d=d0_d
   allocate(a_d(na,na), a0_d(na,na), a1_d(na,na))
   ub_d=d_new_ub(na,lbwmaxa,ubwmaxa)
@@ -400,7 +410,8 @@ program test_sweeps
   na=50;
   lbwa=10; ubwa=10
   numsweeps=7
-  ubwmaxa=na+1; lbwmaxa=na+1
+  ubwmaxa=min(na-1,numsweeps+ubwa+1)
+  lbwmaxa=min(na-1,numsweeps+lbwa)
   u_d=u0_d; v_d=v0_d; d_d=d0_d
   allocate(a_d(na,na), a0_d(na,na), a1_d(na,na))
   ub_d=d_new_ub(na,lbwmaxa,ubwmaxa)
@@ -423,7 +434,8 @@ program test_sweeps
   na=20;
   lbwa=19; ubwa=19
   numsweeps=18
-  ubwmaxa=na+1; lbwmaxa=na+1
+  ubwmaxa=min(na-1,numsweeps+ubwa+1)
+  lbwmaxa=min(na-1,numsweeps+lbwa)
   u_d=u0_d; v_d=v0_d; d_d=d0_d
   allocate(a_d(na,na), a0_d(na,na), a1_d(na,na))
   ub_d=d_new_ub(na,lbwmaxa,ubwmaxa)
@@ -452,7 +464,8 @@ program test_sweeps
   na=10;
   lbwa=3; ubwa=3
   numsweeps=lbwa
-  ubwmaxa=na+1; lbwmaxa=na+1
+  ubwmaxa=min(na-1,numsweeps+ubwa+1)
+  lbwmaxa=min(na-1,numsweeps+lbwa)
   u_c=u0_c; v_c=v0_c; d_c=d0_c
   allocate(a_c(na,na), a0_c(na,na), a1_c(na,na))
   ub_c=c_new_ub(na,lbwmaxa,ubwmaxa)
@@ -479,7 +492,8 @@ program test_sweeps
   na=5
   lbwa=2; ubwa=2
   numsweeps=lbwa
-  ubwmaxa=na+1; lbwmaxa=na+1
+  ubwmaxa=min(na-1,numsweeps+ubwa+1)
+  lbwmaxa=min(na-1,numsweeps+lbwa)
   u_c=u0_c; v_c=v0_c; d_c=d0_c
   allocate(a_c(na,na), a0_c(na,na), a1_c(na,na))
   ub_c=c_new_ub(na,lbwmaxa,ubwmaxa)
@@ -506,7 +520,8 @@ program test_sweeps
   na=10
   lbwa=9; ubwa=9
   numsweeps=lbwa
-  ubwmaxa=na+1; lbwmaxa=na+1
+  ubwmaxa=min(na-1,numsweeps+ubwa+1)
+  lbwmaxa=min(na-1,numsweeps+lbwa)
   u_c=u0_c; v_c=v0_c; d_c=d0_c
   allocate(a_c(na,na), a0_c(na,na), a1_c(na,na))
   ub_c=c_new_ub(na,lbwmaxa,ubwmaxa)
@@ -533,7 +548,8 @@ program test_sweeps
   na=100
   lbwa=3; ubwa=3
   numsweeps=lbwa
-  ubwmaxa=na+1; lbwmaxa=na+1
+  ubwmaxa=min(na-1,numsweeps+ubwa+1)
+  lbwmaxa=min(na-1,numsweeps+lbwa)
   u_c=u0_c; v_c=v0_c; d_c=d0_c
   allocate(a_c(na,na), a0_c(na,na), a1_c(na,na))
   ub_c=c_new_ub(na,lbwmaxa,ubwmaxa)
@@ -561,7 +577,8 @@ program test_sweeps
   na=10
   lbwa=3; ubwa=3
   numsweeps=2
-  ubwmaxa=na+1; lbwmaxa=na+1
+  ubwmaxa=min(na-1,numsweeps+ubwa+1)
+  lbwmaxa=min(na-1,numsweeps+lbwa)
   u_c=u0_c; v_c=v0_c; d_c=d0_c
   allocate(a_c(na,na), a0_c(na,na), a1_c(na,na))
   ub_c=c_new_ub(na,lbwmaxa,ubwmaxa)
@@ -584,7 +601,8 @@ program test_sweeps
   na=50;
   lbwa=10; ubwa=10
   numsweeps=7
-  ubwmaxa=na+1; lbwmaxa=na+1
+  ubwmaxa=min(na-1,numsweeps+ubwa+1)
+  lbwmaxa=min(na-1,numsweeps+lbwa)
   u_c=u0_c; v_c=v0_c; d_c=d0_c
   allocate(a_c(na,na), a0_c(na,na), a1_c(na,na))
   ub_c=c_new_ub(na,lbwmaxa,ubwmaxa)
@@ -607,7 +625,8 @@ program test_sweeps
   na=20;
   lbwa=19; ubwa=19
   numsweeps=18
-  ubwmaxa=na+1; lbwmaxa=na+1
+  ubwmaxa=min(na-1,numsweeps+ubwa+1)
+  lbwmaxa=min(na-1,numsweeps+lbwa)
   u_c=u0_c; v_c=v0_c; d_c=d0_c
   allocate(a_c(na,na), a0_c(na,na), a1_c(na,na))
   ub_c=c_new_ub(na,lbwmaxa,ubwmaxa)

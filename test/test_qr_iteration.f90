@@ -5,7 +5,8 @@ program test_qr_iteration
   real(kind=dp) :: t0, t1
   integer(kind=int32) :: j,k, na
   type(error_info) :: error
-  integer(kind=int32) :: lbwmaxa=2, ubwmaxa=5
+  integer(kind=int32) :: lbwmaxa=2, ubwmaxa=6
+  real(kind=dp), parameter :: tol=1e-14, tol1=1e-14, tol2=1e-10
   !
   complex(kind=dp), dimension(:,:), allocatable :: a_c, a0_c, a1_c, q
 

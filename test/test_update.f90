@@ -6,6 +6,7 @@ program test_update
   integer(kind=int32) :: na, lbwa, ubwa, j, k, lbwmaxa, ubwmaxa, numsweeps
   integer(kind=int32), parameter :: nmax=1000, rmaxa=50
   type(error_info) :: error
+  real(kind=dp), parameter :: tol=1e-14, tol1=1e-14, tol2=1e-10
   !
   real(kind=dp), dimension(nmax,rmaxa) :: u_d, u0_d
   real(kind=dp), dimension(rmaxa,nmax) :: v_d, v0_d

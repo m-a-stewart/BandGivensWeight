@@ -12,6 +12,8 @@ program test_convert
   real(kind=dp) :: t0, t1
   integer(kind=int32) :: na, lbwa
   type(error_info) :: error
+  integer, parameter :: n=50, rmax=13, ubwmax=rmax+5, lbw=2, lbwmax=10
+  real(kind=dp), parameter :: tol=1e-14, tol1=1e-14, tol2=1e-10
   !
   real(kind=dp), dimension(n,n) :: a, a0, a1
   real(kind=dp), dimension(n,rmax) :: u, u0

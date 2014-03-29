@@ -1,14 +1,12 @@
 module test_data
-use misc
-implicit none
+  use misc
+  implicit none
 
-integer, parameter :: n=50, rmax=13, ubwmax=rmax+1, lbw=2, lbwmax=10
-real(kind=dp), parameter :: tol=1e-14, tol1=1e-14, tol2=1e-10
-character(len=40) :: test_name
-character(len=*), parameter :: fmt="(A40, 'Time: ',ES8.2,', ubw: ',I3,', error: ',ES8.2, ', ', A10)"
-character(len=*), parameter :: fmt_qr="(A25, 'Time: ',ES8.2,', ubw: ',I3,', errors: ',ES8.2, ', ', ES8.2, ', ', ES8.2, ', ', A10)"
+  character(len=40) :: test_name
+  character(len=*), parameter :: fmt="(A40, 'Time: ',ES8.2,', ubw: ',I3,', error: ',ES8.2, ', ', A10)"
+  character(len=*), parameter :: fmt_qr="(A25, 'Time: ',ES8.2,', ubw: ',I3,', errors: ',ES8.2, ', ', ES8.2, ', ', ES8.2, ', ', A10)"
 contains
-  
+
   subroutine d_assemble_a(a,u,v,d,lbw)
     real(kind=dp), dimension(:,:), intent(out) :: a
     real(kind=dp), dimension(:,:), intent(in) :: u, v

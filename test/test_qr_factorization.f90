@@ -6,6 +6,8 @@ program test_qr_factorization
   integer(kind=int32) :: na, lbwa, ubwa, j, k, numsweeps, lbwmaxa, ubwmaxa
   integer(kind=int32), parameter :: nmax=1000
   type(error_info) :: error
+  integer, parameter :: n=50, rmax=13, ubwmax=rmax+5, lbw=2, lbwmax=10
+  real(kind=dp), parameter :: tol=1e-14, tol1=1e-14, tol2=1e-10
   !
   real(kind=dp), dimension(nmax,rmax) :: u_d, u0_d
   real(kind=dp), dimension(rmax,nmax) :: v_d, v0_d

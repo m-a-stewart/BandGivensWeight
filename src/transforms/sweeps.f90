@@ -603,7 +603,7 @@ contains
     if (get_lbwmax(ub) < sw%numsweeps + ub%lbw .and. get_lbwmax(ub) < get_n(ub)-1) then
        call set_error(error,4,id_c_sweeps_times_ub); return
     end if
-    if (get_ubwmax(ub) < sw%numsweeps + ub%ubw+2 .and. get_ubwmax(ub) < get_n(ub)+1) then
+    if (get_ubwmax(ub) < sw%numsweeps + ub%ubw+1 .and. get_ubwmax(ub) < get_n(ub)-1) then
        call set_error(error,5,id_c_sweeps_times_ub); return
     end if
     if (get_n(bv) < 1) then
@@ -753,7 +753,7 @@ contains
     if (get_lbwmax(bv) < sw%numsweeps + bv%lbw .and. get_lbwmax(bv) < get_n(bv)-1) then
        call set_error(error,4,id_d_bv_times_sweeps); return
     end if
-    if (get_ubwmax(bv) < sw%numsweeps + bv%ubw+2 .and. get_ubwmax(bv) < get_n(bv)+1) then
+    if (get_ubwmax(bv) < sw%numsweeps + bv%ubw+1 .and. get_ubwmax(bv) < get_n(bv)-1) then
        call set_error(error,5,id_d_bv_times_sweeps); return
     end if
     if (get_n(bv) < 1) then
@@ -897,7 +897,7 @@ contains
     if (get_lbwmax(bv) < sw%numsweeps + bv%lbw .and. get_lbwmax(bv) < get_n(bv)-1) then
        call set_error(error,4,id_c_bv_times_sweeps); return
     end if
-    if (get_ubwmax(bv) < sw%numsweeps + bv%ubw+2 .and. get_ubwmax(bv) < get_n(bv)+1) then
+    if (get_ubwmax(bv) < sw%numsweeps + bv%ubw+1 .and. get_ubwmax(bv) < get_n(bv)-1) then
        call set_error(error,5,id_c_bv_times_sweeps); return
     end if
     if (get_n(bv) < 1) then
@@ -1048,7 +1048,7 @@ contains
     if (get_ubwmax(bv) < sw%numsweeps + ub%ubw+1 .and. get_ubwmax(bv) < get_n(ub)-1) then
        call set_error(error,2,id_d_trp_sweeps_times_bv); return
     end if
-    if (get_ubwmax(ub) < sw%numsweeps + ub%ubw+2 .and. get_ubwmax(ub) < get_n(ub)-1) then
+    if (get_ubwmax(ub) < sw%numsweeps + ub%ubw+1 .and. get_ubwmax(ub) < get_n(ub)-1) then
        call set_error(error,3,id_d_trp_sweeps_times_bv); return
     end if
     if (get_n(bv) < 1) then
@@ -1178,7 +1178,7 @@ contains
     if (get_ubwmax(bv) < sw%numsweeps + ub%ubw+1 .and. get_ubwmax(bv) < get_n(ub)-1) then
        call set_error(error,2,id_c_trp_sweeps_times_bv); return
     end if
-    if (get_ubwmax(ub) < sw%numsweeps + ub%ubw+2 .and. get_ubwmax(ub) < get_n(ub)-1) then
+    if (get_ubwmax(ub) < sw%numsweeps + ub%ubw+1 .and. get_ubwmax(ub) < get_n(ub)-1) then
        call set_error(error,3,id_c_trp_sweeps_times_bv); return
     end if
     if (get_n(bv) < 1) then
@@ -1312,7 +1312,7 @@ contains
     if (get_n(bv) /= get_n(ub) .or. get_n(bv) /= get_n(sw)) then
        call set_error(error,1,id_d_ub_times_trp_sweeps); return
     end if
-    if (get_ubwmax(bv) < sw%numsweeps + ub%ubw+2 .and. get_ubwmax(bv) < get_n(ub)-1) then
+    if (get_ubwmax(bv) < sw%numsweeps + ub%ubw+1 .and. get_ubwmax(bv) < get_n(ub)-1) then
        call set_error(error,2,id_d_ub_times_trp_sweeps); return
     end if
     if (get_ubwmax(ub) < sw%numsweeps + ub%ubw+1 .and. get_ubwmax(ub) < get_n(ub)-1) then
@@ -1437,7 +1437,7 @@ contains
     if (get_n(bv) /= get_n(ub) .or. get_n(bv) /= get_n(sw)) then
        call set_error(error,1,id_c_ub_times_trp_sweeps); return
     end if
-    if (get_ubwmax(bv) < sw%numsweeps + ub%ubw+2 .and. get_ubwmax(bv) < get_n(ub)-1) then
+    if (get_ubwmax(bv) < sw%numsweeps + ub%ubw+1 .and. get_ubwmax(bv) < get_n(ub)-1) then
        call set_error(error,2,id_c_ub_times_trp_sweeps); return
     end if
     if (get_ubwmax(ub) < sw%numsweeps + ub%ubw+1 .and. get_ubwmax(ub) < get_n(ub)-1) then
