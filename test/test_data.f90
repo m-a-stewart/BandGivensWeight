@@ -122,7 +122,7 @@ contains
        else
           test_result="    FAILED"
        end if
-       write (*,fmt_qr) name, t1-t0, ubw1, berr, qerr, subd_err, test_result
+       write (*,fmt_qr) name, t1-t0, ubw0, berr, qerr, subd_err, test_result
     end if
   end subroutine c_output_result_qr
 

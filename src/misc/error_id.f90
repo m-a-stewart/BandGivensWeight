@@ -81,8 +81,8 @@ module error_id
   integer(int32), parameter :: id_c_lower_right_nullvec=083
 
   ! src/qr_iteration/qr_iteration 090s
-  integer(int32), parameter :: id_ss_qr=090
-  integer(int32), parameter :: id_f_ss_qr=091
+  integer(int32), parameter :: id_ss_r1_qr=090
+  integer(int32), parameter :: id_f_ss_r1_qr=091
   integer(int32), parameter :: id_ss_qr_iteration=092
   integer(int32), parameter :: id_f_ss_qr_iteration=093
 

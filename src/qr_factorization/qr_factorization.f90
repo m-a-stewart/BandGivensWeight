@@ -72,7 +72,7 @@ contains
     if (get_lbwmax(ub) < bv%lbw-1 .or. get_ubwmax(ub) < bv%ubw+1) then
        call set_error(error, 5, id_d_reduce_lbw_bv_to_ub); return
     end if
-    if (size(cs) /= get_n(ub) .or. size(ss) /= get_n(ub)) then
+    if (size(cs) /= get_n(ub) - 1 .or. size(ss) /= get_n(ub) - 1 ) then
        call set_error(error, 6, id_d_reduce_lbw_bv_to_ub); return
     end if
 
@@ -96,7 +96,7 @@ contains
     integer(kind=int32), dimension(ubwmax_ub,n), intent(out) :: js_ub
     real(kind=dp), dimension(ubwmax_ub,n), intent(out) :: cs_ub, ss_ub
 
-    real(kind=dp), dimension(n) :: cs, ss
+    real(kind=dp), dimension(n-1) :: cs, ss
     integer(kind=int32), intent(out) :: lbw_ub, ubw_ub
     type(error_info), intent(out) :: error
 
@@ -186,7 +186,7 @@ contains
     if (get_lbwmax(ub) < bv%lbw-1 .or. get_ubwmax(ub) < bv%ubw+1) then
        call set_error(error, 5, id_d_reduce_lbw_bv_to_ub); return
     end if
-    if (size(cs) /= get_n(ub) .or. size(ss) /= get_n(ub)) then
+    if (size(cs) /= get_n(ub) - 1 .or. size(ss) /= get_n(ub) - 1) then
        call set_error(error, 6, id_d_reduce_lbw_bv_to_ub); return
     end if
     call f_c_reduce_lbw_bv_to_ub(bv%b, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), &
@@ -213,7 +213,7 @@ contains
     integer(kind=int32), dimension(ubwmax_ub,n), intent(out) :: js_ub
     complex(kind=dp), dimension(ubwmax_ub,n), intent(out) :: cs_ub, ss_ub
 
-    complex(kind=dp), dimension(n) :: cs, ss
+    complex(kind=dp), dimension(n-1) :: cs, ss
     integer(kind=int32), intent(out) :: lbw_ub, ubw_ub
     type(error_info), intent(out) :: error
 
@@ -331,7 +331,7 @@ contains
     integer(kind=int32), dimension(ubwmax_ub,n), intent(out) :: js_ub
     real(kind=dp), dimension(ubwmax_ub,n), intent(out) :: cs_ub, ss_ub
 
-    real(kind=dp), dimension(n,lbw_bv) :: cs, ss
+    real(kind=dp), dimension(n-1,lbw_bv) :: cs, ss
     integer(kind=int32), intent(out) :: lbw_ub, ubw_ub
     type(error_info), intent(out) :: error
     integer(kind=int32) :: j, lbw, ubw
@@ -407,7 +407,7 @@ contains
     integer(kind=int32), dimension(ubwmax_ub,n), intent(out) :: js_ub
     complex(kind=dp), dimension(ubwmax_ub,n), intent(out) :: cs_ub, ss_ub
 
-    complex(kind=dp), dimension(n,lbw_bv) :: cs, ss
+    complex(kind=dp), dimension(n-1,lbw_bv) :: cs, ss
     integer(kind=int32), intent(out) :: lbw_ub, ubw_ub
     type(error_info), intent(out) :: error
     integer(kind=int32) :: j, lbw, ubw

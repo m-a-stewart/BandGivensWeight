@@ -31,4 +31,4 @@ OBJS =  $(MISCOBJS) $(TYPESOBJS) $(TRANSFORMSOBJS) $(ORTHOBJS) $(DECOMPOBJS) \
 
 TEST_EXECS =  $(OBJDIR)/test_decomp $(OBJDIR)/test_convert $(OBJDIR)/test_compress \
 	$(OBJDIR)/test_qr_iteration $(OBJDIR)/test_qr_factorization $(OBJDIR)/test_solve \
-	$(OBJDIR)/test_sweeps
+	$(OBJDIR)/test_sweeps $(OBJDIR)/test_update

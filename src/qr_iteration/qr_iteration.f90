@@ -1,6 +1,8 @@
 module qr_iteration
   use compressions
   use conversions
+  use assemble
+  use sweeps
 
   implicit none
 
@@ -11,8 +13,8 @@ module qr_iteration
 
   real(kind=dp), private, parameter :: tol=1.0e-15
 
-  type(routine_info), parameter :: info_ss_qr=routine_info(id_ss_qr, &
-       'ss_qr', &
+  type(routine_info), parameter :: info_ss_r1_qr=routine_info(id_ss_r1_qr, &
+       'ss_r1_qr', &
        [ character(len=error_message_length) :: 'size(q,2) /= bv%n', 'bv%lbw /= 1'  ])
 
   type(routine_info), parameter :: info_ss_qr_iteration=routine_info(id_ss_qr_iteration, &
@@ -26,71 +28,113 @@ contains
   ! 1: size(q,2) /= bv%n
   ! 2: bv%lbw /= 1
   !         
-  subroutine ss_qr(bv,q,told,tol,error)
+  subroutine ss_r1_qr(bv,u,v,q,error)
     type(c_bv), intent(inout) :: bv
-    complex(kind=dp), dimension(:,:), intent(out) :: q
+    complex(kind=dp), dimension(:,:), intent(inout) :: q
+    complex(kind=dp), dimension(:), intent(inout) :: u, v
     type(error_info), intent(out) :: error
-    real(kind=dp), intent(in) :: told, tol
 
-    type(c_shift), dimension(:), allocatable :: shifts
-    integer(kind=int32) :: k, numshifts, n, lbw, ubw
-    type(c_bv) :: bv_tmp
+    complex(kind=dp), dimension(:), allocatable :: shifts_c
+    complex(kind=dp), dimension(:,:), allocatable :: cs_sw, ss_sw, b_bv_tmp
+    integer(kind=int32), dimension(:), allocatable :: shifts_i
+    integer(kind=int32) :: n
     type(c_ub) :: ub
-    complex(kind=dp) :: subd, sigma
-
-    n=get_n(bv); lbw=bv%lbw; ubw=bv%ubw
-    allocate(shifts(n))
-
+    
     call clear_error(error)
+    n=get_n(bv)
+    allocate(shifts_c(n), shifts_i(n), cs_sw(n,4), ss_sw(n,4), &
+         b_bv_tmp(n, get_lbwmax(bv) + get_ubwmax(bv)+1))
+
     if (size(q,2) /= n) then
-       call set_error(error, 1, id_ss_qr); return
+       call set_error(error, 1, id_ss_r1_qr); return
     end if
-    if (lbw /= 1) then
-       call set_error(error, 2, id_ss_qr); return
+    if (bv%lbw /= 1) then
+       call set_error(error, 2, id_ss_r1_qr); return
     end if
-    bv_tmp=c_new_bv(n,get_lbwmax(bv), get_ubwmax(bv))
 
     ub=c_new_ub(n,get_lbwmax(bv), get_ubwmax(bv))
+    
+    call f_ss_r1_qr(bv%b, n, bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), bv%numrotsv, bv%ksv, &
+         bv%csv, bv%ssv, u,v,q,size(q,1), &
+         ub%b, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), ub%numrotsu, ub%jsu, ub%csu, ub%ssu, &
+         cs_sw, ss_sw, shifts_c, shifts_i, b_bv_tmp, error)
+    deallocate(shifts_c, shifts_i, cs_sw, ss_sw, b_bv_tmp)
+    call deallocate_ub(ub)
+
+  end subroutine ss_r1_qr
+
+  subroutine f_ss_r1_qr(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, &
+       cs_bv, ss_bv, u, v, q, p, &
+       b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, cs_ub, ss_ub, &
+       cs_sw, ss_sw, shifts_c, shifts_i, b_bv_tmp, error)
+
+    integer(kind=int32), intent(in) :: n, lbwmax_bv, ubwmax_bv, lbwmax_ub, ubwmax_ub, p
+    integer(kind=int32), intent(inout) :: lbw_bv, ubw_bv, lbw_ub, ubw_ub
+
+    complex(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(inout) :: b_bv
+    integer(kind=int32), dimension(n), intent(inout) :: numrots_bv
+    integer(kind=int32), dimension(ubwmax_bv,n), intent(inout) :: ks_bv
+    complex(kind=dp), dimension(ubwmax_bv,n), intent(inout) :: cs_bv, ss_bv
+
+    complex(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(out) :: b_ub
+    integer(kind=int32), dimension(n), intent(out) :: numrots_ub
+    integer(kind=int32), dimension(n, ubwmax_ub), intent(out) :: js_ub
+    complex(kind=dp), dimension(n, ubwmax_ub), intent(out) :: cs_ub, ss_ub
+
+    complex(kind=dp), dimension(n,4) :: cs_sw, ss_sw
+    complex(kind=dp), dimension(n) :: shifts_c
+    integer(kind=int32), dimension(n) :: shifts_i
+
+    complex(kind=dp), dimension(p,n), intent(inout) :: q
+    complex(kind=dp), dimension(n), intent(inout) :: u, v
+    complex(kind=dp), dimension(n,lbwmax_bv+ubwmax_bv+1) :: b_bv_tmp
+    type(error_info), intent(out) :: error
+
+    integer(kind=int32) :: k, numshifts
+    complex(kind=dp) :: subd, sigma
+    type(c_rotation) :: rot
+
+    call clear_error(error)
 
     qr_loop: do
        ! zero any small subdiagonals
        do k=1,n-1
-          subd=get_el_br(bv%b,lbw,k+1,k)
+          subd=get_el_br(b_bv,lbw_bv,k+1,k)
           if ( abs(subd) <= tol ) then
-             call set_el_br(bv%b,lbw,k+1,k,(0.0_dp,0.0_dp))
+             call set_el_br(b_bv,lbw_bv,k+1,k,(0.0_dp,0.0_dp))
           end if
        end do
        ! set up shifts.
        numshifts=0
-       call copy_bv(bv,bv_tmp)
-       call c_bv_reveal_superdiag(bv_tmp)
-
-       ! compute shifts
-       shifts%flag=.false.
-       shifts%shift=(0.0_dp,0.0_dp)
+       b_bv_tmp(:,1:lbw_bv+ubw_bv+1)=b_bv(:,1:lbw_bv+ubw_bv+1)
+       call f_c_bv_reveal_superdiag(b_bv_tmp, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, &
+            cs_bv, ss_bv)
+       shifts_i=0
+       shifts_c=(0.0_dp,0.0_dp)
        k=n-1
        numshifts=0
        shift_loop: do while (k >= 1)
-          subd=get_el_br(bv%b,lbw,k+1,k)
+          subd=get_el_br(b_bv,lbw_bv,k+1,k)
           if (subd==(0.0_dp, 0.0_dp)) then
              k=k-1;  cycle shift_loop
           else
              ! Found a nonzero subdiagonal
-             sigma=c_wilkinson_shift(get_el_br(bv%b,lbw,k,k),get_el_br(bv_tmp%b,lbw,k,k+1), &
-                  subd,get_el_br(bv%b,lbw,k+1,k+1))
+             sigma=c_wilkinson_shift(get_el_br(b_bv,lbw_bv,k,k),get_el_br(b_bv_tmp,lbw_bv,k,k+1), &
+                  subd,get_el_br(b_bv,lbw_bv,k+1,k+1))
              numshifts=numshifts+1
+             ! find the next zero subdiagonal
              ! find the next zero subdiagonal
              find_unreduced: do
                 if (k==1) then
                    ! shift starts at the top.
-                   shifts(1)%flag=.true.
-                   shifts(1)%shift=sigma
+                   shifts_i(1)=1
+                   shifts_c(1)=sigma
                    exit shift_loop
                 else
-                   subd=get_el_br(bv%b,lbw,k,k-1)
+                   subd=get_el_br(b_bv,lbw_bv,k,k-1)
                    if (subd==(0.0_dp,0.0_dp)) then
-                      shifts(k)%flag=.true.
-                      shifts(k)%shift=sigma
+                      shifts_i(k)=1
+                      shifts_c(k)=sigma
                       k=k-1
                       exit find_unreduced
                    else
@@ -101,49 +145,34 @@ contains
              end do find_unreduced
           end if
        end do shift_loop
-
        if (numshifts==0) then
           exit qr_loop
        end if
-       call ss_qr_iteration(bv,ub,shifts, q, error)
-       call compress_ub_to_bv(ub,bv,told, tol,0,error)
+
+       call f_ss_qr_iteration(b_bv,n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, &
+            cs_bv, ss_bv, b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, cs_ub, &
+            ss_ub, shifts_i, shifts_c, cs_sw(:,1), ss_sw(:,1), error)
+
+       do k=1,n-1
+          rot%cosine=cs_sw(k,1); rot%sine=ss_sw(k,1)
+          call general_times_rotation(q,rot,k,k+1)
+          call general_times_rotation(u,rot,k,k+1)
+          call general_times_rotation(v,rot,k,k+1)
+       end do
+       if (ubw_ub > 3) then
+          call f_c_compress_ub_to_bv(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, &
+               js_ub, cs_ub, ss_ub, &
+               b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, &
+               0.0_dp, 0.0_dp, 1, error)
+       else
+          call f_c_convert_ub_to_bv(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, &
+               js_ub, cs_ub, ss_ub, &
+               b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, error)
+       end if
+
     end do qr_loop
-    deallocate(shifts)
-    call deallocate_ub(ub)
-  end subroutine ss_qr
 
-  subroutine f_ss_qr(b_bv,n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, &
-       cs_bv, ss_bv, q, p, told, tol, error)
-    integer(kind=int32), intent(in) :: n, lbw_bv, lbwmax_bv, ubwmax_bv, p
-    integer(kind=int32), intent(inout) :: ubw_bv
-    complex(kind=dp), dimension(lbwmax_bv+ubwmax_bv+1,n), intent(inout) :: b_bv
-    integer(kind=int32), dimension(n), intent(out) :: numrots_bv
-    integer(kind=int32), dimension(ubwmax_bv,n), intent(out) :: ks_bv
-    complex(kind=dp), dimension(ubwmax_bv,n), intent(out) :: cs_bv, ss_bv
-    complex(kind=dp), dimension(p,n), intent(out) :: q
-    type(error_info), intent(out) :: error
-    real(kind=dp), intent(in) :: told, tol
-
-    type (c_bv) :: bv
-
-    call clear_error(error)
-    bv=c_new_bv(n,lbwmax_bv,ubwmax_bv)
-
-    bv%b=b_bv
-    bv%lbw=lbw_bv; bv%ubw=ubw_bv
-    bv%numrotsv=numrots_bv
-    bv%ksv=ks_bv
-    bv%csv=cs_bv; bv%ssv=ss_bv
-    call ss_qr(bv,q,told, tol, error)
-    b_bv=bv%b
-    ubw_bv=bv%ubw
-    numrots_bv=bv%numrotsv
-    ks_bv=bv%ksv
-    cs_bv=bv%csv; ss_bv=bv%ssv
-
-    call deallocate_bv(bv)
-
-  end subroutine f_ss_qr
+  end subroutine f_ss_r1_qr
 
   ! Errors:
   ! 1: n<1
@@ -152,16 +181,17 @@ contains
   ! 4: Not Hessenberg: bv%lbw /= 1
   ! 5: insufficient storage in ub
 
-  subroutine ss_qr_iteration(bv,ub,shifts, q, error)
+  subroutine ss_qr_iteration(bv,ub,shifts, sw, error)
     type(c_bv), intent(inout) :: bv
     type(c_ub) :: ub
     type(c_shift), dimension(:), intent(in) :: shifts
     type(error_info), intent(out) :: error
-    complex(kind=dp), dimension(:,:), intent(out) :: q
+    type(c_sweeps), intent(inout) :: sw
 
     integer :: n, j
     integer(kind=int32), dimension(size(shifts)) :: shifts_i
     complex(kind=dp), dimension(size(shifts)) :: shifts_c
+
 
     n=get_n(ub)
     call clear_error(error)
@@ -171,7 +201,7 @@ contains
     if (get_lbwmax(bv)+get_ubwmax(bv)<bv%ubw + 4) then
        call set_error(error, 2, id_ss_qr_iteration); return
     end if
-    if (get_n(bv) /= n .or. size(shifts) /= n .or. size(q,2) /= n) then
+    if (get_n(bv) /= n .or. size(shifts) /= n .or. get_n(sw) /= n) then
        call set_error(error, 3, id_ss_qr_iteration); return
     end if
     if (bv%lbw /= 1) then
@@ -181,6 +211,7 @@ contains
        call set_error(error, 5, id_ss_qr_iteration); return
     end if
 
+    sw%numsweeps=1
     shifts_i=0
     do j=1,n
        shifts_c(j)=shifts(j)%shift
@@ -188,44 +219,49 @@ contains
           shifts_i(j)=1
        end if
     end do
-    call f_ss_qr_iteration(bv%b, get_n(bv), bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
+    call f_ss_qr_iteration(bv%b, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
          bv%numrotsv, bv%ksv, bv%csv, bv%ssv, & 
-         ub%b, get_lbwmax(ub), get_ubwmax(ub), ub%numrotsu, ub%jsu, &
-         ub%csu, ub%ssu, shifts_i, shifts_c, q, size(q,2), error)
-    ub%ubw=bv%ubw+1
-    ub%lbw=1
+         ub%b, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), ub%numrotsu, ub%jsu, &
+         ub%csu, ub%ssu, shifts_i, shifts_c, sw%cs(:,1), sw%ss(:,1), error)
   end subroutine ss_qr_iteration
 
-  subroutine f_ss_qr_iteration(b_bv,n, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, &
-       cs_bv, ss_bv, b_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, cs_ub, &
-       ss_ub, shifts_i, shifts_c, q, p, error)
-    integer(kind=int32), intent(in) :: n, ubw_bv, lbwmax_bv, ubwmax_bv, lbwmax_ub, ubwmax_ub, p
+  ! A single QR iteration: Start with a B.V decompositions and apply shifts in shifts_c starting
+  ! in positions given in shifts_i.   Result is a U.B decomposition and the cosines and sines for Q.
+  subroutine f_ss_qr_iteration(b_bv,n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, &
+       cs_bv, ss_bv, b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, cs_ub, &
+       ss_ub, shifts_i, shifts_c, cs_q, ss_q, error)
+    integer(kind=int32), intent(in) :: n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, lbwmax_ub, ubwmax_ub
     complex(kind=dp), dimension(n,lbwmax_bv+ubwmax_bv+1), intent(inout) :: b_bv
     integer(kind=int32), dimension(n), intent(in) :: numrots_bv
     integer(kind=int32), dimension(n,ubwmax_bv), intent(in) :: ks_bv
     complex(kind=dp), dimension(n,ubwmax_bv), intent(in) :: cs_bv, ss_bv
 
     complex(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(out) :: b_ub
+    integer(kind=int32), intent(out) :: lbw_ub, ubw_ub
     integer(kind=int32), dimension(n), intent(out) :: numrots_ub
     integer(kind=int32), dimension(ubwmax_ub,n), intent(out) :: js_ub
     complex(kind=dp), dimension(ubwmax_ub,n), intent(out) :: cs_ub, ss_ub
-    complex(kind=dp), dimension(p,n), intent(out) :: q
+    complex(kind=dp), dimension(n), intent(out) :: cs_q, ss_q
 
     integer(kind=int32), dimension(n) :: shifts_i
     complex(kind=dp), dimension(n) :: shifts_c
 
     type(error_info), intent(out) :: error
 
-    integer(kind=int32) :: j, k, ubw, lbw, ubw_ub, k0,k1
+    integer(kind=int32) :: j, k, ubw, lbw, k0,k1
     type(c_rotation) :: rot
 
     call clear_error(error)
     numrots_ub=0
-    ss_ub=(0.0_dp, 0.0_dp); cs_ub=(0.0_dp, 0.0_dp)
-    js_ub=0
-    b_ub=(0.0_dp, 0.0_dp)
+    ss_ub(1:ubw_bv+1,:)=(0.0_dp, 0.0_dp)
+    cs_ub(1:ubw_bv+1,:)=(0.0_dp, 0.0_dp)
+    js_ub(1:ubw_bv+1,:)=0
+    b_ub(1:lbw_bv+ubw_bv+2,:)=(0.0_dp, 0.0_dp)
     ubw=ubw_bv+2 ! ubw increases by 1, with extra diagonal for temporary storage.
+    b_bv(:,lbw_bv+ubw_bv+2:lbw_bv+ubw_bv+3)=(0.0_dp, 0.0_dp)
     lbw=2 ! 1 extra subdiagonal for the bulge.
+    cs_q=(1.0_dp,0.0_dp)
+    ss_q=(0.0_dp,0.0_dp)
 
     if (n == 1) then
        b_ub(1,1)=b_bv(1,1)
@@ -245,13 +281,13 @@ contains
           rot=lgivens(get_el_br(b_bv,lbw,k,k)-shifts_c(k),get_el_br(b_bv,lbw,k+1,k))
           call rotation_times_tbr(trp_rot(rot),b_bv,n,lbw,ubw,0,0,k)
           call tbr_times_rotation(b_bv,n,lbw,ubw,0,0,rot,k)
-          call general_times_rotation(q,rot,k,k+1)
+          cs_q(k)=rot%cosine; ss_q(k)=rot%sine
        else if (get_el_br(b_bv,lbw,k+1,k-1) /= (0.0_dp, 0.0_dp)) then
           ! chase the bulge.
           rot=lgivens(get_el_br(b_bv,lbw,k,k-1),get_el_br(b_bv,lbw,k+1,k-1))
           call rotation_times_tbr(trp_rot(rot),b_bv,n,lbw,ubw,0,0,k)
           call tbr_times_rotation(b_bv,n,lbw,ubw,0,0,rot,k)
-          call general_times_rotation(q,rot,k,k+1)
+          cs_q(k)=rot%cosine; ss_q(k)=rot%sine
        end if
        ! columns that have a nonzero in superdiagonal ubw
        ! Three cases:
@@ -272,8 +308,9 @@ contains
        end do
     end do
     ubw_ub=ubw_bv+1
+    lbw_ub=1
     call left_shift(b_bv)
-    call br_to_bc(b_bv,b_ub,1,ubw_ub)
+    call br_to_bc(b_bv,b_ub,lbw_ub,ubw_ub)
   end subroutine f_ss_qr_iteration
 
   ! These function are destructive.  bv is modified so that it
@@ -314,9 +351,9 @@ contains
     complex(kind=dp), intent(in) :: a,b,c,d
     complex(kind=dp) :: tr, w, x, y
     tr=a+d
-    w=sqrt(tr**2-4.0*(a*d-b*c))
-    x=(tr+w)/2.0
-    y=(tr-w)/2.0
+    w=sqrt(tr**2-4.0_dp*(a*d-b*c))
+    x=(tr+w)/2.0_dp
+    y=(tr-w)/2.0_dp
     if (abs(d-y) < abs(d-x)) then
        lambda=y
     else

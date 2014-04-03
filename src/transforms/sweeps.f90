@@ -173,7 +173,7 @@ contains
   type(d_sweeps) function d_new_sweeps(n,maxsweeps) result(sw)
     integer(kind=int32), intent(in) :: n, maxsweeps
     sw%n=n; sw%maxsweeps=maxsweeps
-    allocate(sw%cs(n,maxsweeps), sw%ss(n,maxsweeps))
+    allocate(sw%cs(n-1,maxsweeps), sw%ss(n-1,maxsweeps))
     sw%numsweeps=0
     sw%cs=1.0_dp; sw%ss=0.0_dp
   end function d_new_sweeps
@@ -181,7 +181,7 @@ contains
   type(c_sweeps) function c_new_sweeps(n,maxsweeps) result(sw)
     integer(kind=int32), intent(in) :: n, maxsweeps
     sw%n=n; sw%maxsweeps=maxsweeps
-    allocate(sw%cs(n,maxsweeps), sw%ss(n,maxsweeps))
+    allocate(sw%cs(n-1,maxsweeps), sw%ss(n-1,maxsweeps))
     sw%numsweeps=0
     sw%cs=(1.0_dp,0.0_dp); sw%ss=(0.0_dp,0.0_dp)
   end function c_new_sweeps
@@ -481,7 +481,7 @@ contains
        b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, cs_ub, ss_ub, &
        b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, error)
 
-    real(kind=dp), dimension(n,maxsweeps_sw), intent(in) :: cs_sw, ss_sw
+    real(kind=dp), dimension(n-1,maxsweeps_sw), intent(in) :: cs_sw, ss_sw
     integer(kind=int32), intent(in) :: numsweeps_sw, maxsweeps_sw, n
 
     real(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(inout) :: b_ub
@@ -620,7 +620,7 @@ contains
        b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, cs_ub, ss_ub, &
        b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, error)
 
-    complex(kind=dp), dimension(n,maxsweeps_sw), intent(in) :: cs_sw, ss_sw
+    complex(kind=dp), dimension(n-1,maxsweeps_sw), intent(in) :: cs_sw, ss_sw
     integer(kind=int32), intent(in) :: numsweeps_sw, maxsweeps_sw, n
 
     complex(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(inout) :: b_ub
@@ -772,7 +772,7 @@ contains
        cs_sw, ss_sw, numsweeps_sw, maxsweeps_sw, &
        b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, cs_ub, ss_ub, error)
 
-    real(kind=dp), dimension(n,maxsweeps_sw), intent(in) :: cs_sw, ss_sw
+    real(kind=dp), dimension(n-1,maxsweeps_sw), intent(in) :: cs_sw, ss_sw
     integer(kind=int32), intent(in) :: numsweeps_sw, maxsweeps_sw, n
 
     real(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(inout) :: b_bv
@@ -916,7 +916,7 @@ contains
        cs_sw, ss_sw, numsweeps_sw, maxsweeps_sw, &
        b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, cs_ub, ss_ub, error)
 
-    complex(kind=dp), dimension(n,maxsweeps_sw), intent(in) :: cs_sw, ss_sw
+    complex(kind=dp), dimension(n-1,maxsweeps_sw), intent(in) :: cs_sw, ss_sw
     integer(kind=int32), intent(in) :: numsweeps_sw, maxsweeps_sw, n
 
     complex(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(inout) :: b_bv
@@ -1066,7 +1066,7 @@ contains
        b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, &
        b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, cs_ub, ss_ub, error)
 
-    real(kind=dp), dimension(n,maxsweeps_sw), intent(in) :: cs_sw, ss_sw
+    real(kind=dp), dimension(n-1,maxsweeps_sw), intent(in) :: cs_sw, ss_sw
     integer(kind=int32), intent(in) :: numsweeps_sw, maxsweeps_sw, n
 
     real(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(inout) :: b_bv
@@ -1195,7 +1195,7 @@ contains
        b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, &
        b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, cs_ub, ss_ub, error)
 
-    complex(kind=dp), dimension(n,maxsweeps_sw), intent(in) :: cs_sw, ss_sw
+    complex(kind=dp), dimension(n-1,maxsweeps_sw), intent(in) :: cs_sw, ss_sw
     integer(kind=int32), intent(in) :: numsweeps_sw, maxsweeps_sw, n
 
     complex(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(inout) :: b_bv
@@ -1334,7 +1334,7 @@ contains
        cs_sw, ss_sw, numsweeps_sw, maxsweeps_sw, &
        b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, &
        error)
-    real(kind=dp), dimension(n,maxsweeps_sw), intent(in) :: cs_sw, ss_sw
+    real(kind=dp), dimension(n-1,maxsweeps_sw), intent(in) :: cs_sw, ss_sw
     integer(kind=int32), intent(in) :: numsweeps_sw, maxsweeps_sw, n
 
     real(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(inout) :: b_bv
@@ -1459,7 +1459,7 @@ contains
        cs_sw, ss_sw, numsweeps_sw, maxsweeps_sw, &
        b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, &
        error)
-    complex(kind=dp), dimension(n,maxsweeps_sw), intent(in) :: cs_sw, ss_sw
+    complex(kind=dp), dimension(n-1,maxsweeps_sw), intent(in) :: cs_sw, ss_sw
     integer(kind=int32), intent(in) :: numsweeps_sw, maxsweeps_sw, n
 
     complex(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(inout) :: b_bv
@@ -1560,7 +1560,7 @@ contains
     sw%numsweeps=l
     call random_matrix(sw%cs)
     call random_matrix(sw%ss)
-    do j=1,n
+    do j=1,n-1
        do k=1,l
           nrm=sqrt(sw%cs(j,k)**2+sw%ss(j,k)**2)
           sw%cs(j,k)=sw%cs(j,k)/nrm
@@ -1576,7 +1576,7 @@ contains
     sw%numsweeps=l
     call random_matrix(sw%cs)
     call random_matrix(sw%ss)
-    do j=1,n
+    do j=1,n-1
        do k=1,l
           cr=real(sw%cs(j,k),kind=dp)
           sw%cs(j,k)=cmplx(cr,0.0_dp)

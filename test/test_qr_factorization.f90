@@ -40,7 +40,7 @@ program test_qr_factorization
   print *, "Real QR Factorization Tests"
   print *
   ! ub to bv
-  na=100; lbwa=3; ubwa=2
+  na=6; lbwa=3; ubwa=2
   u_d=u0_d; v_d=v0_d; d_d=d0_d
   allocate(a_d(na,na), a0_d(na,na), a1_d(na,na), q_d(na,na), cs_d(na), ss_d(na))
   ub_d=d_new_ub(na,lbwmax,ubwmax)
