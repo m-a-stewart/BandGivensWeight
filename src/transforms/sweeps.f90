@@ -507,7 +507,8 @@ contains
     call clear_error(error)
 
     if (n==1) then
-       b_bv(1,1)=b_ub(1,1); return
+       b_bv(1,1)=b_ub(1,1);
+       lbw_bv=0; ubw_bv=0; numrots_bv=0; return
     end if
     ! Initial expansion for first sweep: one extra subdiagonal and
     ! one extra superdiagonal to fill-in.
@@ -646,7 +647,8 @@ contains
     call clear_error(error)
 
     if (n==1) then
-       b_bv(1,1)=b_ub(1,1); return
+       b_bv(1,1)=b_ub(1,1);
+       lbw_bv=0; ubw_bv=0; numrots_bv=0; return
     end if
     ! Initial expansion for first sweep: one extra subdiagonal and
     ! one extra superdiagonal to fill-in.
@@ -798,7 +800,8 @@ contains
     call clear_error(error)
 
     if (n==1) then
-       b_ub(1,1)=b_bv(1,1); return
+       b_ub(1,1)=b_bv(1,1);
+       lbw_ub=0; ubw_ub=0; numrots_ub=0; return
     end if
     ! Initial expansion for first sweep: one extra subdiagonal and
     ! one extra superdiagonal to fill-in.
@@ -942,7 +945,8 @@ contains
     call clear_error(error)
 
     if (n==1) then
-       b_ub(1,1)=b_bv(1,1); return
+       b_ub(1,1)=b_bv(1,1);
+       lbw_ub=0; ubw_ub=0; numrots_ub=0; return
     end if
     ! Initial expansion for first sweep: one extra subdiagonal and
     ! one extra superdiagonal to fill-in.
@@ -1092,7 +1096,8 @@ contains
     call clear_error(error)
 
     if (n==1) then
-       b_ub(1,1)=b_bv(1,1); return
+       b_ub(1,1)=b_bv(1,1);
+       lbw_ub=0; ubw_ub=0; numrots_ub=0; return
     end if
     ! Initial expansion for first sweep:
     ! one extra superdiagonal to fill-in.
@@ -1221,7 +1226,8 @@ contains
     call clear_error(error)
 
     if (n==1) then
-       b_ub(1,1)=b_bv(1,1); return
+       b_ub(1,1)=b_bv(1,1);
+       lbw_ub=0; ubw_ub=0; numrots_ub=0; return
     end if
     ! Initial expansion for first sweep:
     ! one extra superdiagonal to fill-in.
@@ -1360,7 +1366,8 @@ contains
     call clear_error(error)
 
     if (n==1) then
-       b_bv(1,1)=b_ub(1,1); return
+       b_bv(1,1)=b_ub(1,1);
+       lbw_bv=0; ubw_bv=0; numrots_bv=0; return
     end if
     ! Initial expansion for first sweep:
     ! one extra superdiagonal to fill-in.
@@ -1485,7 +1492,8 @@ contains
     call clear_error(error)
 
     if (n==1) then
-       b_bv(1,1)=b_ub(1,1); return
+       b_bv(1,1)=b_ub(1,1);
+       lbw_bv=0; ubw_bv=0; numrots_bv=0; return
     end if
     ! Initial expansion for first sweep:
     ! one extra superdiagonal to fill-in.

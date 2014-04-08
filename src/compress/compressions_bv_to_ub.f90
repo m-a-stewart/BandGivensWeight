@@ -121,7 +121,7 @@ contains
     end if
     if (n == 1) then
        b_ub(1,1)=b_bv(1,1)
-       lbw_ub=0; ubw_ub=0
+       lbw_ub=0; ubw_ub=0; numrots_ub=0
        return
     end if
     nl=1; ml=1
@@ -394,7 +394,7 @@ contains
 
     if (n == 1) then
        b_ub(1,1)=b_bv(1,1)
-       lbw_ub=0; ubw_ub=0
+       lbw_ub=0; ubw_ub=0; numrots_ub=0
        return
     end if
     ! must allow for temporary fill-in of one extra superdiagonal in b_bv.

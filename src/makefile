@@ -35,9 +35,13 @@ $(OBJDIR)/compressions_bv_to_ub.o : $(OBJDIR)/misc.o $(OBJDIR)/shift.o $(OBJDIR)
 $(OBJDIR)/compressions_ub_to_bv.o : $(OBJDIR)/misc.o $(OBJDIR)/shift.o $(OBJDIR)/rotation.o $(OBJDIR)/types.o \
 	$(OBJDIR)/orth.o
 
-$(OBJDIR)/qr_iteration.o : $(OBJDIR)/compressions.o $(OBJDIR)/conversions.o $(OBJDIR)/sweeps.o
+$(OBJDIR)/qr_iteration.o : $(OBJDIR)/misc.o $(OBJDIR)/compressions.o $(OBJDIR)/conversions.o $(OBJDIR)/sweeps.o \
+	$(OBJDIR)/qr_factorization.o $(OBJDIR)/update.o $(OBJDIR)/substitution.o $(OBJDIR)/assemble.o
 
 $(OBJDIR)/qr_factorization.o : $(OBJDIR)/conversions.o $(OBJDIR)/sweeps.o
+
+$(OBJDIR)/update.o : $(OBJDIR)/misc.o $(OBJDIR)/types.o $(OBJDIR)/shift.o $(OBJDIR)/sweeps.o \
+	$(OBJDIR)/conversions.o
 
 $(OBJDIR)/substitution.o : $(OBJDIR)/transforms.o $(OBJDIR)/misc.o $(OBJDIR)/types.o
 

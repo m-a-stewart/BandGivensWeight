@@ -79,8 +79,8 @@ contains
     ks_bv(:,1:ubw)=0
     lbw_bv=lbw; ubw_bv=ubw
     if (n == 1) then
-       b_bv(1,1)=b_ub(1,1)
-       return
+       b_bv(1,1)=b_ub(1,1);
+       lbw_bv=0; ubw_bv=0; numrots_bv=0; return
     end if
     ! must allow for temporary fill-in
     lbw1=lbw
@@ -163,8 +163,8 @@ contains
     lbw_bv=lbw; ubw_bv=ubw
 
     if (n == 1) then
-       b_bv(1,1)=b_ub(1,1)
-       return
+       b_bv(1,1)=b_ub(1,1);
+       lbw_bv=0; ubw_bv=0; numrots_bv=0; return
     end if
     ! must allow for temporary fill-in
     ubw1=ubw+1; lbw1=lbw
@@ -183,7 +183,7 @@ contains
        end do
        k0=max(n-k+1,ubw+2)
        k1=min(n-k+ubw,n)
-       numrots_bv(k+1)=k1-k0+1
+       numrots_bv(k+1)=max(k1-k0+1,0)
        do j=k0,k1
           rot=rgivens(get_el_bc(b_ub,ubw1,j-ubw1,j-1), get_el_bc(b_ub,ubw1,j-ubw1,j))
           ks_bv(k+1,k1-j+1)=j-1

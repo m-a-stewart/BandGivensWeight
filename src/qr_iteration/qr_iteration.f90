@@ -1,6 +1,10 @@
 module qr_iteration
+  use misc
   use compressions
   use conversions
+  use qr_factorization
+  use update
+  use substitution
   use assemble
   use sweeps
 
@@ -11,7 +15,7 @@ module qr_iteration
      complex(kind=dp) :: shift
   end type c_shift
 
-  real(kind=dp), private, parameter :: tol=1.0e-15
+  real(kind=dp), private, parameter :: tol=1.0e-16
 
   type(routine_info), parameter :: info_ss_r1_qr=routine_info(id_ss_r1_qr, &
        'ss_r1_qr', &
@@ -93,11 +97,12 @@ contains
     integer(kind=int32) :: k, numshifts
     complex(kind=dp) :: subd, sigma
     type(c_rotation) :: rot
+    complex(kind=dp), dimension(n) :: u_tmp, v_tmp
 
     call clear_error(error)
 
-    qr_loop: do
-       ! zero any small subdiagonals
+   qr_loop: do
+
        do k=1,n-1
           subd=get_el_br(b_bv,lbw_bv,k+1,k)
           if ( abs(subd) <= tol ) then
@@ -156,14 +161,17 @@ contains
        do k=1,n-1
           rot%cosine=cs_sw(k,1); rot%sine=ss_sw(k,1)
           call general_times_rotation(q,rot,k,k+1)
-          call general_times_rotation(u,rot,k,k+1)
-          call general_times_rotation(v,rot,k,k+1)
+          call rotation_times_general(trp_rot(rot), u, k,k+1)
+          call rotation_times_general(trp_rot(rot), v, k,k+1)
        end do
-       if (ubw_ub > 3) then
-          call f_c_compress_ub_to_bv(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, &
-               js_ub, cs_ub, ss_ub, &
+
+      if (ubw_ub > 3) then
+
+          call f_r1_reorth(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, &
+               numrots_ub, js_ub, cs_ub, ss_ub, u, v, u_tmp, v_tmp, &
                b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, &
-               0.0_dp, 0.0_dp, 1, error)
+               cs_sw, ss_sw, shifts_i, error)
+
        else
           call f_c_convert_ub_to_bv(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, &
                js_ub, cs_ub, ss_ub, &
@@ -173,6 +181,127 @@ contains
     end do qr_loop
 
   end subroutine f_ss_r1_qr
+
+
+  ! reorthogonalization
+
+  subroutine f_r1_reorth(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, &
+       numrots_ub, js_ub, cs_ub, ss_ub, u, v, u_tmp, v_tmp, &
+       b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, &
+       cs_sw, ss_sw, zeros_i, error)
+    integer(kind=int32), intent(in) :: n, lbwmax_bv, ubwmax_bv, lbwmax_ub, ubwmax_ub
+    integer(kind=int32), intent(inout) :: lbw_bv, ubw_bv, lbw_ub, ubw_ub
+
+    complex(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(out) :: b_bv
+    integer(kind=int32), dimension(n), intent(out) :: numrots_bv
+    integer(kind=int32), dimension(ubwmax_bv,n), intent(out) :: ks_bv
+    complex(kind=dp), dimension(ubwmax_bv,n), intent(out) :: cs_bv, ss_bv
+
+    complex(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(inout) :: b_ub
+    integer(kind=int32), dimension(n), intent(inout) :: numrots_ub
+    integer(kind=int32), dimension(n, ubwmax_ub), intent(inout) :: js_ub
+    complex(kind=dp), dimension(n, ubwmax_ub), intent(inout) :: cs_ub, ss_ub
+
+    complex(kind=dp), dimension(n,4) :: cs_sw, ss_sw
+    complex(kind=dp), dimension(n), intent(inout) :: u, v, u_tmp, v_tmp
+    integer(kind=int32), dimension(n), intent(out) :: zeros_i
+
+    type(error_info), intent(out) :: error
+
+    integer(kind=int32) :: j, numsweeps
+    complex(kind=dp), dimension(n) :: d
+    complex(kind=dp) :: x
+
+    zeros_i=0
+    do j=2,n
+       if ( abs(b_bv(j,1)) <= tol ) then
+          zeros_i(j)=1
+       end if
+    end do
+    
+    numsweeps=0
+    u_tmp=u; v_tmp=v
+
+    call f_c_r1_update_ub_to_bv(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, &
+         js_ub, cs_ub, ss_ub, u_tmp, v_tmp, &
+         b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, &
+         cs_sw, ss_sw, numsweeps, 4, error)
+    
+    b_bv(1,lbw_bv+1)=b_bv(1,lbw_bv+1) - u_tmp(1)*conjg(v_tmp(1))
+    b_bv(1,lbw_bv+2)=b_bv(1,lbw_bv+2) - u_tmp(1)*conjg(v_tmp(2))
+
+    call f_c_qr_bv_to_ub(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, &
+       ks_bv, cs_bv, ss_bv, &
+       b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, cs_ub, ss_ub, &
+       cs_sw(:,2:3), ss_sw(:,2:3), error)
+
+    call f_c_convert_ub_to_bv(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, &
+         js_ub, cs_ub, ss_ub, &
+         b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, error)
+
+    do j=1,n
+       x=b_bv(j,lbw_bv+1)
+       d(j)=x/abs(x)
+       b_bv(j,1:lbw_bv+ubw_bv+1)=b_bv(j,1:lbw_bv+ubw_bv+1)*conjg(d(j))
+    end do
+    
+    v_tmp=conjg(v)
+    call f_c_forward_substitution_bv(v, b_bv, n, lbw_bv, ubw_bv, &
+         lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, &
+         v_tmp, 1, error)
+    v=conjg(v)
+
+    lbw_ub=0; ubw_ub=0; numrots_ub=0
+    do j=1,n
+       b_ub(1,j)=d(j)
+    end do
+
+    call f_c_sweeps_times_ub(cs_sw(:,2:3), ss_sw(:,2:3), 2, 3, n, &
+       b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, cs_ub, ss_ub, &
+       b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, error)
+
+    call f_c_convert_bv_to_ub(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, &
+         cs_bv, ss_bv, &
+         b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, &
+         js_ub, cs_ub, ss_ub, error)
+         
+    v_tmp=v
+
+    call f_c_e1v_update_ub_to_bv(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, &
+         js_ub, cs_ub, ss_ub, v_tmp, &
+         b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, error)
+
+    b_bv(1,lbw_bv+1)=b_bv(1,lbw_bv+1) + u_tmp(1)*conjg(v_tmp(1))
+    b_bv(1,lbw_bv+2)=b_bv(1,lbw_bv+2) + u_tmp(1)*conjg(v_tmp(2))
+
+    call f_c_trp_sweeps_times_bv(cs_sw(:,1), ss_sw(:,1), n, 1, 1, &
+       b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, &
+       b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, cs_ub, ss_ub, error)
+
+    lbw_ub=1
+    call f_c_convert_ub_to_bv(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, &
+         js_ub, cs_ub, ss_ub, &
+         b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, error)
+
+    ! if (ubw_ub > 3) then
+    !    call f_c_compress_ub_to_bv(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, &
+    !         js_ub, cs_ub, ss_ub, &
+    !         b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, &
+    !         0.0_dp, 0.0_dp, ubw_ub-3, error)
+    ! else
+    !    call f_c_convert_ub_to_bv(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, &
+    !         js_ub, cs_ub, ss_ub, &
+    !         b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, error)
+    ! end if
+
+    do j=2,n
+       if (zeros_i(j)==1) then
+          b_bv(j,1)=(0.0_dp, 0.0_dp)
+       end if
+    end do
+
+  end subroutine f_r1_reorth
+  
 
   ! Errors:
   ! 1: n<1
@@ -248,28 +377,44 @@ contains
 
     type(error_info), intent(out) :: error
 
-    integer(kind=int32) :: j, k, ubw, lbw, k0,k1
+    integer(kind=int32) :: j, k, ubw, lbw, k0,k1, dubw, dubw_tmp, dlbw, dlbw_tmp
     type(c_rotation) :: rot
 
     call clear_error(error)
+
+    if (n==1) then
+       b_ub(1,1)=b_bv(1,1);
+       lbw_ub=0; ubw_ub=0; numrots_ub=0; return
+    end if
+
+    if (ubw_bv==n-1) then
+       ubw=n-1; dubw=0; dubw_tmp=0
+    else if (ubw_bv==n-2) then
+       ubw=n-1; dubw=1; dubw_tmp=0
+       b_bv(:,lbw_bv+ubw_bv+2)=(0.0_dp, 0.0_dp)
+    else
+       ubw=ubw_bv+2; dubw=1; dubw_tmp=1
+       b_bv(:,lbw_bv+ubw_bv+2:lbw_bv+ubw_bv+3)=(0.0_dp, 0.0_dp)
+    end if
+
+    if (lbw_bv==n-1) then
+       lbw=n-1; dlbw=0; dlbw_tmp=0
+    else
+       lbw=lbw_bv+1; dlbw=0; dlbw_tmp=1
+       call right_shift(b_bv)
+    end if
+
+    ubw_ub=ubw_bv+dubw
+    lbw_ub=lbw_bv+dlbw
+
     numrots_ub=0
-    ss_ub(1:ubw_bv+1,:)=(0.0_dp, 0.0_dp)
-    cs_ub(1:ubw_bv+1,:)=(0.0_dp, 0.0_dp)
-    js_ub(1:ubw_bv+1,:)=0
-    b_ub(1:lbw_bv+ubw_bv+2,:)=(0.0_dp, 0.0_dp)
-    ubw=ubw_bv+2 ! ubw increases by 1, with extra diagonal for temporary storage.
-    b_bv(:,lbw_bv+ubw_bv+2:lbw_bv+ubw_bv+3)=(0.0_dp, 0.0_dp)
-    lbw=2 ! 1 extra subdiagonal for the bulge.
+    ss_ub(1:ubw_ub,:)=(0.0_dp, 0.0_dp)
+    cs_ub(1:ubw_ub,:)=(0.0_dp, 0.0_dp)
+    js_ub(1:ubw_ub,:)=0
+    b_ub(1:lbw_ub+ubw_ub+1,:)=(0.0_dp, 0.0_dp)
     cs_q=(1.0_dp,0.0_dp)
     ss_q=(0.0_dp,0.0_dp)
 
-    if (n == 1) then
-       b_ub(1,1)=b_bv(1,1)
-       return
-    end if
-
-    ! create room for the extra subdiagonal
-    call right_shift(b_bv)
     do k=1,n-1
        ! apply v_{n-k}
        do j=1,numrots_bv(n-k)
@@ -307,9 +452,9 @@ contains
           call rotation_times_tbr(trp_rot(rot),b_bv,n,lbw,ubw,k,0,j-ubw)
        end do
     end do
-    ubw_ub=ubw_bv+1
-    lbw_ub=1
-    call left_shift(b_bv)
+    if (dlbw_tmp == 1) then
+       call left_shift(b_bv)
+    end if
     call br_to_bc(b_bv,b_ub,lbw_ub,ubw_ub)
   end subroutine f_ss_qr_iteration
 

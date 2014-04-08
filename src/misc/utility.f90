@@ -231,7 +231,8 @@ contains
     n=size(a,2)
     do j=1,m
        do k=1,n
-          write(*,'(ES12.4, A, ES11.4,A)',advance='no') real(a(j,k)), ' +i*',aimag(a(j,k)), '   '
+!          write(*,'(ES12.4, A, ES11.4,A)',advance='no') real(a(j,k)), ' +i*',aimag(a(j,k)), '   '
+          write(*,'(A, ES12.4, A, ES11.4,A)',advance='no') '(', real(a(j,k)), ', ',aimag(a(j,k)), ' )    '
        end do
        write(*,*)
     end do

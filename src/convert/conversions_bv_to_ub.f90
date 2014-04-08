@@ -79,8 +79,8 @@ contains
     js_ub(1:ubw,:)=0
     lbw_ub=lbw; ubw_ub=ubw
     if (n == 1) then
-       b_ub(1,1)=b_bv(1,1)
-       return
+       b_ub(1,1)=b_bv(1,1);
+       lbw_ub=0; ubw_ub=0; numrots_ub=0; return
     end if
     lbw1=lbw
     if (ubw < n-1) then
@@ -156,8 +156,8 @@ contains
     js_ub(1:ubw,:)=0
     lbw_ub=lbw; ubw_ub=ubw
     if (n == 1) then
-       b_ub(1,1)=b_bv(1,1)
-       return
+       b_ub(1,1)=b_bv(1,1);
+       lbw_ub=0; ubw_ub=0; numrots_ub=0; return
     end if
     lbw1=lbw
     if (ubw < n-1) then
@@ -175,7 +175,7 @@ contains
        !
        k0=max(k+2,ubw1+1)
        k1=min(k+ubw1,n)
-       numrots_ub(k+1)=k1-k0+1
+       numrots_ub(k+1)=max(k1-k0+1,0)
        do j=k1,k0,-1
           rot=lgivens2(get_el_br(b_bv,lbw1,j-ubw1,j), get_el_br(b_bv,lbw1,j-ubw1+1,j))
           js_ub(j-k0+1,k+1)=j-ubw1

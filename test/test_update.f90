@@ -28,6 +28,9 @@ program test_update
   type(d_ub) :: ub_d
   type(c_ub) :: ub_c
   type(d_bv) :: bv_d
+
+
+
   type(c_bv) :: bv_c
   type(d_sweeps) :: sw_d
   type(c_sweeps) :: sw_c
@@ -154,12 +157,12 @@ program test_update
   call c_r1_update_ub_to_bv(ub_c, wp_c, xp_c, sw_c, bv_c, error)
   call cpu_time(t1)
   b11_c=get_el_br(bv_c%b, bv_c%lbw,1,1)
-  call set_el_br(bv_c%b,bv_c%lbw,1,1,b11_c+wp_c(1)*xp_c(1))
+  call set_el_br(bv_c%b,bv_c%lbw,1,1,b11_c+wp_c(1)*conjg(xp_c(1)))
   b12_c=get_el_br(bv_c%b, bv_c%lbw,1,2)
-  call set_el_br(bv_c%b,bv_c%lbw,1,2,b12_c+wp_c(1)*xp_c(2))
+  call set_el_br(bv_c%b,bv_c%lbw,1,2,b12_c+wp_c(1)*conjg(xp_c(2)))
   do j=1,na
      do k=1,na
-        a1_c(j,k)=a0_c(j,k)+w0_c(j)* x0_c(k)
+        a1_c(j,k)=a0_c(j,k)+w0_c(j)* conjg(x0_c(k))
      end do
   end do
   call sweeps_times_general(sw_c,a1_c)
@@ -194,12 +197,12 @@ program test_update
   call c_r1_update_ub_to_bv(ub_c, wp_c, xp_c, sw_c, bv_c, error)
   call cpu_time(t1)
   b11_c=get_el_br(bv_c%b, bv_c%lbw,1,1)
-  call set_el_br(bv_c%b,bv_c%lbw,1,1,b11_c+wp_c(1)*xp_c(1))
+  call set_el_br(bv_c%b,bv_c%lbw,1,1,b11_c+wp_c(1)*conjg(xp_c(1)))
   b12_c=get_el_br(bv_c%b, bv_c%lbw,1,2)
-  call set_el_br(bv_c%b,bv_c%lbw,1,2,b12_c+wp_c(1)*xp_c(2))
+  call set_el_br(bv_c%b,bv_c%lbw,1,2,b12_c+wp_c(1)*conjg(xp_c(2)))
   do j=1,na
      do k=1,na
-        a1_c(j,k)=a0_c(j,k)+w0_c(j)* x0_c(k)
+        a1_c(j,k)=a0_c(j,k)+w0_c(j)* conjg(x0_c(k))
      end do
   end do
   call sweeps_times_general(sw_c,a1_c)

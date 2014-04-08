@@ -4,7 +4,7 @@ PROFLFLAGS = -pg
 PROFCFLAGS = -pg
 LFLAGS = 
 CFLAGS = -fbounds-check -mcmodel=medium -Waliasing -Wampersand -Wconversion -Wsurprising \
-	-Wintrinsics-std -Wno-tabs -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant -Wunused
+	-Wintrinsics-std -Wno-tabs -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant -Wunused -O2
 #CFLAGS = -Wall -O2 -mcmodel=medium
 
 MISCOBJS = $(OBJDIR)/misc.o $(OBJDIR)/prec.o $(OBJDIR)/utility.o $(OBJDIR)/error_id.o

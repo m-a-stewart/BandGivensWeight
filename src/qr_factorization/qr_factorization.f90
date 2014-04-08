@@ -124,7 +124,8 @@ contains
     ubw=min(ubw_bv+2,n-1)
 
     if (n==1) then
-       b_ub(1,1)=b_bv(1,1); return
+       b_ub(1,1)=b_bv(1,1);
+       lbw_ub=0; ubw_ub=0; numrots_ub=0; return
     end if
     do k=1,n-1
        ! apply v_{n-k}
@@ -245,7 +246,8 @@ contains
     lbw=lbw_bv
 
     if (n==1) then
-       b_ub(1,1)=b_bv(1,1); return
+       b_ub(1,1)=b_bv(1,1);
+       lbw_ub=0; ubw_ub=0; numrots_ub=0; return
     end if
 
     do k=1,n-1
@@ -272,7 +274,7 @@ contains
        !    might have a nonzero in superdiagonal ubw.
        k0=max(k+1,ubw+1)
        k1=min(k+ubw-1,n)
-       numrots_ub(k)=k1-k0+1
+       numrots_ub(k)=max(k1-k0+1,0)
        do j=k1,k0,-1
           rot=lgivens2(get_el_br(b_bv,lbw,j-ubw,j), get_el_br(b_bv,lbw,j-ubw+1,j))
           js_ub(j-k0+1,k)=j-ubw
@@ -339,8 +341,8 @@ contains
     call clear_error(error)
     lbw=lbw_bv; ubw=ubw_bv
     if (n == 1) then
-       b_ub(1,1)=b_bv(1,1)
-       return
+       b_ub(1,1)=b_bv(1,1);
+       lbw_ub=0; ubw_ub=0; numrots_ub=0; return
     end if
     if (lbw <= 0) then
        call f_convert_bv_to_ub(b_bv, n, lbw, ubw, lbwmax_bv, ubwmax_bv, &
@@ -415,8 +417,8 @@ contains
     call clear_error(error)
     lbw=lbw_bv; ubw=ubw_bv
     if (n == 1) then
-       b_ub(1,1)=b_bv(1,1)
-       return
+       b_ub(1,1)=b_bv(1,1);
+       lbw_ub=0; ubw_ub=0; numrots_ub=0; return
     end if
     if (lbw <= 0) then
        call f_convert_bv_to_ub(b_bv, n, lbw, ubw, lbwmax_bv, ubwmax_bv, &

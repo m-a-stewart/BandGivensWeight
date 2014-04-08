@@ -116,7 +116,7 @@ contains
     lbw_bv=lbw
     if (n == 1) then
        b_bv(1,1)=b_ub(1,1)
-       ubw_bv=0; lbw_bv=0
+       ubw_bv=0; lbw_bv=0; numrots_bv=0
        return
     end if
 
@@ -392,7 +392,7 @@ contains
     lbw_bv=lbw
     if (n == 1) then
        b_bv(1,1)=b_ub(1,1)
-       ubw_bv=0; lbw_bv=0
+       ubw_bv=0; lbw_bv=0; numrots_bv=0
        return
     end if
 

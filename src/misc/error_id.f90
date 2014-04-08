@@ -140,6 +140,10 @@ module error_id
   integer(int32), parameter :: id_f_d_r1_update_ub_to_bv=151
   integer(int32), parameter :: id_c_r1_update_ub_to_bv=152
   integer(int32), parameter :: id_f_c_r1_update_ub_to_bv=153
+  integer(int32), parameter :: id_d_e1v_update_ub_to_bv=154
+  integer(int32), parameter :: id_f_d_e1v_update_ub_to_bv=155
+  integer(int32), parameter :: id_c_e1v_update_ub_to_bv=156
+  integer(int32), parameter :: id_f_c_e1v_update_ub_to_bv=157
 
 contains
 
