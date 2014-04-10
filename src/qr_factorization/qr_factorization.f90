@@ -85,11 +85,12 @@ contains
   subroutine f_d_reduce_lbw_bv_to_ub(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, &
        ks_bv, cs_bv, ss_bv, &
        b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, cs_ub, ss_ub, cs, ss, error)
-    integer(kind=int32), intent(in) :: n, lbw_bv, ubw_bv, lbwmax_ub, ubwmax_ub, lbwmax_bv, ubwmax_bv
+    integer(kind=int32), intent(in) :: n, lbwmax_ub, ubwmax_ub, lbwmax_bv, ubwmax_bv
     real(kind=dp), dimension(n,lbwmax_bv+ubwmax_bv+1), intent(inout) :: b_bv
     integer(kind=int32), dimension(n), intent(in) :: numrots_bv
     integer(kind=int32), dimension(n,ubwmax_bv), intent(in) :: ks_bv
     real(kind=dp), dimension(n,ubwmax_bv), intent(in) :: cs_bv, ss_bv
+    integer(kind=int32), intent(inout) :: lbw_bv, ubw_bv
 
     real(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(out) :: b_ub
     integer(kind=int32), dimension(n), intent(out) :: numrots_ub
@@ -100,71 +101,67 @@ contains
     integer(kind=int32), intent(out) :: lbw_ub, ubw_ub
     type(error_info), intent(out) :: error
 
-    integer(kind=int32) :: j, k, k0,k1, lbw, ubw
+    integer(kind=int32) :: j, k, k0,k1, dubw, dubw_tmp, dlbw, dlbw_tmp
     type(d_rotation) :: rot
 
     call clear_error(error)
 
-    if (ubw_bv <= n-3) then
-       ubw=ubw_bv+2
-       b_bv(:,lbw_bv+ubw_bv+2:lbw_bv+ubw_bv+3) = 0.0_dp
-    else if (ubw_bv == n-2) then
-       ubw=ubw_bv+1
-       b_bv(:,lbw_bv+ubw_bv+2) = 0.0_dp
-    else
-       ubw=n-1
-    end if
-    b_ub(1:lbw_bv+ubw+1,:)=0.0_dp
+    dubw=1; dubw_tmp=1
+    dlbw=0; dlbw_tmp=0
+
+    call f_bw_expand_br(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, &
+         dlbw, dlbw_tmp, dubw, dubw_tmp, lbw_ub, ubw_ub)
+
+    b_ub(1:lbw_ub+ubw_ub+1,:)=0.0_dp
     numrots_ub=0
-    ss_ub(1:ubw,:)=0.0_dp; cs_ub(1:ubw,:)=0.0_dp
-    js_ub(1:ubw,:)=0
+    ss_ub(1:ubw_ub,:)=0.0_dp; cs_ub(1:ubw_ub,:)=0.0_dp
+    js_ub(1:ubw_ub,:)=0
 
     ss=0.0_dp; cs=1.0_dp
-    lbw=lbw_bv
-    ubw=min(ubw_bv+2,n-1)
 
     if (n==1) then
        b_ub(1,1)=b_bv(1,1);
        lbw_ub=0; ubw_ub=0; numrots_ub=0; return
     end if
+
     do k=1,n-1
        ! apply v_{n-k}
        do j=1,numrots_bv(n-k)
           rot%cosine=cs_bv(n-k,j); rot%sine=ss_bv(n-k,j)
-          call tbr_times_rotation(b_bv,n,lbw,ubw,0,n-k,trp_rot(rot),ks_bv(n-k,j))
+          call tbr_times_rotation(b_bv,n,lbw_bv,ubw_bv,0,n-k,trp_rot(rot),ks_bv(n-k,j))
        end do
-       ! eliminate subdiagonal in row k+1 and column k-lbw+1
-       if (k-lbw+1 >= 1 .and. k+1 <= n) then
-          rot=lgivens(get_el_br(b_bv,lbw,k,k-lbw+1),get_el_br(b_bv,lbw,k+1,k-lbw+1))
-          call rotation_times_tbr(trp_rot(rot),b_bv,n,lbw,ubw,0,0,k)
+       ! eliminate subdiagonal in row k+1 and column k-lbw_bv+1
+       if (k-lbw_bv+1 >= 1 .and. k+1 <= n) then
+          rot=lgivens(get_el_br(b_bv,lbw_bv,k,k-lbw_bv+1),get_el_br(b_bv,lbw_bv,k+1,k-lbw_bv+1))
+          call rotation_times_tbr(trp_rot(rot),b_bv,n,lbw_bv,ubw_bv,0,0,k)
           cs(k)=rot%cosine; ss(k)=rot%sine
-          call set_el_br(b_bv,lbw,k+1,k-lbw+1,0.0_dp)
+          call set_el_br(b_bv,lbw_bv,k+1,k-lbw_bv+1,0.0_dp)
        end if
-       ! Eliminate superdiagonal ubw.
-       ! columns that have a nonzero in superdiagonal ubw
+       ! Eliminate superdiagonal ubw_bv.
+       ! columns that have a nonzero in superdiagonal ubw_bv
        ! Three cases:
-       ! 1. For k <= ubw-1, columns ubw+1, ..., k+ubw-1 might
-       !    have a nonzero in superdiagonal ubw.
-       ! 2. For ubw <= k <= n-ubw+1, columns k+1, .... k+ubw-1
-       !    might have a nonzero in superdiagonal ubw.
-       ! 3. For n-ubw+2 <= k <= n-1, columns k+1, ..., n
-       !    might have a nonzero in superdiagonal ubw.
-       k0=max(k+1,ubw+1)
-       k1=min(k+ubw-1,n)
+       ! 1. For k <= ubw_bv-1, columns ubw_bv+1, ..., k+ubw_bv-1 might
+       !    have a nonzero in superdiagonal ubw_bv.
+       ! 2. For ubw_bv <= k <= n-ubw_bv+1, columns k+1, .... k+ubw_bv-1
+       !    might have a nonzero in superdiagonal ubw_bv.
+       ! 3. For n-ubw_bv+2 <= k <= n-1, columns k+1, ..., n
+       !    might have a nonzero in superdiagonal ubw_bv.
+       k0=max(k+1,ubw_bv+1)
+       k1=min(k+ubw_bv-1,n)
        numrots_ub(k)=max(k1-k0+1,0)
        do j=k1,k0,-1
-          rot=lgivens2(get_el_br(b_bv,lbw,j-ubw,j), get_el_br(b_bv,lbw,j-ubw+1,j))
-          js_ub(j-k0+1,k)=j-ubw
+          rot=lgivens2(get_el_br(b_bv,lbw_bv,j-ubw_bv,j), get_el_br(b_bv,lbw_bv,j-ubw_bv+1,j))
+          js_ub(j-k0+1,k)=j-ubw_bv
           cs_ub(j-k0+1,k)=rot%cosine; ss_ub(j-k0+1,k)=rot%sine
-          call rotation_times_tbr(trp_rot(rot),b_bv,n,lbw,ubw,k,0,j-ubw)
-          call set_el_br(b_bv,lbw,j-ubw,j, 0.0_dp)
+          call rotation_times_tbr(trp_rot(rot),b_bv,n,lbw_bv,ubw_bv,k,0,j-ubw_bv)
+          call set_el_br(b_bv,lbw_bv,j-ubw_bv,j, 0.0_dp)
        end do
     end do
-    ubw_ub=min(ubw_bv+1,n-1)
-    lbw_ub=lbw_bv-1
-    call br_to_bc(b_bv,b_ub,lbw_bv, ubw_ub)
+    call f_bw_contract_br(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, &
+         dlbw, dlbw_tmp, dubw, dubw_tmp)
+    call br_to_bc(b_bv,b_ub,lbw_ub, ubw_ub)
+    lbw_ub=lbw_ub-1
   end subroutine f_d_reduce_lbw_bv_to_ub
-
 
   subroutine c_reduce_lbw_bv_to_ub(bv,ub,cs,ss,error)
     type(c_ub) :: ub
@@ -203,11 +200,12 @@ contains
   subroutine f_c_reduce_lbw_bv_to_ub(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, &
        ks_bv, cs_bv, ss_bv, &
        b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, cs_ub, ss_ub, cs, ss, error)
-    integer(kind=int32), intent(in) :: n, lbw_bv, ubw_bv, lbwmax_ub, ubwmax_ub, lbwmax_bv, ubwmax_bv
+    integer(kind=int32), intent(in) :: n, lbwmax_ub, ubwmax_ub, lbwmax_bv, ubwmax_bv
     complex(kind=dp), dimension(n,lbwmax_bv+ubwmax_bv+1), intent(inout) :: b_bv
     integer(kind=int32), dimension(n), intent(in) :: numrots_bv
     integer(kind=int32), dimension(n,ubwmax_bv), intent(in) :: ks_bv
     complex(kind=dp), dimension(n,ubwmax_bv), intent(in) :: cs_bv, ss_bv
+    integer(kind=int32), intent(inout) :: lbw_bv, ubw_bv
 
     complex(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(out) :: b_ub
     integer(kind=int32), dimension(n), intent(out) :: numrots_ub
@@ -218,32 +216,23 @@ contains
     integer(kind=int32), intent(out) :: lbw_ub, ubw_ub
     type(error_info), intent(out) :: error
 
-    integer(kind=int32) :: j, k, k0,k1, lbw, ubw
+    integer(kind=int32) :: j, k, k0,k1, dubw, dubw_tmp, dlbw, dlbw_tmp
     type(c_rotation) :: rot
 
     call clear_error(error)
 
-    if (ubw_bv <= n-3) then
-       ubw=ubw_bv+2
-       b_bv(:,lbw_bv+ubw_bv+2:lbw_bv+ubw_bv+3) = (0.0_dp,0.0_dp)
-    else if (ubw_bv == n-2) then
-       ubw=ubw_bv+1
-       b_bv(:,lbw_bv+ubw_bv+2) = (0.0_dp,0.0_dp)
-    else
-       ubw=n-1
-    end if
+    dubw=1; dubw_tmp=1
+    dlbw=0; dlbw_tmp=0
 
+    call f_bw_expand_br(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, &
+         dlbw, dlbw_tmp, dubw, dubw_tmp, lbw_ub, ubw_ub)
 
-    b_ub(1:lbw_bv+ubw+1,:)=(0.0_dp, 0.0_dp)
+    b_ub(1:lbw_ub+ubw_ub+1,:)=(0.0_dp,0.0_dp)
     numrots_ub=0
-    ss_ub(1:ubw,:)=(0.0_dp, 0.0_dp)
-    cs_ub(1:ubw,:)=(0.0_dp, 0.0_dp)
-    js_ub(1:ubw,:)=0
+    ss_ub(1:ubw_ub,:)=(0.0_dp,0.0_dp); cs_ub(1:ubw_ub,:)=(0.0_dp,0.0_dp)
+    js_ub(1:ubw_ub,:)=0
 
-    ss=(0.0_dp, 0.0_dp); cs=(1.0_dp, 0.0_dp)
-
-    ubw=min(ubw_bv+2,n-1)
-    lbw=lbw_bv
+    ss=(0.0_dp,0.0_dp); cs=(1.0_dp,0.0_dp)
 
     if (n==1) then
        b_ub(1,1)=b_bv(1,1);
@@ -254,38 +243,39 @@ contains
        ! apply v_{n-k}
        do j=1,numrots_bv(n-k)
           rot%cosine=cs_bv(n-k,j); rot%sine=ss_bv(n-k,j)
-          call tbr_times_rotation(b_bv,n,lbw,ubw,0,n-k,trp_rot(rot),ks_bv(n-k,j))
+          call tbr_times_rotation(b_bv,n,lbw_bv,ubw_bv,0,n-k,trp_rot(rot),ks_bv(n-k,j))
        end do
-       ! eliminate subdiagonal in row k+1 and column k-lbw+1
-       if (k-lbw+1 >= 1 .and. k+1 <= n) then
-          rot=lgivens(get_el_br(b_bv,lbw,k,k-lbw+1),get_el_br(b_bv,lbw,k+1,k-lbw+1))
-          call rotation_times_tbr(trp_rot(rot),b_bv,n,lbw,ubw,0,0,k)
+       ! eliminate subdiagonal in row k+1 and column k-lbw_bv+1
+       if (k-lbw_bv+1 >= 1 .and. k+1 <= n) then
+          rot=lgivens(get_el_br(b_bv,lbw_bv,k,k-lbw_bv+1),get_el_br(b_bv,lbw_bv,k+1,k-lbw_bv+1))
+          call rotation_times_tbr(trp_rot(rot),b_bv,n,lbw_bv,ubw_bv,0,0,k)
           cs(k)=rot%cosine; ss(k)=rot%sine
-          call set_el_br(b_bv,lbw,k+1,k-lbw+1,(0.0_dp, 0.0_dp))
+          call set_el_br(b_bv,lbw_bv,k+1,k-lbw_bv+1,(0.0_dp,0.0_dp))
        end if
-       ! Eliminate superdiagonal ubw.
-       ! columns that have a nonzero in superdiagonal ubw
+       ! Eliminate superdiagonal ubw_bv.
+       ! columns that have a nonzero in superdiagonal ubw_bv
        ! Three cases:
-       ! 1. For k <= ubw-1, columns ubw+1, ..., k+ubw-1 might
-       !    have a nonzero in superdiagonal ubw.
-       ! 2. For ubw <= k <= n-ubw+1, columns k+1, .... k+ubw-1
-       !    might have a nonzero in superdiagonal ubw.
-       ! 3. For n-ubw+2 <= k <= n-1, columns k+1, ..., n
-       !    might have a nonzero in superdiagonal ubw.
-       k0=max(k+1,ubw+1)
-       k1=min(k+ubw-1,n)
+       ! 1. For k <= ubw_bv-1, columns ubw_bv+1, ..., k+ubw_bv-1 might
+       !    have a nonzero in superdiagonal ubw_bv.
+       ! 2. For ubw_bv <= k <= n-ubw_bv+1, columns k+1, .... k+ubw_bv-1
+       !    might have a nonzero in superdiagonal ubw_bv.
+       ! 3. For n-ubw_bv+2 <= k <= n-1, columns k+1, ..., n
+       !    might have a nonzero in superdiagonal ubw_bv.
+       k0=max(k+1,ubw_bv+1)
+       k1=min(k+ubw_bv-1,n)
        numrots_ub(k)=max(k1-k0+1,0)
        do j=k1,k0,-1
-          rot=lgivens2(get_el_br(b_bv,lbw,j-ubw,j), get_el_br(b_bv,lbw,j-ubw+1,j))
-          js_ub(j-k0+1,k)=j-ubw
+          rot=lgivens2(get_el_br(b_bv,lbw_bv,j-ubw_bv,j), get_el_br(b_bv,lbw_bv,j-ubw_bv+1,j))
+          js_ub(j-k0+1,k)=j-ubw_bv
           cs_ub(j-k0+1,k)=rot%cosine; ss_ub(j-k0+1,k)=rot%sine
-          call rotation_times_tbr(trp_rot(rot),b_bv,n,lbw,ubw,k,0,j-ubw)
-          call set_el_br(b_bv,lbw,j-ubw,j, (0.0_dp, 0.0_dp))
+          call rotation_times_tbr(trp_rot(rot),b_bv,n,lbw_bv,ubw_bv,k,0,j-ubw_bv)
+          call set_el_br(b_bv,lbw_bv,j-ubw_bv,j, (0.0_dp,0.0_dp))
        end do
     end do
-    ubw_ub=min(ubw_bv+1,n-1)
-    lbw_ub=lbw_bv-1
-    call br_to_bc(b_bv,b_ub,lbw_bv, ubw_ub)
+    call f_bw_contract_br(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, &
+         dlbw, dlbw_tmp, dubw, dubw_tmp)
+    call br_to_bc(b_bv,b_ub,lbw_ub, ubw_ub)
+    lbw_ub=lbw_ub-1
   end subroutine f_c_reduce_lbw_bv_to_ub
 
   !

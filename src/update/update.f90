@@ -34,8 +34,6 @@ module update
        [ character(len=error_message_length) :: 'n<1', 'Size mismatch.', &
        'Insufficient lbw.', 'Insufficient ubw' ] )
 
-
-
 contains
 
   !
@@ -114,7 +112,7 @@ contains
     real(kind=dp), dimension(:), intent(inout) :: u, v 
 
     type(error_info), intent(out) :: error
-    integer(kind=int32) :: j, k, ubw, lbw, k0, k1, d
+    integer(kind=int32) :: j
     type(d_rotation) :: rot
 
     call clear_error(error)
@@ -209,7 +207,7 @@ contains
     real(kind=dp), dimension(:), intent(inout) :: v
 
     type(error_info), intent(out) :: error
-    integer(kind=int32) :: j, k, ubw, lbw, k0, k1, dubw, dubw_tmp
+    integer(kind=int32) :: j, k, k0, k1, dubw, dubw_tmp, dlbw, dlbw_tmp
     type(d_rotation) :: rot
 
     call clear_error(error)
@@ -217,27 +215,17 @@ contains
        b_bv(1,1)=b_ub(1,1);
        lbw_bv=0; ubw_bv=0; numrots_bv=0; return
     end if
+    
+    dubw=1; dubw_tmp=1
+    dlbw=0; dlbw_tmp=0
 
-    lbw=lbw_ub
-    if (ubw_ub==n-1) then
-       ubw=n-1; dubw=0; dubw_tmp=0
-    else if (ubw_ub==n-2) then
-       ubw=n-1; dubw=1; dubw_tmp=0
-       call down_shift(b_ub)
-    else
-       ubw=ubw_ub+2; dubw=1; dubw_tmp=1
-       call down_shift(b_ub)
-       call down_shift(b_ub)
-    end if
+    call f_bw_expand_bc(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, &
+         dlbw, dlbw_tmp, dubw, dubw_tmp, lbw_bv, ubw_bv)
 
-    lbw_bv=lbw_ub
-    ubw_bv=ubw_ub+dubw
-
-    b_bv(:,1:lbw_ub+ubw_ub+1+dubw)=0.0_dp
-
+    b_bv(:,1:lbw_bv+ubw_bv+1)=0.0_dp
     numrots_bv=0
-    ss_bv(:,1:ubw_ub+dubw)=0.0_dp; cs_bv(:,1:ubw_ub+dubw)=0.0_dp
-    ks_bv(:,1:ubw_ub+dubw)=0
+    ss_bv(:,1:ubw_bv)=0.0_dp; cs_bv(:,1:ubw_bv)=0.0_dp
+    ks_bv(:,1:ubw_bv)=0
 
     ! Require d=min(ubw_ub+2,n-1) - ubw_ub extra diagonals
     ! Now compute a bv decomposition in which transformations are applied to v^T.
@@ -245,27 +233,26 @@ contains
        ! Apply u_{n-k}
        do j=1,numrots_ub(n-k)
           rot%cosine=cs_ub(j,n-k); rot%sine=ss_ub(j,n-k)
-          call rotation_times_tbc(rot,b_ub,n,lbw,ubw,n-k,0,js_ub(j,n-k))
+          call rotation_times_tbc(rot,b_ub,n,lbw_ub,ubw_ub,n-k,0,js_ub(j,n-k))
        end do
-       k0=max(n-k+2,ubw+1)
-       k1=min(n-k+ubw+1,n)
+       k0=max(n-k+2,ubw_ub+1)
+       k1=min(n-k+ubw_ub+1,n)
        numrots_bv(k+1)=k1-k0+2
        rot=rgivens(v(n-k),v(n-k+1))
        call general_times_rotation(v,rot,n-k,n-k+1)
-       call tbc_times_rotation(b_ub,n,lbw,ubw,0,k+1,rot,n-k)
+       call tbc_times_rotation(b_ub,n,lbw_ub,ubw_ub,0,k+1,rot,n-k)
        ks_bv(k+1,k1-k0+2)=n-k
        cs_bv(k+1,k1-k0+2)=rot%cosine
        ss_bv(k+1,k1-k0+2)=rot%sine
        do j=k0,k1 
-          rot=rgivens(get_el_bc(b_ub,ubw,j-ubw,j-1), get_el_bc(b_ub,ubw,j-ubw,j))
+          rot=rgivens(get_el_bc(b_ub,ubw_ub,j-ubw_ub,j-1), get_el_bc(b_ub,ubw_ub,j-ubw_ub,j))
           ks_bv(k+1,k1-j+1)=j-1
           cs_bv(k+1,k1-j+1)=rot%cosine; ss_bv(k+1,k1-j+1)=rot%sine
-          call tbc_times_rotation(b_ub,n,lbw,ubw,0,k+1,rot,j-1)
+          call tbc_times_rotation(b_ub,n,lbw_ub,ubw_ub,0,k+1,rot,j-1)
        end do
     end do
-    if (dubw_tmp==1) then
-       call up_shift(b_ub)
-    end if
+    call f_bw_contract_bc(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, &
+         dlbw, dlbw_tmp, dubw, dubw_tmp)
     call bc_to_br(b_ub,b_bv,lbw_bv,ubw_bv)
   end subroutine f_d_e1v_update_ub_to_bv
 
@@ -334,7 +321,7 @@ contains
     complex(kind=dp), dimension(:), intent(inout) :: u, v 
 
     type(error_info), intent(out) :: error
-    integer(kind=int32) :: j, k, ubw, lbw, k0, k1, d
+    integer(kind=int32) :: j
     type(c_rotation) :: rot
 
     call clear_error(error)
@@ -429,7 +416,7 @@ contains
     complex(kind=dp), dimension(:), intent(inout) :: v
 
     type(error_info), intent(out) :: error
-    integer(kind=int32) :: j, k, ubw, lbw, k0, k1, dubw, dubw_tmp
+    integer(kind=int32) :: j, k, k0, k1, dubw, dubw_tmp, dlbw, dlbw_tmp
     type(c_rotation) :: rot
 
     call clear_error(error)
@@ -437,59 +424,46 @@ contains
        b_bv(1,1)=b_ub(1,1);
        lbw_bv=0; ubw_bv=0; numrots_bv=0; return
     end if
+    
+    dubw=1; dubw_tmp=1
+    dlbw=0; dlbw_tmp=0
 
-    lbw=lbw_ub
-    if (ubw_ub==n-1) then
-       ubw=n-1; dubw=0; dubw_tmp=0
-    else if (ubw_ub==n-2) then
-       ubw=n-1; dubw=1; dubw_tmp=0
-       call down_shift(b_ub)
-    else
-       ubw=ubw_ub+2; dubw=1; dubw_tmp=1
-       call down_shift(b_ub)
-       call down_shift(b_ub)
-    end if
+    call f_bw_expand_bc(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, &
+         dlbw, dlbw_tmp, dubw, dubw_tmp, lbw_bv, ubw_bv)
 
-    lbw_bv=lbw_ub
-    ubw_bv=ubw_ub+dubw
-
-    b_bv(:,1:lbw_ub+ubw_ub+1+dubw)=(0.0_dp,0.0_dp)
-
+    b_bv(:,1:lbw_bv+ubw_bv+1)=0.0_dp
     numrots_bv=0
-    ss_bv(:,1:ubw_ub+dubw)=(0.0_dp,0.0_dp); cs_bv(:,1:ubw_ub+dubw)=(0.0_dp,0.0_dp)
-    ks_bv(:,1:ubw_ub+dubw)=0
+    ss_bv(:,1:ubw_bv)=0.0_dp; cs_bv(:,1:ubw_bv)=0.0_dp
+    ks_bv(:,1:ubw_bv)=0
 
-    v=conjg(v)
-    ! Require d=min(ubw_ub+2,n-1) - ubw_ub extra diagonals
     ! Now compute a bv decomposition in which transformations are applied to v^T.
+    v=conjg(v)
     do k=1,n-2
        ! Apply u_{n-k}
        do j=1,numrots_ub(n-k)
           rot%cosine=cs_ub(j,n-k); rot%sine=ss_ub(j,n-k)
-          call rotation_times_tbc(rot,b_ub,n,lbw,ubw,n-k,0,js_ub(j,n-k))
+          call rotation_times_tbc(rot,b_ub,n,lbw_ub,ubw_ub,n-k,0,js_ub(j,n-k))
        end do
-       k0=max(n-k+2,ubw+1)
-       k1=min(n-k+ubw+1,n)
+       k0=max(n-k+2,ubw_ub+1)
+       k1=min(n-k+ubw_ub+1,n)
        numrots_bv(k+1)=k1-k0+2
        rot=rgivens(v(n-k),v(n-k+1))
        call general_times_rotation(v,rot,n-k,n-k+1)
-       call tbc_times_rotation(b_ub,n,lbw,ubw,0,k+1,rot,n-k)
+       call tbc_times_rotation(b_ub,n,lbw_ub,ubw_ub,0,k+1,rot,n-k)
        ks_bv(k+1,k1-k0+2)=n-k
        cs_bv(k+1,k1-k0+2)=rot%cosine
        ss_bv(k+1,k1-k0+2)=rot%sine
        do j=k0,k1 
-          rot=rgivens(get_el_bc(b_ub,ubw,j-ubw,j-1), get_el_bc(b_ub,ubw,j-ubw,j))
+          rot=rgivens(get_el_bc(b_ub,ubw_ub,j-ubw_ub,j-1), get_el_bc(b_ub,ubw_ub,j-ubw_ub,j))
           ks_bv(k+1,k1-j+1)=j-1
           cs_bv(k+1,k1-j+1)=rot%cosine; ss_bv(k+1,k1-j+1)=rot%sine
-          call tbc_times_rotation(b_ub,n,lbw,ubw,0,k+1,rot,j-1)
+          call tbc_times_rotation(b_ub,n,lbw_ub,ubw_ub,0,k+1,rot,j-1)
        end do
     end do
-    if (dubw_tmp==1) then
-       call up_shift(b_ub)
-    end if
+    call f_bw_contract_bc(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, &
+         dlbw, dlbw_tmp, dubw, dubw_tmp)
     call bc_to_br(b_ub,b_bv,lbw_bv,ubw_bv)
     v=conjg(v)
   end subroutine f_c_e1v_update_ub_to_bv
-
 
 End module update

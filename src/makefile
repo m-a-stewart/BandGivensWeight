@@ -6,7 +6,7 @@ $(OBJDIR)/error_id.o : $(OBJDIR)/prec.o
 $(OBJDIR)/utility.o : $(OBJDIR)/prec.o
 
 $(OBJDIR)/types.o : $(OBJDIR)/band_types.o $(OBJDIR)/nested_types.o
-$(OBJDIR)/band_types.o : $(OBJDIR)/rotation.o $(OBJDIR)/utility.o
+$(OBJDIR)/band_types.o : $(OBJDIR)/rotation.o $(OBJDIR)/utility.o $(OBJDIR)/shift.o
 $(OBJDIR)/nested_types.o : $(OBJDIR)/prec.o
 
 $(OBJDIR)/transforms.o : $(OBJDIR)/sweeps.o $(OBJDIR)/rotation.o $(OBJDIR)/shift.o

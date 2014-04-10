@@ -477,6 +477,78 @@ contains
          bv%numrotsv, bv%ksv, bv%csv, bv%ssv, error)
   end subroutine d_sweeps_times_ub
 
+  subroutine f_d_sweep_times_ub(cs_sw, ss_sw, n, &
+       b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, cs_ub, ss_ub, &
+       b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, error)
+
+    real(kind=dp), dimension(n-1), intent(in) :: cs_sw, ss_sw
+    integer(kind=int32), intent(in) :: n
+
+    real(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(inout) :: b_ub
+    integer(kind=int32), dimension(n), intent(inout) :: numrots_ub
+    integer(kind=int32), dimension(ubwmax_ub,n), intent(inout) :: js_ub
+    real(kind=dp), dimension(ubwmax_ub,n), intent(inout) :: cs_ub, ss_ub
+
+    real(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(out) :: b_bv
+    integer(kind=int32), dimension(n), intent(out) :: numrots_bv
+    integer(kind=int32), dimension(n,ubwmax_bv), intent(out) :: ks_bv
+    real(kind=dp), dimension(n,ubwmax_bv), intent(out) :: cs_bv, ss_bv
+
+    integer(kind=int32), intent(in) :: lbwmax_ub, ubwmax_ub
+    integer(kind=int32), intent(inout) :: lbw_ub, ubw_ub
+    integer(kind=int32), intent(in) :: lbwmax_bv, ubwmax_bv
+    integer(kind=int32), intent(out) :: lbw_bv, ubw_bv
+
+    type(error_info), intent(out) :: error
+    integer(kind=int32) :: j, k, k0, k1, dlbw, dlbw_tmp, dubw, dubw_tmp
+    type(d_rotation) :: rot
+    call clear_error(error)
+
+    if (n==1) then
+       b_bv(1,1)=b_ub(1,1);
+       lbw_bv=0; ubw_bv=0; numrots_bv=0; return
+    end if
+    ! Initial expansion for first sweep: one extra subdiagonal and
+    ! one extra superdiagonal to fill-in.
+    ! Expand as need for later sweeps.
+    
+    dlbw=1; dlbw_tmp=0
+    dubw=1; dubw_tmp=1
+    call f_bw_expand_bc(b_ub, n , lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, &
+         dlbw, dlbw_tmp, dubw, dubw_tmp, lbw_bv, ubw_bv)
+
+    b_bv(:,1:lbw_bv+ubw_bv+1)=0.0_dp
+    numrots_bv=0
+    ss_bv(:,1:ubw_bv)=0.0_dp
+    cs_bv(:,1:ubw_bv)=0.0_dp
+    ks_bv(:,1:ubw_bv)=0
+
+    do k=1,n-1
+       do j=1,numrots_ub(n-k)
+          rot%cosine=cs_ub(j,n-k); rot%sine=ss_ub(j,n-k)
+          call rotation_times_tbc(rot,b_ub,n,lbw_ub,ubw_ub,n-k,0,js_ub(j,n-k))
+       end do
+       ! Apply q_{n-k}
+       rot%cosine=cs_sw(n-k); rot%sine=ss_sw(n-k)
+       call rotation_times_tbc(rot,b_ub,n,lbw_ub,ubw_ub,0,0,n-k)
+       ! zeros have appeared in the second superdiagonal in
+       ! rows n-k-(ubw_ub-2), ... , n-k or
+       ! columns n-k+2, ..., n-k+ubw_ub
+       k0=max(n-k+2,ubw_ub+1)
+       k1=min(n-k+ubw_ub,n)
+       numrots_bv(k)=max(k1-k0+1,0)
+       do j=k0,k1
+          rot=rgivens(get_el_bc(b_ub,ubw_ub,j-ubw_ub,j-1), get_el_bc(b_ub,ubw_ub,j-ubw_ub,j))
+          ks_bv(k,k1-j+1)=j-1
+          cs_bv(k,k1-j+1)=rot%cosine; ss_bv(k,k1-j+1)=rot%sine
+          call tbc_times_rotation(b_ub,n,lbw_ub,ubw_ub,0,k,rot,j-1)
+       end do
+    end do
+    call f_bw_contract_bc(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, &
+         dlbw, dlbw_tmp, dubw, dubw_tmp)
+    call bc_to_br(b_ub,b_bv,lbw_ub,ubw_ub)
+  end subroutine f_d_sweep_times_ub
+
   subroutine f_d_sweeps_times_ub(cs_sw, ss_sw, numsweeps_sw, maxsweeps_sw, n, &
        b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, cs_ub, ss_ub, &
        b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, error)
@@ -500,9 +572,7 @@ contains
     integer(kind=int32), intent(out) :: lbw_bv, ubw_bv
 
     type(error_info), intent(out) :: error
-    integer(kind=int32) :: j, k, l, ubw, lbw, k0, k1
-    type(d_rotation) :: rot
-    logical :: full_ubw, full_lbw
+    integer(kind=int32) :: l
 
     call clear_error(error)
 
@@ -510,80 +580,18 @@ contains
        b_bv(1,1)=b_ub(1,1);
        lbw_bv=0; ubw_bv=0; numrots_bv=0; return
     end if
-    ! Initial expansion for first sweep: one extra subdiagonal and
-    ! one extra superdiagonal to fill-in.
-    ! Expand as need for later sweeps.
-    lbw=min(lbw_ub+numsweeps_sw,n-1)
-    ubw=min(ubw_ub+numsweeps_sw,n-1)
-    b_bv(:,1:lbw+ubw+1)=0.0_dp
-    numrots_bv=0
-    ss_bv(:,1:ubw)=0.0_dp
-    cs_bv(:,1:ubw)=0.0_dp
-    ks_bv(:,1:ubw)=0
-    ubw=ubw_ub
-    lbw=lbw_ub
-
-    full_lbw=(lbw==n-1)
-    full_ubw=(ubw==n-1)
 
     do l=numsweeps_sw,1,-1
        if (l < numsweeps_sw) then
-          if (.not. full_ubw) then
-             ubw=ubw-1
-          end if
-          call f_d_convert_bv_to_ub(b_bv, n, lbw, ubw, lbwmax_bv, ubwmax_bv, &
+          call f_d_convert_bv_to_ub(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, &
                numrots_bv, ks_bv, cs_bv, ss_bv, b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, & 
                numrots_ub, js_ub, cs_ub, ss_ub, error)
        end if
-       numrots_bv=0
-       ! Unless all band structure is filled, sweep will fill in one sub and one super diagonal.
-       if (.not. full_ubw) then
-          ! ubw==n-3 results in ubw=n-1, but this is only due to the temporary diagonal.
-          ! So this case does not set full_ubw to .true.  It will be set on the next sweep.
-          if (ubw <= n-3) then  
-             ubw=ubw+2
-             call down_shift(b_ub)
-             call down_shift(b_ub)
-          else if (ubw==n-2) then
-             ubw=n-1
-             call down_shift(b_ub)
-             full_ubw=.true.
-          end if
-       end if
-       if (.not. full_lbw) then
-          lbw=lbw+1;
-          full_lbw=(lbw==n-1)
-          b_ub(lbw+ubw+1,:)=0.0_dp
-       end if
-       do k=1,n-1
-          do j=1,numrots_ub(n-k)
-             rot%cosine=cs_ub(j,n-k); rot%sine=ss_ub(j,n-k)
-             call rotation_times_tbc(rot,b_ub,n,lbw,ubw,n-k,0,js_ub(j,n-k))
-          end do
-          ! Apply q_{n-k}
-          rot%cosine=cs_sw(n-k,l); rot%sine=ss_sw(n-k,l)
-          call rotation_times_tbc(rot,b_ub,n,lbw,ubw,0,0,n-k)
-          ! zeros have appeared in the second superdiagonal in
-          ! rows n-k-(ubw-2), ... , n-k or
-          ! columns n-k+2, ..., n-k+ubw
-          k0=max(n-k+2,ubw+1)
-          k1=min(n-k+ubw,n)
-          numrots_bv(k)=max(k1-k0+1,0)
-          do j=k0,k1
-             rot=rgivens(get_el_bc(b_ub,ubw,j-ubw,j-1), get_el_bc(b_ub,ubw,j-ubw,j))
-             ks_bv(k,k1-j+1)=j-1
-             cs_bv(k,k1-j+1)=rot%cosine; ss_bv(k,k1-j+1)=rot%sine
-             call tbc_times_rotation(b_ub,n,lbw,ubw,0,k,rot,j-1)
-          end do
-       end do
-       call bc_to_br(b_ub,b_bv,lbw,ubw)
+       
+       call f_d_sweep_times_ub(cs_sw(:,l), ss_sw(:,l), n, &
+            b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, cs_ub, ss_ub, &
+            b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, error)
     end do
-    lbw_bv=lbw
-    if (.not. full_ubw) then
-       ubw_bv=ubw-1
-    else
-       ubw_bv=ubw
-    end if
   end subroutine f_d_sweeps_times_ub
 
   subroutine c_sweeps_times_ub(sw,ub,bv,error)
@@ -617,6 +625,78 @@ contains
          bv%numrotsv, bv%ksv, bv%csv, bv%ssv, error)
   end subroutine c_sweeps_times_ub
 
+  subroutine f_c_sweep_times_ub(cs_sw, ss_sw, n, &
+       b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, cs_ub, ss_ub, &
+       b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, error)
+
+    complex(kind=dp), dimension(n-1), intent(in) :: cs_sw, ss_sw
+    integer(kind=int32), intent(in) :: n
+
+    complex(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(inout) :: b_ub
+    integer(kind=int32), dimension(n), intent(inout) :: numrots_ub
+    integer(kind=int32), dimension(ubwmax_ub,n), intent(inout) :: js_ub
+    complex(kind=dp), dimension(ubwmax_ub,n), intent(inout) :: cs_ub, ss_ub
+
+    complex(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(out) :: b_bv
+    integer(kind=int32), dimension(n), intent(out) :: numrots_bv
+    integer(kind=int32), dimension(n,ubwmax_bv), intent(out) :: ks_bv
+    complex(kind=dp), dimension(n,ubwmax_bv), intent(out) :: cs_bv, ss_bv
+
+    integer(kind=int32), intent(in) :: lbwmax_ub, ubwmax_ub
+    integer(kind=int32), intent(inout) :: lbw_ub, ubw_ub
+    integer(kind=int32), intent(in) :: lbwmax_bv, ubwmax_bv
+    integer(kind=int32), intent(out) :: lbw_bv, ubw_bv
+
+    type(error_info), intent(out) :: error
+    integer(kind=int32) :: j, k, k0, k1, dlbw, dlbw_tmp, dubw, dubw_tmp
+    type(c_rotation) :: rot
+    call clear_error(error)
+
+    if (n==1) then
+       b_bv(1,1)=b_ub(1,1);
+       lbw_bv=0; ubw_bv=0; numrots_bv=0; return
+    end if
+    ! Initial expansion for first sweep: one extra subdiagonal and
+    ! one extra superdiagonal to fill-in.
+    ! Expand as need for later sweeps.
+    
+    dlbw=1; dlbw_tmp=0
+    dubw=1; dubw_tmp=1
+    call f_bw_expand_bc(b_ub, n , lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, &
+         dlbw, dlbw_tmp, dubw, dubw_tmp, lbw_bv, ubw_bv)
+
+    b_bv(:,1:lbw_bv+ubw_bv+1)=(0.0_dp,0.0_dp)
+    numrots_bv=0
+    ss_bv(:,1:ubw_bv)=(0.0_dp,0.0_dp)
+    cs_bv(:,1:ubw_bv)=(0.0_dp,0.0_dp)
+    ks_bv(:,1:ubw_bv)=0
+
+    do k=1,n-1
+       do j=1,numrots_ub(n-k)
+          rot%cosine=cs_ub(j,n-k); rot%sine=ss_ub(j,n-k)
+          call rotation_times_tbc(rot,b_ub,n,lbw_ub,ubw_ub,n-k,0,js_ub(j,n-k))
+       end do
+       ! Apply q_{n-k}
+       rot%cosine=cs_sw(n-k); rot%sine=ss_sw(n-k)
+       call rotation_times_tbc(rot,b_ub,n,lbw_ub,ubw_ub,0,0,n-k)
+       ! zeros have appeared in the second superdiagonal in
+       ! rows n-k-(ubw_ub-2), ... , n-k or
+       ! columns n-k+2, ..., n-k+ubw_ub
+       k0=max(n-k+2,ubw_ub+1)
+       k1=min(n-k+ubw_ub,n)
+       numrots_bv(k)=max(k1-k0+1,0)
+       do j=k0,k1
+          rot=rgivens(get_el_bc(b_ub,ubw_ub,j-ubw_ub,j-1), get_el_bc(b_ub,ubw_ub,j-ubw_ub,j))
+          ks_bv(k,k1-j+1)=j-1
+          cs_bv(k,k1-j+1)=rot%cosine; ss_bv(k,k1-j+1)=rot%sine
+          call tbc_times_rotation(b_ub,n,lbw_ub,ubw_ub,0,k,rot,j-1)
+       end do
+    end do
+    call f_bw_contract_bc(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, &
+         dlbw, dlbw_tmp, dubw, dubw_tmp)
+    call bc_to_br(b_ub,b_bv,lbw_ub,ubw_ub)
+  end subroutine f_c_sweep_times_ub
+
   subroutine f_c_sweeps_times_ub(cs_sw, ss_sw, numsweeps_sw, maxsweeps_sw, n, &
        b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, cs_ub, ss_ub, &
        b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, error)
@@ -640,9 +720,7 @@ contains
     integer(kind=int32), intent(out) :: lbw_bv, ubw_bv
 
     type(error_info), intent(out) :: error
-    integer(kind=int32) :: j, k, l, ubw, lbw, k0, k1
-    type(c_rotation) :: rot
-    logical :: full_ubw, full_lbw
+    integer(kind=int32) :: l
 
     call clear_error(error)
 
@@ -650,83 +728,19 @@ contains
        b_bv(1,1)=b_ub(1,1);
        lbw_bv=0; ubw_bv=0; numrots_bv=0; return
     end if
-    ! Initial expansion for first sweep: one extra subdiagonal and
-    ! one extra superdiagonal to fill-in.
-    ! Expand as need for later sweeps.
-    lbw=min(lbw_ub+numsweeps_sw,n-1)
-    ubw=min(ubw_ub+numsweeps_sw,n-1)
-    b_bv(:,1:lbw+ubw+1)=(0.0_dp,0.0_dp)
-    numrots_bv=0
-    ss_bv(:,1:ubw)=(0.0_dp,0.0_dp)
-    cs_bv(:,1:ubw)=(0.0_dp,0.0_dp)
-    ks_bv(:,1:ubw)=0
-
-    ubw=ubw_ub
-    lbw=lbw_ub
-
-    full_lbw=(lbw==n-1)
-    full_ubw=(ubw==n-1)
 
     do l=numsweeps_sw,1,-1
        if (l < numsweeps_sw) then
-          if (.not. full_ubw) then
-             ubw=ubw-1
-          end if
-          call f_c_convert_bv_to_ub(b_bv, n, lbw, ubw, lbwmax_bv, ubwmax_bv, &
+          call f_c_convert_bv_to_ub(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, &
                numrots_bv, ks_bv, cs_bv, ss_bv, b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, & 
                numrots_ub, js_ub, cs_ub, ss_ub, error)
        end if
-       numrots_bv=0
-       ! Unless all band structure is filled, sweep will fill in one sub and one super diagonal.
-       if (.not. full_ubw) then
-          ! ubw==n-3 results in ubw=n-1, but this is only due to the temporary diagonal.
-          ! So this case does not set full_ubw to .true.  It will be set on the next sweep.
-          if (ubw <= n-3) then  
-             ubw=ubw+2
-             call down_shift(b_ub)
-             call down_shift(b_ub)
-          else if (ubw==n-2) then
-             ubw=n-1
-             call down_shift(b_ub)
-             full_ubw=.true.
-          end if
-       end if
-       if (.not. full_lbw) then
-          lbw=lbw+1;
-          full_lbw=(lbw==n-1)
-          b_ub(lbw+ubw+1,:)=(0.0_dp, 0.0_dp)
-       end if
-       do k=1,n-1
-          do j=1,numrots_ub(n-k)
-             rot%cosine=cs_ub(j,n-k); rot%sine=ss_ub(j,n-k)
-             call rotation_times_tbc(rot,b_ub,n,lbw,ubw,n-k,0,js_ub(j,n-k))
-          end do
-          ! Apply q_{n-k}
-          rot%cosine=cs_sw(n-k,l); rot%sine=ss_sw(n-k,l)
-          call rotation_times_tbc(rot,b_ub,n,lbw,ubw,0,0,n-k)
-          ! zeros have appeared in the second superdiagonal in
-          ! rows n-k-(ubw-2), ... , n-k or
-          ! columns n-k+2, ..., n-k+ubw
-          k0=max(n-k+2,ubw+1)
-          k1=min(n-k+ubw,n)
-          numrots_bv(k)=max(k1-k0+1,0)
-          do j=k0,k1
-             rot=rgivens(get_el_bc(b_ub,ubw,j-ubw,j-1), get_el_bc(b_ub,ubw,j-ubw,j))
-             ks_bv(k,k1-j+1)=j-1
-             cs_bv(k,k1-j+1)=rot%cosine; ss_bv(k,k1-j+1)=rot%sine
-             call tbc_times_rotation(b_ub,n,lbw,ubw,0,k,rot,j-1)
-          end do
-       end do
-       call bc_to_br(b_ub,b_bv,lbw,ubw)
+       
+       call f_c_sweep_times_ub(cs_sw(:,l), ss_sw(:,l), n, &
+            b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, cs_ub, ss_ub, &
+            b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, error)
     end do
-    lbw_bv=lbw
-    if (.not. full_ubw) then
-       ubw_bv=ubw-1
-    else
-       ubw_bv=ubw
-    end if
   end subroutine f_c_sweeps_times_ub
-
 
   ! bv times sweeps
   ! Errors:
@@ -768,6 +782,76 @@ contains
          ub%numrotsu, ub%jsu, ub%csu, ub%ssu, error)
   end subroutine d_bv_times_sweeps
 
+  subroutine f_d_bv_times_sweep(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, & 
+       cs_bv, ss_bv, &
+       cs_sw, ss_sw, numsweeps_sw, maxsweeps_sw, &
+       b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, cs_ub, ss_ub, error)
+
+    real(kind=dp), dimension(n-1), intent(in) :: cs_sw, ss_sw
+    integer(kind=int32), intent(in) :: numsweeps_sw, maxsweeps_sw, n
+
+    real(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(inout) :: b_bv
+    integer(kind=int32), dimension(n), intent(inout) :: numrots_bv
+    integer(kind=int32), dimension(n,ubwmax_bv), intent(inout) :: ks_bv
+    real(kind=dp), dimension(n,ubwmax_bv), intent(inout) :: cs_bv, ss_bv
+
+    real(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(out) :: b_ub
+    integer(kind=int32), dimension(n), intent(out) :: numrots_ub
+    integer(kind=int32), dimension(ubwmax_ub,n), intent(out) :: js_ub
+    real(kind=dp), dimension(ubwmax_ub,n), intent(out) :: cs_ub, ss_ub
+
+    integer(kind=int32), intent(in) :: lbwmax_ub, ubwmax_ub
+    integer(kind=int32), intent(inout) :: lbw_ub, ubw_ub
+    integer(kind=int32), intent(in) :: lbwmax_bv, ubwmax_bv
+    integer(kind=int32), intent(out) :: lbw_bv, ubw_bv
+
+    type(error_info), intent(out) :: error
+    integer(kind=int32) :: j, k, k0, k1, dlbw, dlbw_tmp, dubw, dubw_tmp
+    type(d_rotation) :: rot
+
+    call clear_error(error)
+
+    if (n==1) then
+       b_ub(1,1)=b_bv(1,1);
+       lbw_ub=0; ubw_ub=0; numrots_ub=0; return
+    end if
+
+    dlbw=1; dlbw_tmp=0
+    dubw=1; dubw_tmp=1
+    call f_bw_expand_br(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, &
+         dlbw, dlbw_tmp, dubw, dubw_tmp, lbw_ub, ubw_ub)
+
+    b_ub(1:lbw_ub+ubw_ub+1,:)=0.0_dp
+    numrots_ub=0
+    ss_ub(1:ubw_ub,:)=0.0_dp; cs_ub(1:ubw_ub,:)=0.0_dp
+    js_ub(1:ubw_ub,:)=0
+    
+    do k=1,n-1
+       do j=1,numrots_bv(n-k)
+          rot%cosine=cs_bv(n-k,j); rot%sine=ss_bv(n-k,j)
+          call tbr_times_rotation(b_bv,n,lbw_bv,ubw_bv,0,n-k,trp_rot(rot),ks_bv(n-k,j))
+       end do
+       ! Apply q_{k}
+       rot%cosine=cs_sw(k); rot%sine=ss_sw(k)
+       call tbr_times_rotation(b_bv,n,lbw_bv,ubw_bv,0,0,rot,k)
+       ! zeros have appeared in the second superdiagonal
+       ! in columns k+1, ..., k+ubw_bv-1
+       ! or rows k+1-ubw_bv, ..., k-1
+       k0=max(k+1,ubw_bv+1)
+       k1=min(k+ubw_bv-1,n)
+       numrots_ub(k)=max(k1-k0+1,0)
+       do j=k1,k0,-1
+          rot=lgivens2(get_el_br(b_bv,lbw_bv,j-ubw_bv,j), get_el_br(b_bv,lbw_bv,j-ubw_bv+1,j))
+          js_ub(j-k0+1,k)=j-ubw_bv
+          cs_ub(j-k0+1,k)=rot%cosine; ss_ub(j-k0+1,k)=rot%sine
+          call rotation_times_tbr(trp_rot(rot), b_bv,n,lbw_bv,ubw_bv,k,0,j-ubw_bv)
+       end do
+    end do
+    
+    call f_bw_contract_br(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, &
+         dlbw, dlbw_tmp, dubw, dubw_tmp)
+    call br_to_bc(b_bv,b_ub,lbw_ub,ubw_ub)
+  end subroutine f_d_bv_times_sweep
 
   subroutine f_d_bv_times_sweeps(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, & 
        cs_bv, ss_bv, &
@@ -793,9 +877,7 @@ contains
     integer(kind=int32), intent(out) :: lbw_bv, ubw_bv
 
     type(error_info), intent(out) :: error
-    integer(kind=int32) :: j, k, l, ubw, lbw, k0, k1
-    type(d_rotation) :: rot
-    logical :: full_ubw, full_lbw
+    integer(kind=int32) :: l
 
     call clear_error(error)
 
@@ -803,83 +885,18 @@ contains
        b_ub(1,1)=b_bv(1,1);
        lbw_ub=0; ubw_ub=0; numrots_ub=0; return
     end if
-    ! Initial expansion for first sweep: one extra subdiagonal and
-    ! one extra superdiagonal to fill-in.
-    ! Expand as need for later sweeps.
-    lbw=min(lbw_bv+numsweeps_sw,n-1)
-    ubw=min(ubw_bv+numsweeps_sw,n-1)
-    b_ub(1:lbw+ubw+1,:)=0.0_dp
-    numrots_ub=0
-    ss_ub(1:ubw,:)=0.0_dp; cs_ub(1:ubw,:)=0.0_dp
-    js_ub(1:ubw,:)=0
-
-    ubw=ubw_bv
-    lbw=lbw_bv
-
-    full_lbw=(lbw==n-1)
-    full_ubw=(ubw==n-1)
-
     do l=1, numsweeps_sw
        if (l > 1) then
-          if (.not. full_ubw) then
-             ubw=ubw-1
-             call up_shift(b_ub)
-          end if
-          lbw_ub=lbw; ubw_ub=ubw
           call f_d_convert_ub_to_bv(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, & 
                numrots_ub, js_ub, cs_ub, ss_ub, &
-               b_bv, lbw, ubw, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, error)
+               b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, error)
        end if
-       numrots_ub=0
-       ! Unless all band structure is filled, sweep will fill in one sub and one super diagonal.
-       if (.not. full_ubw) then
-          ! ubw==n-3 results in ubw=n-1, but this is only due to the temporary diagonal.
-          ! So this case does not set full_ubw to .true.  It will be set on the next sweep.
-          if (ubw <= n-3) then  
-             ubw=ubw+2
-             b_bv(:,lbw+ubw+1)=0.0_dp
-             b_bv(:,lbw+ubw)=0.0_dp
-          else if (ubw==n-2) then
-             ubw=n-1
-             b_bv(:,lbw+ubw+1)=0.0_dp
-             full_ubw=.true.
-          end if
-       end if
-       if (.not. full_lbw) then
-          lbw=lbw+1;
-          full_lbw=(lbw==n-1)
-          call right_shift(b_bv)
-       end if
-       do k=1,n-1
-          do j=1,numrots_bv(n-k)
-             rot%cosine=cs_bv(n-k,j); rot%sine=ss_bv(n-k,j)
-             call tbr_times_rotation(b_bv,n,lbw,ubw,0,n-k,trp_rot(rot),ks_bv(n-k,j))
-          end do
-          ! Apply q_{k}
-          rot%cosine=cs_sw(k,l); rot%sine=ss_sw(k,l)
-          call tbr_times_rotation(b_bv,n,lbw,ubw,0,0,rot,k)
-          ! zeros have appeared in the second superdiagonal
-          ! in columns k+1, ..., k+ubw-1
-          ! or rows k+1-ubw, ..., k-1
-          k0=max(k+1,ubw+1)
-          k1=min(k+ubw-1,n)
-          numrots_ub(k)=max(k1-k0+1,0)
-          do j=k1,k0,-1
-             rot=lgivens2(get_el_br(b_bv,lbw,j-ubw,j), get_el_br(b_bv,lbw,j-ubw+1,j))
-             js_ub(j-k0+1,k)=j-ubw
-             cs_ub(j-k0+1,k)=rot%cosine; ss_ub(j-k0+1,k)=rot%sine
-             call rotation_times_tbr(trp_rot(rot), b_bv,n,lbw,ubw,k,0,j-ubw)
-          end do
-       end do
-       call br_to_bc(b_bv,b_ub,lbw,ubw)
+       call f_d_bv_times_sweep(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, & 
+            cs_bv, ss_bv, &
+            cs_sw(:,l), ss_sw(:,l), numsweeps_sw, maxsweeps_sw, &
+            b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, cs_ub, ss_ub, error)
     end do
-    lbw_ub=lbw
-    if (.not. full_ubw) then
-       ubw_ub=ubw-1
-       call up_shift(b_ub)
-    else
-       ubw_ub=ubw
-    end if
+
   end subroutine f_d_bv_times_sweeps
 
   subroutine c_bv_times_sweeps(bv,sw,ub,error)
@@ -913,6 +930,75 @@ contains
          ub%numrotsu, ub%jsu, ub%csu, ub%ssu, error)
   end subroutine c_bv_times_sweeps
 
+  subroutine f_c_bv_times_sweep(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, & 
+       cs_bv, ss_bv, &
+       cs_sw, ss_sw, numsweeps_sw, maxsweeps_sw, &
+       b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, cs_ub, ss_ub, error)
+
+    complex(kind=dp), dimension(n-1), intent(in) :: cs_sw, ss_sw
+    integer(kind=int32), intent(in) :: numsweeps_sw, maxsweeps_sw, n
+
+    complex(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(inout) :: b_bv
+    integer(kind=int32), dimension(n), intent(inout) :: numrots_bv
+    integer(kind=int32), dimension(n,ubwmax_bv), intent(inout) :: ks_bv
+    complex(kind=dp), dimension(n,ubwmax_bv), intent(inout) :: cs_bv, ss_bv
+
+    complex(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(out) :: b_ub
+    integer(kind=int32), dimension(n), intent(out) :: numrots_ub
+    integer(kind=int32), dimension(ubwmax_ub,n), intent(out) :: js_ub
+    complex(kind=dp), dimension(ubwmax_ub,n), intent(out) :: cs_ub, ss_ub
+
+    integer(kind=int32), intent(in) :: lbwmax_ub, ubwmax_ub
+    integer(kind=int32), intent(inout) :: lbw_ub, ubw_ub
+    integer(kind=int32), intent(in) :: lbwmax_bv, ubwmax_bv
+    integer(kind=int32), intent(out) :: lbw_bv, ubw_bv
+
+    type(error_info), intent(out) :: error
+    integer(kind=int32) :: j, k, k0, k1, dlbw, dlbw_tmp, dubw, dubw_tmp
+    type(c_rotation) :: rot
+
+    call clear_error(error)
+
+    if (n==1) then
+       b_ub(1,1)=b_bv(1,1);
+       lbw_ub=0; ubw_ub=0; numrots_ub=0; return
+    end if
+
+    dubw=1; dubw_tmp=1
+    dlbw=1; dlbw_tmp=0
+    call f_bw_expand_br(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, &
+         dlbw, dlbw_tmp, dubw, dubw_tmp, lbw_ub, ubw_ub)
+
+    b_ub(1:lbw_ub+ubw_ub+1,:)=(0.0_dp,0.0_dp)
+    numrots_ub=0
+    ss_ub(1:ubw_ub,:)=(0.0_dp,0.0_dp); cs_ub(1:ubw_ub,:)=(0.0_dp,0.0_dp)
+    js_ub(1:ubw_ub,:)=0
+    
+    do k=1,n-1
+       do j=1,numrots_bv(n-k)
+          rot%cosine=cs_bv(n-k,j); rot%sine=ss_bv(n-k,j)
+          call tbr_times_rotation(b_bv,n,lbw_bv,ubw_bv,0,n-k,trp_rot(rot),ks_bv(n-k,j))
+       end do
+       ! Apply q_{k}
+       rot%cosine=cs_sw(k); rot%sine=ss_sw(k)
+       call tbr_times_rotation(b_bv,n,lbw_bv,ubw_bv,0,0,rot,k)
+       ! zeros have appeared in the second superdiagonal
+       ! in columns k+1, ..., k+ubw_bv-1
+       ! or rows k+1-ubw_bv, ..., k-1
+       k0=max(k+1,ubw_bv+1)
+       k1=min(k+ubw_bv-1,n)
+       numrots_ub(k)=max(k1-k0+1,0)
+       do j=k1,k0,-1
+          rot=lgivens2(get_el_br(b_bv,lbw_bv,j-ubw_bv,j), get_el_br(b_bv,lbw_bv,j-ubw_bv+1,j))
+          js_ub(j-k0+1,k)=j-ubw_bv
+          cs_ub(j-k0+1,k)=rot%cosine; ss_ub(j-k0+1,k)=rot%sine
+          call rotation_times_tbr(trp_rot(rot), b_bv,n,lbw_bv,ubw_bv,k,0,j-ubw_bv)
+       end do
+    end do
+    call f_bw_contract_br(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, &
+         dlbw, dlbw_tmp, dubw, dubw_tmp)
+    call br_to_bc(b_bv,b_ub,lbw_ub,ubw_ub)
+  end subroutine f_c_bv_times_sweep
 
   subroutine f_c_bv_times_sweeps(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, & 
        cs_bv, ss_bv, &
@@ -938,9 +1024,7 @@ contains
     integer(kind=int32), intent(out) :: lbw_bv, ubw_bv
 
     type(error_info), intent(out) :: error
-    integer(kind=int32) :: j, k, l, ubw, lbw, k0, k1
-    type(c_rotation) :: rot
-    logical :: full_ubw, full_lbw
+    integer(kind=int32) :: l
 
     call clear_error(error)
 
@@ -948,87 +1032,20 @@ contains
        b_ub(1,1)=b_bv(1,1);
        lbw_ub=0; ubw_ub=0; numrots_ub=0; return
     end if
-    ! Initial expansion for first sweep: one extra subdiagonal and
-    ! one extra superdiagonal to fill-in.
-    ! Expand as need for later sweeps.
-    lbw=min(lbw_bv+numsweeps_sw,n-1)
-    ubw=min(ubw_bv+numsweeps_sw,n-1)
-    b_ub(1:lbw+ubw+1,:)=(0.0_dp,0.0_dp)
-    numrots_ub=0
-    ss_ub(1:ubw,:)=(0.0_dp,0.0_dp)
-    cs_ub(1:ubw,:)=(0.0_dp,0.0_dp)
-    js_ub(1:ubw,:)=0
-
-    ubw=ubw_bv
-    lbw=lbw_bv
-
-    full_lbw=(lbw==n-1)
-    full_ubw=(ubw==n-1)
-
     do l=1, numsweeps_sw
        if (l > 1) then
-          if (.not. full_ubw) then
-             ubw=ubw-1
-             call up_shift(b_ub)
-          end if
-          lbw_ub=lbw; ubw_ub=ubw
           call f_c_convert_ub_to_bv(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, & 
                numrots_ub, js_ub, cs_ub, ss_ub, &
-               b_bv, lbw, ubw, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, error)
+               b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, error)
        end if
-       numrots_ub=0
-       ! Unless all band structure is filled, sweep will fill in one sub and one super diagonal.
-       if (.not. full_ubw) then
-          ! ubw==n-3 results in ubw=n-1, but this is only due to the temporary diagonal.
-          ! So this case does not set full_ubw to .true.  It will be set on the next sweep.
-          if (ubw <= n-3) then  
-             ubw=ubw+2
-             b_bv(:,lbw+ubw+1)=(0.0_dp, 0.0_dp)
-             b_bv(:,lbw+ubw)=(0.0_dp, 0.0_dp)
-          else if (ubw==n-2) then
-             ubw=n-1
-             b_bv(:,lbw+ubw+1)=(0.0_dp, 0.0_dp)
-             full_ubw=.true.
-          end if
-       end if
-       if (.not. full_lbw) then
-          lbw=lbw+1;
-          full_lbw=(lbw==n-1)
-          call right_shift(b_bv)
-       end if
-       do k=1,n-1
-          do j=1,numrots_bv(n-k)
-             rot%cosine=cs_bv(n-k,j); rot%sine=ss_bv(n-k,j)
-             call tbr_times_rotation(b_bv,n,lbw,ubw,0,n-k,trp_rot(rot),ks_bv(n-k,j))
-          end do
-          ! Apply q_{k}
-          rot%cosine=cs_sw(k,l); rot%sine=ss_sw(k,l)
-          call tbr_times_rotation(b_bv,n,lbw,ubw,0,0,rot,k)
-          ! zeros have appeared in the second superdiagonal
-          ! in columns k+1, ..., k+ubw-1
-          ! or rows k+1-ubw, ..., k-1
-          k0=max(k+1,ubw+1)
-          k1=min(k+ubw-1,n)
-          numrots_ub(k)=max(k1-k0+1,0)
-          do j=k1,k0,-1
-             rot=lgivens2(get_el_br(b_bv,lbw,j-ubw,j), get_el_br(b_bv,lbw,j-ubw+1,j))
-             js_ub(j-k0+1,k)=j-ubw
-             cs_ub(j-k0+1,k)=rot%cosine; ss_ub(j-k0+1,k)=rot%sine
-             call rotation_times_tbr(trp_rot(rot), b_bv,n,lbw,ubw,k,0,j-ubw)
-          end do
-       end do
-       call br_to_bc(b_bv,b_ub,lbw,ubw)
+       call f_c_bv_times_sweep(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, & 
+            cs_bv, ss_bv, &
+            cs_sw(:,l), ss_sw(:,l), numsweeps_sw, maxsweeps_sw, &
+            b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, cs_ub, ss_ub, error)
     end do
-    lbw_ub=lbw
-    if (.not. full_ubw) then
-       ubw_ub=ubw-1
-       call up_shift(b_ub)
-    else
-       ubw_ub=ubw
-    end if
+
   end subroutine f_c_bv_times_sweeps
 
-  !
   ! Transposed sweeps: The following assume bounded fill-in in the
   ! lower triangular part.  In particular, it is assumed that the lbw
   ! will not increase.  If there is partial fill-in, additional zero
@@ -1065,6 +1082,78 @@ contains
          ub%numrotsu, ub%jsu, ub%csu, ub%ssu, error)
   end subroutine d_trp_sweeps_times_bv
 
+  subroutine f_d_trp_sweep_times_bv(cs_sw, ss_sw, n, numsweeps_sw, maxsweeps_sw, &
+       b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, &
+       b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, cs_ub, ss_ub, error)
+
+    real(kind=dp), dimension(n-1), intent(in) :: cs_sw, ss_sw
+    integer(kind=int32), intent(in) :: numsweeps_sw, maxsweeps_sw, n
+
+    real(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(inout) :: b_bv
+    integer(kind=int32), dimension(n), intent(inout) :: numrots_bv
+    integer(kind=int32), dimension(n,ubwmax_bv), intent(inout) :: ks_bv
+    real(kind=dp), dimension(n,ubwmax_bv), intent(inout) :: cs_bv, ss_bv
+
+    real(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(out) :: b_ub
+    integer(kind=int32), dimension(n), intent(out) :: numrots_ub
+    integer(kind=int32), dimension(ubwmax_ub,n), intent(out) :: js_ub
+    real(kind=dp), dimension(ubwmax_ub,n), intent(out) :: cs_ub, ss_ub
+
+    integer(kind=int32), intent(in) :: lbwmax_ub, ubwmax_ub
+    integer(kind=int32), intent(inout) :: lbw_ub, ubw_ub
+    integer(kind=int32), intent(in) :: lbwmax_bv, ubwmax_bv
+    integer(kind=int32), intent(out) :: lbw_bv, ubw_bv
+
+    type(error_info), intent(out) :: error
+    integer(kind=int32) :: j, k, k0, k1, dlbw, dlbw_tmp, dubw, dubw_tmp
+    type(d_rotation) :: rot
+
+    call clear_error(error)
+
+    if (n==1) then
+       b_ub(1,1)=b_bv(1,1);
+       lbw_ub=0; ubw_ub=0; numrots_ub=0; return
+    end if
+
+    dlbw=0; dlbw_tmp=0
+    dubw=1; dubw_tmp=1
+    
+    call f_bw_expand_br(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, &
+         dlbw, dlbw_tmp, dubw, dubw_tmp, lbw_ub, ubw_ub)
+
+    b_ub(1:lbw_ub+ubw_ub+1,:)=0.0_dp
+    numrots_ub=0
+    ss_ub(1:ubw_ub,:)=0.0_dp; cs_ub(1:ubw_ub,:)=0.0_dp
+    js_ub(1:ubw_ub,:)=0
+
+    do k=1,n-1
+       ! apply v_{n-k}
+       do j=1,numrots_bv(n-k)
+          rot%cosine=cs_bv(n-k,j); rot%sine=ss_bv(n-k,j)
+          call tbr_times_rotation(b_bv,n,lbw_bv,ubw_bv,0,n-k,trp_rot(rot),ks_bv(n-k,j))
+       end do
+       ! Apply q_{k}
+       rot%cosine=cs_sw(k); rot%sine=ss_sw(k)
+       call rotation_times_tbr(trp_rot(rot),b_bv,n,lbw_bv,ubw_bv,0,0,k)
+       ! zeros have appeared in the second superdiagonal
+       ! in columns k+1, ..., k+ubw_bv-1
+       ! or rows k+1-ubw_bv, ..., k-1
+       k0=max(k+1,ubw_bv+1)
+       k1=min(k+ubw_bv-1,n)
+       numrots_ub(k)=max(k1-k0+1,0)
+       do j=k1,k0,-1
+          rot=lgivens2(get_el_br(b_bv,lbw_bv,j-ubw_bv,j), get_el_br(b_bv,lbw_bv,j-ubw_bv+1,j))
+          js_ub(j-k0+1,k)=j-ubw_bv
+          cs_ub(j-k0+1,k)=rot%cosine; ss_ub(j-k0+1,k)=rot%sine
+          call rotation_times_tbr(trp_rot(rot), b_bv,n,lbw_bv,ubw_bv,k,0,j-ubw_bv)
+       end do
+    end do
+
+    call f_bw_contract_br(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, &
+         dlbw, dlbw_tmp, dubw, dubw_tmp)
+    call br_to_bc(b_bv,b_ub,lbw_ub,ubw_ub)
+
+  end subroutine f_d_trp_sweep_times_bv
 
   subroutine f_d_trp_sweeps_times_bv(cs_sw, ss_sw, n, numsweeps_sw, maxsweeps_sw, &
        b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, &
@@ -1089,9 +1178,7 @@ contains
     integer(kind=int32), intent(out) :: lbw_bv, ubw_bv
 
     type(error_info), intent(out) :: error
-    integer(kind=int32) :: j, k, l, ubw, lbw, k0, k1
-    type(d_rotation) :: rot
-    logical :: full_ubw 
+    integer(kind=int32) :: l
 
     call clear_error(error)
 
@@ -1099,76 +1186,17 @@ contains
        b_ub(1,1)=b_bv(1,1);
        lbw_ub=0; ubw_ub=0; numrots_ub=0; return
     end if
-    ! Initial expansion for first sweep:
-    ! one extra superdiagonal to fill-in.
-    ! Expand as need for later sweeps.
-    lbw=lbw_bv
-    ubw=min(ubw_bv+numsweeps_sw,n-1)
-    b_ub(1:lbw+ubw+1,:)=0.0_dp
-    numrots_ub=0
-    ss_ub(1:ubw,:)=0.0_dp; cs_ub(1:ubw,:)=0.0_dp
-    js_ub(1:ubw,:)=0
-
-    ubw=ubw_bv
-    full_ubw=(ubw==n-1)
 
     do l=1, numsweeps_sw
        if (l > 1) then
-          if (.not. full_ubw) then
-             ubw=ubw-1
-             call up_shift(b_ub)
-          end if
-          lbw_ub=lbw; ubw_ub=ubw
           call f_d_convert_ub_to_bv(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, & 
                numrots_ub, js_ub, cs_ub, ss_ub, &
-               b_bv, lbw, ubw, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, error)
+               b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, error)
        end if
-       numrots_ub=0
-       ! Unless all band structure is filled, sweep will fill in one sub and one super diagonal.
-       if (.not. full_ubw) then
-          ! ubw==n-3 results in ubw=n-1, but this is only due to the temporary diagonal.
-          ! So this case does not set full_ubw to .true.  It will be set on the next sweep.
-          if (ubw <= n-3) then  
-             ubw=ubw+2
-             b_bv(:,lbw+ubw+1)=0.0_dp
-             b_bv(:,lbw+ubw)=0.0_dp
-          else if (ubw==n-2) then
-             ubw=n-1
-             b_bv(:,lbw+ubw+1)=0.0_dp
-             full_ubw=.true.
-          end if
-       end if
-       do k=1,n-1
-          ! apply v_{n-k}
-          do j=1,numrots_bv(n-k)
-             rot%cosine=cs_bv(n-k,j); rot%sine=ss_bv(n-k,j)
-             call tbr_times_rotation(b_bv,n,lbw,ubw,0,n-k,trp_rot(rot),ks_bv(n-k,j))
-          end do
-          ! Apply q_{k}
-          rot%cosine=cs_sw(k,l); rot%sine=ss_sw(k,l)
-          call rotation_times_tbr(trp_rot(rot),b_bv,n,lbw,ubw,0,0,k)
-          ! zeros have appeared in the second superdiagonal
-          ! in columns k+1, ..., k+ubw-1
-          ! or rows k+1-ubw, ..., k-1
-          k0=max(k+1,ubw+1)
-          k1=min(k+ubw-1,n)
-          numrots_ub(k)=max(k1-k0+1,0)
-          do j=k1,k0,-1
-             rot=lgivens2(get_el_br(b_bv,lbw,j-ubw,j), get_el_br(b_bv,lbw,j-ubw+1,j))
-             js_ub(j-k0+1,k)=j-ubw
-             cs_ub(j-k0+1,k)=rot%cosine; ss_ub(j-k0+1,k)=rot%sine
-             call rotation_times_tbr(trp_rot(rot), b_bv,n,lbw,ubw,k,0,j-ubw)
-          end do
-       end do
-       call br_to_bc(b_bv,b_ub,lbw,ubw)
+       call f_d_trp_sweep_times_bv(cs_sw(:,l), ss_sw(:,l), n, numsweeps_sw, maxsweeps_sw, &
+            b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, &
+            b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, cs_ub, ss_ub, error)
     end do
-    lbw_ub=lbw
-    if (.not. full_ubw) then
-       ubw_ub=ubw-1
-       call up_shift(b_ub)
-    else
-       ubw_ub=ubw
-    end if
   end subroutine f_d_trp_sweeps_times_bv
 
   subroutine c_trp_sweeps_times_bv(sw,bv,ub,error)
@@ -1196,6 +1224,79 @@ contains
          ub%numrotsu, ub%jsu, ub%csu, ub%ssu, error)
   end subroutine c_trp_sweeps_times_bv
 
+  subroutine f_c_trp_sweep_times_bv(cs_sw, ss_sw, n, numsweeps_sw, maxsweeps_sw, &
+       b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, &
+       b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, cs_ub, ss_ub, error)
+
+    complex(kind=dp), dimension(n-1), intent(in) :: cs_sw, ss_sw
+    integer(kind=int32), intent(in) :: numsweeps_sw, maxsweeps_sw, n
+
+    complex(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(inout) :: b_bv
+    integer(kind=int32), dimension(n), intent(inout) :: numrots_bv
+    integer(kind=int32), dimension(n,ubwmax_bv), intent(inout) :: ks_bv
+    complex(kind=dp), dimension(n,ubwmax_bv), intent(inout) :: cs_bv, ss_bv
+
+    complex(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(out) :: b_ub
+    integer(kind=int32), dimension(n), intent(out) :: numrots_ub
+    integer(kind=int32), dimension(ubwmax_ub,n), intent(out) :: js_ub
+    complex(kind=dp), dimension(ubwmax_ub,n), intent(out) :: cs_ub, ss_ub
+
+    integer(kind=int32), intent(in) :: lbwmax_ub, ubwmax_ub
+    integer(kind=int32), intent(inout) :: lbw_ub, ubw_ub
+    integer(kind=int32), intent(in) :: lbwmax_bv, ubwmax_bv
+    integer(kind=int32), intent(out) :: lbw_bv, ubw_bv
+
+    type(error_info), intent(out) :: error
+    integer(kind=int32) :: j, k, k0, k1, dlbw, dlbw_tmp, dubw, dubw_tmp
+    type(c_rotation) :: rot
+
+    call clear_error(error)
+
+    if (n==1) then
+       b_ub(1,1)=b_bv(1,1);
+       lbw_ub=0; ubw_ub=0; numrots_ub=0; return
+    end if
+
+    dlbw=0; dlbw_tmp=0
+    dubw=1; dubw_tmp=1
+    
+    call f_bw_expand_br(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, &
+         dlbw, dlbw_tmp, dubw, dubw_tmp, lbw_ub, ubw_ub)
+
+    b_ub(1:lbw_ub+ubw_ub+1,:)=(0.0_dp,0.0_dp)
+    numrots_ub=0
+    ss_ub(1:ubw_ub,:)=(0.0_dp,0.0_dp); cs_ub(1:ubw_ub,:)=(0.0_dp,0.0_dp)
+    js_ub(1:ubw_ub,:)=0
+
+    do k=1,n-1
+       ! apply v_{n-k}
+       do j=1,numrots_bv(n-k)
+          rot%cosine=cs_bv(n-k,j); rot%sine=ss_bv(n-k,j)
+          call tbr_times_rotation(b_bv,n,lbw_bv,ubw_bv,0,n-k,trp_rot(rot),ks_bv(n-k,j))
+       end do
+       ! Apply q_{k}
+       rot%cosine=cs_sw(k); rot%sine=ss_sw(k)
+       call rotation_times_tbr(trp_rot(rot),b_bv,n,lbw_bv,ubw_bv,0,0,k)
+       ! zeros have appeared in the second superdiagonal
+       ! in columns k+1, ..., k+ubw_bv-1
+       ! or rows k+1-ubw_bv, ..., k-1
+       k0=max(k+1,ubw_bv+1)
+       k1=min(k+ubw_bv-1,n)
+       numrots_ub(k)=max(k1-k0+1,0)
+       do j=k1,k0,-1
+          rot=lgivens2(get_el_br(b_bv,lbw_bv,j-ubw_bv,j), get_el_br(b_bv,lbw_bv,j-ubw_bv+1,j))
+          js_ub(j-k0+1,k)=j-ubw_bv
+          cs_ub(j-k0+1,k)=rot%cosine; ss_ub(j-k0+1,k)=rot%sine
+          call rotation_times_tbr(trp_rot(rot), b_bv,n,lbw_bv,ubw_bv,k,0,j-ubw_bv)
+       end do
+    end do
+
+    call f_bw_contract_br(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, &
+         dlbw, dlbw_tmp, dubw, dubw_tmp)
+    call br_to_bc(b_bv,b_ub,lbw_ub,ubw_ub)
+
+  end subroutine f_c_trp_sweep_times_bv
+
   subroutine f_c_trp_sweeps_times_bv(cs_sw, ss_sw, n, numsweeps_sw, maxsweeps_sw, &
        b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, &
        b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, cs_ub, ss_ub, error)
@@ -1219,9 +1320,7 @@ contains
     integer(kind=int32), intent(out) :: lbw_bv, ubw_bv
 
     type(error_info), intent(out) :: error
-    integer(kind=int32) :: j, k, l, ubw, lbw, k0, k1
-    type(c_rotation) :: rot
-    logical :: full_ubw 
+    integer(kind=int32) :: l
 
     call clear_error(error)
 
@@ -1229,76 +1328,17 @@ contains
        b_ub(1,1)=b_bv(1,1);
        lbw_ub=0; ubw_ub=0; numrots_ub=0; return
     end if
-    ! Initial expansion for first sweep:
-    ! one extra superdiagonal to fill-in.
-    ! Expand as need for later sweeps.
-    lbw=lbw_bv
-    ubw=min(ubw_bv+numsweeps_sw,n-1)
-    b_ub(1:lbw+ubw+1,:)=(0.0_dp, 0.0_dp)
-    numrots_ub=0
-    ss_ub(1:ubw,:)=(0.0_dp, 0.0_dp); cs_ub(1:ubw,:)=(0.0_dp, 0.0_dp)
-    js_ub(1:ubw,:)=0
-
-    ubw=ubw_bv
-    full_ubw=(ubw==n-1)
 
     do l=1, numsweeps_sw
        if (l > 1) then
-          if (.not. full_ubw) then
-             ubw=ubw-1
-             call up_shift(b_ub)
-          end if
-          lbw_ub=lbw; ubw_ub=ubw
           call f_c_convert_ub_to_bv(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, & 
                numrots_ub, js_ub, cs_ub, ss_ub, &
-               b_bv, lbw, ubw, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, error)
+               b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, error)
        end if
-       numrots_ub=0
-       ! Unless all band structure is filled, sweep will fill in one sub and one super diagonal.
-       if (.not. full_ubw) then
-          ! ubw==n-3 results in ubw=n-1, but this is only due to the temporary diagonal.
-          ! So this case does not set full_ubw to .true.  It will be set on the next sweep.
-          if (ubw <= n-3) then  
-             ubw=ubw+2
-             b_bv(:,lbw+ubw+1)=(0.0_dp, 0.0_dp)
-             b_bv(:,lbw+ubw)=(0.0_dp, 0.0_dp)
-          else if (ubw==n-2) then
-             ubw=n-1
-             b_bv(:,lbw+ubw+1)=(0.0_dp, 0.0_dp)
-             full_ubw=.true.
-          end if
-       end if
-       do k=1,n-1
-          ! apply v_{n-k}
-          do j=1,numrots_bv(n-k)
-             rot%cosine=cs_bv(n-k,j); rot%sine=ss_bv(n-k,j)
-             call tbr_times_rotation(b_bv,n,lbw,ubw,0,n-k,trp_rot(rot),ks_bv(n-k,j))
-          end do
-          ! Apply q_{k}
-          rot%cosine=cs_sw(k,l); rot%sine=ss_sw(k,l)
-          call rotation_times_tbr(trp_rot(rot),b_bv,n,lbw,ubw,0,0,k)
-          ! zeros have appeared in the second superdiagonal
-          ! in columns k+1, ..., k+ubw-1
-          ! or rows k+1-ubw, ..., k-1
-          k0=max(k+1,ubw+1)
-          k1=min(k+ubw-1,n)
-          numrots_ub(k)=max(k1-k0+1,0)
-          do j=k1,k0,-1
-             rot=lgivens2(get_el_br(b_bv,lbw,j-ubw,j), get_el_br(b_bv,lbw,j-ubw+1,j))
-             js_ub(j-k0+1,k)=j-ubw
-             cs_ub(j-k0+1,k)=rot%cosine; ss_ub(j-k0+1,k)=rot%sine
-             call rotation_times_tbr(trp_rot(rot), b_bv,n,lbw,ubw,k,0,j-ubw)
-          end do
-       end do
-       call br_to_bc(b_bv,b_ub,lbw,ubw)
+       call f_c_trp_sweep_times_bv(cs_sw(:,l), ss_sw(:,l), n, numsweeps_sw, maxsweeps_sw, &
+            b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, &
+            b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, cs_ub, ss_ub, error)
     end do
-    lbw_ub=lbw
-    if (.not. full_ubw) then
-       ubw_ub=ubw-1
-       call up_shift(b_ub)
-    else
-       ubw_ub=ubw
-    end if
   end subroutine f_c_trp_sweeps_times_bv
 
   !
@@ -1334,6 +1374,79 @@ contains
          bv%numrotsv, bv%ksv, bv%csv, bv%ssv, error)
   end subroutine d_ub_times_trp_sweeps
 
+  subroutine f_d_ub_times_trp_sweep(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, &
+       numrots_ub, js_ub, cs_ub, ss_ub, &
+       cs_sw, ss_sw, numsweeps_sw, maxsweeps_sw, &
+       b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, &
+       error)
+    real(kind=dp), dimension(n-1), intent(in) :: cs_sw, ss_sw
+    integer(kind=int32), intent(in) :: numsweeps_sw, maxsweeps_sw, n
+
+    real(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(inout) :: b_bv
+    integer(kind=int32), dimension(n), intent(inout) :: numrots_bv
+    integer(kind=int32), dimension(n,ubwmax_bv), intent(inout) :: ks_bv
+    real(kind=dp), dimension(n,ubwmax_bv), intent(inout) :: cs_bv, ss_bv
+
+    real(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(out) :: b_ub
+    integer(kind=int32), dimension(n), intent(out) :: numrots_ub
+    integer(kind=int32), dimension(ubwmax_ub,n), intent(out) :: js_ub
+    real(kind=dp), dimension(ubwmax_ub,n), intent(out) :: cs_ub, ss_ub
+
+    integer(kind=int32), intent(in) :: lbwmax_ub, ubwmax_ub
+    integer(kind=int32), intent(inout) :: lbw_ub, ubw_ub
+    integer(kind=int32), intent(in) :: lbwmax_bv, ubwmax_bv
+    integer(kind=int32), intent(out) :: lbw_bv, ubw_bv
+
+    type(error_info), intent(out) :: error
+    integer(kind=int32) :: j, k, k0, k1, dlbw, dlbw_tmp, dubw, dubw_tmp
+    type(d_rotation) :: rot
+
+    call clear_error(error)
+
+    if (n==1) then
+       b_bv(1,1)=b_ub(1,1);
+       lbw_bv=0; ubw_bv=0; numrots_bv=0; return
+    end if
+    ! Initial expansion for first sweep:
+    ! one extra superdiagonal to fill-in.
+    ! Expand as need for later sweeps.
+
+    dlbw=0; dlbw_tmp=0
+    dubw=1; dubw_tmp=1
+    call f_bw_expand_bc(b_ub, n , lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, &
+         dlbw, dlbw_tmp, dubw, dubw_tmp, lbw_bv, ubw_bv)
+
+    b_bv(:,1:lbw_bv+ubw_bv+1)=0.0_dp
+    numrots_bv=0
+    ss_bv(:,1:ubw_bv)=0.0_dp
+    cs_bv(:,1:ubw_bv)=0.0_dp
+    ks_bv(:,1:ubw_bv)=0
+
+    do k=1,n-1
+       ! Apply u_{n-k}
+       do j=1,numrots_ub(n-k)
+          rot%cosine=cs_ub(j,n-k); rot%sine=ss_ub(j,n-k)
+          call rotation_times_tbc(rot,b_ub,n,lbw_ub,ubw_ub,n-k,0,js_ub(j,n-k))
+       end do
+       rot%cosine=cs_sw(n-k); rot%sine=ss_sw(n-k)
+       call tbc_times_rotation(b_ub,n,lbw_ub,ubw_ub,0,0,trp_rot(rot),n-k)
+       k0=max(n-k+2,ubw_ub+1)
+       k1=min(n-k+ubw_ub-1,n)
+       numrots_bv(k)=max(k1-k0+1,0)
+       do j=k0,k1
+          rot=rgivens(get_el_bc(b_ub,ubw_ub,j-ubw_ub,j-1), get_el_bc(b_ub,ubw_ub,j-ubw_ub,j))
+          ks_bv(k,k1-j+1)=j-1
+          cs_bv(k,k1-j+1)=rot%cosine; ss_bv(k,k1-j+1)=rot%sine
+          call tbc_times_rotation(b_ub,n,lbw_ub,ubw_ub,0,k,rot,j-1)
+       end do
+    end do
+
+    call f_bw_contract_bc(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, &
+         dlbw, dlbw_tmp, dubw, dubw_tmp)
+
+    call bc_to_br(b_ub,b_bv,lbw_ub,ubw_ub)
+
+  end subroutine f_d_ub_times_trp_sweep
 
   subroutine f_d_ub_times_trp_sweeps(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, &
        numrots_ub, js_ub, cs_ub, ss_ub, &
@@ -1359,9 +1472,7 @@ contains
     integer(kind=int32), intent(out) :: lbw_bv, ubw_bv
 
     type(error_info), intent(out) :: error
-    integer(kind=int32) :: j, k, l, ubw, lbw, k0, k1
-    type(d_rotation) :: rot
-    logical :: full_ubw 
+    integer(kind=int32) :: l
 
     call clear_error(error)
 
@@ -1369,70 +1480,19 @@ contains
        b_bv(1,1)=b_ub(1,1);
        lbw_bv=0; ubw_bv=0; numrots_bv=0; return
     end if
-    ! Initial expansion for first sweep:
-    ! one extra superdiagonal to fill-in.
-    ! Expand as need for later sweeps.
-    lbw=lbw_ub
-    ubw=min(ubw_ub+numsweeps_sw,n-1)
-    b_bv(:,1:lbw+ubw+1)=0.0_dp
-    numrots_bv=0
-    ss_bv(:,1:ubw)=0.0_dp; cs_bv(:,1:ubw)=0.0_dp
-    ks_bv(:,1:ubw)=0
-
-    ubw=ubw_ub
-    full_ubw=(ubw==n-1)
 
     do l=numsweeps_sw,1,-1
        if (l < numsweeps_sw) then
-          if (.not. full_ubw) then
-             ubw=ubw-1
-          end if
-          lbw_bv=lbw; ubw_bv=ubw
           call f_d_convert_bv_to_ub(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, &
-               ks_bv, cs_bv, ss_bv, b_ub, lbw, ubw, lbwmax_ub, ubwmax_ub, & 
+               ks_bv, cs_bv, ss_bv, b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, & 
                numrots_ub, js_ub, cs_ub, ss_ub, error)
        end if
-       numrots_bv=0
-       ! Unless all band structure is filled, sweep will fill in one sub and one super diagonal.
-       if (.not. full_ubw) then
-          ! ubw==n-3 results in ubw=n-1, but this is only due to the temporary diagonal.
-          ! So this case does not set full_ubw to .true.  It will be set on the next sweep.
-          if (ubw <= n-3) then  
-             ubw=ubw+2
-             call down_shift(b_ub)
-             call down_shift(b_ub)
-          else if (ubw==n-2) then
-             ubw=n-1
-             call down_shift(b_ub)
-             full_ubw=.true.
-          end if
-       end if
-       do k=1,n-1
-          ! Apply u_{n-k}
-          do j=1,numrots_ub(n-k)
-             rot%cosine=cs_ub(j,n-k); rot%sine=ss_ub(j,n-k)
-             call rotation_times_tbc(rot,b_ub,n,lbw,ubw,n-k,0,js_ub(j,n-k))
-          end do
-          rot%cosine=cs_sw(n-k,l); rot%sine=ss_sw(n-k,l)
-          call tbc_times_rotation(b_ub,n,lbw,ubw,0,0,trp_rot(rot),n-k)
-          k0=max(n-k+2,ubw+1)
-          k1=min(n-k+ubw-1,n)
-          numrots_bv(k)=max(k1-k0+1,0)
-          do j=k0,k1
-             rot=rgivens(get_el_bc(b_ub,ubw,j-ubw,j-1), get_el_bc(b_ub,ubw,j-ubw,j))
-             ks_bv(k,k1-j+1)=j-1
-             cs_bv(k,k1-j+1)=rot%cosine; ss_bv(k,k1-j+1)=rot%sine
-             call tbc_times_rotation(b_ub,n,lbw,ubw,0,k,rot,j-1)
-          end do
-       end do
-       call bc_to_br(b_ub,b_bv,lbw,ubw)
+       call f_d_ub_times_trp_sweep(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, &
+            numrots_ub, js_ub, cs_ub, ss_ub, &
+            cs_sw(:,l), ss_sw(:,l), numsweeps_sw, maxsweeps_sw, &
+            b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, &
+            error)
     end do
-    lbw_bv=lbw
-    if (.not. full_ubw) then
-       ubw_bv=ubw-1
-    else
-       ubw_bv=ubw
-    end if
   end subroutine f_d_ub_times_trp_sweeps
 
   subroutine c_ub_times_trp_sweeps(ub,sw,bv,error)
@@ -1460,6 +1520,79 @@ contains
          bv%numrotsv, bv%ksv, bv%csv, bv%ssv, error)
   end subroutine c_ub_times_trp_sweeps
 
+  subroutine f_c_ub_times_trp_sweep(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, &
+       numrots_ub, js_ub, cs_ub, ss_ub, &
+       cs_sw, ss_sw, numsweeps_sw, maxsweeps_sw, &
+       b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, &
+       error)
+    complex(kind=dp), dimension(n-1), intent(in) :: cs_sw, ss_sw
+    integer(kind=int32), intent(in) :: numsweeps_sw, maxsweeps_sw, n
+
+    complex(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(inout) :: b_bv
+    integer(kind=int32), dimension(n), intent(inout) :: numrots_bv
+    integer(kind=int32), dimension(n,ubwmax_bv), intent(inout) :: ks_bv
+    complex(kind=dp), dimension(n,ubwmax_bv), intent(inout) :: cs_bv, ss_bv
+
+    complex(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(out) :: b_ub
+    integer(kind=int32), dimension(n), intent(out) :: numrots_ub
+    integer(kind=int32), dimension(ubwmax_ub,n), intent(out) :: js_ub
+    complex(kind=dp), dimension(ubwmax_ub,n), intent(out) :: cs_ub, ss_ub
+
+    integer(kind=int32), intent(in) :: lbwmax_ub, ubwmax_ub
+    integer(kind=int32), intent(inout) :: lbw_ub, ubw_ub
+    integer(kind=int32), intent(in) :: lbwmax_bv, ubwmax_bv
+    integer(kind=int32), intent(out) :: lbw_bv, ubw_bv
+
+    type(error_info), intent(out) :: error
+    integer(kind=int32) :: j, k, k0, k1, dlbw, dlbw_tmp, dubw, dubw_tmp
+    type(c_rotation) :: rot
+
+    call clear_error(error)
+
+    if (n==1) then
+       b_bv(1,1)=b_ub(1,1);
+       lbw_bv=0; ubw_bv=0; numrots_bv=0; return
+    end if
+    ! Initial expansion for first sweep:
+    ! one extra superdiagonal to fill-in.
+    ! Expand as need for later sweeps.
+
+    dlbw=0; dlbw_tmp=0
+    dubw=1; dubw_tmp=1
+    call f_bw_expand_bc(b_ub, n , lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, &
+         dlbw, dlbw_tmp, dubw, dubw_tmp, lbw_bv, ubw_bv)
+
+    b_bv(:,1:lbw_bv+ubw_bv+1)=(0.0_dp,0.0_dp)
+    numrots_bv=0
+    ss_bv(:,1:ubw_bv)=(0.0_dp,0.0_dp)
+    cs_bv(:,1:ubw_bv)=(0.0_dp,0.0_dp)
+    ks_bv(:,1:ubw_bv)=0
+
+    do k=1,n-1
+       ! Apply u_{n-k}
+       do j=1,numrots_ub(n-k)
+          rot%cosine=cs_ub(j,n-k); rot%sine=ss_ub(j,n-k)
+          call rotation_times_tbc(rot,b_ub,n,lbw_ub,ubw_ub,n-k,0,js_ub(j,n-k))
+       end do
+       rot%cosine=cs_sw(n-k); rot%sine=ss_sw(n-k)
+       call tbc_times_rotation(b_ub,n,lbw_ub,ubw_ub,0,0,trp_rot(rot),n-k)
+       k0=max(n-k+2,ubw_ub+1)
+       k1=min(n-k+ubw_ub-1,n)
+       numrots_bv(k)=max(k1-k0+1,0)
+       do j=k0,k1
+          rot=rgivens(get_el_bc(b_ub,ubw_ub,j-ubw_ub,j-1), get_el_bc(b_ub,ubw_ub,j-ubw_ub,j))
+          ks_bv(k,k1-j+1)=j-1
+          cs_bv(k,k1-j+1)=rot%cosine; ss_bv(k,k1-j+1)=rot%sine
+          call tbc_times_rotation(b_ub,n,lbw_ub,ubw_ub,0,k,rot,j-1)
+       end do
+    end do
+
+    call f_bw_contract_bc(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, &
+         dlbw, dlbw_tmp, dubw, dubw_tmp)
+
+    call bc_to_br(b_ub,b_bv,lbw_ub,ubw_ub)
+
+  end subroutine f_c_ub_times_trp_sweep
 
   subroutine f_c_ub_times_trp_sweeps(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, &
        numrots_ub, js_ub, cs_ub, ss_ub, &
@@ -1485,9 +1618,7 @@ contains
     integer(kind=int32), intent(out) :: lbw_bv, ubw_bv
 
     type(error_info), intent(out) :: error
-    integer(kind=int32) :: j, k, l, ubw, lbw, k0, k1
-    type(c_rotation) :: rot
-    logical :: full_ubw 
+    integer(kind=int32) :: l
 
     call clear_error(error)
 
@@ -1495,70 +1626,19 @@ contains
        b_bv(1,1)=b_ub(1,1);
        lbw_bv=0; ubw_bv=0; numrots_bv=0; return
     end if
-    ! Initial expansion for first sweep:
-    ! one extra superdiagonal to fill-in.
-    ! Expand as need for later sweeps.
-    lbw=lbw_ub
-    ubw=min(ubw_ub+numsweeps_sw,n-1)
-    b_bv(:,1:lbw+ubw+1)=(0.0_dp, 0.0_dp)
-    numrots_bv=0
-    ss_bv(:,1:ubw)=(0.0_dp, 0.0_dp); cs_bv(:,1:ubw)=(0.0_dp, 0.0_dp)
-    ks_bv(:,1:ubw)=0
-
-    ubw=ubw_ub
-    full_ubw=(ubw==n-1)
 
     do l=numsweeps_sw,1,-1
        if (l < numsweeps_sw) then
-          if (.not. full_ubw) then
-             ubw=ubw-1
-          end if
-          lbw_bv=lbw; ubw_bv=ubw
           call f_c_convert_bv_to_ub(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, &
-               ks_bv, cs_bv, ss_bv, b_ub, lbw, ubw, lbwmax_ub, ubwmax_ub, & 
+               ks_bv, cs_bv, ss_bv, b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, & 
                numrots_ub, js_ub, cs_ub, ss_ub, error)
        end if
-       numrots_bv=0
-       ! Unless all band structure is filled, sweep will fill in one sub and one super diagonal.
-       if (.not. full_ubw) then
-          ! ubw==n-3 results in ubw=n-1, but this is only due to the temporary diagonal.
-          ! So this case does not set full_ubw to .true.  It will be set on the next sweep.
-          if (ubw <= n-3) then  
-             ubw=ubw+2
-             call down_shift(b_ub)
-             call down_shift(b_ub)
-          else if (ubw==n-2) then
-             ubw=n-1
-             call down_shift(b_ub)
-             full_ubw=.true.
-          end if
-       end if
-       do k=1,n-1
-          ! Apply u_{n-k}
-          do j=1,numrots_ub(n-k)
-             rot%cosine=cs_ub(j,n-k); rot%sine=ss_ub(j,n-k)
-             call rotation_times_tbc(rot,b_ub,n,lbw,ubw,n-k,0,js_ub(j,n-k))
-          end do
-          rot%cosine=cs_sw(n-k,l); rot%sine=ss_sw(n-k,l)
-          call tbc_times_rotation(b_ub,n,lbw,ubw,0,0,trp_rot(rot),n-k)
-          k0=max(n-k+2,ubw+1)
-          k1=min(n-k+ubw-1,n)
-          numrots_bv(k)=max(k1-k0+1,0)
-          do j=k0,k1
-             rot=rgivens(get_el_bc(b_ub,ubw,j-ubw,j-1), get_el_bc(b_ub,ubw,j-ubw,j))
-             ks_bv(k,k1-j+1)=j-1
-             cs_bv(k,k1-j+1)=rot%cosine; ss_bv(k,k1-j+1)=rot%sine
-             call tbc_times_rotation(b_ub,n,lbw,ubw,0,k,rot,j-1)
-          end do
-       end do
-       call bc_to_br(b_ub,b_bv,lbw,ubw)
+       call f_c_ub_times_trp_sweep(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, &
+            numrots_ub, js_ub, cs_ub, ss_ub, &
+            cs_sw(:,l), ss_sw(:,l), numsweeps_sw, maxsweeps_sw, &
+            b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, &
+            error)
     end do
-    lbw_bv=lbw
-    if (.not. full_ubw) then
-       ubw_bv=ubw-1
-    else
-       ubw_bv=ubw
-    end if
   end subroutine f_c_ub_times_trp_sweeps
 
   type(d_sweeps) function d_random_sweeps(n,l) result(sw)

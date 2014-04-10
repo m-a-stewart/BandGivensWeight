@@ -1,5 +1,6 @@
 module nested_types
   use prec
+  use shift
   implicit none
 
   type d_ub
