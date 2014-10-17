@@ -147,7 +147,7 @@ contains
        allocate(ub2%b(ub1%lbwmax+ub1%ubwmax+1,ub1%n), ub2%csu(ub1%ubwmax,ub1%n), &
             ub2%ssu(ub1%ubwmax,ub1%n), ub2%jsu(ub1%ubwmax,ub1%n), ub2%numrotsu(ub1%n))
        ub2%lbwmax=ub1%lbwmax
-       ub2%ubwmax=ub1%lbwmax
+       ub2%ubwmax=ub1%ubwmax
     end if
     ub2%b(1:ub1%lbw+ub1%ubw+1,:)=ub1%b(1:ub1%lbw+ub1%ubw+1,:)
     ub2%numrotsu=ub1%numrotsu
@@ -168,7 +168,7 @@ contains
        allocate(ub2%b(ub1%lbwmax+ub1%ubwmax+1,ub1%n), ub2%csu(ub1%ubwmax,ub1%n), &
             ub2%ssu(ub1%ubwmax,ub1%n), ub2%jsu(ub1%ubwmax,ub1%n), ub2%numrotsu(ub1%n))
        ub2%lbwmax=ub1%lbwmax
-       ub2%ubwmax=ub1%lbwmax
+       ub2%ubwmax=ub1%ubwmax
     end if
     ub2%b(1:ub1%lbw+ub1%ubw+1,:)=ub1%b(1:ub1%lbw+ub1%ubw+1,:)
     ub2%numrotsu=ub1%numrotsu
@@ -189,7 +189,7 @@ contains
        allocate(bv2%b(bv1%n,bv1%lbwmax+bv1%ubwmax+1), bv2%csv(bv1%n,bv1%ubwmax), &
             bv2%ssv(bv1%n,bv1%ubwmax), bv2%ksv(bv1%n,bv1%ubwmax), bv2%numrotsv(bv1%n))
        bv2%lbwmax=bv1%lbwmax
-       bv2%ubwmax=bv1%lbwmax
+       bv2%ubwmax=bv1%ubwmax
     end if
     bv2%b(:,1:bv1%lbw+bv1%ubw+1)=bv1%b(:,1:bv1%lbw+bv1%ubw+1)
     bv2%numrotsv=bv1%numrotsv
@@ -211,7 +211,7 @@ contains
        allocate(bv2%b(bv1%n,bv1%lbwmax+bv1%ubwmax+1), bv2%csv(bv1%n,bv1%ubwmax), &
             bv2%ssv(bv1%n,bv1%ubwmax), bv2%ksv(bv1%n,bv1%ubwmax), bv2%numrotsv(bv1%n))
        bv2%lbwmax=bv1%lbwmax
-       bv2%ubwmax=bv1%lbwmax
+       bv2%ubwmax=bv1%ubwmax
     end if
     bv2%b(:,1:bv1%lbw+bv1%ubw+1)=bv1%b(:,1:bv1%lbw+bv1%ubw+1)
     bv2%numrotsv=bv1%numrotsv
