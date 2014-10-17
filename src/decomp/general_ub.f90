@@ -14,6 +14,10 @@ module general_ub
      module procedure f_d_upper_to_ub, f_c_upper_to_ub
   end interface f_upper_to_ub
 
+  interface f_general_ub
+     module procedure f_d_general_ub, f_c_general_ub
+  end interface f_general_ub
+
   type(routine_info), parameter :: info_d_upper_to_ub=routine_info(id_d_upper_to_ub, &
        'd_upper_to_ub', &
        [ character(len=error_message_length) :: 'n<1', 'ub%lbwmax < lbw', 'Size of a and ub not the same.' ] )
@@ -22,6 +26,10 @@ module general_ub
        'f_d_upper_to_ub', &
        [ character(len=error_message_length) :: 'Insufficient Upper Bandwidth in ub' ])
 
+  type(routine_info), parameter :: info_f_d_general_ub=routine_info(id_f_d_general_ub, &
+       'f_d_general_ub', &
+       [ character(len=error_message_length) :: 'Insufficient Upper Bandwidth.' ])
+
   type(routine_info), parameter :: info_c_upper_to_ub=routine_info(id_c_upper_to_ub, &
        'c_upper_to_ub', &
        [ character(len=error_message_length) :: 'n<1', 'ub%lbwmax < lbw', 'Size of a and ub not the same.' ] )
@@ -29,6 +37,10 @@ module general_ub
   type(routine_info), parameter :: info_f_c_upper_to_ub=routine_info(id_f_c_upper_to_ub, &
        'f_c_upper_to_ub', &
        [ character(len=error_message_length) :: 'Insufficient Upper Bandwidth in ub' ])
+
+  type(routine_info), parameter :: info_f_c_general_ub=routine_info(id_f_c_general_ub, &
+       'f_c_general_ub', &
+       [ character(len=error_message_length) :: 'Insufficient Upper Bandwidth.' ])
 
 contains
 
@@ -58,37 +70,92 @@ contains
     ub%lbw=lbw
   end subroutine d_upper_to_ub
 
+
   ! Errors:
   ! 0: no error
   ! 1: insufficient upper bw in bv%b
   subroutine f_d_upper_to_ub(a, n, b, lbw, ubw, lbwmax, ubwmax, &
-       numrots, js, cs, ss, tol, error)
+       numrotsu, jsu, csu, ssu, tol, error)
     real(kind=dp), target, dimension(n,n), intent(inout) :: a
-    integer(kind=int32), dimension(ubwmax,n), intent(out) :: js
-    real(kind=dp), dimension(ubwmax,n), intent(out) :: cs, ss
+    integer(kind=int32), dimension(ubwmax,n), intent(out) :: jsu
+    real(kind=dp), dimension(ubwmax,n), intent(out) :: csu, ssu
     real(kind=dp), dimension(ubwmax+lbwmax+1,n), intent(out) :: b
     real(kind=dp), intent(in) :: tol
-    integer(kind=int32), dimension(n), intent(out) :: numrots
+    integer(kind=int32), dimension(n), intent(out) :: numrotsu
     integer(kind=int32), intent(out) :: ubw
     type(error_info), intent(out) :: error
     integer(kind=int32), intent(in) :: n, lbw, ubwmax, lbwmax
+    !
+    integer(kind=int32), dimension(n) :: ubws
+
+    call clear_error(error)
+
+    if (n == 1) then
+       numrotsu=0;
+       ssu=0.0_dp; csu=0.0_dp; jsu=0
+       ubw=0
+       b(1,1)=a(1,1)
+       return
+    end if
+
+    call f_d_general_ub(a, n, ubws, ubwmax, numrotsu, jsu, csu, ssu, tol, error)
+    
+    
+    if (maxval(ubws) > ubwmax) then
+       ! This should already have been detected in f_d_general_ub.
+       call set_error(error, 1, id_f_d_upper_to_ub)
+    else
+       call d_extract_diagonals_ub(a, n, b, lbw, ubw, lbwmax, ubwmax, ubws)
+    end if
+  end subroutine f_d_upper_to_ub
+
+  subroutine d_extract_diagonals_ub(a, n, b, lbw, ubw, lbwmax, ubwmax, ubws)
+    real(kind=dp), target, dimension(n,n), intent(in) :: a
+    real(kind=dp), dimension(lbwmax+ubwmax+1,n), intent(out) :: b
+    integer(kind=int32), intent(out) :: ubw
+    integer(kind=int32), intent(in) :: n, lbw, lbwmax, ubwmax
+    integer(kind=int32), dimension(n), intent(in) :: ubws
+    !
+    integer(kind=int32) :: k, d
+    ubw=maxval(ubws)
+    ! put diagonals in b
+    b=0.0_dp
+    do d=1,ubw+1
+       do k=ubw-d+2,n
+          b(d,k) = a(d+k-ubw-1,k)
+       end do
+    end do
+    do d=ubw+2, ubw+lbw+1
+       do k=1,n-d+ubw+1
+          b(d,k) = a(d+k-ubw-1,k)
+       end do
+    end do
+  end subroutine d_extract_diagonals_ub
+
+  subroutine f_d_general_ub(a, n, ubws, ubwmax, numrotsu, jsu, csu, ssu, tol, error)
+    real(kind=dp), target, dimension(n,n), intent(inout) :: a
+    integer(kind=int32), dimension(ubwmax,n), intent(out) :: jsu
+    real(kind=dp), dimension(ubwmax,n), intent(out) :: csu, ssu
+    real(kind=dp), intent(in) :: tol
+    integer(kind=int32), dimension(n), intent(out) :: numrotsu
+    integer(kind=int32), dimension(n), intent(out) :: ubws
+    type(error_info), intent(out) :: error
+    integer(kind=int32), intent(in) :: n, ubwmax
     !
     real(kind=dp), target, dimension(ubwmax+1,n) :: q
     real(kind=dp), dimension(ubwmax+1) :: x
     real(kind=dp) :: nrma, nrmq12
     real(kind=dp), pointer, dimension(:,:) :: pl, pq
     integer(kind=int32) :: i, j, k, roffs, nl, klast
-    integer(kind=int32), dimension(n) :: ubws
     type(d_rotation) :: rot
     !
     call clear_error(error)
-    q=0.0_dp; numrots=0;
-    ss=0.0_dp; cs=0.0_dp; js=0
-    ubw=0; ubws=0
+    q=0.0_dp; numrotsu=0;
+    ssu=0.0_dp; csu=0.0_dp; jsu=0
+    ubws=0
     nrma = maxabs(a)*sqrt(real(n))
     !
     if (n == 1) then
-       b(1,1)=a(1,1)
        return
     end if
     ! Compute an initial trivial LQ factorization
@@ -136,6 +203,9 @@ contains
                 cycle kloop ! next L might be rank deficient; no need to extend it to 2x2.
              end if
           else ! no null vector
+             if (ubwmax==0) then
+                call set_error(error, 1, id_f_d_general_ub); return
+             end if
              ubws(k)=1
              if (k==n-1) then
                 pl(1,1)=pl(1,1)*pq(1,1)
@@ -161,7 +231,7 @@ contains
                    pl => a(k:k+1,k+2:k+3)
                    call extend_gs_rows(pq(1:1,:), pl(2,1:1), pl(2,2), pq(2,:), error)
                    if (error%code > 0) then
-                      call add_id(error, id_f_d_upper_to_ub); return
+                      call add_id(error, id_f_d_general_ub); return
                    end if
                    if (k+4 <= n) then
                       a(k+1,k+4:n)=0.0_dp
@@ -180,27 +250,27 @@ contains
              ubws(k)=nl-1
              if (error%code == -1) then
                 pl(1,1)=0.0_dp
-                numrots(k)=0
+                numrotsu(k)=0
                 call clear_error(error)
              else if (error%code < -1) then
-                numrots(k)=-error%code-1
+                numrotsu(k)=-error%code-1
                 pl(-error%code,-error%code)=0.0_dp
                 do j=-error%code-1,1,-1
                    rot=lgivens2(pl(j,j),pl(j+1,j))
                    call rotation_times_general(trp_rot(rot), pl(:,1:j), j,j+1)
                    pl(j,j)=0.0_dp
-                   cs(j,k)=rot%cosine; ss(j,k)=rot%sine
-                   js(j,k)=roffs+j
+                   csu(j,k)=rot%cosine; ssu(j,k)=rot%sine
+                   jsu(j,k)=roffs+j
                 end do
                 call clear_error(error)
              else ! error=0
-                numrots(k)=nl-1;
+                numrotsu(k)=nl-1;
                 do j=nl,2,-1 ! apply u_k while preserving the triangular structure of L
                    rot=rgivens(x(j-1),x(j))
                    call general_times_rotation(x,rot,j-1,j)
                    call rotation_times_general(trp_rot(rot), pl,j-1,j)
-                   cs(j-1,k)=rot%cosine; ss(j-1,k)=rot%sine
-                   js(j-1,k)=roffs+j-1
+                   csu(j-1,k)=rot%cosine; ssu(j-1,k)=rot%sine
+                   jsu(j-1,k)=roffs+j-1
                    rot=rgivens(pl(j-1,j-1),pl(j-1,j))
                    call general_times_rotation(pl,rot,j-1,j)
                    call rotation_times_general(trp_rot(rot),pq,j-1,j)
@@ -237,7 +307,7 @@ contains
                 pq(1,:)=0.0_dp;     pq(1,1)=1.0_dp
                 call extend_gs_rows(pq(2:nl,:), x(1:nl-1), x(nl), pq(1,:), error) ! orthogonalize
                 if (error%code > 0) then
-                   call add_id(error, id_f_d_upper_to_ub); return
+                   call add_id(error, id_f_d_general_ub); return
                 end if
                 do j=nl,2,-1
                    rot=lgivens(pq(1,1),pq(j,1))
@@ -252,7 +322,7 @@ contains
                 pl => a(roffs+2:k+1,k+2:k+nl+1) ! nl by nl
                 call extend_gs_rows(pq(1:nl-1,:), pl(nl,1:nl-1), pl(nl,nl), pq(nl,:), error)
                 if (error%code > 0) then
-                   call add_id(error, id_f_d_upper_to_ub); return
+                   call add_id(error, id_f_d_general_ub); return
                 end if
                 if (k+nl+2 <= n) then
                    a(k+1,k+nl+2:n)=0.0_dp
@@ -262,6 +332,9 @@ contains
              call clear_error(error)
              ! no null vector found.  Simply reveal column k+1 if there is room.  Otherwise terminate
              !  with square L.
+             if (ubwmax<nl) then
+                call set_error(error, 1, id_f_d_general_ub); return
+             end if
              ubws(k)=nl
              if (k+nl==n) then
                 klast=k ! terminate with square L.
@@ -276,7 +349,7 @@ contains
                 ! orthogonalizing.  Note x is used as workspace for coefficients.
                 call extend_gs_rows(pq(2:nl+1,:), x(1:nl), x(nl+1), pq(1,:), error)
                 if (error%code > 0) then
-                   call add_id(error, id_f_d_upper_to_ub); return
+                   call add_id(error, id_f_d_general_ub); return
                 end if
                 do j=nl+1,2,-1
                    rot=lgivens(pq(1,1),pq(j,1))
@@ -302,7 +375,7 @@ contains
                    pl => a(roffs+1:k+1,k+2:k+nl+2)
                    call extend_gs_rows(pq(1:nl,:), pl(nl+1,1:nl), pl(nl+1,nl+1), pq(nl+1,:), error)
                    if (error%code > 0) then
-                      call add_id(error, id_f_d_upper_to_ub); return
+                      call add_id(error, id_f_d_general_ub); return
                    end if
                    if (k+nl+3 <= n) then
                       a(k+1,k+nl+3:n)=0.0_dp
@@ -318,6 +391,9 @@ contains
     ! contained in a(k-(n-k)+1:k,k+1:n).  The former happens when the last step
     ! of kloop found a null vector.  The latter happens when it didn't.
     if (klast == k) then ! square termination
+       if (ubwmax<n-k) then
+          call set_error(error, 1, id_f_d_general_ub); return
+       end if
        ubws(k:n-1)=n-k
        nl=n-k
        if (nl > 1) then
@@ -334,12 +410,12 @@ contains
              end do
              ! triangularize L
              pl(:,1)=pl(:,1)*pq(1,1)
-             numrots(k+i)=nl-1
+             numrotsu(k+i)=nl-1
              do j=nl-1,1,-1
                 rot=lgivens2(pl(j,j+1),pl(j+1,j+1))
                 call rotation_times_general(trp_rot(rot),pl(:,2:nl),j,j+1)
-                cs(j,k+i)=rot%cosine; ss(j,k+i)=rot%sine
-                js(j,k+i)=roffs+j
+                csu(j,k+i)=rot%cosine; ssu(j,k+i)=rot%sine
+                jsu(j,k+i)=roffs+j
                 pl(j,j+1)=0.0_dp
              end do
           end do
@@ -347,6 +423,9 @@ contains
        end if
     else ! rectangular termination
        k=k+1
+       if (ubwmax < n-k) then
+          call set_error(error, 1, id_f_d_general_ub); return
+       end if
        ubws(k:n-1)=n-k
        nl=n-k
        do i=1,n-k
@@ -354,12 +433,12 @@ contains
           roffs=k-nl-1
           pl=>a(roffs+1:k,k+i:n)
           pq=>q(i:n-k,i:n-k)
-          numrots(k+i-1)=nl
+          numrotsu(k+i-1)=nl
           ! Triangularize L
           do j=nl,1,-1
              rot=lgivens2(pl(j,j),pl(j+1,j))
-             cs(j,k+i-1)=rot%cosine; ss(j,k+i-1)=rot%sine
-             js(j,k+i-1)=roffs+j
+             csu(j,k+i-1)=rot%cosine; ssu(j,k+i-1)=rot%sine
+             jsu(j,k+i-1)=roffs+j
              call rotation_times_general(trp_rot(rot), pl,j,j+1)
              pl(j,j)=0.0_dp
           end do
@@ -372,36 +451,7 @@ contains
           pl(:,1)=pl(:,1)*pq(1,1)
        end do
     end if
-    if (maxval(ubws) > ubwmax) then
-       call set_error(error, 1, id_f_d_upper_to_ub)
-    else
-       call d_extract_diagonals_ub(a, n, b, lbw, ubw, lbwmax, ubwmax, ubws)
-    end if
-  end subroutine f_d_upper_to_ub
-
-  subroutine d_extract_diagonals_ub(a, n, b, lbw, ubw, lbwmax, ubwmax, ubws)
-    real(kind=dp), target, dimension(n,n), intent(in) :: a
-    real(kind=dp), dimension(lbwmax+ubwmax+1,n), intent(out) :: b
-    integer(kind=int32), intent(out) :: ubw
-    integer(kind=int32), intent(in) :: n, lbw, lbwmax, ubwmax
-    integer(kind=int32), dimension(n), intent(in) :: ubws
-    !
-    integer(kind=int32) :: k, d
-    ubw=maxval(ubws)
-    ! put diagonals in b
-    b=0.0_dp
-    do d=1,ubw+1
-       do k=ubw-d+2,n
-          b(d,k) = a(d+k-ubw-1,k)
-       end do
-    end do
-    do d=ubw+2, ubw+lbw+1
-       do k=1,n-d+ubw+1
-          b(d,k) = a(d+k-ubw-1,k)
-       end do
-    end do
-  end subroutine d_extract_diagonals_ub
-
+  end subroutine f_d_general_ub
 
   !
   ! Complex.
@@ -430,34 +480,88 @@ contains
     ub%lbw=lbw
   end subroutine c_upper_to_ub
 
+
   subroutine f_c_upper_to_ub(a, n, b, lbw, ubw, lbwmax, ubwmax, &
-       numrots, js, cs, ss, tol, error)
+       numrotsu, jsu, csu, ssu, tol, error)
     complex(kind=dp), target, dimension(n,n), intent(inout) :: a
-    integer(kind=int32), dimension(ubwmax,n), intent(out) :: js
-    complex(kind=dp), dimension(ubwmax,n), intent(out) :: cs, ss
+    integer(kind=int32), dimension(ubwmax,n), intent(out) :: jsu
+    complex(kind=dp), dimension(ubwmax,n), intent(out) :: csu, ssu
     complex(kind=dp), dimension(lbwmax+ubwmax+1,n), intent(out) :: b
     real(kind=dp), intent(in) :: tol
-    integer(kind=int32), dimension(n), intent(out) :: numrots
+    integer(kind=int32), dimension(n), intent(out) :: numrotsu
     integer(kind=int32), intent(out) :: ubw
     type(error_info), intent(out) :: error
     integer(kind=int32), intent(in) :: n, lbw, lbwmax, ubwmax
+    !
+    integer(kind=int32), dimension(n) :: ubws
+    !
+    call clear_error(error)
+    !
+    if (n == 1) then
+       numrotsu=0;
+       ssu=(0.0_dp, 0.0_dp); csu=(0.0_dp, 0.0_dp); jsu=0
+       ubw=0
+       b(1,1)=a(1,1)
+       return
+    end if
+
+    call f_c_general_ub(a, n, ubws, ubwmax, numrotsu, jsu, csu, ssu, tol, error)
+
+    if (maxval(ubws) > ubwmax) then
+       ! This should already have been detected in f_d_general_ub.
+       call set_error(error, 1, id_f_c_upper_to_ub)
+    else
+       call c_extract_diagonals_ub(a,n,b,lbw,ubw,lbwmax, ubwmax, ubws)
+    end if
+  end subroutine f_c_upper_to_ub
+
+  subroutine c_extract_diagonals_ub(a, n, b, lbw, ubw, lbwmax, ubwmax, ubws)
+    complex(kind=dp), target, dimension(n,n), intent(in) :: a
+    complex(kind=dp), dimension(lbwmax+ubwmax+1,n), intent(out) :: b
+    integer(kind=int32), intent(out) :: ubw
+    integer(kind=int32), intent(in) :: n, lbw, lbwmax, ubwmax
+    integer(kind=int32), dimension(n), intent(in) :: ubws
+    !
+    integer(kind=int32) :: k, d
+    ubw=maxval(ubws)
+    ! put diagonals in b
+    b=(0.0_dp, 0.0_dp)
+    do d=1,ubw+1
+       do k=ubw-d+2,n
+          b(d,k) = a(d+k-ubw-1,k)
+       end do
+    end do
+    do d=ubw+2, ubw+lbw+1
+       do k=1,n-d+ubw+1
+          b(d,k) = a(d+k-ubw-1,k)
+       end do
+    end do
+  end subroutine c_extract_diagonals_ub
+
+  subroutine f_c_general_ub(a, n, ubws, ubwmax, numrotsu, jsu, csu, ssu, tol, error)
+    complex(kind=dp), target, dimension(n,n), intent(inout) :: a
+    integer(kind=int32), dimension(ubwmax,n), intent(out) :: jsu
+    complex(kind=dp), dimension(ubwmax,n), intent(out) :: csu, ssu
+    real(kind=dp), intent(in) :: tol
+    integer(kind=int32), dimension(n), intent(out) :: numrotsu
+    integer(kind=int32), dimension(n), intent(out) :: ubws
+    type(error_info), intent(out) :: error
+    integer(kind=int32), intent(in) :: n, ubwmax
     !
     complex(kind=dp), target, dimension(ubwmax+1,n) :: q
     complex(kind=dp), dimension(ubwmax+1) :: x
     real(kind=dp) :: nrma, nrmq12
     complex(kind=dp), pointer, dimension(:,:) :: pl, pq
     integer(kind=int32) :: i, j, k, roffs, nl, klast
-    integer(kind=int32), dimension(n) :: ubws
     type(c_rotation) :: rot
-    !
+
     call clear_error(error)
-    q=(0.0_dp, 0.0_dp); numrots=0;
-    ss=(0.0_dp, 0.0_dp); cs=(0.0_dp, 0.0_dp); js=0
-    ubw=0; ubws=0
+    q=(0.0_dp, 0.0_dp); numrotsu=0;
+    ssu=(0.0_dp, 0.0_dp); csu=(0.0_dp, 0.0_dp); jsu=0
+    ubws=0
     nrma = maxabs(a)*sqrt(real(n))
-    !
+
     if (n == 1) then
-       b(1,1)=a(1,1)
        return
     end if
     ! Compute an initial trivial LQ factorization
@@ -505,6 +609,9 @@ contains
                 cycle kloop ! next L might be rank deficient; no need to extend it to 2x2.
              end if
           else ! no null vector
+             if (ubwmax==0) then
+                call set_error(error, 1, id_f_c_general_ub); return
+             end if
              ubws(k)=1
              if (k==n-1) then
                 pl(1,1)=pl(1,1)*pq(1,1)
@@ -530,7 +637,7 @@ contains
                    pl => a(k:k+1,k+2:k+3)
                    call extend_gs_rows(pq(1:1,:), pl(2,1:1), pl(2,2), pq(2,:), error)
                    if (error%code > 0) then
-                      call add_id(error, id_f_c_upper_to_ub); return
+                      call add_id(error, id_f_c_general_ub); return
                    end if
                    if (k+4 <= n) then
                       a(k+1,k+4:n)=(0.0_dp, 0.0_dp)
@@ -549,27 +656,27 @@ contains
              ubws(k)=nl-1
              if (error%code == -1) then
                 pl(1,1)=(0.0_dp, 0.0_dp)
-                numrots(k)=0
+                numrotsu(k)=0
                 call clear_error(error)
              else if (error%code < -1) then
-                numrots(k)=-error%code-1
+                numrotsu(k)=-error%code-1
                 pl(-error%code,-error%code)=(0.0_dp, 0.0_dp)
                 do j=-error%code-1,1,-1
                    rot=lgivens2(pl(j,j),pl(j+1,j))
                    call rotation_times_general(trp_rot(rot), pl(:,1:j), j,j+1)
                    pl(j,j)=(0.0_dp, 0.0_dp)
-                   cs(j,k)=rot%cosine; ss(j,k)=rot%sine
-                   js(j,k)=roffs+j
+                   csu(j,k)=rot%cosine; ssu(j,k)=rot%sine
+                   jsu(j,k)=roffs+j
                 end do
                 call clear_error(error)
              else ! error=0
-                numrots(k)=nl-1;
+                numrotsu(k)=nl-1;
                 do j=nl,2,-1 ! apply u_k while preserving the triangular structure of L
                    rot=rgivens(x(j-1),x(j))
                    call general_times_rotation(x,rot,j-1,j)
                    call rotation_times_general(trp_rot(rot), pl,j-1,j)
-                   cs(j-1,k)=rot%cosine; ss(j-1,k)=rot%sine
-                   js(j-1,k)=roffs+j-1
+                   csu(j-1,k)=rot%cosine; ssu(j-1,k)=rot%sine
+                   jsu(j-1,k)=roffs+j-1
                    rot=rgivens(pl(j-1,j-1),pl(j-1,j))
                    call general_times_rotation(pl,rot,j-1,j)
                    call rotation_times_general(trp_rot(rot),pq,j-1,j)
@@ -606,7 +713,7 @@ contains
                 pq(1,:)=(0.0_dp, 0.0_dp);     pq(1,1)=(1.0_dp,0.0_dp)
                 call extend_gs_rows(pq(2:nl,:), x(1:nl-1), x(nl), pq(1,:), error) ! orthogonalize
                 if (error%code > 0) then
-                   call add_id(error, id_f_c_upper_to_ub); return
+                   call add_id(error, id_f_c_general_ub); return
                 end if
                 do j=nl,2,-1
                    rot=lgivens(pq(1,1),pq(j,1))
@@ -621,7 +728,7 @@ contains
                 pl => a(roffs+2:k+1,k+2:k+nl+1) ! nl by nl
                 call extend_gs_rows(pq(1:nl-1,:), pl(nl,1:nl-1), pl(nl,nl), pq(nl,:), error)
                 if (error%code > 0) then
-                   call add_id(error, id_f_c_upper_to_ub); return
+                   call add_id(error, id_f_c_general_ub); return
                 end if
                 if (k+nl+2 <= n) then
                    a(k+1,k+nl+2:n)=(0.0_dp, 0.0_dp)
@@ -631,6 +738,9 @@ contains
              ! no null vector found.  Simply reveal column k+1 if there is room.  Otherwise terminate
              !  with square L.
              call clear_error(error)
+             if (ubwmax<nl) then
+                call set_error(error, 1, id_f_c_general_ub); return
+             end if
              ubws(k)=nl
              if (k+nl==n) then
                 klast=k ! terminate with square L.
@@ -645,7 +755,7 @@ contains
                 ! orthogonalizing.  Note x is used as workspace for coefficients.
                 call extend_gs_rows(pq(2:nl+1,:), x(1:nl), x(nl+1), pq(1,:), error)
                 if (error%code > 0) then
-                   call add_id(error, id_f_c_upper_to_ub); return
+                   call add_id(error, id_f_c_general_ub); return
                 end if
                 do j=nl+1,2,-1
                    rot=lgivens(pq(1,1),pq(j,1))
@@ -671,7 +781,7 @@ contains
                    pl => a(roffs+1:k+1,k+2:k+nl+2)
                    call extend_gs_rows(pq(1:nl,:), pl(nl+1,1:nl), pl(nl+1,nl+1), pq(nl+1,:), error)
                    if (error%code > 0) then
-                      call add_id(error, id_f_c_upper_to_ub); return
+                      call add_id(error, id_f_c_general_ub); return
                    end if
                    if (k+nl+3 <= n) then
                       a(k+1,k+nl+3:n)=(0.0_dp, 0.0_dp)
@@ -687,6 +797,9 @@ contains
     ! contained in a(k-(n-k)+1:k,k+1:n).  The former happens when the last step
     ! of kloop found a null vector.  The latter happens when it didn't.
     if (klast == k) then ! square termination
+       if (ubwmax<n-k) then
+          call set_error(error, 1, id_f_d_general_ub); return
+       end if
        ubws(k:n-1)=n-k
        nl=n-k
        if (n-k > 1) then
@@ -703,12 +816,12 @@ contains
              end do
              ! triangularize L
              pl(:,1)=pl(:,1)*pq(1,1)
-             numrots(k+i)=nl-1
+             numrotsu(k+i)=nl-1
              do j=nl-1,1,-1
                 rot=lgivens2(pl(j,j+1),pl(j+1,j+1))
                 call rotation_times_general(trp_rot(rot),pl(:,2:nl),j,j+1)
-                cs(j,k+i)=rot%cosine; ss(j,k+i)=rot%sine
-                js(j,k+i)=roffs+j
+                csu(j,k+i)=rot%cosine; ssu(j,k+i)=rot%sine
+                jsu(j,k+i)=roffs+j
                 pl(j,j+1)=(0.0_dp, 0.0_dp)
              end do
           end do
@@ -716,6 +829,9 @@ contains
        end if
     else ! rectangular termination
        k=k+1
+       if (ubwmax < n-k) then
+          call set_error(error, 1, id_f_d_general_ub); return
+       end if
        ubws(k:n-1)=n-k
        nl=n-k
        do i=1,n-k
@@ -723,12 +839,12 @@ contains
           roffs=k-nl-1
           pl=>a(roffs+1:k,k+i:n)
           pq=>q(i:n-k,i:n-k)
-          numrots(k+i-1)=nl
+          numrotsu(k+i-1)=nl
           ! Triangularize L
           do j=nl,1,-1
              rot=lgivens2(pl(j,j),pl(j+1,j))
-             cs(j,k+i-1)=rot%cosine; ss(j,k+i-1)=rot%sine
-             js(j,k+i-1)=roffs+j
+             csu(j,k+i-1)=rot%cosine; ssu(j,k+i-1)=rot%sine
+             jsu(j,k+i-1)=roffs+j
              call rotation_times_general(trp_rot(rot), pl,j,j+1)
              pl(j,j)=(0.0_dp, 0.0_dp)
           end do
@@ -741,35 +857,6 @@ contains
           pl(:,1)=pl(:,1)*pq(1,1)
        end do
     end if
-    if (maxval(ubws) > ubwmax) then
-       call set_error(error, 1, id_f_c_upper_to_ub)
-    else
-       call c_extract_diagonals_ub(a,n,b,lbw,ubw,lbwmax, ubwmax, ubws)
-    end if
-  end subroutine f_c_upper_to_ub
-
-  subroutine c_extract_diagonals_ub(a, n, b, lbw, ubw, lbwmax, ubwmax, ubws)
-    complex(kind=dp), target, dimension(n,n), intent(in) :: a
-    complex(kind=dp), dimension(lbwmax+ubwmax+1,n), intent(out) :: b
-    integer(kind=int32), intent(out) :: ubw
-    integer(kind=int32), intent(in) :: n, lbw, lbwmax, ubwmax
-    integer(kind=int32), dimension(n), intent(in) :: ubws
-    !
-    integer(kind=int32) :: k, d
-    ubw=maxval(ubws)
-    ! put diagonals in b
-    b=(0.0_dp, 0.0_dp)
-    do d=1,ubw+1
-       do k=ubw-d+2,n
-          b(d,k) = a(d+k-ubw-1,k)
-       end do
-    end do
-    do d=ubw+2, ubw+lbw+1
-       do k=1,n-d+ubw+1
-          b(d,k) = a(d+k-ubw-1,k)
-       end do
-    end do
-  end subroutine c_extract_diagonals_ub
-
+  end subroutine f_c_general_ub
 
 end module general_ub

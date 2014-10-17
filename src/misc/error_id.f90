@@ -59,14 +59,18 @@ module error_id
   ! src/decomp/general_bv, 050s
   integer(int32), parameter :: id_d_upper_to_bv=050
   integer(int32), parameter :: id_f_d_upper_to_bv=051
-  integer(int32), parameter :: id_c_upper_to_bv=052
-  integer(int32), parameter :: id_f_c_upper_to_bv=053
+  integer(int32), parameter :: id_f_d_general_bv=052
+  integer(int32), parameter :: id_c_upper_to_bv=053
+  integer(int32), parameter :: id_f_c_upper_to_bv=054
+  integer(int32), parameter :: id_f_c_general_bv=055
 
   ! src/decomp/general_ub, 060s
   integer(int32), parameter :: id_d_upper_to_ub=060
   integer(int32), parameter :: id_f_d_upper_to_ub=061
-  integer(int32), parameter :: id_c_upper_to_ub=062
-  integer(int32), parameter :: id_f_c_upper_to_ub=063
+  integer(int32), parameter :: id_f_d_general_ub=062
+  integer(int32), parameter :: id_c_upper_to_ub=063
+  integer(int32), parameter :: id_f_c_upper_to_ub=064
+  integer(int32), parameter :: id_f_c_general_ub=065
 
   ! src/orth/gs 070s
   integer(int32), parameter :: id_d_extend_gs_rows=070
