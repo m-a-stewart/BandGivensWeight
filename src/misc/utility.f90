@@ -23,6 +23,10 @@ interface random_matrix
         c_random_matrix, c_v_random_matrix, c_s_random_matrix
 end interface random_matrix
 
+interface ip_transpose
+   module procedure d_ip_transpose, c_ip_transpose
+end interface ip_transpose
+
 interface includes_nan
    module procedure d_includes_nan, d_v_includes_nan, c_includes_nan, c_v_includes_nan
 end interface includes_nan
@@ -373,5 +377,36 @@ contains
        end if
     end do
   end function c_v_includes_nan
+
+  subroutine d_ip_transpose(a)
+    real(kind=dp), dimension(:,:), intent(inout) :: a
+    real(kind=dp) :: tmp
+    integer(kind=int32) :: n, j,k
+    n=size(a,1)
+    do j=2,n
+       do k=1,j-1
+          tmp=a(j,k)
+          a(j,k)=a(k,j)
+          a(k,j)=tmp
+       end do
+    end do
+  end subroutine d_ip_transpose
+
+  subroutine c_ip_transpose(a)
+    complex(kind=dp), dimension(:,:), intent(inout) :: a
+    complex(kind=dp) :: tmp
+    integer(kind=int32) :: n, j,k
+    n=size(a,1)
+    do j=2,n
+       do k=1,j-1
+          tmp=a(j,k)
+          a(j,k)=conjg(a(k,j))
+          a(k,j)=conjg(tmp)
+       end do
+    end do
+    do j=1,n
+       a(j,j)=conjg(a(j,j))
+    end do
+  end subroutine c_ip_transpose
 
 end module utility
