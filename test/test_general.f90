@@ -1,4 +1,4 @@
-program test_decomp
+program test_general
   use nested
   use test_data
   implicit none
@@ -139,4 +139,4 @@ program test_decomp
   call c_output_result(test_name,a0_c,a1_c,rmax,bv_c%ubw,t0,t0,tol2,error)
   print *
 
-end program test_decomp
+end program test_general

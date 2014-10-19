@@ -15,7 +15,7 @@ TRANSFORMSOBJS = $(OBJDIR)/transforms.o $(OBJDIR)/rotation.o $(OBJDIR)/shift.o $
 
 ORTHOBJS = $(OBJDIR)/triangular.o $(OBJDIR)/nullvec.o $(OBJDIR)/gs.o
 
-DECOMPOBJS = $(OBJDIR)/decomp.o $(OBJDIR)/general_bv.o $(OBJDIR)/general_ub.o
+GENERALOBJS = $(OBJDIR)/general.o $(OBJDIR)/general_bv.o $(OBJDIR)/general_ub.o
 
 CONVERSIONOBJS = $(OBJDIR)/conversions.o $(OBJDIR)/conversions_ub_to_bv.o \
 	$(OBJDIR)/conversions_bv_to_ub.o
@@ -24,11 +24,11 @@ COMPRESSIONOBJS = $(OBJDIR)/compressions.o $(OBJDIR)/compressions_ub_to_bv.o \
 	$(OBJDIR)/compressions_bv_to_ub.o
 
 
-OBJS =  $(MISCOBJS) $(TYPESOBJS) $(TRANSFORMSOBJS) $(ORTHOBJS) $(DECOMPOBJS) \
+OBJS =  $(MISCOBJS) $(TYPESOBJS) $(TRANSFORMSOBJS) $(ORTHOBJS) $(GENERALOBJS) \
 	$(CONVERSIONOBJS) $(OBJDIR)/assemble.o $(COMPRESSIONOBJS) \
 	$(OBJDIR)/qr_iteration.o $(OBJDIR)/qr_factorization.o $(OBJDIR)/substitution.o \
 	$(OBJDIR)/nested.o $(OBJDIR)/update.o
 
-TEST_EXECS =  $(OBJDIR)/test_decomp $(OBJDIR)/test_convert $(OBJDIR)/test_compress \
+TEST_EXECS =  $(OBJDIR)/test_general $(OBJDIR)/test_convert $(OBJDIR)/test_compress \
 	$(OBJDIR)/test_qr_iteration $(OBJDIR)/test_qr_factorization $(OBJDIR)/test_solve \
 	$(OBJDIR)/test_sweeps $(OBJDIR)/test_update

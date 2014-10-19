@@ -56,7 +56,7 @@ module error_id
   integer(int32), parameter :: id_c_convert_ub_to_bv=042
   integer(int32), parameter :: id_f_c_convert_ub_to_bv=043
 
-  ! src/decomp/general_bv, 050s
+  ! src/general/general_bv, 050s
   integer(int32), parameter :: id_d_upper_to_bv=050
   integer(int32), parameter :: id_f_d_upper_to_bv=051
   integer(int32), parameter :: id_f_d_general_bv=052
@@ -64,7 +64,7 @@ module error_id
   integer(int32), parameter :: id_f_c_upper_to_bv=054
   integer(int32), parameter :: id_f_c_general_bv=055
 
-  ! src/decomp/general_ub, 060s
+  ! src/general/general_ub, 060s
   integer(int32), parameter :: id_d_upper_to_ub=060
   integer(int32), parameter :: id_f_d_upper_to_ub=061
   integer(int32), parameter :: id_f_d_general_ub=062

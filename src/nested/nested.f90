@@ -1,5 +1,5 @@
 module nested
-  use decomp
+  use general
   use assemble
   use qr_factorization
   use qr_iteration

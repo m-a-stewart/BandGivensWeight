@@ -1,4 +1,4 @@
-module decomp
+module general
   use general_bv
   use general_ub
-end module decomp
+end module general

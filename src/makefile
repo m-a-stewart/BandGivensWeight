@@ -21,7 +21,7 @@ $(OBJDIR)/gs.o : $(OBJDIR)/misc.o
 
 $(OBJDIR)/assemble.o : $(OBJDIR)/band_types.o $(OBJDIR)/nested_types.o $(OBJDIR)/misc.o
 
-$(OBJDIR)/decomp.o : $(OBJDIR)/general_bv.o $(OBJDIR)/general_ub.o
+$(OBJDIR)/general.o : $(OBJDIR)/general_bv.o $(OBJDIR)/general_ub.o
 $(OBJDIR)/general_bv.o : $(OBJDIR)/orth.o $(OBJDIR)/shift.o $(OBJDIR)/rotation.o $(OBJDIR)/types.o
 $(OBJDIR)/general_ub.o : $(OBJDIR)/orth.o $(OBJDIR)/shift.o $(OBJDIR)/rotation.o $(OBJDIR)/types.o
 
@@ -45,7 +45,7 @@ $(OBJDIR)/update.o : $(OBJDIR)/misc.o $(OBJDIR)/types.o $(OBJDIR)/shift.o $(OBJD
 
 $(OBJDIR)/substitution.o : $(OBJDIR)/transforms.o $(OBJDIR)/misc.o $(OBJDIR)/types.o
 
-$(OBJDIR)/nested.o : $(OBJDIR)/decomp.o $(OBJDIR)/assemble.o $(OBJDIR)/qr_iteration.o \
+$(OBJDIR)/nested.o : $(OBJDIR)/general.o $(OBJDIR)/assemble.o $(OBJDIR)/qr_iteration.o \
 	$(OBJDIR)/qr_factorization.o $(OBJDIR)/substitution.o $(OBJDIR)/update.o
 
 $(OBJDIR)/%.o : %.f90
@@ -60,7 +60,7 @@ $(OBJDIR)/%.o : orth/%.f90
 $(OBJDIR)/%.o : misc/%.f90
 	$(FC) $(CFLAGS) $(PROFCFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@
 
-$(OBJDIR)/%.o : decomp/%.f90
+$(OBJDIR)/%.o : general/%.f90
 	$(FC) $(CFLAGS) $(PROFCFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@
 
 $(OBJDIR)/%.o : types/%.f90

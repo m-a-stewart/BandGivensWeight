@@ -1,9 +1,9 @@
 include ../include/vars.mk
 
-run_test : $(OBJDIR)/test_compress $(OBJDIR)/test_decomp $(OBJDIR)/test_convert \
+run_test : $(OBJDIR)/test_compress $(OBJDIR)/test_general $(OBJDIR)/test_convert \
 		$(OBJDIR)/test_qr_iteration $(OBJDIR)/test_qr_factorization $(OBJDIR)/test_solve \
 		$(OBJDIR)/test_sweeps $(OBJDIR)/test_update
-	$(OBJDIR)/test_decomp
+	$(OBJDIR)/test_general
 	$(OBJDIR)/test_convert
 	$(OBJDIR)/test_compress
 	$(OBJDIR)/test_qr_iteration
@@ -13,9 +13,9 @@ run_test : $(OBJDIR)/test_compress $(OBJDIR)/test_decomp $(OBJDIR)/test_convert 
 	$(OBJDIR)/test_update
 
 
-$(OBJDIR)/test_decomp : $(OBJDIR)/test_decomp.o $(OBJS) $(OBJDIR)/test_data.o
-	$(FC) $(LFLAGS) $(PROFLFLAGS) $(OBJDIR)/test_decomp.o $(OBJS) \
-	$(OBJDIR)/test_data.o -o $(OBJDIR)/test_decomp
+$(OBJDIR)/test_general : $(OBJDIR)/test_general.o $(OBJS) $(OBJDIR)/test_data.o
+	$(FC) $(LFLAGS) $(PROFLFLAGS) $(OBJDIR)/test_general.o $(OBJS) \
+	$(OBJDIR)/test_data.o -o $(OBJDIR)/test_general
 
 $(OBJDIR)/test_convert : $(OBJDIR)/test_convert.o $(OBJS) $(OBJDIR)/test_data.o
 	$(FC) $(LFLAGS) $(PROFLFLAGS) $(OBJDIR)/test_convert.o $(OBJS) \
@@ -47,7 +47,7 @@ $(OBJDIR)/test_update : $(OBJDIR)/test_update.o $(OBJS) $(OBJDIR)/test_data.o
 
 
 $(OBJDIR)/test_data.o : test_data.f90 $(OBJDIR)/prec.o $(OBJS)
-$(OBJDIR)/test_decomp.o : test_decomp.f90 $(OBJDIR)/prec.o $(OBJDIR)/test_data.o $(OBJS)
+$(OBJDIR)/test_general.o : test_general.f90 $(OBJDIR)/prec.o $(OBJDIR)/test_data.o $(OBJS)
 $(OBJDIR)/test_compress.o : test_compress.f90 $(OBJDIR)/prec.o $(OBJDIR)/test_data.o $(OBJS)
 $(OBJDIR)/test_convert.o : test_convert.f90 $(OBJDIR)/prec.o $(OBJDIR)/test_data.o $(OBJS)
 $(OBJDIR)/test_qr_factorization.o : test_qr_factorization.f90 $(OBJDIR)/prec.o $(OBJDIR)/test_data.o $(OBJS)
