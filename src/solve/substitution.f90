@@ -139,12 +139,12 @@ contains
   end subroutine d_v_back_substitution_ub
 
 
-  subroutine f_d_back_substitution_ub(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, &
-       cs_ub, ss_ub, x, c, nc, error)
+  subroutine f_d_back_substitution_ub(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, &
+       csu, ssu, x, c, nc, error)
     real(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(in) :: b_ub
-    integer(kind=int32), dimension(n), intent(in) :: numrots_ub
-    integer(kind=int32), dimension(ubwmax_ub,n), intent(in) :: js_ub
-    real(kind=dp), dimension(ubwmax_ub,n), intent(in) :: cs_ub, ss_ub
+    integer(kind=int32), dimension(n), intent(in) :: numrotsu
+    integer(kind=int32), dimension(ubwmax_ub,n), intent(in) :: jsu
+    real(kind=dp), dimension(ubwmax_ub,n), intent(in) :: csu, ssu
     integer(kind=int32), intent(in) :: n, lbwmax_ub, ubwmax_ub, lbw_ub, ubw_ub, nc
     real(kind=dp), dimension(n,nc), intent(inout) :: c
     real(kind=dp), dimension(n,nc), intent(out) :: x
@@ -160,9 +160,9 @@ contains
     x=0.0_dp
     ! Apply all the u_k^T to c.
     do k=1,n-1
-       do j=numrots_ub(k),1,-1
-          rot%cosine=cs_ub(j,k); rot%sine=ss_ub(j,k)
-          call rotation_times_general(trp_rot(rot), c, js_ub(j,k), js_ub(j,k)+1)
+       do j=numrotsu(k),1,-1
+          rot%cosine=csu(j,k); rot%sine=ssu(j,k)
+          call rotation_times_general(trp_rot(rot), c, jsu(j,k), jsu(j,k)+1)
        end do
     end do
     ! diagonals of b are in row ubw_ub+1 of b_ub.
@@ -173,20 +173,20 @@ contains
           c(k+1-l:k+1,j)=c(k+1-l:k+1,j) - x(k+1,j) * b_ub(ubw_ub+1-l:ubw_ub+1 ,k+1)
        end do
        ! Apply u_k to c
-       do j=1,numrots_ub(k)
-          rot%cosine=cs_ub(j,k); rot%sine=ss_ub(j,k)
-          call rotation_times_general(rot, c, js_ub(j,k), js_ub(j,k)+1)
+       do j=1,numrotsu(k)
+          rot%cosine=csu(j,k); rot%sine=ssu(j,k)
+          call rotation_times_general(rot, c, jsu(j,k), jsu(j,k)+1)
        end do
        x(k,:)=c(k,:)/b_ub(ubw_ub+1,k)
     end do
   end subroutine f_d_back_substitution_ub
 
-  subroutine f_d_v_back_substitution_ub(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, &
-       cs_ub, ss_ub, x, c, error)
+  subroutine f_d_v_back_substitution_ub(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, &
+       csu, ssu, x, c, error)
     real(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(in) :: b_ub
-    integer(kind=int32), dimension(n), intent(in) :: numrots_ub
-    integer(kind=int32), dimension(ubwmax_ub,n), intent(in) :: js_ub
-    real(kind=dp), dimension(ubwmax_ub,n), intent(in) :: cs_ub, ss_ub
+    integer(kind=int32), dimension(n), intent(in) :: numrotsu
+    integer(kind=int32), dimension(ubwmax_ub,n), intent(in) :: jsu
+    real(kind=dp), dimension(ubwmax_ub,n), intent(in) :: csu, ssu
     integer(kind=int32), intent(in) :: n, lbwmax_ub, ubwmax_ub, lbw_ub, ubw_ub
     real(kind=dp), dimension(n), intent(inout) :: c
     real(kind=dp), dimension(n), intent(out) :: x
@@ -202,9 +202,9 @@ contains
     x=0.0_dp
     ! Apply all the u_k^T to c.
     do k=1,n-1
-       do j=numrots_ub(k),1,-1
-          rot%cosine=cs_ub(j,k); rot%sine=ss_ub(j,k)
-          call rotation_times_general(trp_rot(rot), c, js_ub(j,k), js_ub(j,k)+1)
+       do j=numrotsu(k),1,-1
+          rot%cosine=csu(j,k); rot%sine=ssu(j,k)
+          call rotation_times_general(trp_rot(rot), c, jsu(j,k), jsu(j,k)+1)
        end do
     end do
     ! diagonals of b are in row ubw_ub+1 of b_ub.
@@ -213,9 +213,9 @@ contains
        l=min(ubw_ub,k)       ! number of superdiagonals in column k+1
        c(k+1-l:k+1)=c(k+1-l:k+1) - x(k+1) * b_ub(ubw_ub+1-l:ubw_ub+1 ,k+1)
        ! Apply u_k to c
-       do j=1,numrots_ub(k)
-          rot%cosine=cs_ub(j,k); rot%sine=ss_ub(j,k)
-          call rotation_times_general(rot, c, js_ub(j,k), js_ub(j,k)+1)
+       do j=1,numrotsu(k)
+          rot%cosine=csu(j,k); rot%sine=ssu(j,k)
+          call rotation_times_general(rot, c, jsu(j,k), jsu(j,k)+1)
        end do
        x(k)=c(k)/b_ub(ubw_ub+1,k)
     end do
@@ -276,12 +276,12 @@ contains
   end subroutine c_v_back_substitution_ub
 
 
-  subroutine f_c_back_substitution_ub(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, &
-       cs_ub, ss_ub, x, c, nc, error)
+  subroutine f_c_back_substitution_ub(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, &
+       csu, ssu, x, c, nc, error)
     complex(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(in) :: b_ub
-    integer(kind=int32), dimension(n), intent(in) :: numrots_ub
-    integer(kind=int32), dimension(ubwmax_ub,n), intent(in) :: js_ub
-    complex(kind=dp), dimension(ubwmax_ub,n), intent(in) :: cs_ub, ss_ub
+    integer(kind=int32), dimension(n), intent(in) :: numrotsu
+    integer(kind=int32), dimension(ubwmax_ub,n), intent(in) :: jsu
+    complex(kind=dp), dimension(ubwmax_ub,n), intent(in) :: csu, ssu
     integer(kind=int32), intent(in) :: n, lbwmax_ub, ubwmax_ub, lbw_ub, ubw_ub, nc
     complex(kind=dp), dimension(n,nc), intent(inout) :: c
     complex(kind=dp), dimension(n,nc), intent(out) :: x
@@ -297,9 +297,9 @@ contains
     x=(0.0_dp,0.0_dp)
     ! Apply all the u_k^T to c.
     do k=1,n-1
-       do j=numrots_ub(k),1,-1
-          rot%cosine=cs_ub(j,k); rot%sine=ss_ub(j,k)
-          call rotation_times_general(trp_rot(rot), c, js_ub(j,k), js_ub(j,k)+1)
+       do j=numrotsu(k),1,-1
+          rot%cosine=csu(j,k); rot%sine=ssu(j,k)
+          call rotation_times_general(trp_rot(rot), c, jsu(j,k), jsu(j,k)+1)
        end do
     end do
     ! diagonals of b are in row ubw_ub+1 of b_ub.
@@ -310,20 +310,20 @@ contains
           c(k+1-l:k+1,j)=c(k+1-l:k+1,j) - x(k+1,j) * b_ub(ubw_ub+1-l:ubw_ub+1 ,k+1)
        end do
        ! Apply u_k to c
-       do j=1,numrots_ub(k)
-          rot%cosine=cs_ub(j,k); rot%sine=ss_ub(j,k)
-          call rotation_times_general(rot, c, js_ub(j,k), js_ub(j,k)+1)
+       do j=1,numrotsu(k)
+          rot%cosine=csu(j,k); rot%sine=ssu(j,k)
+          call rotation_times_general(rot, c, jsu(j,k), jsu(j,k)+1)
        end do
        x(k,:)=c(k,:)/b_ub(ubw_ub+1,k)
     end do
   end subroutine f_c_back_substitution_ub
 
-  subroutine f_c_v_back_substitution_ub(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, &
-       cs_ub, ss_ub, x, c, error)
+  subroutine f_c_v_back_substitution_ub(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, &
+       csu, ssu, x, c, error)
     complex(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(in) :: b_ub
-    integer(kind=int32), dimension(n), intent(in) :: numrots_ub
-    integer(kind=int32), dimension(ubwmax_ub,n), intent(in) :: js_ub
-    complex(kind=dp), dimension(ubwmax_ub,n), intent(in) :: cs_ub, ss_ub
+    integer(kind=int32), dimension(n), intent(in) :: numrotsu
+    integer(kind=int32), dimension(ubwmax_ub,n), intent(in) :: jsu
+    complex(kind=dp), dimension(ubwmax_ub,n), intent(in) :: csu, ssu
     integer(kind=int32), intent(in) :: n, lbwmax_ub, ubwmax_ub, lbw_ub, ubw_ub
     complex(kind=dp), dimension(n), intent(inout) :: c
     complex(kind=dp), dimension(n), intent(out) :: x
@@ -339,9 +339,9 @@ contains
     x=0.0_dp
     ! Apply all the u_k^T to c.
     do k=1,n-1
-       do j=numrots_ub(k),1,-1
-          rot%cosine=cs_ub(j,k); rot%sine=ss_ub(j,k)
-          call rotation_times_general(trp_rot(rot), c, js_ub(j,k), js_ub(j,k)+1)
+       do j=numrotsu(k),1,-1
+          rot%cosine=csu(j,k); rot%sine=ssu(j,k)
+          call rotation_times_general(trp_rot(rot), c, jsu(j,k), jsu(j,k)+1)
        end do
     end do
     ! diagonals of b are in row ubw_ub+1 of b_ub.
@@ -350,9 +350,9 @@ contains
        l=min(ubw_ub,k)       ! number of superdiagonals in column k+1
        c(k+1-l:k+1)=c(k+1-l:k+1) - x(k+1) * b_ub(ubw_ub+1-l:ubw_ub+1 ,k+1)
        ! Apply u_k to c
-       do j=1,numrots_ub(k)
-          rot%cosine=cs_ub(j,k); rot%sine=ss_ub(j,k)
-          call rotation_times_general(rot, c, js_ub(j,k), js_ub(j,k)+1)
+       do j=1,numrotsu(k)
+          rot%cosine=csu(j,k); rot%sine=ssu(j,k)
+          call rotation_times_general(rot, c, jsu(j,k), jsu(j,k)+1)
        end do
        x(k)=c(k)/b_ub(ubw_ub+1,k)
     end do
@@ -396,12 +396,12 @@ contains
 
   end subroutine d_forward_substitution_bv
 
-  subroutine f_d_forward_substitution_bv(x, b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, &
-       cs_bv, ss_bv, c, mc, error)
+  subroutine f_d_forward_substitution_bv(x, b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, &
+       csv, ssv, c, mc, error)
     real(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(in) :: b_bv
-    integer(kind=int32), dimension(n), intent(in) :: numrots_bv
-    integer(kind=int32), dimension(n,ubwmax_bv), intent(in) :: ks_bv
-    real(kind=dp), dimension(n,ubwmax_bv), intent(in) :: cs_bv, ss_bv
+    integer(kind=int32), dimension(n), intent(in) :: numrotsv
+    integer(kind=int32), dimension(n,ubwmax_bv), intent(in) :: ksv
+    real(kind=dp), dimension(n,ubwmax_bv), intent(in) :: csv, ssv
     integer(kind=int32), intent(in) :: n, lbwmax_bv, ubwmax_bv, lbw_bv, ubw_bv, mc
     real(kind=dp), dimension(mc,n), intent(inout) :: c
     real(kind=dp), dimension(mc,n), intent(out) :: x
@@ -417,9 +417,9 @@ contains
     x=0.0_dp
     ! Apply all the v_k to c
     do j=1,n-1
-       do k=numrots_bv(j),1,-1
-          rot%cosine=cs_bv(j,k); rot%sine=ss_bv(j,k)
-          call general_times_rotation(c,rot,ks_bv(j,k),ks_bv(j,k)+1)
+       do k=numrotsv(n-j),1,-1
+          rot%cosine=csv(n-j,k); rot%sine=ssv(n-j,k)
+          call general_times_rotation(c,rot,ksv(n-j,k),ksv(n-j,k)+1)
        end do
     end do
     ! diagonals of b are in column lbw_bv+1 of b_bv
@@ -430,9 +430,9 @@ contains
           c(k,j-1:j-1+l)=c(k,j-1:j-1+l) - b_bv(j-1,lbw_bv+1:lbw_bv+l+1) * x(k,j-1)
        end do
        ! Apply v_{n-j+1} to c
-       do k=1,numrots_bv(n-j+1)
-          rot%cosine=cs_bv(n-j+1,k); rot%sine=ss_bv(n-j+1,k)
-          call general_times_rotation(c,trp_rot(rot),ks_bv(n-j+1,k), ks_bv(n-j+1,k)+1)
+       do k=1,numrotsv(j-1)
+          rot%cosine=csv(j-1,k); rot%sine=ssv(j-1,k)
+          call general_times_rotation(c,trp_rot(rot),ksv(j-1,k), ksv(j-1,k)+1)
        end do
        x(:,j)=c(:,j)/b_bv(j,lbw_bv+1)
     end do
@@ -464,12 +464,12 @@ contains
          bv%numrotsv, bv%ksv, bv%csv, bv%ssv, c, error)
   end subroutine d_v_forward_substitution_bv
 
-  subroutine f_d_v_forward_substitution_bv(x, b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, &
-       cs_bv, ss_bv, c, error)
+  subroutine f_d_v_forward_substitution_bv(x, b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, &
+       csv, ssv, c, error)
     real(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(in) :: b_bv
-    integer(kind=int32), dimension(n), intent(in) :: numrots_bv
-    integer(kind=int32), dimension(n,ubwmax_bv), intent(in) :: ks_bv
-    real(kind=dp), dimension(n,ubwmax_bv), intent(in) :: cs_bv, ss_bv
+    integer(kind=int32), dimension(n), intent(in) :: numrotsv
+    integer(kind=int32), dimension(n,ubwmax_bv), intent(in) :: ksv
+    real(kind=dp), dimension(n,ubwmax_bv), intent(in) :: csv, ssv
     integer(kind=int32), intent(in) :: n, lbwmax_bv, ubwmax_bv, lbw_bv, ubw_bv
     real(kind=dp), dimension(n), intent(inout) :: c
     real(kind=dp), dimension(n), intent(out) :: x
@@ -485,9 +485,9 @@ contains
     x=0.0_dp
     ! Apply all the v_k to c
     do j=1,n-1
-       do k=numrots_bv(j),1,-1
-          rot%cosine=cs_bv(j,k); rot%sine=ss_bv(j,k)
-          call general_times_rotation(c,rot,ks_bv(j,k),ks_bv(j,k)+1)
+       do k=numrotsv(n-j),1,-1
+          rot%cosine=csv(n-j,k); rot%sine=ssv(n-j,k)
+          call general_times_rotation(c,rot,ksv(n-j,k),ksv(n-j,k)+1)
        end do
     end do
     ! diagonals of b are in column lbw_bv+1 of b_bv
@@ -496,9 +496,9 @@ contains
        l =  min(ubw_bv,n-j+1) ! number of superdiagonals in row j-1
        c(j-1:j-1+l)=c(j-1:j-1+l) - b_bv(j-1,lbw_bv+1:lbw_bv+l+1) * x(j-1)
        ! Apply v_{n-j+1} to c
-       do k=1,numrots_bv(n-j+1)
-          rot%cosine=cs_bv(n-j+1,k); rot%sine=ss_bv(n-j+1,k)
-          call general_times_rotation(c,trp_rot(rot),ks_bv(n-j+1,k), ks_bv(n-j+1,k)+1)
+       do k=1,numrotsv(j-1)
+          rot%cosine=csv(j-1,k); rot%sine=ssv(j-1,k)
+          call general_times_rotation(c,trp_rot(rot),ksv(j-1,k), ksv(j-1,k)+1)
        end do
        x(j)=c(j)/b_bv(j,lbw_bv+1)
     end do
@@ -531,12 +531,12 @@ contains
          bv%numrotsv, bv%ksv, bv%csv, bv%ssv, c, size(c,1), error)
   end subroutine c_forward_substitution_bv
 
-  subroutine f_c_forward_substitution_bv(x, b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, &
-       cs_bv, ss_bv, c, mc, error)
+  subroutine f_c_forward_substitution_bv(x, b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, &
+       csv, ssv, c, mc, error)
     complex(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(in) :: b_bv
-    integer(kind=int32), dimension(n), intent(in) :: numrots_bv
-    integer(kind=int32), dimension(n,ubwmax_bv), intent(in) :: ks_bv
-    complex(kind=dp), dimension(n,ubwmax_bv), intent(in) :: cs_bv, ss_bv
+    integer(kind=int32), dimension(n), intent(in) :: numrotsv
+    integer(kind=int32), dimension(n,ubwmax_bv), intent(in) :: ksv
+    complex(kind=dp), dimension(n,ubwmax_bv), intent(in) :: csv, ssv
     integer(kind=int32), intent(in) :: n, lbwmax_bv, ubwmax_bv, lbw_bv, ubw_bv, mc
     complex(kind=dp), dimension(mc,n), intent(inout) :: c
     complex(kind=dp), dimension(mc,n), intent(out) :: x
@@ -552,9 +552,9 @@ contains
     x=(0.0_dp,0.0_dp)
     ! Apply all the v_k to c
     do j=1,n-1
-       do k=numrots_bv(j),1,-1
-          rot%cosine=cs_bv(j,k); rot%sine=ss_bv(j,k)
-          call general_times_rotation(c,rot,ks_bv(j,k),ks_bv(j,k)+1)
+       do k=numrotsv(n-j),1,-1
+          rot%cosine=csv(n-j,k); rot%sine=ssv(n-j,k)
+          call general_times_rotation(c,rot,ksv(n-j,k),ksv(n-j,k)+1)
        end do
     end do
     ! diagonals of b are in column lbw_bv+1 of b_bv
@@ -565,9 +565,9 @@ contains
           c(k,j-1:j-1+l)=c(k,j-1:j-1+l) - b_bv(j-1,lbw_bv+1:lbw_bv+l+1) * x(k,j-1)
        end do
        ! Apply v_{n-j+1} to c
-       do k=1,numrots_bv(n-j+1)
-          rot%cosine=cs_bv(n-j+1,k); rot%sine=ss_bv(n-j+1,k)
-          call general_times_rotation(c,trp_rot(rot),ks_bv(n-j+1,k), ks_bv(n-j+1,k)+1)
+       do k=1,numrotsv(j-1)
+          rot%cosine=csv(j-1,k); rot%sine=ssv(j-1,k)
+          call general_times_rotation(c,trp_rot(rot),ksv(j-1,k), ksv(j-1,k)+1)
        end do
        x(:,j)=c(:,j)/b_bv(j,lbw_bv+1)
     end do
@@ -598,12 +598,12 @@ contains
          bv%numrotsv, bv%ksv, bv%csv, bv%ssv, c, error)
   end subroutine c_v_forward_substitution_bv
 
-  subroutine f_c_v_forward_substitution_bv(x, b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, &
-       cs_bv, ss_bv, c, error)
+  subroutine f_c_v_forward_substitution_bv(x, b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, &
+       csv, ssv, c, error)
     complex(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(in) :: b_bv
-    integer(kind=int32), dimension(n), intent(in) :: numrots_bv
-    integer(kind=int32), dimension(n,ubwmax_bv), intent(in) :: ks_bv
-    complex(kind=dp), dimension(n,ubwmax_bv), intent(in) :: cs_bv, ss_bv
+    integer(kind=int32), dimension(n), intent(in) :: numrotsv
+    integer(kind=int32), dimension(n,ubwmax_bv), intent(in) :: ksv
+    complex(kind=dp), dimension(n,ubwmax_bv), intent(in) :: csv, ssv
     integer(kind=int32), intent(in) :: n, lbwmax_bv, ubwmax_bv, lbw_bv, ubw_bv
     complex(kind=dp), dimension(n), intent(inout) :: c
     complex(kind=dp), dimension(n), intent(out) :: x
@@ -619,9 +619,9 @@ contains
     x=(0.0_dp,0.0_dp)
     ! Apply all the v_k to c
     do j=1,n-1
-       do k=numrots_bv(j),1,-1
-          rot%cosine=cs_bv(j,k); rot%sine=ss_bv(j,k)
-          call general_times_rotation(c,rot,ks_bv(j,k),ks_bv(j,k)+1)
+       do k=numrotsv(n-j),1,-1
+          rot%cosine=csv(n-j,k); rot%sine=ssv(n-j,k)
+          call general_times_rotation(c,rot,ksv(n-j,k),ksv(n-j,k)+1)
        end do
     end do
     ! diagonals of b are in column lbw_bv+1 of b_bv
@@ -630,9 +630,9 @@ contains
        l =  min(ubw_bv,n-j+1) ! number of superdiagonals in row j-1
        c(j-1:j-1+l)=c(j-1:j-1+l) - b_bv(j-1,lbw_bv+1:lbw_bv+l+1) * x(j-1)
        ! Apply v_{n-j+1} to c
-       do k=1,numrots_bv(n-j+1)
-          rot%cosine=cs_bv(n-j+1,k); rot%sine=ss_bv(n-j+1,k)
-          call general_times_rotation(c,trp_rot(rot),ks_bv(n-j+1,k), ks_bv(n-j+1,k)+1)
+       do k=1,numrotsv(j-1)
+          rot%cosine=csv(j-1,k); rot%sine=ssv(j-1,k)
+          call general_times_rotation(c,trp_rot(rot),ksv(j-1,k), ksv(j-1,k)+1)
        end do
        x(j)=c(j)/b_bv(j,lbw_bv+1)
     end do

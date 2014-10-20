@@ -78,20 +78,20 @@ contains
   ! Errors:
   ! 0: no error
   ! 1: insufficient upper bw in bv%br
-  subroutine f_d_recompress_ub_to_bv(b_ub, n, lbw, ubw, lbwmax_ub, ubwmax_ub, numrots_ub, &
-       js_ub, cs_ub, ss_ub, &
-       b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, told, tol, dr, error)
+  subroutine f_d_recompress_ub_to_bv(b_ub, n, lbw, ubw, lbwmax_ub, ubwmax_ub, numrotsu, &
+       jsu, csu, ssu, &
+       b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, ssv, told, tol, dr, error)
     real(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(inout) :: b_ub
     integer(kind=int32), intent(in) :: n, lbw, ubw, lbwmax_ub, ubwmax_ub, lbwmax_bv, ubwmax_bv, dr
-    integer(kind=int32), dimension(n), intent(in) :: numrots_ub
-    integer(kind=int32), dimension(ubwmax_ub,n), intent(in) :: js_ub
-    real(kind=dp), dimension(ubwmax_ub,n), intent(in) :: cs_ub, ss_ub
+    integer(kind=int32), dimension(n), intent(in) :: numrotsu
+    integer(kind=int32), dimension(ubwmax_ub,n), intent(in) :: jsu
+    real(kind=dp), dimension(ubwmax_ub,n), intent(in) :: csu, ssu
     real(kind=dp), intent(in) :: tol, told
 
     real(kind=dp), dimension(n,lbwmax_bv+ubwmax_bv+1), intent(out) :: b_bv
-    integer(kind=int32), dimension(n), intent(out) :: numrots_bv
-    integer(kind=int32), dimension(n,ubwmax_bv), intent(out) :: ks_bv
-    real(kind=dp), dimension(n,ubwmax_bv), intent(out) :: cs_bv, ss_bv
+    integer(kind=int32), dimension(n), intent(out) :: numrotsv
+    integer(kind=int32), dimension(n,ubwmax_bv), intent(out) :: ksv
+    real(kind=dp), dimension(n,ubwmax_bv), intent(out) :: csv, ssv
     integer(kind=int32), intent(out) :: lbw_bv, ubw_bv
     type(error_info), intent(out) :: error
 
@@ -107,16 +107,16 @@ contains
 
     call clear_error(error)
     b_bv(:,1:lbw+ubw+1)=0.0_dp
-    numrots_bv=0
-    ss_bv(:,1:ubw)=0.0_dp; cs_bv(:,1:ubw)=0.0_dp
-    ks_bv(:,1:ubw)=0
+    numrotsv=0
+    ssv(:,1:ubw)=0.0_dp; csv(:,1:ubw)=0.0_dp
+    ksv(:,1:ubw)=0
     ubw2=ubw+2
     nrma = maxabs(b_ub)*sqrt(real(n))
     ubws=0
     lbw_bv=lbw
     if (n == 1) then
        b_bv(1,1)=b_ub(1,1)
-       ubw_bv=0; lbw_bv=0; numrots_bv=0
+       ubw_bv=0; lbw_bv=0; numrotsv=0
        return
     end if
 
@@ -142,9 +142,9 @@ contains
        call set_el_bc(b_ub,ubw2,roffs+k,coffs+1,0.0_dp)
     end do
     ! Apply u_{n-1} to q
-    do k=1,numrots_ub(n-1)
-       rot%cosine=cs_ub(k,n-1); rot%sine=ss_ub(k,n-1)
-       call rotation_times_general(rot,q,js_ub(k,n-1)-qoffs,js_ub(k,n-1)-qoffs+1)
+    do k=1,numrotsu(n-1)
+       rot%cosine=csu(k,n-1); rot%sine=ssu(k,n-1)
+       call rotation_times_general(rot,q,jsu(k,n-1)-qoffs,jsu(k,n-1)-qoffs+1)
     end do
     ! main loop
     jloop: do j=1,n
@@ -166,13 +166,13 @@ contains
        if (mindiag <= told * nrma) then
           dnl=0
           ubws(j)=nl-1
-          numrots_bv(j)=nl-minindex
+          numrotsv(n-j)=nl-minindex
           do k=minindex,nl-1
              rot=rgivens(get_el_bc(b_ub,ubw2,roffs+k+1,coffs+k), &
                   get_el_bc(b_ub,ubw2,roffs+k+1,coffs+k+1))
              call tbc_times_rotation(b_ub,n,lbw,ubw2,0,j,rot,coffs+k)
-             cs_bv(j,nl-k)=rot%cosine; ss_bv(j,nl-k)=rot%sine
-             ks_bv(j,nl-k)=coffs+k
+             csv(n-j,nl-k)=rot%cosine; ssv(n-j,nl-k)=rot%sine
+             ksv(n-j,nl-k)=coffs+k
              call set_el_bc(b_ub,ubw2,roffs+k+1,coffs+k+1,0.0_dp)
              ! swap rows in L
              do kk=1,k+1
@@ -196,13 +196,13 @@ contains
              dnl = 0
              ubws(j)=nl-1
              ! introduce a zero while preserving triangularity of L
-             numrots_bv(j)=nl-1
+             numrotsv(n-j)=nl-1
              do k=1,nl-1
                 rot=lgivens2(x(k),x(k+1))
                 call rotation_times_general(trp_rot(rot),x,k,k+1)
                 call tbc_times_rotation(b_ub,n,lbw,ubw2,0,j,rot,coffs+k)
-                cs_bv(j,nl-k)=rot%cosine; ss_bv(j,nl-k)=rot%sine
-                ks_bv(j,nl-k)=coffs+k
+                csv(n-j,nl-k)=rot%cosine; ssv(n-j,nl-k)=rot%sine
+                ksv(n-j,nl-k)=coffs+k
                 rot=lgivens2(get_el_bc(b_ub,ubw2,roffs+k,coffs+k+1), &
                      get_el_bc(b_ub,ubw2,roffs+k+1,coffs+k+1))
                 call rotation_times_tbc(trp_rot(rot),b_ub,n,lbw,ubw2,n-j,0,roffs+k)
@@ -254,9 +254,9 @@ contains
        end do
        ! Apply u_{n-j-1} to Q
        if (n-j-1 >0) then
-          do k=1,numrots_ub(n-j-1)
-             rot%cosine=cs_ub(k,n-j-1); rot%sine=ss_ub(k,n-j-1)
-             call rotation_times_general(rot,pq,js_ub(k,n-j-1)-qoffs,js_ub(k,n-j-1)-qoffs+1)
+          do k=1,numrotsu(n-j-1)
+             rot%cosine=csu(k,n-j-1); rot%sine=ssu(k,n-j-1)
+             call rotation_times_general(rot,pq,jsu(k,n-j-1)-qoffs,jsu(k,n-j-1)-qoffs+1)
           end do
        end if
        ! Termination cases:
@@ -286,12 +286,12 @@ contains
        pq => q(ubw+2-ml:ubw+1,ubw+2-ml:ubw+1)
        coffs=n-j
        ! apply v_j
-       numrots_bv(j)=ml
+       numrotsv(n-j)=ml
        do k=1,ml
           rot=rgivens(get_el_bc(b_ub,ubw2,k,coffs+nl-ml+k-1),get_el_bc(b_ub,ubw2,k,coffs+nl-ml+k))
           call tbc_times_rotation(b_ub,n,lbw,ubw2,0,j,rot,coffs+nl-ml+k-1)
-          cs_bv(j,ml-k+1)=rot%cosine; ss_bv(j,ml-k+1)=rot%sine
-          ks_bv(j,ml-k+1)=coffs+nl-ml+k-1
+          csv(n-j,ml-k+1)=rot%cosine; ssv(n-j,ml-k+1)=rot%sine
+          ksv(n-j,ml-k+1)=coffs+nl-ml+k-1
           call set_el_bc(b_ub,ubw2,k,coffs+nl-ml+k,0.0_dp)
        end do
        ! downdate
@@ -312,9 +312,9 @@ contains
        b_ub((ubw2-(n-j)+1)+1:(ubw2-(n-j)+1)+ml-1,n-j)=matmul(transpose(pq(1:ml-1,1:ml-1)), &
             b_ub((ubw2-(n-j)+1)+1:(ubw2-(n-j)+1)+ml-1,n-j))
        ! apply u_{n-j-1} to Q
-       do k=1,numrots_ub(n-j-1)
-          rot%cosine=cs_ub(k,n-j-1); rot%sine=ss_ub(k,n-j-1)
-          call rotation_times_general(rot,pq,js_ub(k,n-j-1),js_ub(k,n-j-1)+1)
+       do k=1,numrotsu(n-j-1)
+          rot%cosine=csu(k,n-j-1); rot%sine=ssu(k,n-j-1)
+          call rotation_times_general(rot,pq,jsu(k,n-j-1),jsu(k,n-j-1)+1)
        end do
        call down_right_shift(pq)
     end do
@@ -353,20 +353,20 @@ contains
          told, tol, dr, error)
   end subroutine c_recompress_ub_to_bv
 
-  subroutine f_c_recompress_ub_to_bv(b_ub, n, lbw, ubw, lbwmax_ub, ubwmax_ub, numrots_ub, &
-       js_ub, cs_ub, ss_ub, &
-       b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, told, tol, dr, error)
+  subroutine f_c_recompress_ub_to_bv(b_ub, n, lbw, ubw, lbwmax_ub, ubwmax_ub, numrotsu, &
+       jsu, csu, ssu, &
+       b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, ssv, told, tol, dr, error)
     complex(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(inout) :: b_ub
     integer(kind=int32), intent(in) :: n, lbw, ubw, lbwmax_ub, ubwmax_ub, lbwmax_bv, ubwmax_bv, dr
-    integer(kind=int32), dimension(n), intent(in) :: numrots_ub
-    integer(kind=int32), dimension(ubwmax_ub,n), intent(in) :: js_ub
-    complex(kind=dp), dimension(ubwmax_ub,n), intent(in) :: cs_ub, ss_ub
+    integer(kind=int32), dimension(n), intent(in) :: numrotsu
+    integer(kind=int32), dimension(ubwmax_ub,n), intent(in) :: jsu
+    complex(kind=dp), dimension(ubwmax_ub,n), intent(in) :: csu, ssu
     real(kind=dp), intent(in) :: tol, told
 
     complex(kind=dp), dimension(n,lbwmax_bv+ubwmax_bv+1), intent(out) :: b_bv
-    integer(kind=int32), dimension(n), intent(out) :: numrots_bv
-    integer(kind=int32), dimension(n,ubwmax_bv), intent(out) :: ks_bv
-    complex(kind=dp), dimension(n,ubwmax_bv), intent(out) :: cs_bv, ss_bv
+    integer(kind=int32), dimension(n), intent(out) :: numrotsv
+    integer(kind=int32), dimension(n,ubwmax_bv), intent(out) :: ksv
+    complex(kind=dp), dimension(n,ubwmax_bv), intent(out) :: csv, ssv
     integer(kind=int32), intent(out) :: lbw_bv, ubw_bv
     type(error_info), intent(out) :: error
 
@@ -383,16 +383,16 @@ contains
 
     call clear_error(error)
     b_bv(:,1:lbw+ubw+1)=(0.0_dp, 0.0_dp)
-    numrots_bv=0
-    ss_bv(:,1:ubw)=(0.0_dp, 0.0_dp); cs_bv(:,1:ubw)=(0.0_dp, 0.0_dp)
-    ks_bv(:,1:ubw)=0
+    numrotsv=0
+    ssv(:,1:ubw)=(0.0_dp, 0.0_dp); csv(:,1:ubw)=(0.0_dp, 0.0_dp)
+    ksv(:,1:ubw)=0
     ubw2=ubw+2
     nrma = maxabs(b_ub)*sqrt(real(n))
     ubws=0
     lbw_bv=lbw
     if (n == 1) then
        b_bv(1,1)=b_ub(1,1)
-       ubw_bv=0; lbw_bv=0; numrots_bv=0
+       ubw_bv=0; lbw_bv=0; numrotsv=0
        return
     end if
 
@@ -417,9 +417,9 @@ contains
        call set_el_bc(b_ub,ubw2,roffs+k,coffs+1,(0.0_dp, 0.0_dp))
     end do
     ! Apply u_{n-1} to q
-    do k=1,numrots_ub(n-1)
-       rot%cosine=cs_ub(k,n-1); rot%sine=ss_ub(k,n-1)
-       call rotation_times_general(rot,q,js_ub(k,n-1)-qoffs,js_ub(k,n-1)-qoffs+1)
+    do k=1,numrotsu(n-1)
+       rot%cosine=csu(k,n-1); rot%sine=ssu(k,n-1)
+       call rotation_times_general(rot,q,jsu(k,n-1)-qoffs,jsu(k,n-1)-qoffs+1)
     end do
     ! main loop
     jloop: do j=1,n
@@ -441,13 +441,13 @@ contains
        if (mindiag <= told * nrma) then
           dnl=0
           ubws(j)=nl-1
-          numrots_bv(j)=nl-minindex
+          numrotsv(n-j)=nl-minindex
           do k=minindex,nl-1
              rot=rgivens(get_el_bc(b_ub,ubw2,roffs+k+1,coffs+k), &
                   get_el_bc(b_ub,ubw2,roffs+k+1,coffs+k+1))
              call tbc_times_rotation(b_ub,n,lbw,ubw2,0,j,rot,coffs+k)
-             cs_bv(j,nl-k)=rot%cosine; ss_bv(j,nl-k)=rot%sine
-             ks_bv(j,nl-k)=coffs+k
+             csv(n-j,nl-k)=rot%cosine; ssv(n-j,nl-k)=rot%sine
+             ksv(n-j,nl-k)=coffs+k
              call set_el_bc(b_ub,ubw2,roffs+k+1,coffs+k+1,(0.0_dp, 0.0_dp))
              ! swap rows in L
              do kk=1,k+1
@@ -471,13 +471,13 @@ contains
              dnl = 0
              ubws(j)=nl-1
              ! introduce a zero while preserving triangularity of L
-             numrots_bv(j)=nl-1
+             numrotsv(n-j)=nl-1
              do k=1,nl-1
                 rot=lgivens2(x(k),x(k+1))
                 call rotation_times_general(trp_rot(rot),x,k,k+1)
                 call tbc_times_rotation(b_ub,n,lbw,ubw2,0,j,rot,coffs+k)
-                cs_bv(j,nl-k)=rot%cosine; ss_bv(j,nl-k)=rot%sine
-                ks_bv(j,nl-k)=coffs+k
+                csv(n-j,nl-k)=rot%cosine; ssv(n-j,nl-k)=rot%sine
+                ksv(n-j,nl-k)=coffs+k
                 rot=lgivens2(get_el_bc(b_ub,ubw2,roffs+k,coffs+k+1), &
                      get_el_bc(b_ub,ubw2,roffs+k+1,coffs+k+1))
                 call rotation_times_tbc(trp_rot(rot),b_ub,n,lbw,ubw2,n-j,0,roffs+k)
@@ -529,9 +529,9 @@ contains
        end do
        ! Apply u_{n-j-1} to Q
        if (n-j-1 >0) then
-          do k=1,numrots_ub(n-j-1)
-             rot%cosine=cs_ub(k,n-j-1); rot%sine=ss_ub(k,n-j-1)
-             call rotation_times_general(rot,pq,js_ub(k,n-j-1)-qoffs,js_ub(k,n-j-1)-qoffs+1)
+          do k=1,numrotsu(n-j-1)
+             rot%cosine=csu(k,n-j-1); rot%sine=ssu(k,n-j-1)
+             call rotation_times_general(rot,pq,jsu(k,n-j-1)-qoffs,jsu(k,n-j-1)-qoffs+1)
           end do
        end if
        ! Termination cases:
@@ -561,12 +561,12 @@ contains
        pq => q(ubw+2-ml:ubw+1,ubw+2-ml:ubw+1)
        coffs=n-j
        ! apply v_j
-       numrots_bv(j)=ml
+       numrotsv(n-j)=ml
        do k=1,ml
           rot=rgivens(get_el_bc(b_ub,ubw2,k,coffs+nl-ml+k-1),get_el_bc(b_ub,ubw2,k,coffs+nl-ml+k))
           call tbc_times_rotation(b_ub,n,lbw,ubw2,0,j,rot,coffs+nl-ml+k-1)
-          cs_bv(j,ml-k+1)=rot%cosine; ss_bv(j,ml-k+1)=rot%sine
-          ks_bv(j,ml-k+1)=coffs+nl-ml+k-1
+          csv(n-j,ml-k+1)=rot%cosine; ssv(n-j,ml-k+1)=rot%sine
+          ksv(n-j,ml-k+1)=coffs+nl-ml+k-1
           call set_el_bc(b_ub,ubw2,k,coffs+nl-ml+k,(0.0_dp, 0.0_dp))
        end do
        ! downdate
@@ -587,9 +587,9 @@ contains
        b_ub((ubw2-(n-j)+1)+1:(ubw2-(n-j)+1)+ml-1,n-j)=matmul(transpose(conjg(pq(1:ml-1,1:ml-1))), &
             b_ub((ubw2-(n-j)+1)+1:(ubw2-(n-j)+1)+ml-1,n-j))
        ! apply u_{n-j-1} to Q
-       do k=1,numrots_ub(n-j-1)
-          rot%cosine=cs_ub(k,n-j-1); rot%sine=ss_ub(k,n-j-1)
-          call rotation_times_general(rot,pq,js_ub(k,n-j-1),js_ub(k,n-j-1)+1)
+       do k=1,numrotsu(n-j-1)
+          rot%cosine=csu(k,n-j-1); rot%sine=ssu(k,n-j-1)
+          call rotation_times_general(rot,pq,jsu(k,n-j-1),jsu(k,n-j-1)+1)
        end do
        call down_right_shift(pq)
     end do

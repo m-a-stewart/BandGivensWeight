@@ -478,21 +478,21 @@ contains
   end subroutine d_sweeps_times_ub
 
   subroutine f_d_sweep_times_ub(cs_sw, ss_sw, n, &
-       b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, cs_ub, ss_ub, &
-       b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, error)
+       b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, csu, ssu, &
+       b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, ssv, error)
 
     real(kind=dp), dimension(n-1), intent(in) :: cs_sw, ss_sw
     integer(kind=int32), intent(in) :: n
 
     real(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(inout) :: b_ub
-    integer(kind=int32), dimension(n), intent(inout) :: numrots_ub
-    integer(kind=int32), dimension(ubwmax_ub,n), intent(inout) :: js_ub
-    real(kind=dp), dimension(ubwmax_ub,n), intent(inout) :: cs_ub, ss_ub
+    integer(kind=int32), dimension(n), intent(inout) :: numrotsu
+    integer(kind=int32), dimension(ubwmax_ub,n), intent(inout) :: jsu
+    real(kind=dp), dimension(ubwmax_ub,n), intent(inout) :: csu, ssu
 
     real(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(out) :: b_bv
-    integer(kind=int32), dimension(n), intent(out) :: numrots_bv
-    integer(kind=int32), dimension(n,ubwmax_bv), intent(out) :: ks_bv
-    real(kind=dp), dimension(n,ubwmax_bv), intent(out) :: cs_bv, ss_bv
+    integer(kind=int32), dimension(n), intent(out) :: numrotsv
+    integer(kind=int32), dimension(n,ubwmax_bv), intent(out) :: ksv
+    real(kind=dp), dimension(n,ubwmax_bv), intent(out) :: csv, ssv
 
     integer(kind=int32), intent(in) :: lbwmax_ub, ubwmax_ub
     integer(kind=int32), intent(inout) :: lbw_ub, ubw_ub
@@ -506,7 +506,7 @@ contains
 
     if (n==1) then
        b_bv(1,1)=b_ub(1,1);
-       lbw_bv=0; ubw_bv=0; numrots_bv=0; return
+       lbw_bv=0; ubw_bv=0; numrotsv=0; return
     end if
     ! Initial expansion for first sweep: one extra subdiagonal and
     ! one extra superdiagonal to fill-in.
@@ -518,15 +518,15 @@ contains
          dlbw, dlbw_tmp, dubw, dubw_tmp, lbw_bv, ubw_bv)
 
     b_bv(:,1:lbw_bv+ubw_bv+1)=0.0_dp
-    numrots_bv=0
-    ss_bv(:,1:ubw_bv)=0.0_dp
-    cs_bv(:,1:ubw_bv)=0.0_dp
-    ks_bv(:,1:ubw_bv)=0
+    numrotsv=0
+    ssv(:,1:ubw_bv)=0.0_dp
+    csv(:,1:ubw_bv)=0.0_dp
+    ksv(:,1:ubw_bv)=0
 
     do k=1,n-1
-       do j=1,numrots_ub(n-k)
-          rot%cosine=cs_ub(j,n-k); rot%sine=ss_ub(j,n-k)
-          call rotation_times_tbc(rot,b_ub,n,lbw_ub,ubw_ub,n-k,0,js_ub(j,n-k))
+       do j=1,numrotsu(n-k)
+          rot%cosine=csu(j,n-k); rot%sine=ssu(j,n-k)
+          call rotation_times_tbc(rot,b_ub,n,lbw_ub,ubw_ub,n-k,0,jsu(j,n-k))
        end do
        ! Apply q_{n-k}
        rot%cosine=cs_sw(n-k); rot%sine=ss_sw(n-k)
@@ -536,11 +536,11 @@ contains
        ! columns n-k+2, ..., n-k+ubw_ub
        k0=max(n-k+2,ubw_ub+1)
        k1=min(n-k+ubw_ub,n)
-       numrots_bv(k)=max(k1-k0+1,0)
+       numrotsv(n-k)=max(k1-k0+1,0)
        do j=k0,k1
           rot=rgivens(get_el_bc(b_ub,ubw_ub,j-ubw_ub,j-1), get_el_bc(b_ub,ubw_ub,j-ubw_ub,j))
-          ks_bv(k,k1-j+1)=j-1
-          cs_bv(k,k1-j+1)=rot%cosine; ss_bv(k,k1-j+1)=rot%sine
+          ksv(n-k,k1-j+1)=j-1
+          csv(n-k,k1-j+1)=rot%cosine; ssv(n-k,k1-j+1)=rot%sine
           call tbc_times_rotation(b_ub,n,lbw_ub,ubw_ub,0,k,rot,j-1)
        end do
     end do
@@ -550,21 +550,21 @@ contains
   end subroutine f_d_sweep_times_ub
 
   subroutine f_d_sweeps_times_ub(cs_sw, ss_sw, numsweeps_sw, maxsweeps_sw, n, &
-       b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, cs_ub, ss_ub, &
-       b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, error)
+       b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, csu, ssu, &
+       b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, ssv, error)
 
     real(kind=dp), dimension(n-1,maxsweeps_sw), intent(in) :: cs_sw, ss_sw
     integer(kind=int32), intent(in) :: numsweeps_sw, maxsweeps_sw, n
 
     real(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(inout) :: b_ub
-    integer(kind=int32), dimension(n), intent(inout) :: numrots_ub
-    integer(kind=int32), dimension(ubwmax_ub,n), intent(inout) :: js_ub
-    real(kind=dp), dimension(ubwmax_ub,n), intent(inout) :: cs_ub, ss_ub
+    integer(kind=int32), dimension(n), intent(inout) :: numrotsu
+    integer(kind=int32), dimension(ubwmax_ub,n), intent(inout) :: jsu
+    real(kind=dp), dimension(ubwmax_ub,n), intent(inout) :: csu, ssu
 
     real(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(out) :: b_bv
-    integer(kind=int32), dimension(n), intent(out) :: numrots_bv
-    integer(kind=int32), dimension(n,ubwmax_bv), intent(out) :: ks_bv
-    real(kind=dp), dimension(n,ubwmax_bv), intent(out) :: cs_bv, ss_bv
+    integer(kind=int32), dimension(n), intent(out) :: numrotsv
+    integer(kind=int32), dimension(n,ubwmax_bv), intent(out) :: ksv
+    real(kind=dp), dimension(n,ubwmax_bv), intent(out) :: csv, ssv
 
     integer(kind=int32), intent(in) :: lbwmax_ub, ubwmax_ub
     integer(kind=int32), intent(inout) :: lbw_ub, ubw_ub
@@ -578,19 +578,19 @@ contains
 
     if (n==1) then
        b_bv(1,1)=b_ub(1,1);
-       lbw_bv=0; ubw_bv=0; numrots_bv=0; return
+       lbw_bv=0; ubw_bv=0; numrotsv=0; return
     end if
 
     do l=numsweeps_sw,1,-1
        if (l < numsweeps_sw) then
           call f_d_convert_bv_to_ub(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, &
-               numrots_bv, ks_bv, cs_bv, ss_bv, b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, & 
-               numrots_ub, js_ub, cs_ub, ss_ub, error)
+               numrotsv, ksv, csv, ssv, b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, & 
+               numrotsu, jsu, csu, ssu, error)
        end if
        
        call f_d_sweep_times_ub(cs_sw(:,l), ss_sw(:,l), n, &
-            b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, cs_ub, ss_ub, &
-            b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, error)
+            b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, csu, ssu, &
+            b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, ssv, error)
     end do
   end subroutine f_d_sweeps_times_ub
 
@@ -626,21 +626,21 @@ contains
   end subroutine c_sweeps_times_ub
 
   subroutine f_c_sweep_times_ub(cs_sw, ss_sw, n, &
-       b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, cs_ub, ss_ub, &
-       b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, error)
+       b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, csu, ssu, &
+       b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, ssv, error)
 
     complex(kind=dp), dimension(n-1), intent(in) :: cs_sw, ss_sw
     integer(kind=int32), intent(in) :: n
 
     complex(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(inout) :: b_ub
-    integer(kind=int32), dimension(n), intent(inout) :: numrots_ub
-    integer(kind=int32), dimension(ubwmax_ub,n), intent(inout) :: js_ub
-    complex(kind=dp), dimension(ubwmax_ub,n), intent(inout) :: cs_ub, ss_ub
+    integer(kind=int32), dimension(n), intent(inout) :: numrotsu
+    integer(kind=int32), dimension(ubwmax_ub,n), intent(inout) :: jsu
+    complex(kind=dp), dimension(ubwmax_ub,n), intent(inout) :: csu, ssu
 
     complex(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(out) :: b_bv
-    integer(kind=int32), dimension(n), intent(out) :: numrots_bv
-    integer(kind=int32), dimension(n,ubwmax_bv), intent(out) :: ks_bv
-    complex(kind=dp), dimension(n,ubwmax_bv), intent(out) :: cs_bv, ss_bv
+    integer(kind=int32), dimension(n), intent(out) :: numrotsv
+    integer(kind=int32), dimension(n,ubwmax_bv), intent(out) :: ksv
+    complex(kind=dp), dimension(n,ubwmax_bv), intent(out) :: csv, ssv
 
     integer(kind=int32), intent(in) :: lbwmax_ub, ubwmax_ub
     integer(kind=int32), intent(inout) :: lbw_ub, ubw_ub
@@ -654,7 +654,7 @@ contains
 
     if (n==1) then
        b_bv(1,1)=b_ub(1,1);
-       lbw_bv=0; ubw_bv=0; numrots_bv=0; return
+       lbw_bv=0; ubw_bv=0; numrotsv=0; return
     end if
     ! Initial expansion for first sweep: one extra subdiagonal and
     ! one extra superdiagonal to fill-in.
@@ -666,15 +666,15 @@ contains
          dlbw, dlbw_tmp, dubw, dubw_tmp, lbw_bv, ubw_bv)
 
     b_bv(:,1:lbw_bv+ubw_bv+1)=(0.0_dp,0.0_dp)
-    numrots_bv=0
-    ss_bv(:,1:ubw_bv)=(0.0_dp,0.0_dp)
-    cs_bv(:,1:ubw_bv)=(0.0_dp,0.0_dp)
-    ks_bv(:,1:ubw_bv)=0
+    numrotsv=0
+    ssv(:,1:ubw_bv)=(0.0_dp,0.0_dp)
+    csv(:,1:ubw_bv)=(0.0_dp,0.0_dp)
+    ksv(:,1:ubw_bv)=0
 
     do k=1,n-1
-       do j=1,numrots_ub(n-k)
-          rot%cosine=cs_ub(j,n-k); rot%sine=ss_ub(j,n-k)
-          call rotation_times_tbc(rot,b_ub,n,lbw_ub,ubw_ub,n-k,0,js_ub(j,n-k))
+       do j=1,numrotsu(n-k)
+          rot%cosine=csu(j,n-k); rot%sine=ssu(j,n-k)
+          call rotation_times_tbc(rot,b_ub,n,lbw_ub,ubw_ub,n-k,0,jsu(j,n-k))
        end do
        ! Apply q_{n-k}
        rot%cosine=cs_sw(n-k); rot%sine=ss_sw(n-k)
@@ -684,11 +684,11 @@ contains
        ! columns n-k+2, ..., n-k+ubw_ub
        k0=max(n-k+2,ubw_ub+1)
        k1=min(n-k+ubw_ub,n)
-       numrots_bv(k)=max(k1-k0+1,0)
+       numrotsv(n-k)=max(k1-k0+1,0)
        do j=k0,k1
           rot=rgivens(get_el_bc(b_ub,ubw_ub,j-ubw_ub,j-1), get_el_bc(b_ub,ubw_ub,j-ubw_ub,j))
-          ks_bv(k,k1-j+1)=j-1
-          cs_bv(k,k1-j+1)=rot%cosine; ss_bv(k,k1-j+1)=rot%sine
+          ksv(n-k,k1-j+1)=j-1
+          csv(n-k,k1-j+1)=rot%cosine; ssv(n-k,k1-j+1)=rot%sine
           call tbc_times_rotation(b_ub,n,lbw_ub,ubw_ub,0,k,rot,j-1)
        end do
     end do
@@ -698,21 +698,21 @@ contains
   end subroutine f_c_sweep_times_ub
 
   subroutine f_c_sweeps_times_ub(cs_sw, ss_sw, numsweeps_sw, maxsweeps_sw, n, &
-       b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, cs_ub, ss_ub, &
-       b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, error)
+       b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, csu, ssu, &
+       b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, ssv, error)
 
     complex(kind=dp), dimension(n-1,maxsweeps_sw), intent(in) :: cs_sw, ss_sw
     integer(kind=int32), intent(in) :: numsweeps_sw, maxsweeps_sw, n
 
     complex(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(inout) :: b_ub
-    integer(kind=int32), dimension(n), intent(inout) :: numrots_ub
-    integer(kind=int32), dimension(ubwmax_ub,n), intent(inout) :: js_ub
-    complex(kind=dp), dimension(ubwmax_ub,n), intent(inout) :: cs_ub, ss_ub
+    integer(kind=int32), dimension(n), intent(inout) :: numrotsu
+    integer(kind=int32), dimension(ubwmax_ub,n), intent(inout) :: jsu
+    complex(kind=dp), dimension(ubwmax_ub,n), intent(inout) :: csu, ssu
 
     complex(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(out) :: b_bv
-    integer(kind=int32), dimension(n), intent(out) :: numrots_bv
-    integer(kind=int32), dimension(n,ubwmax_bv), intent(out) :: ks_bv
-    complex(kind=dp), dimension(n,ubwmax_bv), intent(out) :: cs_bv, ss_bv
+    integer(kind=int32), dimension(n), intent(out) :: numrotsv
+    integer(kind=int32), dimension(n,ubwmax_bv), intent(out) :: ksv
+    complex(kind=dp), dimension(n,ubwmax_bv), intent(out) :: csv, ssv
 
     integer(kind=int32), intent(in) :: lbwmax_ub, ubwmax_ub
     integer(kind=int32), intent(inout) :: lbw_ub, ubw_ub
@@ -726,19 +726,19 @@ contains
 
     if (n==1) then
        b_bv(1,1)=b_ub(1,1);
-       lbw_bv=0; ubw_bv=0; numrots_bv=0; return
+       lbw_bv=0; ubw_bv=0; numrotsv=0; return
     end if
 
     do l=numsweeps_sw,1,-1
        if (l < numsweeps_sw) then
           call f_c_convert_bv_to_ub(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, &
-               numrots_bv, ks_bv, cs_bv, ss_bv, b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, & 
-               numrots_ub, js_ub, cs_ub, ss_ub, error)
+               numrotsv, ksv, csv, ssv, b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, & 
+               numrotsu, jsu, csu, ssu, error)
        end if
        
        call f_c_sweep_times_ub(cs_sw(:,l), ss_sw(:,l), n, &
-            b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, cs_ub, ss_ub, &
-            b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, error)
+            b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, csu, ssu, &
+            b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, ssv, error)
     end do
   end subroutine f_c_sweeps_times_ub
 
@@ -782,23 +782,23 @@ contains
          ub%numrotsu, ub%jsu, ub%csu, ub%ssu, error)
   end subroutine d_bv_times_sweeps
 
-  subroutine f_d_bv_times_sweep(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, & 
-       cs_bv, ss_bv, &
+  subroutine f_d_bv_times_sweep(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, & 
+       csv, ssv, &
        cs_sw, ss_sw, numsweeps_sw, maxsweeps_sw, &
-       b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, cs_ub, ss_ub, error)
+       b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, csu, ssu, error)
 
     real(kind=dp), dimension(n-1), intent(in) :: cs_sw, ss_sw
     integer(kind=int32), intent(in) :: numsweeps_sw, maxsweeps_sw, n
 
     real(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(inout) :: b_bv
-    integer(kind=int32), dimension(n), intent(inout) :: numrots_bv
-    integer(kind=int32), dimension(n,ubwmax_bv), intent(inout) :: ks_bv
-    real(kind=dp), dimension(n,ubwmax_bv), intent(inout) :: cs_bv, ss_bv
+    integer(kind=int32), dimension(n), intent(inout) :: numrotsv
+    integer(kind=int32), dimension(n,ubwmax_bv), intent(inout) :: ksv
+    real(kind=dp), dimension(n,ubwmax_bv), intent(inout) :: csv, ssv
 
     real(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(out) :: b_ub
-    integer(kind=int32), dimension(n), intent(out) :: numrots_ub
-    integer(kind=int32), dimension(ubwmax_ub,n), intent(out) :: js_ub
-    real(kind=dp), dimension(ubwmax_ub,n), intent(out) :: cs_ub, ss_ub
+    integer(kind=int32), dimension(n), intent(out) :: numrotsu
+    integer(kind=int32), dimension(ubwmax_ub,n), intent(out) :: jsu
+    real(kind=dp), dimension(ubwmax_ub,n), intent(out) :: csu, ssu
 
     integer(kind=int32), intent(in) :: lbwmax_ub, ubwmax_ub
     integer(kind=int32), intent(inout) :: lbw_ub, ubw_ub
@@ -813,7 +813,7 @@ contains
 
     if (n==1) then
        b_ub(1,1)=b_bv(1,1);
-       lbw_ub=0; ubw_ub=0; numrots_ub=0; return
+       lbw_ub=0; ubw_ub=0; numrotsu=0; return
     end if
 
     dlbw=1; dlbw_tmp=0
@@ -822,14 +822,14 @@ contains
          dlbw, dlbw_tmp, dubw, dubw_tmp, lbw_ub, ubw_ub)
 
     b_ub(1:lbw_ub+ubw_ub+1,:)=0.0_dp
-    numrots_ub=0
-    ss_ub(1:ubw_ub,:)=0.0_dp; cs_ub(1:ubw_ub,:)=0.0_dp
-    js_ub(1:ubw_ub,:)=0
+    numrotsu=0
+    ssu(1:ubw_ub,:)=0.0_dp; csu(1:ubw_ub,:)=0.0_dp
+    jsu(1:ubw_ub,:)=0
     
     do k=1,n-1
-       do j=1,numrots_bv(n-k)
-          rot%cosine=cs_bv(n-k,j); rot%sine=ss_bv(n-k,j)
-          call tbr_times_rotation(b_bv,n,lbw_bv,ubw_bv,0,n-k,trp_rot(rot),ks_bv(n-k,j))
+       do j=1,numrotsv(k)
+          rot%cosine=csv(k,j); rot%sine=ssv(k,j)
+          call tbr_times_rotation(b_bv,n,lbw_bv,ubw_bv,0,n-k,trp_rot(rot),ksv(k,j))
        end do
        ! Apply q_{k}
        rot%cosine=cs_sw(k); rot%sine=ss_sw(k)
@@ -839,11 +839,11 @@ contains
        ! or rows k+1-ubw_bv, ..., k-1
        k0=max(k+1,ubw_bv+1)
        k1=min(k+ubw_bv-1,n)
-       numrots_ub(k)=max(k1-k0+1,0)
+       numrotsu(k)=max(k1-k0+1,0)
        do j=k1,k0,-1
           rot=lgivens2(get_el_br(b_bv,lbw_bv,j-ubw_bv,j), get_el_br(b_bv,lbw_bv,j-ubw_bv+1,j))
-          js_ub(j-k0+1,k)=j-ubw_bv
-          cs_ub(j-k0+1,k)=rot%cosine; ss_ub(j-k0+1,k)=rot%sine
+          jsu(j-k0+1,k)=j-ubw_bv
+          csu(j-k0+1,k)=rot%cosine; ssu(j-k0+1,k)=rot%sine
           call rotation_times_tbr(trp_rot(rot), b_bv,n,lbw_bv,ubw_bv,k,0,j-ubw_bv)
        end do
     end do
@@ -853,23 +853,23 @@ contains
     call br_to_bc(b_bv,b_ub,lbw_ub,ubw_ub)
   end subroutine f_d_bv_times_sweep
 
-  subroutine f_d_bv_times_sweeps(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, & 
-       cs_bv, ss_bv, &
+  subroutine f_d_bv_times_sweeps(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, & 
+       csv, ssv, &
        cs_sw, ss_sw, numsweeps_sw, maxsweeps_sw, &
-       b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, cs_ub, ss_ub, error)
+       b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, csu, ssu, error)
 
     real(kind=dp), dimension(n-1,maxsweeps_sw), intent(in) :: cs_sw, ss_sw
     integer(kind=int32), intent(in) :: numsweeps_sw, maxsweeps_sw, n
 
     real(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(inout) :: b_bv
-    integer(kind=int32), dimension(n), intent(inout) :: numrots_bv
-    integer(kind=int32), dimension(n,ubwmax_bv), intent(inout) :: ks_bv
-    real(kind=dp), dimension(n,ubwmax_bv), intent(inout) :: cs_bv, ss_bv
+    integer(kind=int32), dimension(n), intent(inout) :: numrotsv
+    integer(kind=int32), dimension(n,ubwmax_bv), intent(inout) :: ksv
+    real(kind=dp), dimension(n,ubwmax_bv), intent(inout) :: csv, ssv
 
     real(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(out) :: b_ub
-    integer(kind=int32), dimension(n), intent(out) :: numrots_ub
-    integer(kind=int32), dimension(ubwmax_ub,n), intent(out) :: js_ub
-    real(kind=dp), dimension(ubwmax_ub,n), intent(out) :: cs_ub, ss_ub
+    integer(kind=int32), dimension(n), intent(out) :: numrotsu
+    integer(kind=int32), dimension(ubwmax_ub,n), intent(out) :: jsu
+    real(kind=dp), dimension(ubwmax_ub,n), intent(out) :: csu, ssu
 
     integer(kind=int32), intent(in) :: lbwmax_ub, ubwmax_ub
     integer(kind=int32), intent(inout) :: lbw_ub, ubw_ub
@@ -883,18 +883,18 @@ contains
 
     if (n==1) then
        b_ub(1,1)=b_bv(1,1);
-       lbw_ub=0; ubw_ub=0; numrots_ub=0; return
+       lbw_ub=0; ubw_ub=0; numrotsu=0; return
     end if
     do l=1, numsweeps_sw
        if (l > 1) then
           call f_d_convert_ub_to_bv(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, & 
-               numrots_ub, js_ub, cs_ub, ss_ub, &
-               b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, error)
+               numrotsu, jsu, csu, ssu, &
+               b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, ssv, error)
        end if
-       call f_d_bv_times_sweep(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, & 
-            cs_bv, ss_bv, &
+       call f_d_bv_times_sweep(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, & 
+            csv, ssv, &
             cs_sw(:,l), ss_sw(:,l), numsweeps_sw, maxsweeps_sw, &
-            b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, cs_ub, ss_ub, error)
+            b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, csu, ssu, error)
     end do
 
   end subroutine f_d_bv_times_sweeps
@@ -930,23 +930,23 @@ contains
          ub%numrotsu, ub%jsu, ub%csu, ub%ssu, error)
   end subroutine c_bv_times_sweeps
 
-  subroutine f_c_bv_times_sweep(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, & 
-       cs_bv, ss_bv, &
+  subroutine f_c_bv_times_sweep(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, & 
+       csv, ssv, &
        cs_sw, ss_sw, numsweeps_sw, maxsweeps_sw, &
-       b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, cs_ub, ss_ub, error)
+       b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, csu, ssu, error)
 
     complex(kind=dp), dimension(n-1), intent(in) :: cs_sw, ss_sw
     integer(kind=int32), intent(in) :: numsweeps_sw, maxsweeps_sw, n
 
     complex(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(inout) :: b_bv
-    integer(kind=int32), dimension(n), intent(inout) :: numrots_bv
-    integer(kind=int32), dimension(n,ubwmax_bv), intent(inout) :: ks_bv
-    complex(kind=dp), dimension(n,ubwmax_bv), intent(inout) :: cs_bv, ss_bv
+    integer(kind=int32), dimension(n), intent(inout) :: numrotsv
+    integer(kind=int32), dimension(n,ubwmax_bv), intent(inout) :: ksv
+    complex(kind=dp), dimension(n,ubwmax_bv), intent(inout) :: csv, ssv
 
     complex(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(out) :: b_ub
-    integer(kind=int32), dimension(n), intent(out) :: numrots_ub
-    integer(kind=int32), dimension(ubwmax_ub,n), intent(out) :: js_ub
-    complex(kind=dp), dimension(ubwmax_ub,n), intent(out) :: cs_ub, ss_ub
+    integer(kind=int32), dimension(n), intent(out) :: numrotsu
+    integer(kind=int32), dimension(ubwmax_ub,n), intent(out) :: jsu
+    complex(kind=dp), dimension(ubwmax_ub,n), intent(out) :: csu, ssu
 
     integer(kind=int32), intent(in) :: lbwmax_ub, ubwmax_ub
     integer(kind=int32), intent(inout) :: lbw_ub, ubw_ub
@@ -961,7 +961,7 @@ contains
 
     if (n==1) then
        b_ub(1,1)=b_bv(1,1);
-       lbw_ub=0; ubw_ub=0; numrots_ub=0; return
+       lbw_ub=0; ubw_ub=0; numrotsu=0; return
     end if
 
     dubw=1; dubw_tmp=1
@@ -970,14 +970,14 @@ contains
          dlbw, dlbw_tmp, dubw, dubw_tmp, lbw_ub, ubw_ub)
 
     b_ub(1:lbw_ub+ubw_ub+1,:)=(0.0_dp,0.0_dp)
-    numrots_ub=0
-    ss_ub(1:ubw_ub,:)=(0.0_dp,0.0_dp); cs_ub(1:ubw_ub,:)=(0.0_dp,0.0_dp)
-    js_ub(1:ubw_ub,:)=0
+    numrotsu=0
+    ssu(1:ubw_ub,:)=(0.0_dp,0.0_dp); csu(1:ubw_ub,:)=(0.0_dp,0.0_dp)
+    jsu(1:ubw_ub,:)=0
     
     do k=1,n-1
-       do j=1,numrots_bv(n-k)
-          rot%cosine=cs_bv(n-k,j); rot%sine=ss_bv(n-k,j)
-          call tbr_times_rotation(b_bv,n,lbw_bv,ubw_bv,0,n-k,trp_rot(rot),ks_bv(n-k,j))
+       do j=1,numrotsv(k)
+          rot%cosine=csv(k,j); rot%sine=ssv(k,j)
+          call tbr_times_rotation(b_bv,n,lbw_bv,ubw_bv,0,n-k,trp_rot(rot),ksv(k,j))
        end do
        ! Apply q_{k}
        rot%cosine=cs_sw(k); rot%sine=ss_sw(k)
@@ -987,11 +987,11 @@ contains
        ! or rows k+1-ubw_bv, ..., k-1
        k0=max(k+1,ubw_bv+1)
        k1=min(k+ubw_bv-1,n)
-       numrots_ub(k)=max(k1-k0+1,0)
+       numrotsu(k)=max(k1-k0+1,0)
        do j=k1,k0,-1
           rot=lgivens2(get_el_br(b_bv,lbw_bv,j-ubw_bv,j), get_el_br(b_bv,lbw_bv,j-ubw_bv+1,j))
-          js_ub(j-k0+1,k)=j-ubw_bv
-          cs_ub(j-k0+1,k)=rot%cosine; ss_ub(j-k0+1,k)=rot%sine
+          jsu(j-k0+1,k)=j-ubw_bv
+          csu(j-k0+1,k)=rot%cosine; ssu(j-k0+1,k)=rot%sine
           call rotation_times_tbr(trp_rot(rot), b_bv,n,lbw_bv,ubw_bv,k,0,j-ubw_bv)
        end do
     end do
@@ -1000,23 +1000,23 @@ contains
     call br_to_bc(b_bv,b_ub,lbw_ub,ubw_ub)
   end subroutine f_c_bv_times_sweep
 
-  subroutine f_c_bv_times_sweeps(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, & 
-       cs_bv, ss_bv, &
+  subroutine f_c_bv_times_sweeps(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, & 
+       csv, ssv, &
        cs_sw, ss_sw, numsweeps_sw, maxsweeps_sw, &
-       b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, cs_ub, ss_ub, error)
+       b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, csu, ssu, error)
 
     complex(kind=dp), dimension(n-1,maxsweeps_sw), intent(in) :: cs_sw, ss_sw
     integer(kind=int32), intent(in) :: numsweeps_sw, maxsweeps_sw, n
 
     complex(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(inout) :: b_bv
-    integer(kind=int32), dimension(n), intent(inout) :: numrots_bv
-    integer(kind=int32), dimension(n,ubwmax_bv), intent(inout) :: ks_bv
-    complex(kind=dp), dimension(n,ubwmax_bv), intent(inout) :: cs_bv, ss_bv
+    integer(kind=int32), dimension(n), intent(inout) :: numrotsv
+    integer(kind=int32), dimension(n,ubwmax_bv), intent(inout) :: ksv
+    complex(kind=dp), dimension(n,ubwmax_bv), intent(inout) :: csv, ssv
 
     complex(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(out) :: b_ub
-    integer(kind=int32), dimension(n), intent(out) :: numrots_ub
-    integer(kind=int32), dimension(ubwmax_ub,n), intent(out) :: js_ub
-    complex(kind=dp), dimension(ubwmax_ub,n), intent(out) :: cs_ub, ss_ub
+    integer(kind=int32), dimension(n), intent(out) :: numrotsu
+    integer(kind=int32), dimension(ubwmax_ub,n), intent(out) :: jsu
+    complex(kind=dp), dimension(ubwmax_ub,n), intent(out) :: csu, ssu
 
     integer(kind=int32), intent(in) :: lbwmax_ub, ubwmax_ub
     integer(kind=int32), intent(inout) :: lbw_ub, ubw_ub
@@ -1030,18 +1030,18 @@ contains
 
     if (n==1) then
        b_ub(1,1)=b_bv(1,1);
-       lbw_ub=0; ubw_ub=0; numrots_ub=0; return
+       lbw_ub=0; ubw_ub=0; numrotsu=0; return
     end if
     do l=1, numsweeps_sw
        if (l > 1) then
           call f_c_convert_ub_to_bv(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, & 
-               numrots_ub, js_ub, cs_ub, ss_ub, &
-               b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, error)
+               numrotsu, jsu, csu, ssu, &
+               b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, ssv, error)
        end if
-       call f_c_bv_times_sweep(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, & 
-            cs_bv, ss_bv, &
+       call f_c_bv_times_sweep(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, & 
+            csv, ssv, &
             cs_sw(:,l), ss_sw(:,l), numsweeps_sw, maxsweeps_sw, &
-            b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, cs_ub, ss_ub, error)
+            b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, csu, ssu, error)
     end do
 
   end subroutine f_c_bv_times_sweeps
@@ -1083,21 +1083,21 @@ contains
   end subroutine d_trp_sweeps_times_bv
 
   subroutine f_d_trp_sweep_times_bv(cs_sw, ss_sw, n, numsweeps_sw, maxsweeps_sw, &
-       b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, &
-       b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, cs_ub, ss_ub, error)
+       b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, ssv, &
+       b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, csu, ssu, error)
 
     real(kind=dp), dimension(n-1), intent(in) :: cs_sw, ss_sw
     integer(kind=int32), intent(in) :: numsweeps_sw, maxsweeps_sw, n
 
     real(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(inout) :: b_bv
-    integer(kind=int32), dimension(n), intent(inout) :: numrots_bv
-    integer(kind=int32), dimension(n,ubwmax_bv), intent(inout) :: ks_bv
-    real(kind=dp), dimension(n,ubwmax_bv), intent(inout) :: cs_bv, ss_bv
+    integer(kind=int32), dimension(n), intent(inout) :: numrotsv
+    integer(kind=int32), dimension(n,ubwmax_bv), intent(inout) :: ksv
+    real(kind=dp), dimension(n,ubwmax_bv), intent(inout) :: csv, ssv
 
     real(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(out) :: b_ub
-    integer(kind=int32), dimension(n), intent(out) :: numrots_ub
-    integer(kind=int32), dimension(ubwmax_ub,n), intent(out) :: js_ub
-    real(kind=dp), dimension(ubwmax_ub,n), intent(out) :: cs_ub, ss_ub
+    integer(kind=int32), dimension(n), intent(out) :: numrotsu
+    integer(kind=int32), dimension(ubwmax_ub,n), intent(out) :: jsu
+    real(kind=dp), dimension(ubwmax_ub,n), intent(out) :: csu, ssu
 
     integer(kind=int32), intent(in) :: lbwmax_ub, ubwmax_ub
     integer(kind=int32), intent(inout) :: lbw_ub, ubw_ub
@@ -1112,7 +1112,7 @@ contains
 
     if (n==1) then
        b_ub(1,1)=b_bv(1,1);
-       lbw_ub=0; ubw_ub=0; numrots_ub=0; return
+       lbw_ub=0; ubw_ub=0; numrotsu=0; return
     end if
 
     dlbw=0; dlbw_tmp=0
@@ -1122,15 +1122,15 @@ contains
          dlbw, dlbw_tmp, dubw, dubw_tmp, lbw_ub, ubw_ub)
 
     b_ub(1:lbw_ub+ubw_ub+1,:)=0.0_dp
-    numrots_ub=0
-    ss_ub(1:ubw_ub,:)=0.0_dp; cs_ub(1:ubw_ub,:)=0.0_dp
-    js_ub(1:ubw_ub,:)=0
+    numrotsu=0
+    ssu(1:ubw_ub,:)=0.0_dp; csu(1:ubw_ub,:)=0.0_dp
+    jsu(1:ubw_ub,:)=0
 
     do k=1,n-1
        ! apply v_{n-k}
-       do j=1,numrots_bv(n-k)
-          rot%cosine=cs_bv(n-k,j); rot%sine=ss_bv(n-k,j)
-          call tbr_times_rotation(b_bv,n,lbw_bv,ubw_bv,0,n-k,trp_rot(rot),ks_bv(n-k,j))
+       do j=1,numrotsv(k)
+          rot%cosine=csv(k,j); rot%sine=ssv(k,j)
+          call tbr_times_rotation(b_bv,n,lbw_bv,ubw_bv,0,n-k,trp_rot(rot),ksv(k,j))
        end do
        ! Apply q_{k}
        rot%cosine=cs_sw(k); rot%sine=ss_sw(k)
@@ -1140,11 +1140,11 @@ contains
        ! or rows k+1-ubw_bv, ..., k-1
        k0=max(k+1,ubw_bv+1)
        k1=min(k+ubw_bv-1,n)
-       numrots_ub(k)=max(k1-k0+1,0)
+       numrotsu(k)=max(k1-k0+1,0)
        do j=k1,k0,-1
           rot=lgivens2(get_el_br(b_bv,lbw_bv,j-ubw_bv,j), get_el_br(b_bv,lbw_bv,j-ubw_bv+1,j))
-          js_ub(j-k0+1,k)=j-ubw_bv
-          cs_ub(j-k0+1,k)=rot%cosine; ss_ub(j-k0+1,k)=rot%sine
+          jsu(j-k0+1,k)=j-ubw_bv
+          csu(j-k0+1,k)=rot%cosine; ssu(j-k0+1,k)=rot%sine
           call rotation_times_tbr(trp_rot(rot), b_bv,n,lbw_bv,ubw_bv,k,0,j-ubw_bv)
        end do
     end do
@@ -1156,21 +1156,21 @@ contains
   end subroutine f_d_trp_sweep_times_bv
 
   subroutine f_d_trp_sweeps_times_bv(cs_sw, ss_sw, n, numsweeps_sw, maxsweeps_sw, &
-       b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, &
-       b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, cs_ub, ss_ub, error)
+       b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, ssv, &
+       b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, csu, ssu, error)
 
     real(kind=dp), dimension(n-1,maxsweeps_sw), intent(in) :: cs_sw, ss_sw
     integer(kind=int32), intent(in) :: numsweeps_sw, maxsweeps_sw, n
 
     real(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(inout) :: b_bv
-    integer(kind=int32), dimension(n), intent(inout) :: numrots_bv
-    integer(kind=int32), dimension(n,ubwmax_bv), intent(inout) :: ks_bv
-    real(kind=dp), dimension(n,ubwmax_bv), intent(inout) :: cs_bv, ss_bv
+    integer(kind=int32), dimension(n), intent(inout) :: numrotsv
+    integer(kind=int32), dimension(n,ubwmax_bv), intent(inout) :: ksv
+    real(kind=dp), dimension(n,ubwmax_bv), intent(inout) :: csv, ssv
 
     real(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(out) :: b_ub
-    integer(kind=int32), dimension(n), intent(out) :: numrots_ub
-    integer(kind=int32), dimension(ubwmax_ub,n), intent(out) :: js_ub
-    real(kind=dp), dimension(ubwmax_ub,n), intent(out) :: cs_ub, ss_ub
+    integer(kind=int32), dimension(n), intent(out) :: numrotsu
+    integer(kind=int32), dimension(ubwmax_ub,n), intent(out) :: jsu
+    real(kind=dp), dimension(ubwmax_ub,n), intent(out) :: csu, ssu
 
     integer(kind=int32), intent(in) :: lbwmax_ub, ubwmax_ub
     integer(kind=int32), intent(inout) :: lbw_ub, ubw_ub
@@ -1184,18 +1184,18 @@ contains
 
     if (n==1) then
        b_ub(1,1)=b_bv(1,1);
-       lbw_ub=0; ubw_ub=0; numrots_ub=0; return
+       lbw_ub=0; ubw_ub=0; numrotsu=0; return
     end if
 
     do l=1, numsweeps_sw
        if (l > 1) then
           call f_d_convert_ub_to_bv(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, & 
-               numrots_ub, js_ub, cs_ub, ss_ub, &
-               b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, error)
+               numrotsu, jsu, csu, ssu, &
+               b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, ssv, error)
        end if
        call f_d_trp_sweep_times_bv(cs_sw(:,l), ss_sw(:,l), n, numsweeps_sw, maxsweeps_sw, &
-            b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, &
-            b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, cs_ub, ss_ub, error)
+            b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, ssv, &
+            b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, csu, ssu, error)
     end do
   end subroutine f_d_trp_sweeps_times_bv
 
@@ -1225,21 +1225,21 @@ contains
   end subroutine c_trp_sweeps_times_bv
 
   subroutine f_c_trp_sweep_times_bv(cs_sw, ss_sw, n, numsweeps_sw, maxsweeps_sw, &
-       b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, &
-       b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, cs_ub, ss_ub, error)
+       b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, ssv, &
+       b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, csu, ssu, error)
 
     complex(kind=dp), dimension(n-1), intent(in) :: cs_sw, ss_sw
     integer(kind=int32), intent(in) :: numsweeps_sw, maxsweeps_sw, n
 
     complex(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(inout) :: b_bv
-    integer(kind=int32), dimension(n), intent(inout) :: numrots_bv
-    integer(kind=int32), dimension(n,ubwmax_bv), intent(inout) :: ks_bv
-    complex(kind=dp), dimension(n,ubwmax_bv), intent(inout) :: cs_bv, ss_bv
+    integer(kind=int32), dimension(n), intent(inout) :: numrotsv
+    integer(kind=int32), dimension(n,ubwmax_bv), intent(inout) :: ksv
+    complex(kind=dp), dimension(n,ubwmax_bv), intent(inout) :: csv, ssv
 
     complex(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(out) :: b_ub
-    integer(kind=int32), dimension(n), intent(out) :: numrots_ub
-    integer(kind=int32), dimension(ubwmax_ub,n), intent(out) :: js_ub
-    complex(kind=dp), dimension(ubwmax_ub,n), intent(out) :: cs_ub, ss_ub
+    integer(kind=int32), dimension(n), intent(out) :: numrotsu
+    integer(kind=int32), dimension(ubwmax_ub,n), intent(out) :: jsu
+    complex(kind=dp), dimension(ubwmax_ub,n), intent(out) :: csu, ssu
 
     integer(kind=int32), intent(in) :: lbwmax_ub, ubwmax_ub
     integer(kind=int32), intent(inout) :: lbw_ub, ubw_ub
@@ -1254,7 +1254,7 @@ contains
 
     if (n==1) then
        b_ub(1,1)=b_bv(1,1);
-       lbw_ub=0; ubw_ub=0; numrots_ub=0; return
+       lbw_ub=0; ubw_ub=0; numrotsu=0; return
     end if
 
     dlbw=0; dlbw_tmp=0
@@ -1264,15 +1264,15 @@ contains
          dlbw, dlbw_tmp, dubw, dubw_tmp, lbw_ub, ubw_ub)
 
     b_ub(1:lbw_ub+ubw_ub+1,:)=(0.0_dp,0.0_dp)
-    numrots_ub=0
-    ss_ub(1:ubw_ub,:)=(0.0_dp,0.0_dp); cs_ub(1:ubw_ub,:)=(0.0_dp,0.0_dp)
-    js_ub(1:ubw_ub,:)=0
+    numrotsu=0
+    ssu(1:ubw_ub,:)=(0.0_dp,0.0_dp); csu(1:ubw_ub,:)=(0.0_dp,0.0_dp)
+    jsu(1:ubw_ub,:)=0
 
     do k=1,n-1
        ! apply v_{n-k}
-       do j=1,numrots_bv(n-k)
-          rot%cosine=cs_bv(n-k,j); rot%sine=ss_bv(n-k,j)
-          call tbr_times_rotation(b_bv,n,lbw_bv,ubw_bv,0,n-k,trp_rot(rot),ks_bv(n-k,j))
+       do j=1,numrotsv(k)
+          rot%cosine=csv(k,j); rot%sine=ssv(k,j)
+          call tbr_times_rotation(b_bv,n,lbw_bv,ubw_bv,0,n-k,trp_rot(rot),ksv(k,j))
        end do
        ! Apply q_{k}
        rot%cosine=cs_sw(k); rot%sine=ss_sw(k)
@@ -1282,11 +1282,11 @@ contains
        ! or rows k+1-ubw_bv, ..., k-1
        k0=max(k+1,ubw_bv+1)
        k1=min(k+ubw_bv-1,n)
-       numrots_ub(k)=max(k1-k0+1,0)
+       numrotsu(k)=max(k1-k0+1,0)
        do j=k1,k0,-1
           rot=lgivens2(get_el_br(b_bv,lbw_bv,j-ubw_bv,j), get_el_br(b_bv,lbw_bv,j-ubw_bv+1,j))
-          js_ub(j-k0+1,k)=j-ubw_bv
-          cs_ub(j-k0+1,k)=rot%cosine; ss_ub(j-k0+1,k)=rot%sine
+          jsu(j-k0+1,k)=j-ubw_bv
+          csu(j-k0+1,k)=rot%cosine; ssu(j-k0+1,k)=rot%sine
           call rotation_times_tbr(trp_rot(rot), b_bv,n,lbw_bv,ubw_bv,k,0,j-ubw_bv)
        end do
     end do
@@ -1298,21 +1298,21 @@ contains
   end subroutine f_c_trp_sweep_times_bv
 
   subroutine f_c_trp_sweeps_times_bv(cs_sw, ss_sw, n, numsweeps_sw, maxsweeps_sw, &
-       b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, &
-       b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, cs_ub, ss_ub, error)
+       b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, ssv, &
+       b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, csu, ssu, error)
 
     complex(kind=dp), dimension(n-1,maxsweeps_sw), intent(in) :: cs_sw, ss_sw
     integer(kind=int32), intent(in) :: numsweeps_sw, maxsweeps_sw, n
 
     complex(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(inout) :: b_bv
-    integer(kind=int32), dimension(n), intent(inout) :: numrots_bv
-    integer(kind=int32), dimension(n,ubwmax_bv), intent(inout) :: ks_bv
-    complex(kind=dp), dimension(n,ubwmax_bv), intent(inout) :: cs_bv, ss_bv
+    integer(kind=int32), dimension(n), intent(inout) :: numrotsv
+    integer(kind=int32), dimension(n,ubwmax_bv), intent(inout) :: ksv
+    complex(kind=dp), dimension(n,ubwmax_bv), intent(inout) :: csv, ssv
 
     complex(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(out) :: b_ub
-    integer(kind=int32), dimension(n), intent(out) :: numrots_ub
-    integer(kind=int32), dimension(ubwmax_ub,n), intent(out) :: js_ub
-    complex(kind=dp), dimension(ubwmax_ub,n), intent(out) :: cs_ub, ss_ub
+    integer(kind=int32), dimension(n), intent(out) :: numrotsu
+    integer(kind=int32), dimension(ubwmax_ub,n), intent(out) :: jsu
+    complex(kind=dp), dimension(ubwmax_ub,n), intent(out) :: csu, ssu
 
     integer(kind=int32), intent(in) :: lbwmax_ub, ubwmax_ub
     integer(kind=int32), intent(inout) :: lbw_ub, ubw_ub
@@ -1326,18 +1326,18 @@ contains
 
     if (n==1) then
        b_ub(1,1)=b_bv(1,1);
-       lbw_ub=0; ubw_ub=0; numrots_ub=0; return
+       lbw_ub=0; ubw_ub=0; numrotsu=0; return
     end if
 
     do l=1, numsweeps_sw
        if (l > 1) then
           call f_c_convert_ub_to_bv(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, & 
-               numrots_ub, js_ub, cs_ub, ss_ub, &
-               b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, error)
+               numrotsu, jsu, csu, ssu, &
+               b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, ssv, error)
        end if
        call f_c_trp_sweep_times_bv(cs_sw(:,l), ss_sw(:,l), n, numsweeps_sw, maxsweeps_sw, &
-            b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, &
-            b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, cs_ub, ss_ub, error)
+            b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, ssv, &
+            b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, csu, ssu, error)
     end do
   end subroutine f_c_trp_sweeps_times_bv
 
@@ -1375,22 +1375,22 @@ contains
   end subroutine d_ub_times_trp_sweeps
 
   subroutine f_d_ub_times_trp_sweep(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, &
-       numrots_ub, js_ub, cs_ub, ss_ub, &
+       numrotsu, jsu, csu, ssu, &
        cs_sw, ss_sw, numsweeps_sw, maxsweeps_sw, &
-       b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, &
+       b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, ssv, &
        error)
     real(kind=dp), dimension(n-1), intent(in) :: cs_sw, ss_sw
     integer(kind=int32), intent(in) :: numsweeps_sw, maxsweeps_sw, n
 
     real(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(inout) :: b_bv
-    integer(kind=int32), dimension(n), intent(inout) :: numrots_bv
-    integer(kind=int32), dimension(n,ubwmax_bv), intent(inout) :: ks_bv
-    real(kind=dp), dimension(n,ubwmax_bv), intent(inout) :: cs_bv, ss_bv
+    integer(kind=int32), dimension(n), intent(inout) :: numrotsv
+    integer(kind=int32), dimension(n,ubwmax_bv), intent(inout) :: ksv
+    real(kind=dp), dimension(n,ubwmax_bv), intent(inout) :: csv, ssv
 
     real(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(out) :: b_ub
-    integer(kind=int32), dimension(n), intent(out) :: numrots_ub
-    integer(kind=int32), dimension(ubwmax_ub,n), intent(out) :: js_ub
-    real(kind=dp), dimension(ubwmax_ub,n), intent(out) :: cs_ub, ss_ub
+    integer(kind=int32), dimension(n), intent(out) :: numrotsu
+    integer(kind=int32), dimension(ubwmax_ub,n), intent(out) :: jsu
+    real(kind=dp), dimension(ubwmax_ub,n), intent(out) :: csu, ssu
 
     integer(kind=int32), intent(in) :: lbwmax_ub, ubwmax_ub
     integer(kind=int32), intent(inout) :: lbw_ub, ubw_ub
@@ -1405,7 +1405,7 @@ contains
 
     if (n==1) then
        b_bv(1,1)=b_ub(1,1);
-       lbw_bv=0; ubw_bv=0; numrots_bv=0; return
+       lbw_bv=0; ubw_bv=0; numrotsv=0; return
     end if
     ! Initial expansion for first sweep:
     ! one extra superdiagonal to fill-in.
@@ -1417,26 +1417,26 @@ contains
          dlbw, dlbw_tmp, dubw, dubw_tmp, lbw_bv, ubw_bv)
 
     b_bv(:,1:lbw_bv+ubw_bv+1)=0.0_dp
-    numrots_bv=0
-    ss_bv(:,1:ubw_bv)=0.0_dp
-    cs_bv(:,1:ubw_bv)=0.0_dp
-    ks_bv(:,1:ubw_bv)=0
+    numrotsv=0
+    ssv(:,1:ubw_bv)=0.0_dp
+    csv(:,1:ubw_bv)=0.0_dp
+    ksv(:,1:ubw_bv)=0
 
     do k=1,n-1
        ! Apply u_{n-k}
-       do j=1,numrots_ub(n-k)
-          rot%cosine=cs_ub(j,n-k); rot%sine=ss_ub(j,n-k)
-          call rotation_times_tbc(rot,b_ub,n,lbw_ub,ubw_ub,n-k,0,js_ub(j,n-k))
+       do j=1,numrotsu(n-k)
+          rot%cosine=csu(j,n-k); rot%sine=ssu(j,n-k)
+          call rotation_times_tbc(rot,b_ub,n,lbw_ub,ubw_ub,n-k,0,jsu(j,n-k))
        end do
        rot%cosine=cs_sw(n-k); rot%sine=ss_sw(n-k)
        call tbc_times_rotation(b_ub,n,lbw_ub,ubw_ub,0,0,trp_rot(rot),n-k)
        k0=max(n-k+2,ubw_ub+1)
        k1=min(n-k+ubw_ub-1,n)
-       numrots_bv(k)=max(k1-k0+1,0)
+       numrotsv(n-k)=max(k1-k0+1,0)
        do j=k0,k1
           rot=rgivens(get_el_bc(b_ub,ubw_ub,j-ubw_ub,j-1), get_el_bc(b_ub,ubw_ub,j-ubw_ub,j))
-          ks_bv(k,k1-j+1)=j-1
-          cs_bv(k,k1-j+1)=rot%cosine; ss_bv(k,k1-j+1)=rot%sine
+          ksv(n-k,k1-j+1)=j-1
+          csv(n-k,k1-j+1)=rot%cosine; ssv(n-k,k1-j+1)=rot%sine
           call tbc_times_rotation(b_ub,n,lbw_ub,ubw_ub,0,k,rot,j-1)
        end do
     end do
@@ -1449,22 +1449,22 @@ contains
   end subroutine f_d_ub_times_trp_sweep
 
   subroutine f_d_ub_times_trp_sweeps(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, &
-       numrots_ub, js_ub, cs_ub, ss_ub, &
+       numrotsu, jsu, csu, ssu, &
        cs_sw, ss_sw, numsweeps_sw, maxsweeps_sw, &
-       b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, &
+       b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, ssv, &
        error)
     real(kind=dp), dimension(n-1,maxsweeps_sw), intent(in) :: cs_sw, ss_sw
     integer(kind=int32), intent(in) :: numsweeps_sw, maxsweeps_sw, n
 
     real(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(inout) :: b_bv
-    integer(kind=int32), dimension(n), intent(inout) :: numrots_bv
-    integer(kind=int32), dimension(n,ubwmax_bv), intent(inout) :: ks_bv
-    real(kind=dp), dimension(n,ubwmax_bv), intent(inout) :: cs_bv, ss_bv
+    integer(kind=int32), dimension(n), intent(inout) :: numrotsv
+    integer(kind=int32), dimension(n,ubwmax_bv), intent(inout) :: ksv
+    real(kind=dp), dimension(n,ubwmax_bv), intent(inout) :: csv, ssv
 
     real(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(out) :: b_ub
-    integer(kind=int32), dimension(n), intent(out) :: numrots_ub
-    integer(kind=int32), dimension(ubwmax_ub,n), intent(out) :: js_ub
-    real(kind=dp), dimension(ubwmax_ub,n), intent(out) :: cs_ub, ss_ub
+    integer(kind=int32), dimension(n), intent(out) :: numrotsu
+    integer(kind=int32), dimension(ubwmax_ub,n), intent(out) :: jsu
+    real(kind=dp), dimension(ubwmax_ub,n), intent(out) :: csu, ssu
 
     integer(kind=int32), intent(in) :: lbwmax_ub, ubwmax_ub
     integer(kind=int32), intent(inout) :: lbw_ub, ubw_ub
@@ -1478,19 +1478,19 @@ contains
 
     if (n==1) then
        b_bv(1,1)=b_ub(1,1);
-       lbw_bv=0; ubw_bv=0; numrots_bv=0; return
+       lbw_bv=0; ubw_bv=0; numrotsv=0; return
     end if
 
     do l=numsweeps_sw,1,-1
        if (l < numsweeps_sw) then
-          call f_d_convert_bv_to_ub(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, &
-               ks_bv, cs_bv, ss_bv, b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, & 
-               numrots_ub, js_ub, cs_ub, ss_ub, error)
+          call f_d_convert_bv_to_ub(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, &
+               ksv, csv, ssv, b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, & 
+               numrotsu, jsu, csu, ssu, error)
        end if
        call f_d_ub_times_trp_sweep(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, &
-            numrots_ub, js_ub, cs_ub, ss_ub, &
+            numrotsu, jsu, csu, ssu, &
             cs_sw(:,l), ss_sw(:,l), numsweeps_sw, maxsweeps_sw, &
-            b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, &
+            b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, ssv, &
             error)
     end do
   end subroutine f_d_ub_times_trp_sweeps
@@ -1521,22 +1521,22 @@ contains
   end subroutine c_ub_times_trp_sweeps
 
   subroutine f_c_ub_times_trp_sweep(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, &
-       numrots_ub, js_ub, cs_ub, ss_ub, &
+       numrotsu, jsu, csu, ssu, &
        cs_sw, ss_sw, numsweeps_sw, maxsweeps_sw, &
-       b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, &
+       b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, ssv, &
        error)
     complex(kind=dp), dimension(n-1), intent(in) :: cs_sw, ss_sw
     integer(kind=int32), intent(in) :: numsweeps_sw, maxsweeps_sw, n
 
     complex(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(inout) :: b_bv
-    integer(kind=int32), dimension(n), intent(inout) :: numrots_bv
-    integer(kind=int32), dimension(n,ubwmax_bv), intent(inout) :: ks_bv
-    complex(kind=dp), dimension(n,ubwmax_bv), intent(inout) :: cs_bv, ss_bv
+    integer(kind=int32), dimension(n), intent(inout) :: numrotsv
+    integer(kind=int32), dimension(n,ubwmax_bv), intent(inout) :: ksv
+    complex(kind=dp), dimension(n,ubwmax_bv), intent(inout) :: csv, ssv
 
     complex(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(out) :: b_ub
-    integer(kind=int32), dimension(n), intent(out) :: numrots_ub
-    integer(kind=int32), dimension(ubwmax_ub,n), intent(out) :: js_ub
-    complex(kind=dp), dimension(ubwmax_ub,n), intent(out) :: cs_ub, ss_ub
+    integer(kind=int32), dimension(n), intent(out) :: numrotsu
+    integer(kind=int32), dimension(ubwmax_ub,n), intent(out) :: jsu
+    complex(kind=dp), dimension(ubwmax_ub,n), intent(out) :: csu, ssu
 
     integer(kind=int32), intent(in) :: lbwmax_ub, ubwmax_ub
     integer(kind=int32), intent(inout) :: lbw_ub, ubw_ub
@@ -1551,7 +1551,7 @@ contains
 
     if (n==1) then
        b_bv(1,1)=b_ub(1,1);
-       lbw_bv=0; ubw_bv=0; numrots_bv=0; return
+       lbw_bv=0; ubw_bv=0; numrotsv=0; return
     end if
     ! Initial expansion for first sweep:
     ! one extra superdiagonal to fill-in.
@@ -1563,26 +1563,26 @@ contains
          dlbw, dlbw_tmp, dubw, dubw_tmp, lbw_bv, ubw_bv)
 
     b_bv(:,1:lbw_bv+ubw_bv+1)=(0.0_dp,0.0_dp)
-    numrots_bv=0
-    ss_bv(:,1:ubw_bv)=(0.0_dp,0.0_dp)
-    cs_bv(:,1:ubw_bv)=(0.0_dp,0.0_dp)
-    ks_bv(:,1:ubw_bv)=0
+    numrotsv=0
+    ssv(:,1:ubw_bv)=(0.0_dp,0.0_dp)
+    csv(:,1:ubw_bv)=(0.0_dp,0.0_dp)
+    ksv(:,1:ubw_bv)=0
 
     do k=1,n-1
        ! Apply u_{n-k}
-       do j=1,numrots_ub(n-k)
-          rot%cosine=cs_ub(j,n-k); rot%sine=ss_ub(j,n-k)
-          call rotation_times_tbc(rot,b_ub,n,lbw_ub,ubw_ub,n-k,0,js_ub(j,n-k))
+       do j=1,numrotsu(n-k)
+          rot%cosine=csu(j,n-k); rot%sine=ssu(j,n-k)
+          call rotation_times_tbc(rot,b_ub,n,lbw_ub,ubw_ub,n-k,0,jsu(j,n-k))
        end do
        rot%cosine=cs_sw(n-k); rot%sine=ss_sw(n-k)
        call tbc_times_rotation(b_ub,n,lbw_ub,ubw_ub,0,0,trp_rot(rot),n-k)
        k0=max(n-k+2,ubw_ub+1)
        k1=min(n-k+ubw_ub-1,n)
-       numrots_bv(k)=max(k1-k0+1,0)
+       numrotsv(n-k)=max(k1-k0+1,0)
        do j=k0,k1
           rot=rgivens(get_el_bc(b_ub,ubw_ub,j-ubw_ub,j-1), get_el_bc(b_ub,ubw_ub,j-ubw_ub,j))
-          ks_bv(k,k1-j+1)=j-1
-          cs_bv(k,k1-j+1)=rot%cosine; ss_bv(k,k1-j+1)=rot%sine
+          ksv(n-k,k1-j+1)=j-1
+          csv(n-k,k1-j+1)=rot%cosine; ssv(n-k,k1-j+1)=rot%sine
           call tbc_times_rotation(b_ub,n,lbw_ub,ubw_ub,0,k,rot,j-1)
        end do
     end do
@@ -1595,22 +1595,22 @@ contains
   end subroutine f_c_ub_times_trp_sweep
 
   subroutine f_c_ub_times_trp_sweeps(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, &
-       numrots_ub, js_ub, cs_ub, ss_ub, &
+       numrotsu, jsu, csu, ssu, &
        cs_sw, ss_sw, numsweeps_sw, maxsweeps_sw, &
-       b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, &
+       b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, ssv, &
        error)
     complex(kind=dp), dimension(n-1,maxsweeps_sw), intent(in) :: cs_sw, ss_sw
     integer(kind=int32), intent(in) :: numsweeps_sw, maxsweeps_sw, n
 
     complex(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(inout) :: b_bv
-    integer(kind=int32), dimension(n), intent(inout) :: numrots_bv
-    integer(kind=int32), dimension(n,ubwmax_bv), intent(inout) :: ks_bv
-    complex(kind=dp), dimension(n,ubwmax_bv), intent(inout) :: cs_bv, ss_bv
+    integer(kind=int32), dimension(n), intent(inout) :: numrotsv
+    integer(kind=int32), dimension(n,ubwmax_bv), intent(inout) :: ksv
+    complex(kind=dp), dimension(n,ubwmax_bv), intent(inout) :: csv, ssv
 
     complex(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(out) :: b_ub
-    integer(kind=int32), dimension(n), intent(out) :: numrots_ub
-    integer(kind=int32), dimension(ubwmax_ub,n), intent(out) :: js_ub
-    complex(kind=dp), dimension(ubwmax_ub,n), intent(out) :: cs_ub, ss_ub
+    integer(kind=int32), dimension(n), intent(out) :: numrotsu
+    integer(kind=int32), dimension(ubwmax_ub,n), intent(out) :: jsu
+    complex(kind=dp), dimension(ubwmax_ub,n), intent(out) :: csu, ssu
 
     integer(kind=int32), intent(in) :: lbwmax_ub, ubwmax_ub
     integer(kind=int32), intent(inout) :: lbw_ub, ubw_ub
@@ -1624,19 +1624,19 @@ contains
 
     if (n==1) then
        b_bv(1,1)=b_ub(1,1);
-       lbw_bv=0; ubw_bv=0; numrots_bv=0; return
+       lbw_bv=0; ubw_bv=0; numrotsv=0; return
     end if
 
     do l=numsweeps_sw,1,-1
        if (l < numsweeps_sw) then
-          call f_c_convert_bv_to_ub(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, &
-               ks_bv, cs_bv, ss_bv, b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, & 
-               numrots_ub, js_ub, cs_ub, ss_ub, error)
+          call f_c_convert_bv_to_ub(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, &
+               ksv, csv, ssv, b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, & 
+               numrotsu, jsu, csu, ssu, error)
        end if
        call f_c_ub_times_trp_sweep(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, &
-            numrots_ub, js_ub, cs_ub, ss_ub, &
+            numrotsu, jsu, csu, ssu, &
             cs_sw(:,l), ss_sw(:,l), numsweeps_sw, maxsweeps_sw, &
-            b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, &
+            b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, ssv, &
             error)
     end do
   end subroutine f_c_ub_times_trp_sweeps

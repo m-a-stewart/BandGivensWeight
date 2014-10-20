@@ -37,6 +37,7 @@ program test_recompress
   call random_matrix(v0)
   call random_matrix(d0)
 
+
   !! UB to BV tests
   print *
   print *, "--------------------------------"
@@ -205,7 +206,6 @@ program test_recompress
   call d_deallocate_bv(bv_na_d)
   call d_deallocate_sweeps(sw_d)
 
-
   !! BV to UB tests
   print *
   print *, "--------------------------------"
@@ -334,6 +334,7 @@ program test_recompress
   call d_output_result(test_name,a0(1:na,1:na),a1(1:na,1:na),1,ub_na_d%ubw,t0,t1,tol2,error)
   call d_deallocate_ub(ub_na_d)
   call d_deallocate_bv(bv_na_d)
+
   na=4
   lbwa=min(na-1,lbw)
   ub_na_d=d_new_ub(na,lbwmax,ubwmax)
@@ -342,6 +343,7 @@ program test_recompress
   call d_assemble_a(a(1:na,1:na),u(1:na,:),v(:,1:na),d(1:na),lbwa)
   a0(1:na,1:na)=a(1:na,1:na)
   call upper_to_bv(a(1:na,1:na),bv_na_d,lbwa, tol1,error)
+
   call cpu_time(t0)
   call recompress_bv_to_ub(bv_na_d, ub_na_d,tol2,tol2,0,error)
   call cpu_time(t1)
@@ -524,6 +526,7 @@ program test_recompress
   call c_deallocate_ub(ub_na_c)
   call c_deallocate_bv(bv_na_c)
   !
+
   na=10; lbwa=6; numsweeps=7
   sw_c=c_random_sweeps(na,numsweeps)
   ub_na_c=c_new_ub(na,lbwmax,ubwmax)
@@ -546,6 +549,8 @@ program test_recompress
 
 
   !! BV to UB tests
+
+
   print *
   print *, "--------------------------------"
   print *
@@ -601,6 +606,8 @@ program test_recompress
   call ub_to_upper(ub_c,a1_c,error)
   test_name = "Complex BV to UB (recompress to 1);"
   call c_output_result(test_name,a0_c,a1_c,1,ub_c%ubw,t0,t1,tol2,error)
+
+
   ! recompress to zero test.  
   u_c=u0_c; v_c=v0_c; d_c=d0_c
   u_c=0.05*tol2*u_c
@@ -625,6 +632,7 @@ program test_recompress
   test_name = "Complex BV to UB (no recompression);"
   call c_output_result(test_name,a0_c,a1_c,rmax,ub_c%ubw,t0,t1,tol2,error)
   ! small matrices
+
   na=1
   lbwa=min(na-1,lbw)
   ub_na_c=c_new_ub(na,lbwmax,ubwmax)
@@ -673,6 +681,8 @@ program test_recompress
   call c_output_result(test_name,a0_c(1:na,1:na),a1_c(1:na,1:na),1,ub_na_c%ubw,t0,t1,tol2,error)
   call c_deallocate_ub(ub_na_c)
   call c_deallocate_bv(bv_na_c)
+
+
   na=4
   lbwa=min(na-1,lbw)
   ub_na_c=c_new_ub(na,lbwmax,ubwmax)

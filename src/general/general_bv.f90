@@ -232,27 +232,27 @@ contains
              ubws(k)=nl-1
              if (error%code == -nl) then
                 pl(nl,nl)=0.0_dp
-                numrotsv(k)=0
+                numrotsv(n-k)=0
                 call clear_error(error)
              else if (error%code <= -1) then
-                numrotsv(k)=nl+error%code
+                numrotsv(n-k)=nl+error%code
                 pl(-error%code,-error%code)=0.0_dp
                 do j=-error%code,nl-1
                    rot=rgivens(pl(j+1,j),pl(j+1,j+1))
                    call general_times_rotation(pl(j+1:nl,:),rot,j,j+1)
                    pl(j+1,j+1)=0.0_dp
-                   csv(k,nl-j)=rot%cosine; ssv(k,nl-j)=rot%sine
-                   ksv(k,nl-j)=coffs+j
+                   csv(n-k,nl-j)=rot%cosine; ssv(n-k,nl-j)=rot%sine
+                   ksv(n-k,nl-j)=coffs+j
                 end do
                 call clear_error(error)
              else ! error=0
-                numrotsv(k)=nl-1;
+                numrotsv(n-k)=nl-1;
                 do j=2,nl ! apply v_k while preserving the triangular structure of L
                    rot=lgivens2(x(j-1),x(j))
                    call rotation_times_general(trp_rot(rot),x, j-1,j)
                    call general_times_rotation(pl,rot,j-1,j)
-                   csv(k,nl-j+1)=rot%cosine; ssv(k,nl-j+1)=rot%sine
-                   ksv(k,nl-j+1)=coffs+j-1
+                   csv(n-k,nl-j+1)=rot%cosine; ssv(n-k,nl-j+1)=rot%sine
+                   ksv(n-k,nl-j+1)=coffs+j-1
                    rot=lgivens2(pl(j-1,j),pl(j,j))
                    call rotation_times_general(trp_rot(rot), pl(:,1:j), j-1,j)
                    call general_times_rotation(pq,rot,j-1,j)
@@ -392,13 +392,13 @@ contains
                 call rotation_times_general(trp_rot(rot), pl(:,1:j+1), j, j+1)
              end do
              pl(nl,:)=pq(nl,nl)*pl(nl,:)
-             numrotsv(k+i)=nl-1
+             numrotsv(n-(k+i))=nl-1
              do j=1,nl-1
                 rot=rgivens(pl(j,j),pl(j,j+1))
                 call general_times_rotation(pl(j:nl-1,:),rot,j,j+1)
                 pl(j,j+1)=0.0_dp
-                csv(k+i,nl-j)=rot%cosine; ssv(k+i,nl-j)=rot%sine
-                ksv(k+i,nl-j)=coffs+j
+                csv(n-(k+i),nl-j)=rot%cosine; ssv(n-(k+i),nl-j)=rot%sine
+                ksv(n-(k+i),nl-j)=coffs+j
              end do
           end do
           pl(1,1)=pq(1,1)*pl(1,1)
@@ -415,11 +415,11 @@ contains
           nl=n-k-i+1
           pl=>a(1:nl,coffs+1:coffs+nl+1)
           pq=>q(1:nl,1:nl)
-          numrotsv(k+i-1)=nl
+          numrotsv(n-(k+i-1))=nl
           do j=1,nl
              rot=rgivens(pl(j,j),pl(j,j+1))
-             csv(k+i-1,nl-j+1)=rot%cosine; ssv(k+i-1,nl-j+1)=rot%sine
-             ksv(k+i-1,nl-j+1)=coffs+j
+             csv(n-(k+i-1),nl-j+1)=rot%cosine; ssv(n-(k+i-1),nl-j+1)=rot%sine
+             ksv(n-(k+i-1),nl-j+1)=coffs+j
              call general_times_rotation(pl(j:nl,:),rot,j,j+1)
              pl(j,j+1)=0.0_dp
           end do
@@ -613,27 +613,27 @@ contains
              ubws(k)=nl-1
              if (error%code == -nl) then
                 pl(nl,nl)=(0.0_dp, 0.0_dp)
-                numrotsv(k)=0
+                numrotsv(n-k)=0
                 call clear_error(error)
              else if (error%code <= -1) then
-                numrotsv(k)=nl+error%code
+                numrotsv(n-k)=nl+error%code
                 pl(-error%code,-error%code)=(0.0_dp, 0.0_dp)
                 do j=-error%code,nl-1
                    rot=rgivens(pl(j+1,j),pl(j+1,j+1))
                    call general_times_rotation(pl(j+1:nl,:),rot,j,j+1)
                    pl(j+1,j+1)=(0.0_dp, 0.0_dp)
-                   csv(k,nl-j)=rot%cosine; ssv(k,nl-j)=rot%sine
-                   ksv(k,nl-j)=coffs+j
+                   csv(n-k,nl-j)=rot%cosine; ssv(n-k,nl-j)=rot%sine
+                   ksv(n-k,nl-j)=coffs+j
                 end do
                 call clear_error(error)
              else ! nullerr=0
-                numrotsv(k)=nl-1;
+                numrotsv(n-k)=nl-1;
                 do j=2,nl ! apply v_k while preserving the triangular structure of L
                    rot=lgivens2(x(j-1),x(j))
                    call rotation_times_general(trp_rot(rot),x, j-1,j)
                    call general_times_rotation(pl,rot,j-1,j)
-                   csv(k,nl-j+1)=rot%cosine; ssv(k,nl-j+1)=rot%sine
-                   ksv(k,nl-j+1)=coffs+j-1
+                   csv(n-k,nl-j+1)=rot%cosine; ssv(n-k,nl-j+1)=rot%sine
+                   ksv(n-k,nl-j+1)=coffs+j-1
                    rot=lgivens2(pl(j-1,j),pl(j,j))
                    call rotation_times_general(trp_rot(rot), pl(:,1:j), j-1,j)
                    call general_times_rotation(pq,rot,j-1,j)
@@ -773,13 +773,13 @@ contains
                 call rotation_times_general(trp_rot(rot), pl(:,1:j+1), j, j+1)
              end do
              pl(nl,:)=pq(nl,nl)*pl(nl,:)
-             numrotsv(k+i)=nl-1
+             numrotsv(n-(k+i))=nl-1
              do j=1,nl-1
                 rot=rgivens(pl(j,j),pl(j,j+1))
                 call general_times_rotation(pl(j:nl-1,:),rot,j,j+1)
                 pl(j,j+1)=(0.0_dp, 0.0_dp)
-                csv(k+i,nl-j)=rot%cosine; ssv(k+i,nl-j)=rot%sine
-                ksv(k+i,nl-j)=coffs+j
+                csv(n-(k+i),nl-j)=rot%cosine; ssv(n-(k+i),nl-j)=rot%sine
+                ksv(n-(k+i),nl-j)=coffs+j
              end do
           end do
           pl(1,1)=pq(1,1)*pl(1,1)
@@ -796,11 +796,11 @@ contains
           nl=n-k-i+1
           pl=>a(1:nl,coffs+1:coffs+nl+1)
           pq=>q(1:nl,1:nl)
-          numrotsv(k+i-1)=nl
+          numrotsv(n-(k+i-1))=nl
           do j=1,nl
              rot=rgivens(pl(j,j),pl(j,j+1))
-             csv(k+i-1,nl-j+1)=rot%cosine; ssv(k+i-1,nl-j+1)=rot%sine
-             ksv(k+i-1,nl-j+1)=coffs+j
+             csv(n-(k+i-1),nl-j+1)=rot%cosine; ssv(n-(k+i-1),nl-j+1)=rot%sine
+             ksv(n-(k+i-1),nl-j+1)=coffs+j
              call general_times_rotation(pl(j:nl,:),rot,j,j+1)
              pl(j,j+1)=(0.0_dp, 0.0_dp)
           end do
