@@ -1,4 +1,4 @@
-module conversions_ub_to_bv
+module conversion_ub_to_bv
   use misc
   use shift
   use rotation
@@ -197,5 +197,4 @@ contains
     call bc_to_br(b_ub, b_bv, lbw, ubw)
   end subroutine f_c_convert_ub_to_bv
 
-
-end module conversions_ub_to_bv
+end module conversion_ub_to_bv

@@ -3,7 +3,7 @@ module update
   use types
   use shift
   use sweeps
-  use conversions
+  use conversion
   implicit none
 
   interface r1_update_ub_to_bv

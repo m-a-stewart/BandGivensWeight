@@ -1,7 +1,7 @@
 module qr_iteration
   use misc
-  use compressions
-  use conversions
+  use recompression
+  use conversion
   use qr_factorization
   use update
   use substitution
@@ -284,7 +284,7 @@ contains
          b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, error)
 
     ! if (ubw_ub > 3) then
-    !    call f_c_compress_ub_to_bv(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, &
+    !    call f_c_recompress_ub_to_bv(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, &
     !         js_ub, cs_ub, ss_ub, &
     !         b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, &
     !         0.0_dp, 0.0_dp, ubw_ub-3, error)

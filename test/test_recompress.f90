@@ -1,4 +1,4 @@
-program test_compress
+program test_recompress
   use nested
   use transforms
   use test_data
@@ -41,7 +41,7 @@ program test_compress
   print *
   print *, "--------------------------------"
   print *
-  print *, "Real UB to BV Compression Tests:"
+  print *, "Real UB to BV Recompression Tests:"
   print *
   ! Test 3; case 1 termination test.
   u=u0; v=v0; d=d0
@@ -51,7 +51,7 @@ program test_compress
   a0=a
   call upper_to_ub(a,ub_d,lbw,tol1,error)
   call cpu_time(t0)
-  call compress_ub_to_bv(ub_d, bv_d,tol2,tol2,0,error)
+  call recompress_ub_to_bv(ub_d, bv_d,tol2,tol2,0,error)
   call cpu_time(t1)
   call bv_to_upper(bv_d,a1,error)
   test_name = "Real UB to BV (term. 1);"
@@ -63,7 +63,7 @@ program test_compress
   a0=a
   call upper_to_ub(a,ub_d,lbw,tol1,error)
   call cpu_time(t0)
-  call compress_ub_to_bv(ub_d, bv_d,tol2,tol2,0,error)
+  call recompress_ub_to_bv(ub_d, bv_d,tol2,tol2,0,error)
   call cpu_time(t1)
   call bv_to_upper(bv_d,a1,error)
   test_name = "Real UB to BV (term. 2);"
@@ -77,45 +77,45 @@ program test_compress
   a0=a
   call upper_to_ub(a,ub_d,lbw, tol1,error)
   call cpu_time(t0)
-  call compress_ub_to_bv(ub_d, bv_d,tol2,tol2,0,error)
+  call recompress_ub_to_bv(ub_d, bv_d,tol2,tol2,0,error)
   call cpu_time(t1)
   call bv_to_upper(bv_d,a1,error)
   test_name = "Real UB to BV (term. 3);"
   call d_output_result(test_name,a0,a1,rmax-3,bv_d%ubw,t0,t1,tol2,error)
-  ! test 6: compress to one test.
+  ! test 6: recompress to one test.
   u=u0; v=v0; d=d0
   u(:,2:rmax)=0.1*tol2*u(:,2:rmax)
   call d_assemble_a(a,u,v,d,lbw)
   a0=a
   call upper_to_ub(a,ub_d,lbw,tol1,error)
   call cpu_time(t0)
-  call compress_ub_to_bv(ub_d, bv_d,tol2,tol2,0,error)
+  call recompress_ub_to_bv(ub_d, bv_d,tol2,tol2,0,error)
   call cpu_time(t1)
   call bv_to_upper(bv_d,a1,error)
-  test_name = "Real UB to BV (compress to 1);"
+  test_name = "Real UB to BV (recompress to 1);"
   call d_output_result(test_name,a0,a1,1,bv_d%ubw,t0,t1,tol2,error)
-  ! test 7: compress to zero test.
+  ! test 7: recompress to zero test.
   u=u0; v=v0; d=d0
   u=0.1*tol2*u
   call d_assemble_a(a,u,v,d,lbw)
   a0=a
   call upper_to_ub(a,ub_d,lbw,tol1,error)
   call cpu_time(t0)
-  call compress_ub_to_bv(ub_d, bv_d,tol2,tol2,0,error)
+  call recompress_ub_to_bv(ub_d, bv_d,tol2,tol2,0,error)
   call cpu_time(t1)
   call bv_to_upper(bv_d,a1,error)
-  test_name = "Real UB to BV (compress to 0);"
+  test_name = "Real UB to BV (recompress to 0);"
   call d_output_result(test_name,a0,a1,0,bv_d%ubw,t0,t1,tol2,error)
-  ! test 8: no compression
+  ! test 8: no recompression
   u=u0; v=v0; d=d0
   call d_assemble_a(a,u,v,d,lbw)
   a0=a
   call upper_to_ub(a,ub_d,lbw,tol1,error)
   call cpu_time(t0)
-  call compress_ub_to_bv(ub_d, bv_d,tol2,tol2,0,error)
+  call recompress_ub_to_bv(ub_d, bv_d,tol2,tol2,0,error)
   call cpu_time(t1)
   call bv_to_upper(bv_d,a1,error)
-  test_name = "Real UB to BV (no compression);"
+  test_name = "Real UB to BV (no recompression);"
   call d_output_result(test_name,a0,a1,rmax,bv_d%ubw,t0,t1,tol2,error)
   ! small matrices
   na=1
@@ -127,7 +127,7 @@ program test_compress
   a0(1:na,1:na)=a(1:na,1:na)
   call upper_to_ub(a(1:na,1:na),ub_na_d,lbwa, tol1,error)
   call cpu_time(t0)
-  call compress_ub_to_bv(ub_na_d, bv_na_d,tol2,tol2,0,error)
+  call recompress_ub_to_bv(ub_na_d, bv_na_d,tol2,tol2,0,error)
   call cpu_time(t1)
   call bv_to_upper(bv_na_d,a1(1:na,1:na),error)
   test_name = "Real UB to BV (n=1);"
@@ -143,7 +143,7 @@ program test_compress
   a0(1:na,1:na)=a(1:na,1:na)
   call upper_to_ub(a(1:na,1:na),ub_na_d,lbwa, tol1,error)
   call cpu_time(t0)
-  call compress_ub_to_bv(ub_na_d, bv_na_d,tol2,tol2,0,error)
+  call recompress_ub_to_bv(ub_na_d, bv_na_d,tol2,tol2,0,error)
   call cpu_time(t1)
   call bv_to_upper(bv_na_d,a1(1:na,1:na),error)
   test_name = "Real UB to BV (n=2);"
@@ -160,7 +160,7 @@ program test_compress
   a0(1:na,1:na)=a(1:na,1:na)
   call upper_to_ub(a(1:na,1:na),ub_na_d,lbwa, tol1,error)
   call cpu_time(t0)
-  call compress_ub_to_bv(ub_na_d, bv_na_d,tol2,tol2,0,error)
+  call recompress_ub_to_bv(ub_na_d, bv_na_d,tol2,tol2,0,error)
   call cpu_time(t1)
   call bv_to_upper(bv_na_d,a1(1:na,1:na),error)
   test_name = "Real UB to BV (n=3);"
@@ -177,7 +177,7 @@ program test_compress
   a0(1:na,1:na)=a(1:na,1:na)
   call upper_to_ub(a(1:na,1:na),ub_na_d,lbwa, tol1,error)
   call cpu_time(t0)
-  call compress_ub_to_bv(ub_na_d, bv_na_d,tol2,tol2,0,error)
+  call recompress_ub_to_bv(ub_na_d, bv_na_d,tol2,tol2,0,error)
   call cpu_time(t1)
   call bv_to_upper(bv_na_d,a1(1:na,1:na),error)
   test_name = "Real UB to BV (n=4);"
@@ -196,7 +196,7 @@ program test_compress
   call ub_to_upper(ub_na_d,a(1:na,1:na),error)
   a0(1:na,1:na)=a(1:na,1:na)
   call cpu_time(t0)
-  call compress_ub_to_bv(ub_na_d, bv_na_d,tol2,tol2,0,error)
+  call recompress_ub_to_bv(ub_na_d, bv_na_d,tol2,tol2,0,error)
   call cpu_time(t1)
   call bv_to_upper(bv_na_d,a1(1:na,1:na),error)
   test_name = "Real UB to BV (n=10; full ubw);"
@@ -210,7 +210,7 @@ program test_compress
   print *
   print *, "--------------------------------"
   print *
-  print *, "Real BV to UB Compression Tests:"
+  print *, "Real BV to UB Recompression Tests:"
   print *
   ! Test 9; case 1 termination test.
   u=u0; v=v0; d=d0
@@ -220,7 +220,7 @@ program test_compress
   a0=a
   call upper_to_bv(a,bv_d,lbw,tol1,error)
   call cpu_time(t0)
-  call compress_bv_to_ub(bv_d, ub_d,tol2,tol2,0,error)
+  call recompress_bv_to_ub(bv_d, ub_d,tol2,tol2,0,error)
   call cpu_time(t1)
   call ub_to_upper(ub_d,a1,error)
   test_name = "Real BV to UB (term. 1);"
@@ -232,7 +232,7 @@ program test_compress
   a0=a
   call upper_to_bv(a,bv_d,lbw,tol1,error)
   call cpu_time(t0)
-  call compress_bv_to_ub(bv_d, ub_d,tol2,tol2,0,error)
+  call recompress_bv_to_ub(bv_d, ub_d,tol2,tol2,0,error)
   call cpu_time(t1)
   call ub_to_upper(ub_d,a1,error)
   test_name = "Real BV to UB (term. 2);"
@@ -245,45 +245,45 @@ program test_compress
   a0=a
   call upper_to_bv(a,bv_d,lbw,tol1,error)
   call cpu_time(t0)
-  call compress_bv_to_ub(bv_d, ub_d,tol2,tol2,0,error)
+  call recompress_bv_to_ub(bv_d, ub_d,tol2,tol2,0,error)
   call cpu_time(t1)
   call ub_to_upper(ub_d,a1,error)
   test_name = "Real BV to UB (term. 3);"
   call d_output_result(test_name,a0,a1,rmax-3,ub_d%ubw,t0,t1,tol2,error)
-  ! Test 12; compress to one test.  
+  ! Test 12; recompress to one test.  
   u=u0; v=v0; d=d0
   u(:,2:rmax)=0.1*tol2*u(:,2:rmax)
   call d_assemble_a(a,u,v,d,lbw)
   a0=a
   call upper_to_bv(a,bv_d,lbw,tol1,error)
   call cpu_time(t0)
-  call compress_bv_to_ub(bv_d, ub_d,tol2,tol2,0,error)
+  call recompress_bv_to_ub(bv_d, ub_d,tol2,tol2,0,error)
   call cpu_time(t1)
   call ub_to_upper(ub_d,a1,error)
-  test_name = "Real BV to UB (compress to 1);"
+  test_name = "Real BV to UB (recompress to 1);"
   call d_output_result(test_name,a0,a1,1,ub_d%ubw,t0,t1,tol2,error)
-  ! Test 13; compress to zero test.  
+  ! Test 13; recompress to zero test.  
   u=u0; v=v0; d=d0
   u=0.1*tol2*u
   call d_assemble_a(a,u,v,d,lbw)
   a0=a
   call upper_to_bv(a,bv_d,lbw,tol1,error)
   call cpu_time(t0)
-  call compress_bv_to_ub(bv_d, ub_d,tol2,tol2,0,error)
+  call recompress_bv_to_ub(bv_d, ub_d,tol2,tol2,0,error)
   call cpu_time(t1)
   call ub_to_upper(ub_d,a1,error)
-  test_name = "Real BV to UB (compress to 0);"
+  test_name = "Real BV to UB (recompress to 0);"
   call d_output_result(test_name,a0,a1,0,ub_d%ubw,t0,t1,tol2,error)
-  ! Test 14; no compression
+  ! Test 14; no recompression
   u=u0; v=v0; d=d0
   call d_assemble_a(a,u,v,d,lbw)
   a0=a
   call upper_to_bv(a,bv_d,lbw,tol1,error)
   call cpu_time(t0)
-  call compress_bv_to_ub(bv_d, ub_d,tol2,tol2,0,error)
+  call recompress_bv_to_ub(bv_d, ub_d,tol2,tol2,0,error)
   call cpu_time(t1)
   call ub_to_upper(ub_d,a1,error)
-  test_name = "Real BV to UB (no compression);"
+  test_name = "Real BV to UB (no recompression);"
   call d_output_result(test_name,a0,a1,rmax,ub_d%ubw,t0,t1,tol2,error)
   ! small matrices
   na=1
@@ -295,7 +295,7 @@ program test_compress
   a0(1:na,1:na)=a(1:na,1:na)
   call upper_to_bv(a(1:na,1:na),bv_na_d,lbwa, tol1,error)
   call cpu_time(t0)
-  call compress_bv_to_ub(bv_na_d, ub_na_d,tol2,tol2,0,error)
+  call recompress_bv_to_ub(bv_na_d, ub_na_d,tol2,tol2,0,error)
   call cpu_time(t1)
   call ub_to_upper(ub_na_d,a1(1:na,1:na),error)
   test_name = "Real BV to UB (n=1);"
@@ -311,7 +311,7 @@ program test_compress
   a0(1:na,1:na)=a(1:na,1:na)
   call upper_to_bv(a(1:na,1:na),bv_na_d,lbwa, tol1,error)
   call cpu_time(t0)
-  call compress_bv_to_ub(bv_na_d, ub_na_d,tol2,tol2,0,error)
+  call recompress_bv_to_ub(bv_na_d, ub_na_d,tol2,tol2,0,error)
   call cpu_time(t1)
   call ub_to_upper(ub_na_d,a1(1:na,1:na),error)
   test_name = "Real BV to UB (n=2);"
@@ -327,7 +327,7 @@ program test_compress
   a0(1:na,1:na)=a(1:na,1:na)
   call upper_to_bv(a(1:na,1:na),bv_na_d,lbwa, tol1,error)
   call cpu_time(t0)
-  call compress_bv_to_ub(bv_na_d, ub_na_d,tol2,tol2,0,error)
+  call recompress_bv_to_ub(bv_na_d, ub_na_d,tol2,tol2,0,error)
   call cpu_time(t1)
   call ub_to_upper(ub_na_d,a1(1:na,1:na),error)
   test_name = "Real BV to UB (n=3);"
@@ -343,7 +343,7 @@ program test_compress
   a0(1:na,1:na)=a(1:na,1:na)
   call upper_to_bv(a(1:na,1:na),bv_na_d,lbwa, tol1,error)
   call cpu_time(t0)
-  call compress_bv_to_ub(bv_na_d, ub_na_d,tol2,tol2,0,error)
+  call recompress_bv_to_ub(bv_na_d, ub_na_d,tol2,tol2,0,error)
   call cpu_time(t1)
   call ub_to_upper(ub_na_d,a1(1:na,1:na),error)
   test_name = "Real BV to UB (n=4);"
@@ -362,7 +362,7 @@ program test_compress
   call bv_to_upper(bv_na_d,a(1:na,1:na),error)
   a0(1:na,1:na)=a(1:na,1:na)
   call cpu_time(t0)
-  call compress_bv_to_ub(bv_na_d, ub_na_d,tol2,tol2,0,error)
+  call recompress_bv_to_ub(bv_na_d, ub_na_d,tol2,tol2,0,error)
   call cpu_time(t1)
   call ub_to_upper(ub_na_d,a1(1:na,1:na),error)
   test_name = "Real BV to UB (n=10; full ubw);"
@@ -383,7 +383,7 @@ program test_compress
   print *
   print *, "--------------------------------"
   print *
-  print *, "Complex UB to BV Compression Tests"
+  print *, "Complex UB to BV Recompression Tests"
   print *
   ! case 1 termination test.
   u_c=u0_c; v_c=v0_c; d_c=d0_c
@@ -393,7 +393,7 @@ program test_compress
   a0_c=a_c
   call upper_to_ub(a_c,ub_c,lbw,tol1,error)
   call cpu_time(t0)
-  call compress_ub_to_bv(ub_c, bv_c,tol2,tol2,0,error)
+  call recompress_ub_to_bv(ub_c, bv_c,tol2,tol2,0,error)
   call cpu_time(t1)
   call bv_to_upper(bv_c,a1_c,error)
   test_name = "Complex UB to BV (term. 1);"
@@ -405,7 +405,7 @@ program test_compress
   a0_c=a_c
   call upper_to_ub(a_c,ub_c,lbw,tol1,error)
   call cpu_time(t0)
-  call compress_ub_to_bv(ub_c, bv_c,tol2,tol2,0,error)
+  call recompress_ub_to_bv(ub_c, bv_c,tol2,tol2,0,error)
   call cpu_time(t1)
   call bv_to_upper(bv_c,a1_c,error)
   test_name = "Complex UB to BV (term. 2);"
@@ -418,45 +418,45 @@ program test_compress
   a0_c=a_c
   call upper_to_ub(a_c,ub_c,lbw,tol1,error)
   call cpu_time(t0)
-  call compress_ub_to_bv(ub_c, bv_c,tol2,tol2,0,error)
+  call recompress_ub_to_bv(ub_c, bv_c,tol2,tol2,0,error)
   call cpu_time(t1)
   call bv_to_upper(bv_c,a1_c,error)
   test_name = "Complex UB to BV (term. 3);"
   call c_output_result(test_name,a0_c,a1_c,rmax-3,bv_c%ubw,t0,t1,tol2,error)
-  ! compress to one test.
+  ! recompress to one test.
   u_c=u0_c; v_c=v0_c; d_c=d0_c
   u_c(:,2:rmax)=0.1*tol2*u_c(:,2:rmax)
   call c_assemble_a(a_c,u_c,v_c,d_c,lbw)
   a0_c=a_c
   call upper_to_ub(a_c,ub_c,lbw,tol1,error)
   call cpu_time(t0)
-  call compress_ub_to_bv(ub_c, bv_c,tol2,tol2,0,error)
+  call recompress_ub_to_bv(ub_c, bv_c,tol2,tol2,0,error)
   call cpu_time(t1)
   call bv_to_upper(bv_c,a1_c,error)
-  test_name = "Complex UB to BV (compress to 1);"
+  test_name = "Complex UB to BV (recompress to 1);"
   call c_output_result(test_name,a0_c,a1_c,1,bv_c%ubw,t0,t1,tol2,error)
-  ! compress to zero test.
+  ! recompress to zero test.
   u_c=u0_c; v_c=v0_c; d_c=d0_c
   u_c=0.05*tol2*u_c
   call c_assemble_a(a_c,u_c,v_c,d_c,lbw)
   a0_c=a_c
   call upper_to_ub(a_c,ub_c,lbw,tol1,error)
   call cpu_time(t0)
-  call compress_ub_to_bv(ub_c, bv_c,tol2,tol2,0,error)
+  call recompress_ub_to_bv(ub_c, bv_c,tol2,tol2,0,error)
   call cpu_time(t1)
   call bv_to_upper(bv_c,a1_c,error)
-  test_name = "Complex UB to BV (compress to 0);"
+  test_name = "Complex UB to BV (recompress to 0);"
   call c_output_result(test_name,a0_c,a1_c,0,bv_c%ubw,t0,t1,tol2,error)
-  ! test 8: no compression
+  ! test 8: no recompression
   u_c=u0_c; v_c=v0_c; d_c=d0_c
   call c_assemble_a(a_c,u_c,v_c,d_c,lbw)
   a0_c=a_c
   call upper_to_ub(a_c,ub_c,lbw,tol1,error)
   call cpu_time(t0)
-  call compress_ub_to_bv(ub_c, bv_c,tol2,tol2,0,error)
+  call recompress_ub_to_bv(ub_c, bv_c,tol2,tol2,0,error)
   call cpu_time(t1)
   call bv_to_upper(bv_c,a1_c,error)
-  test_name = "Complex UB to BV (no compression);"
+  test_name = "Complex UB to BV (no recompression);"
   call c_output_result(test_name,a0_c,a1_c,rmax,bv_c%ubw,t0,t1,tol2,error)
   ! small matrices
   na=1
@@ -468,7 +468,7 @@ program test_compress
   a0_c(1:na,1:na)=a_c(1:na,1:na)
   call upper_to_ub(a_c(1:na,1:na),ub_na_c,lbwa, tol1,error)
   call cpu_time(t0)
-  call compress_ub_to_bv(ub_na_c, bv_na_c,tol2,tol2,0,error)
+  call recompress_ub_to_bv(ub_na_c, bv_na_c,tol2,tol2,0,error)
   call cpu_time(t1)
   call bv_to_upper(bv_na_c,a1_c(1:na,1:na),error)
   test_name = "Complex UB to BV (n=1);"
@@ -484,7 +484,7 @@ program test_compress
   a0_c(1:na,1:na)=a_c(1:na,1:na)
   call upper_to_ub(a_c(1:na,1:na),ub_na_c,lbwa, tol1,error)
   call cpu_time(t0)
-  call compress_ub_to_bv(ub_na_c, bv_na_c,tol2,tol2,0,error)
+  call recompress_ub_to_bv(ub_na_c, bv_na_c,tol2,tol2,0,error)
   call cpu_time(t1)
   call bv_to_upper(bv_na_c,a1_c(1:na,1:na),error)
   test_name = "Complex UB to BV (n=2);"
@@ -500,7 +500,7 @@ program test_compress
   a0_c(1:na,1:na)=a_c(1:na,1:na)
   call upper_to_ub(a_c(1:na,1:na),ub_na_c,lbwa, tol1,error)
   call cpu_time(t0)
-  call compress_ub_to_bv(ub_na_c, bv_na_c,tol2,tol2,0,error)
+  call recompress_ub_to_bv(ub_na_c, bv_na_c,tol2,tol2,0,error)
   call cpu_time(t1)
   call bv_to_upper(bv_na_c,a1_c(1:na,1:na),error)
   test_name = "Complex UB to BV (n=3);"
@@ -516,7 +516,7 @@ program test_compress
   a0_c(1:na,1:na)=a_c(1:na,1:na)
   call upper_to_ub(a_c(1:na,1:na),ub_na_c,lbwa, tol1,error)
   call cpu_time(t0)
-  call compress_ub_to_bv(ub_na_c, bv_na_c,tol2,tol2,0,error)
+  call recompress_ub_to_bv(ub_na_c, bv_na_c,tol2,tol2,0,error)
   call cpu_time(t1)
   call bv_to_upper(bv_na_c,a1_c(1:na,1:na),error)
   test_name = "Complex UB to BV (n=4);"
@@ -535,7 +535,7 @@ program test_compress
   call ub_to_upper(ub_na_c,a_c(1:na,1:na),error)
   a0_c(1:na,1:na)=a_c(1:na,1:na)
   call cpu_time(t0)
-  call compress_ub_to_bv(ub_na_c, bv_na_c,tol2,tol2,0,error)
+  call recompress_ub_to_bv(ub_na_c, bv_na_c,tol2,tol2,0,error)
   call cpu_time(t1)
   call bv_to_upper(bv_na_c,a1_c(1:na,1:na),error)
   test_name = "Complex UB to BV (n=10; full ubw);"
@@ -549,7 +549,7 @@ program test_compress
   print *
   print *, "--------------------------------"
   print *
-  print *, "Complex BV to UB Compression Tests"
+  print *, "Complex BV to UB Recompression Tests"
   print *
   ! case 1 termination test.
   u_c=u0_c; v_c=v0_c; d_c=d0_c
@@ -559,7 +559,7 @@ program test_compress
   a0_c=a_c
   call upper_to_bv(a_c,bv_c,lbw,tol1,error)
   call cpu_time(t0)
-  call compress_bv_to_ub(bv_c, ub_c,tol2,tol2,0,error)
+  call recompress_bv_to_ub(bv_c, ub_c,tol2,tol2,0,error)
   call cpu_time(t1)
   call ub_to_upper(ub_c,a1_c,error)
   test_name = "Complex BV to UB (term. 1);"
@@ -571,7 +571,7 @@ program test_compress
   a0_c=a_c
   call upper_to_bv(a_c,bv_c,lbw,tol1,error)
   call cpu_time(t0)
-  call compress_bv_to_ub(bv_c, ub_c,tol2,tol2,0,error)
+  call recompress_bv_to_ub(bv_c, ub_c,tol2,tol2,0,error)
   call cpu_time(t1)
   call ub_to_upper(ub_c,a1_c,error)
   test_name = "Complex BV to UB (term. 2);"
@@ -584,45 +584,45 @@ program test_compress
   a0_c=a_c
   call upper_to_bv(a_c,bv_c,lbw,tol1,error)
   call cpu_time(t0)
-  call compress_bv_to_ub(bv_c, ub_c,tol2,tol2,0,error)
+  call recompress_bv_to_ub(bv_c, ub_c,tol2,tol2,0,error)
   call cpu_time(t1)
   call ub_to_upper(ub_c,a1_c,error)
   test_name = "Complex BV to UB (term. 3);"
   call c_output_result(test_name,a0_c,a1_c,rmax-3,ub_c%ubw,t0,t1,tol2,error)
-  ! compress to one test.  
+  ! recompress to one test.  
   u_c=u0_c; v_c=v0_c; d_c=d0_c
   u_c(:,2:rmax)=0.1*tol2*u_c(:,2:rmax)
   call c_assemble_a(a_c,u_c,v_c,d_c,lbw)
   a0_c=a_c
   call upper_to_bv(a_c,bv_c,lbw,tol1,error)
   call cpu_time(t0)
-  call compress_bv_to_ub(bv_c, ub_c,tol2,tol2,0,error)
+  call recompress_bv_to_ub(bv_c, ub_c,tol2,tol2,0,error)
   call cpu_time(t1)
   call ub_to_upper(ub_c,a1_c,error)
-  test_name = "Complex BV to UB (compress to 1);"
+  test_name = "Complex BV to UB (recompress to 1);"
   call c_output_result(test_name,a0_c,a1_c,1,ub_c%ubw,t0,t1,tol2,error)
-  ! compress to zero test.  
+  ! recompress to zero test.  
   u_c=u0_c; v_c=v0_c; d_c=d0_c
   u_c=0.05*tol2*u_c
   call c_assemble_a(a_c,u_c,v_c,d_c,lbw)
   a0_c=a_c
   call upper_to_bv(a_c,bv_c,lbw,tol1,error)
   call cpu_time(t0)
-  call compress_bv_to_ub(bv_c, ub_c,tol2,tol2,0,error)
+  call recompress_bv_to_ub(bv_c, ub_c,tol2,tol2,0,error)
   call cpu_time(t1)
   call ub_to_upper(ub_c,a1_c,error)
-  test_name = "Complex BV to UB (compress to 0);"
+  test_name = "Complex BV to UB (recompress to 0);"
   call c_output_result(test_name,a0_c,a1_c,0,ub_c%ubw,t0,t1,tol2,error)
-  ! no compression
+  ! no recompression
   u_c=u0_c; v_c=v0_c; d_c=d0_c
   call c_assemble_a(a_c,u_c,v_c,d_c,lbw)
   a0_c=a_c
   call upper_to_bv(a_c,bv_c,lbw,tol1,error)
   call cpu_time(t0)
-  call compress_bv_to_ub(bv_c, ub_c,tol2,tol2,0,error)
+  call recompress_bv_to_ub(bv_c, ub_c,tol2,tol2,0,error)
   call cpu_time(t1)
   call ub_to_upper(ub_c,a1_c,error)
-  test_name = "Complex BV to UB (no compression);"
+  test_name = "Complex BV to UB (no recompression);"
   call c_output_result(test_name,a0_c,a1_c,rmax,ub_c%ubw,t0,t1,tol2,error)
   ! small matrices
   na=1
@@ -634,7 +634,7 @@ program test_compress
   a0_c(1:na,1:na)=a_c(1:na,1:na)
   call upper_to_bv(a_c(1:na,1:na),bv_na_c,lbwa, tol1,error)
   call cpu_time(t0)
-  call compress_bv_to_ub(bv_na_c, ub_na_c,tol2,tol2,0,error)
+  call recompress_bv_to_ub(bv_na_c, ub_na_c,tol2,tol2,0,error)
   call cpu_time(t1)
   call ub_to_upper(ub_na_c,a1_c(1:na,1:na),error)
   test_name = "Complex BV to UB (n=1);"
@@ -650,7 +650,7 @@ program test_compress
   a0_c(1:na,1:na)=a_c(1:na,1:na)
   call upper_to_bv(a_c(1:na,1:na),bv_na_c,lbwa, tol1,error)
   call cpu_time(t0)
-  call compress_bv_to_ub(bv_na_c, ub_na_c,tol2,tol2,0,error)
+  call recompress_bv_to_ub(bv_na_c, ub_na_c,tol2,tol2,0,error)
   call cpu_time(t1)
   call ub_to_upper(ub_na_c,a1_c(1:na,1:na),error)
   test_name = "Complex BV to UB (n=2);"
@@ -666,7 +666,7 @@ program test_compress
   a0_c(1:na,1:na)=a_c(1:na,1:na)
   call upper_to_bv(a_c(1:na,1:na),bv_na_c,lbwa, tol1,error)
   call cpu_time(t0)
-  call compress_bv_to_ub(bv_na_c, ub_na_c,tol2,tol2,0,error)
+  call recompress_bv_to_ub(bv_na_c, ub_na_c,tol2,tol2,0,error)
   call cpu_time(t1)
   call ub_to_upper(ub_na_c,a1_c(1:na,1:na),error)
   test_name = "Complex BV to UB (n=3);"
@@ -682,7 +682,7 @@ program test_compress
   a0_c(1:na,1:na)=a_c(1:na,1:na)
   call upper_to_bv(a_c(1:na,1:na),bv_na_c,lbwa, tol1,error)
   call cpu_time(t0)
-  call compress_bv_to_ub(bv_na_c, ub_na_c,tol2,tol2,0,error)
+  call recompress_bv_to_ub(bv_na_c, ub_na_c,tol2,tol2,0,error)
   call cpu_time(t1)
   call ub_to_upper(ub_na_c,a1_c(1:na,1:na),error)
   test_name = "Complex BV to UB (n=4);"
@@ -701,7 +701,7 @@ program test_compress
   call bv_to_upper(bv_na_c,a_c(1:na,1:na),error)
   a0_c(1:na,1:na)=a_c(1:na,1:na)
   call cpu_time(t0)
-  call compress_bv_to_ub(bv_na_c, ub_na_c,tol2,tol2,0,error)
+  call recompress_bv_to_ub(bv_na_c, ub_na_c,tol2,tol2,0,error)
   call cpu_time(t1)
   call ub_to_upper(ub_na_c,a1_c(1:na,1:na),error)
   test_name = "Complex BV to UB (n=10; full ubw);"
@@ -711,4 +711,4 @@ program test_compress
   call c_deallocate_sweeps(sw_c)
   print *
 
-end program test_compress
+end program test_recompress

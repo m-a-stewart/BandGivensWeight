@@ -1,4 +1,4 @@
-module compressions_bv_to_ub
+module recompression_bv_to_ub
   use misc
   use shift
   use rotation
@@ -8,31 +8,31 @@ module compressions_bv_to_ub
 
   integer(kind=int32), private, parameter :: nullmaxits=5
 
-  interface compress_bv_to_ub
-     module procedure d_compress_bv_to_ub, c_compress_bv_to_ub
-  end interface compress_bv_to_ub
+  interface recompress_bv_to_ub
+     module procedure d_recompress_bv_to_ub, c_recompress_bv_to_ub
+  end interface recompress_bv_to_ub
 
-  interface f_compress_bv_to_ub
-     module procedure f_d_compress_bv_to_ub, f_c_compress_bv_to_ub
-  end interface f_compress_bv_to_ub
+  interface f_recompress_bv_to_ub
+     module procedure f_d_recompress_bv_to_ub, f_c_recompress_bv_to_ub
+  end interface f_recompress_bv_to_ub
 
 
-  type(routine_info), parameter :: info_d_compress_bv_to_ub=routine_info(id_d_compress_bv_to_ub, &
-       'd_compress_bv_to_ub', &
+  type(routine_info), parameter :: info_d_recompress_bv_to_ub=routine_info(id_d_recompress_bv_to_ub, &
+       'd_recompress_bv_to_ub', &
        [ character(len=error_message_length) :: 'n<1', 'Insufficient storage in bv.', &
        'Insufficient lbwmax in ub.', 'ub%n /= bv%n' ] )
 
-  type(routine_info), parameter :: info_f_d_compress_bv_to_ub=routine_info(id_f_d_compress_bv_to_ub, &
-       'f_d_compress_bv_to_ub', &
+  type(routine_info), parameter :: info_f_d_recompress_bv_to_ub=routine_info(id_f_d_recompress_bv_to_ub, &
+       'f_d_recompress_bv_to_ub', &
        [ character(len=error_message_length) :: 'Insufficient ubwmax in ub.' ] )
 
-  type(routine_info), parameter :: info_c_compress_bv_to_ub=routine_info(id_c_compress_bv_to_ub, &
-       'c_compress_bv_to_ub', &
+  type(routine_info), parameter :: info_c_recompress_bv_to_ub=routine_info(id_c_recompress_bv_to_ub, &
+       'c_recompress_bv_to_ub', &
        [ character(len=error_message_length) :: 'n<1', 'Insufficient temporary storage in bv%br', &
        'Insufficient Upper Bandwidth in ub', 'Insufficient Lower Bandwidth in ub' ] )
 
-  type(routine_info), parameter :: info_f_c_compress_bv_to_ub=routine_info(id_f_c_compress_bv_to_ub, &
-       'f_c_compress_bv_to_ub', &
+  type(routine_info), parameter :: info_f_c_recompress_bv_to_ub=routine_info(id_f_c_recompress_bv_to_ub, &
+       'f_c_recompress_bv_to_ub', &
        [ character(len=error_message_length) :: 'Insufficient ubwmax in ub.' ] )
 
 contains
@@ -47,11 +47,11 @@ contains
   ! 
   ! told governs whether a diagonal of L is considered small enough to move to the
   ! lower right corner of L.  If this tolerance is not met, the algorithm looks
-  ! for a better null vector.  If both are zero the result is a forced compression
-  ! that drops the upper bandwidth by dr.  Forced compression always computes
+  ! for a better null vector.  If both are zero the result is a forced recompression
+  ! that drops the upper bandwidth by dr.  Forced recompression always computes
   ! a null vector.
 
-  subroutine d_compress_bv_to_ub(bv, ub, told, tol, dr, error)
+  subroutine d_recompress_bv_to_ub(bv, ub, told, tol, dr, error)
     type(d_ub) :: ub
     type(d_bv) :: bv
     type(error_info), intent(out) :: error
@@ -59,28 +59,28 @@ contains
     real(kind=dp), intent(in) :: tol, told
     call clear_error(error)
     if (get_n(bv) < 1) then
-       call set_error(error, 1, id_d_compress_bv_to_ub); return
+       call set_error(error, 1, id_d_recompress_bv_to_ub); return
     end if
     ! Allow for temporary fill-in of two extra superdiagonals.
     if (get_ubwmax(bv) < bv%ubw+2) then
-       call set_error(error, 2, id_d_compress_bv_to_ub); return
+       call set_error(error, 2, id_d_recompress_bv_to_ub); return
     end if
     if (get_lbwmax(ub) < bv%lbw) then
-       call set_error(error, 3, id_d_compress_bv_to_ub); return
+       call set_error(error, 3, id_d_recompress_bv_to_ub); return
     end if
     if (get_n(bv) /= get_n(ub)) then
-       call set_error(error, 4, id_d_compress_bv_to_ub); return
+       call set_error(error, 4, id_d_recompress_bv_to_ub); return
     end if
-    call f_d_compress_bv_to_ub(bv%br, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), &
+    call f_d_recompress_bv_to_ub(bv%br, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), &
          get_ubwmax(bv), bv%numrotsv, bv%ksv, bv%csv, bv%ssv, ub%bc, ub%lbw, ub%ubw, & 
          get_lbwmax(ub), get_ubwmax(ub), ub%numrotsu, ub%jsu, ub%csu, ub%ssu, &
          told, tol, dr, error)
-  end subroutine d_compress_bv_to_ub
+  end subroutine d_recompress_bv_to_ub
 
   ! Errors:
   ! 0: no error
   ! 1: Insufficient ubw in ub.
-  subroutine f_d_compress_bv_to_ub(b_bv, n, lbw, ubw, lbwmax_bv, ubwmax_bv, numrots_bv, &
+  subroutine f_d_recompress_bv_to_ub(b_bv, n, lbw, ubw, lbwmax_bv, ubwmax_bv, numrots_bv, &
        ks_bv, cs_bv, ss_bv, &
        b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, cs_ub, ss_ub, told, tol, dr, error)
     integer(kind=int32), intent(in) :: n, lbw, ubw, lbwmax_ub, ubwmax_ub, lbwmax_bv, ubwmax_bv, dr
@@ -117,7 +117,7 @@ contains
     lbw_ub=lbw
 
     if (n < 1) then
-       call set_error(error, 1, id_f_d_compress_bv_to_ub); return
+       call set_error(error, 1, id_f_d_recompress_bv_to_ub); return
     end if
     if (n == 1) then
        b_ub(1,1)=b_bv(1,1)
@@ -207,7 +207,7 @@ contains
              end do
              call set_el_br(b_bv,lbw,roffs+1,coffs+1,0.0_dp)
           else
-             ! Compression has failed; increase nl.
+             ! Recompression has failed; increase nl.
              call clear_error(error)
              ubws(k)=nl
              dnl=1
@@ -324,12 +324,12 @@ contains
     !
     ubw_ub=maxval(ubws)
     if (ubw_ub > ubwmax_ub) then
-       call set_error(error, 1, id_f_d_compress_bv_to_ub); return
+       call set_error(error, 1, id_f_d_recompress_bv_to_ub); return
     end if
     call br_to_bc(b_bv,b_ub,lbw,ubw_ub)
-  end subroutine f_d_compress_bv_to_ub
+  end subroutine f_d_recompress_bv_to_ub
 
-  subroutine c_compress_bv_to_ub(bv, ub, told, tol, dr, error)
+  subroutine c_recompress_bv_to_ub(bv, ub, told, tol, dr, error)
     type(c_ub) :: ub
     type(c_bv) :: bv
     type(error_info), intent(out) :: error
@@ -337,25 +337,25 @@ contains
     real(kind=dp), intent(in) :: tol, told
     call clear_error(error)
     if (get_n(bv) < 1) then
-       call set_error(error, 1, id_c_compress_bv_to_ub); return
+       call set_error(error, 1, id_c_recompress_bv_to_ub); return
     end if
     ! must allow for temporary fill-in of two extra superdiagonals.
     if (get_ubwmax(bv) < bv%ubw+2) then
-       call set_error(error, 2, id_c_compress_bv_to_ub); return
+       call set_error(error, 2, id_c_recompress_bv_to_ub); return
     end if
     if (get_lbwmax(ub) < bv%lbw) then
-       call set_error(error, 3, id_c_compress_bv_to_ub); return
+       call set_error(error, 3, id_c_recompress_bv_to_ub); return
     end if
     if (get_n(bv) /= get_n(ub)) then
-       call set_error(error, 4, id_c_compress_bv_to_ub); return
+       call set_error(error, 4, id_c_recompress_bv_to_ub); return
     end if
-    call f_c_compress_bv_to_ub(bv%br, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), &
+    call f_c_recompress_bv_to_ub(bv%br, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), &
          get_ubwmax(bv), bv%numrotsv, bv%ksv, bv%csv, bv%ssv, ub%bc, ub%lbw, ub%ubw, & 
          get_lbwmax(ub), get_ubwmax(ub), ub%numrotsu, ub%jsu, ub%csu, ub%ssu, &
          told, tol, dr, error)
-  end subroutine c_compress_bv_to_ub
+  end subroutine c_recompress_bv_to_ub
 
-  subroutine f_c_compress_bv_to_ub(b_bv, n, lbw, ubw, lbwmax_bv, ubwmax_bv, numrots_bv, &
+  subroutine f_c_recompress_bv_to_ub(b_bv, n, lbw, ubw, lbwmax_bv, ubwmax_bv, numrots_bv, &
        ks_bv, cs_bv, ss_bv, &
        b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrots_ub, js_ub, cs_ub, ss_ub, told, tol, dr, error)
     integer(kind=int32), intent(in) :: n, lbw, ubw, lbwmax_ub, ubwmax_ub, lbwmax_bv, ubwmax_bv, dr
@@ -599,11 +599,11 @@ contains
     !
     ubw_ub=maxval(ubws)
     if (ubw_ub > ubwmax_ub) then
-       call set_error(error, 1, id_f_c_compress_bv_to_ub); return
+       call set_error(error, 1, id_f_c_recompress_bv_to_ub); return
     end if
     ! put diagonals in b
     call br_to_bc(b_bv,b_ub,lbw,ubw_ub)
-  end subroutine f_c_compress_bv_to_ub
+  end subroutine f_c_recompress_bv_to_ub
 
 
-end module compressions_bv_to_ub
+end module recompression_bv_to_ub

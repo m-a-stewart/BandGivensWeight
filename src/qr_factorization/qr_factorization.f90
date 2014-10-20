@@ -1,5 +1,5 @@
 module qr_factorization
-  use conversions
+  use conversion
   use sweeps
   use rotation
   implicit none

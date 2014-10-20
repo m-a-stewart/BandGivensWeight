@@ -2,7 +2,7 @@ module sweeps
   use misc
   use types
   use shift
-  use conversions
+  use conversion
 
   implicit none
 

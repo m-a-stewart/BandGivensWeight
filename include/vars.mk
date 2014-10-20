@@ -19,18 +19,18 @@ GENERALOBJS = $(OBJDIR)/general.o $(OBJDIR)/general_bv.o $(OBJDIR)/general_ub.o 
 	$(OBJDIR)/general_bt.o $(OBJDIR)/general_wb.o $(OBJDIR)/general_ubt.o \
 	$(OBJDIR)/general_wbv.o
 
-CONVERSIONOBJS = $(OBJDIR)/conversions.o $(OBJDIR)/conversions_ub_to_bv.o \
-	$(OBJDIR)/conversions_bv_to_ub.o
+CONVERSIONOBJS = $(OBJDIR)/conversion.o $(OBJDIR)/conversion_ub_to_bv.o \
+	$(OBJDIR)/conversion_bv_to_ub.o
 
-COMPRESSIONOBJS = $(OBJDIR)/compressions.o $(OBJDIR)/compressions_ub_to_bv.o \
-	$(OBJDIR)/compressions_bv_to_ub.o
+RECOMPRESSIONOBJS = $(OBJDIR)/recompression.o $(OBJDIR)/recompression_ub_to_bv.o \
+	$(OBJDIR)/recompression_bv_to_ub.o
 
 
 OBJS =  $(MISCOBJS) $(TYPESOBJS) $(TRANSFORMSOBJS) $(ORTHOBJS) $(GENERALOBJS) \
-	$(CONVERSIONOBJS) $(OBJDIR)/assemble.o $(COMPRESSIONOBJS) \
+	$(CONVERSIONOBJS) $(OBJDIR)/assemble.o $(RECOMPRESSIONOBJS) \
 	$(OBJDIR)/qr_iteration.o $(OBJDIR)/qr_factorization.o $(OBJDIR)/substitution.o \
 	$(OBJDIR)/nested.o $(OBJDIR)/update.o
 
-TEST_EXECS =  $(OBJDIR)/test_general $(OBJDIR)/test_convert $(OBJDIR)/test_compress \
+TEST_EXECS =  $(OBJDIR)/test_general $(OBJDIR)/test_convert $(OBJDIR)/test_recompress \
 	$(OBJDIR)/test_qr_iteration $(OBJDIR)/test_qr_factorization $(OBJDIR)/test_solve \
 	$(OBJDIR)/test_sweeps $(OBJDIR)/test_update

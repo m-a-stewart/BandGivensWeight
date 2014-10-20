@@ -28,28 +28,28 @@ module error_id
   integer(int32), parameter :: id_c_bv_to_upper=006
   integer(int32), parameter :: id_f_c_bv_to_upper=007
 
-  ! src/compress/compressions_bv_to_ub, 010s
+  ! src/recompress/recompression_bv_to_ub, 010s
 
-  integer(int32), parameter :: id_d_compress_bv_to_ub=010
-  integer(int32), parameter :: id_f_d_compress_bv_to_ub=011
-  integer(int32), parameter :: id_c_compress_bv_to_ub=012
-  integer(int32), parameter :: id_f_c_compress_bv_to_ub=013
+  integer(int32), parameter :: id_d_recompress_bv_to_ub=010
+  integer(int32), parameter :: id_f_d_recompress_bv_to_ub=011
+  integer(int32), parameter :: id_c_recompress_bv_to_ub=012
+  integer(int32), parameter :: id_f_c_recompress_bv_to_ub=013
 
-  ! src/compress/compressions_ub_to_bv, 020s
+  ! src/recompress/recompression_ub_to_bv, 020s
 
-  integer(int32), parameter :: id_d_compress_ub_to_bv=020
-  integer(int32), parameter :: id_f_d_compress_ub_to_bv=021
-  integer(int32), parameter :: id_c_compress_ub_to_bv=022
-  integer(int32), parameter :: id_f_c_compress_ub_to_bv=023
+  integer(int32), parameter :: id_d_recompress_ub_to_bv=020
+  integer(int32), parameter :: id_f_d_recompress_ub_to_bv=021
+  integer(int32), parameter :: id_c_recompress_ub_to_bv=022
+  integer(int32), parameter :: id_f_c_recompress_ub_to_bv=023
 
-  ! src/convert/conversions_bv_to_ub, 030s
+  ! src/convert/conversion_bv_to_ub, 030s
 
   integer(int32), parameter :: id_d_convert_bv_to_ub=030
   integer(int32), parameter :: id_f_d_convert_bv_to_ub=031
   integer(int32), parameter :: id_c_convert_bv_to_ub=032
   integer(int32), parameter :: id_f_c_convert_bv_to_ub=033
 
-  ! src/convert/conversions_ub_to_bv, 040s
+  ! src/convert/conversion_ub_to_bv, 040s
 
   integer(int32), parameter :: id_d_convert_ub_to_bv=040
   integer(int32), parameter :: id_f_d_convert_ub_to_bv=041

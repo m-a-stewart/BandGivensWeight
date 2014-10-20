@@ -1,4 +1,4 @@
-module conversions_bv_to_ub
+module conversion_bv_to_ub
   use misc
   use rotation
   use types
@@ -186,4 +186,4 @@ contains
     call br_to_bc(b_bv,b_ub,lbw,ubw)
   end subroutine f_c_convert_bv_to_ub
 
-end module conversions_bv_to_ub
+end module conversion_bv_to_ub

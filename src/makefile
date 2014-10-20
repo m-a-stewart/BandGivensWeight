@@ -11,7 +11,7 @@ $(OBJDIR)/nested_types.o : $(OBJDIR)/prec.o
 
 $(OBJDIR)/transforms.o : $(OBJDIR)/sweeps.o $(OBJDIR)/rotation.o $(OBJDIR)/shift.o
 $(OBJDIR)/rotation.o : $(OBJDIR)/prec.o
-$(OBJDIR)/sweeps.o : $(OBJDIR)/types.o $(OBJDIR)/misc.o $(OBJDIR)/shift.o $(OBJDIR)/conversions.o
+$(OBJDIR)/sweeps.o : $(OBJDIR)/types.o $(OBJDIR)/misc.o $(OBJDIR)/shift.o $(OBJDIR)/conversion.o
 $(OBJDIR)/shift.o : $(OBJDIR)/prec.o
 
 $(OBJDIR)/orth.o : $(OBJDIR)/triangular.o $(OBJDIR)/gs.o $(OBJDIR)/nullvec.o
@@ -30,23 +30,23 @@ $(OBJDIR)/general_wb.o : $(OBJDIR)/orth.o $(OBJDIR)/shift.o $(OBJDIR)/rotation.o
 $(OBJDIR)/general_ubt.o : $(OBJDIR)/orth.o $(OBJDIR)/shift.o $(OBJDIR)/rotation.o $(OBJDIR)/types.o
 $(OBJDIR)/general_wbv.o : $(OBJDIR)/orth.o $(OBJDIR)/shift.o $(OBJDIR)/rotation.o $(OBJDIR)/types.o
 
-$(OBJDIR)/conversions.o : $(OBJDIR)/conversions_bv_to_ub.o $(OBJDIR)/conversions_ub_to_bv.o
-$(OBJDIR)/conversions_bv_to_ub.o : $(OBJDIR)/misc.o $(OBJDIR)/shift.o $(OBJDIR)/rotation.o $(OBJDIR)/types.o
-$(OBJDIR)/conversions_ub_to_bv.o : $(OBJDIR)/misc.o $(OBJDIR)/shift.o $(OBJDIR)/rotation.o $(OBJDIR)/types.o
+$(OBJDIR)/conversion.o : $(OBJDIR)/conversion_bv_to_ub.o $(OBJDIR)/conversion_ub_to_bv.o
+$(OBJDIR)/conversion_bv_to_ub.o : $(OBJDIR)/misc.o $(OBJDIR)/shift.o $(OBJDIR)/rotation.o $(OBJDIR)/types.o
+$(OBJDIR)/conversion_ub_to_bv.o : $(OBJDIR)/misc.o $(OBJDIR)/shift.o $(OBJDIR)/rotation.o $(OBJDIR)/types.o
 
-$(OBJDIR)/compressions.o : $(OBJDIR)/compressions_bv_to_ub.o $(OBJDIR)/compressions_ub_to_bv.o
-$(OBJDIR)/compressions_bv_to_ub.o : $(OBJDIR)/misc.o $(OBJDIR)/shift.o $(OBJDIR)/rotation.o $(OBJDIR)/types.o \
+$(OBJDIR)/recompression.o : $(OBJDIR)/recompression_bv_to_ub.o $(OBJDIR)/recompression_ub_to_bv.o
+$(OBJDIR)/recompression_bv_to_ub.o : $(OBJDIR)/misc.o $(OBJDIR)/shift.o $(OBJDIR)/rotation.o $(OBJDIR)/types.o \
 	$(OBJDIR)/orth.o
-$(OBJDIR)/compressions_ub_to_bv.o : $(OBJDIR)/misc.o $(OBJDIR)/shift.o $(OBJDIR)/rotation.o $(OBJDIR)/types.o \
+$(OBJDIR)/recompression_ub_to_bv.o : $(OBJDIR)/misc.o $(OBJDIR)/shift.o $(OBJDIR)/rotation.o $(OBJDIR)/types.o \
 	$(OBJDIR)/orth.o
 
-$(OBJDIR)/qr_iteration.o : $(OBJDIR)/misc.o $(OBJDIR)/compressions.o $(OBJDIR)/conversions.o $(OBJDIR)/sweeps.o \
+$(OBJDIR)/qr_iteration.o : $(OBJDIR)/misc.o $(OBJDIR)/recompression.o $(OBJDIR)/conversion.o $(OBJDIR)/sweeps.o \
 	$(OBJDIR)/qr_factorization.o $(OBJDIR)/update.o $(OBJDIR)/substitution.o $(OBJDIR)/assemble.o
 
-$(OBJDIR)/qr_factorization.o : $(OBJDIR)/conversions.o $(OBJDIR)/sweeps.o
+$(OBJDIR)/qr_factorization.o : $(OBJDIR)/conversion.o $(OBJDIR)/sweeps.o
 
 $(OBJDIR)/update.o : $(OBJDIR)/misc.o $(OBJDIR)/types.o $(OBJDIR)/shift.o $(OBJDIR)/sweeps.o \
-	$(OBJDIR)/conversions.o
+	$(OBJDIR)/conversion.o
 
 $(OBJDIR)/substitution.o : $(OBJDIR)/transforms.o $(OBJDIR)/misc.o $(OBJDIR)/types.o
 
@@ -74,7 +74,7 @@ $(OBJDIR)/%.o : types/%.f90
 $(OBJDIR)/%.o : convert/%.f90
 	$(FC) $(CFLAGS) $(PROFCFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@
 
-$(OBJDIR)/%.o : compress/%.f90
+$(OBJDIR)/%.o : recompress/%.f90
 	$(FC) $(CFLAGS) $(PROFCFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@
 
 $(OBJDIR)/%.o : qr_iteration/%.f90
