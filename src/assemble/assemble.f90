@@ -12,6 +12,14 @@ interface f_ub_to_upper
    module procedure f_d_ub_to_upper, f_c_ub_to_upper
 end interface f_ub_to_upper
 
+interface bt_to_lower
+   module procedure d_bt_to_lower!, c_bt_to_lower
+end interface bt_to_lower
+
+interface f_bt_to_lower
+   module procedure f_d_bt_to_lower!, f_c_bt_to_lower
+end interface f_bt_to_lower
+
 interface bv_to_upper
    module procedure d_bv_to_upper, c_bv_to_upper
 end interface bv_to_upper
@@ -23,6 +31,11 @@ end interface f_bv_to_upper
 type(routine_info), parameter :: info_d_ub_to_upper=routine_info(id_d_ub_to_upper, 'd_ub_to_upper', &
      [ character(len=error_message_length) :: 'Size error in A.' ] )
 type(routine_info), parameter :: info_c_ub_to_upper=routine_info(id_c_ub_to_upper, 'c_ub_to_upper', &
+     [ character(len=error_message_length) :: 'Size error in A.' ] )
+
+type(routine_info), parameter :: info_d_bt_to_lower=routine_info(id_d_bt_to_lower, 'd_bt_to_lower', &
+     [ character(len=error_message_length) :: 'Size error in A.' ] )
+type(routine_info), parameter :: info_c_bt_to_lower=routine_info(id_c_bt_to_lower, 'c_bt_to_lower', &
      [ character(len=error_message_length) :: 'Size error in A.' ] )
 
 type(routine_info), parameter :: info_d_bv_to_upper=routine_info(id_d_bv_to_upper, 'd_bv_to_upper', &
@@ -68,6 +81,43 @@ contains
        end do
     end do
   end subroutine f_d_ub_to_upper
+
+  ! Errors
+  ! 0: no error
+  ! 1: bt%n /= n
+  subroutine d_bt_to_lower(bt,a,error)
+    type(d_bt), intent(in) :: bt
+    real(kind=dp), dimension(:,:), intent(out) :: a
+    type(error_info), intent(out) :: error
+    call clear_error(error)
+    if (get_n(bt) /= size(a,1) .or. get_n(bt) /= size(a,2)) then
+       call set_error(error, 1, id_d_bt_to_lower); return
+    end if
+    call f_d_bt_to_lower(bt%br, get_n(bt), bt%lbw, bt%ubw, get_lbwmax(bt), get_ubwmax(bt), &
+         bt%numrotst, bt%kst, bt%cst, bt%sst, a)
+  end subroutine d_bt_to_lower
+
+  subroutine f_d_bt_to_lower(br, n, lbw, ubw, lbwmax, ubwmax, numrotst, kst, cst, sst, a)
+    real(kind=dp), target, dimension(n,n), intent(out) :: a
+    integer(kind=int32), dimension(n,lbwmax), intent(in) :: kst
+    real(kind=dp), dimension(n,lbwmax), intent(in) :: cst, sst
+    real(kind=dp), dimension(n,lbwmax+ubwmax+1), intent(in) :: br
+    integer(kind=int32), dimension(n), intent(in) :: numrotst
+    integer(kind=int32), intent(in) :: ubw, lbw, n, lbwmax, ubwmax
+    !
+    integer(kind=int32) :: j,k
+    type(d_rotation) :: rot
+    call br_to_general(br,lbw,ubw,a)
+    if (n==1) then
+       return
+    end if
+    do k=n-1,1,-1
+       do j=1,numrotst(k)
+          rot%cosine=cst(j,k); rot%sine=sst(j,k)
+          call rotation_times_general(trp_rot(rot),a(k+1:n,:),kst(j,k),kst(j,k)+1)
+       end do
+    end do
+  end subroutine f_d_bt_to_lower
 
   subroutine c_ub_to_upper(ub,a,error)
     type(c_ub), intent(in) :: ub
@@ -171,5 +221,7 @@ contains
        end do
     end do
   end subroutine f_c_bv_to_upper
+
+
     
 end module assemble

@@ -100,37 +100,14 @@ contains
 
     call f_d_general_ub(a, n, ubws, ubwmax, numrotsu, jsu, csu, ssu, tol, error)
     
-    
-    if (maxval(ubws) > ubwmax) then
+    ubw=maxval(ubws)
+    if (ubw > ubwmax) then
        ! This should already have been detected in f_d_general_ub.
        call set_error(error, 1, id_f_d_upper_to_ub)
     else
-       call d_extract_diagonals_ub(a, n, b, lbw, ubw, lbwmax, ubwmax, ubws)
+       call d_extract_diagonals_bc(a, n, b, lbw, ubw, lbwmax, ubwmax)
     end if
   end subroutine f_d_upper_to_ub
-
-  subroutine d_extract_diagonals_ub(a, n, b, lbw, ubw, lbwmax, ubwmax, ubws)
-    real(kind=dp), target, dimension(n,n), intent(in) :: a
-    real(kind=dp), dimension(lbwmax+ubwmax+1,n), intent(out) :: b
-    integer(kind=int32), intent(out) :: ubw
-    integer(kind=int32), intent(in) :: n, lbw, lbwmax, ubwmax
-    integer(kind=int32), dimension(n), intent(in) :: ubws
-    !
-    integer(kind=int32) :: k, d
-    ubw=maxval(ubws)
-    ! put diagonals in b
-    b=0.0_dp
-    do d=1,ubw+1
-       do k=ubw-d+2,n
-          b(d,k) = a(d+k-ubw-1,k)
-       end do
-    end do
-    do d=ubw+2, ubw+lbw+1
-       do k=1,n-d+ubw+1
-          b(d,k) = a(d+k-ubw-1,k)
-       end do
-    end do
-  end subroutine d_extract_diagonals_ub
 
   subroutine f_d_general_ub(a, n, ubws, ubwmax, numrotsu, jsu, csu, ssu, tol, error)
     real(kind=dp), target, dimension(n,n), intent(inout) :: a
@@ -506,37 +483,14 @@ contains
     end if
 
     call f_c_general_ub(a, n, ubws, ubwmax, numrotsu, jsu, csu, ssu, tol, error)
-
-    if (maxval(ubws) > ubwmax) then
+    ubw=maxval(ubws)
+    if (ubw > ubwmax) then
        ! This should already have been detected in f_d_general_ub.
        call set_error(error, 1, id_f_c_upper_to_ub)
     else
-       call c_extract_diagonals_ub(a,n,b,lbw,ubw,lbwmax, ubwmax, ubws)
+       call c_extract_diagonals_bc(a,n,b,lbw,ubw,lbwmax, ubwmax)
     end if
   end subroutine f_c_upper_to_ub
-
-  subroutine c_extract_diagonals_ub(a, n, b, lbw, ubw, lbwmax, ubwmax, ubws)
-    complex(kind=dp), target, dimension(n,n), intent(in) :: a
-    complex(kind=dp), dimension(lbwmax+ubwmax+1,n), intent(out) :: b
-    integer(kind=int32), intent(out) :: ubw
-    integer(kind=int32), intent(in) :: n, lbw, lbwmax, ubwmax
-    integer(kind=int32), dimension(n), intent(in) :: ubws
-    !
-    integer(kind=int32) :: k, d
-    ubw=maxval(ubws)
-    ! put diagonals in b
-    b=(0.0_dp, 0.0_dp)
-    do d=1,ubw+1
-       do k=ubw-d+2,n
-          b(d,k) = a(d+k-ubw-1,k)
-       end do
-    end do
-    do d=ubw+2, ubw+lbw+1
-       do k=1,n-d+ubw+1
-          b(d,k) = a(d+k-ubw-1,k)
-       end do
-    end do
-  end subroutine c_extract_diagonals_ub
 
   subroutine f_c_general_ub(a, n, ubws, ubwmax, numrotsu, jsu, csu, ssu, tol, error)
     complex(kind=dp), target, dimension(n,n), intent(inout) :: a

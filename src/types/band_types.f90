@@ -882,4 +882,84 @@ contains
 
   end subroutine f_c_bw_contract_br
 
+  subroutine d_extract_diagonals_bc(a, n, b, lbw, ubw, lbwmax, ubwmax)
+    real(kind=dp), target, dimension(n,n), intent(in) :: a
+    real(kind=dp), dimension(lbwmax+ubwmax+1,n), intent(out) :: b
+    integer(kind=int32), intent(in) :: n, lbw, ubw, lbwmax, ubwmax
+    !
+    integer(kind=int32) :: k, d
+    ! put diagonals in b
+    b=0.0_dp
+    do d=1,ubw+1
+       do k=ubw-d+2,n
+          b(d,k) = a(d+k-ubw-1,k)
+       end do
+    end do
+    do d=ubw+2, ubw+lbw+1
+       do k=1,n-d+ubw+1
+          b(d,k) = a(d+k-ubw-1,k)
+       end do
+    end do
+  end subroutine d_extract_diagonals_bc
+
+  subroutine c_extract_diagonals_bc(a, n, b, lbw, ubw, lbwmax, ubwmax)
+    complex(kind=dp), target, dimension(n,n), intent(in) :: a
+    complex(kind=dp), dimension(lbwmax+ubwmax+1,n), intent(out) :: b
+    integer(kind=int32), intent(in) :: n, lbw, ubw, lbwmax, ubwmax
+    !
+    integer(kind=int32) :: k, d
+    ! put diagonals in b
+    b=0.0_dp
+    do d=1,ubw+1
+       do k=ubw-d+2,n
+          b(d,k) = a(d+k-ubw-1,k)
+       end do
+    end do
+    do d=ubw+2, ubw+lbw+1
+       do k=1,n-d+ubw+1
+          b(d,k) = a(d+k-ubw-1,k)
+       end do
+    end do
+  end subroutine c_extract_diagonals_bc
+
+  subroutine d_extract_diagonals_br(a, n, b, lbw, ubw, lbwmax, ubwmax)
+    real(kind=dp), target, dimension(n,n), intent(in) :: a
+    real(kind=dp), dimension(n,lbwmax+ubwmax+1), intent(out) :: b
+    integer(kind=int32), intent(in) :: n, lbw, ubw, lbwmax, ubwmax
+    !
+    integer(kind=int32) :: j, d
+    ! put diagonals in b
+    b=0.0_dp
+    do d=1,lbw+1
+       do j=lbw-d+2, n
+          b(j,d)=a(j,d+j-lbw-1)
+       end do
+    end do
+    do d=lbw+2,ubw+lbw+1
+       do j=1, n-d+lbw+1
+          b(j,d)=a(j,d+j-lbw-1)
+       end do
+    end do
+  end subroutine d_extract_diagonals_br
+
+subroutine c_extract_diagonals_br(a, n, b, lbw, ubw, lbwmax, ubwmax)
+    complex(kind=dp), target, dimension(n,n), intent(in) :: a
+    complex(kind=dp), dimension(n,lbwmax+ubwmax+1), intent(out) :: b
+    integer(kind=int32), intent(in) :: n, lbw, ubw, lbwmax, ubwmax
+    !
+    integer(kind=int32) :: j, d
+    ! put diagonals in b
+    b=0.0_dp
+    do d=1,lbw+1
+       do j=lbw-d+2, n
+          b(j,d)=a(j,d+j-lbw-1)
+       end do
+    end do
+    do d=lbw+2,ubw+lbw+1
+       do j=1, n-d+lbw+1
+          b(j,d)=a(j,d+j-lbw-1)
+       end do
+    end do
+  end subroutine c_extract_diagonals_br
+
 end module band_types

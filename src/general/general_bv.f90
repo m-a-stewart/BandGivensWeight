@@ -100,36 +100,14 @@ contains
 
     call f_d_general_bv(a, n, ubws, ubwmax, numrotsv, ksv, csv, ssv, tol, error)
 
-    if (maxval(ubws) > ubwmax) then
+    ubw=maxval(ubws)
+    if (ubw > ubwmax) then
        call set_error(error, 1, id_f_d_upper_to_bv)
     else
-       call d_extract_diagonals_bv(a, n, b, lbw, ubw, lbwmax, ubwmax, ubws)
+       call d_extract_diagonals_br(a, n, b, lbw, ubw, lbwmax, ubwmax)
     end if
 
   end subroutine f_d_upper_to_bv
-
-  subroutine d_extract_diagonals_bv(a, n, b, lbw, ubw, lbwmax, ubwmax, ubws)
-    real(kind=dp), target, dimension(n,n), intent(in) :: a
-    real(kind=dp), dimension(n,lbwmax+ubwmax+1), intent(out) :: b
-    integer(kind=int32), intent(out) :: ubw
-    integer(kind=int32), intent(in) :: n, lbw, lbwmax, ubwmax
-    integer(kind=int32), dimension(n), intent(in) :: ubws
-    !
-    integer(kind=int32) :: j, d
-    ubw=maxval(ubws)
-    ! put diagonals in b
-    b=0.0_dp
-    do d=1,lbw+1
-       do j=lbw-d+2, n
-          b(j,d)=a(j,d+j-lbw-1)
-       end do
-    end do
-    do d=lbw+2,ubw+lbw+1
-       do j=1, n-d+lbw+1
-          b(j,d)=a(j,d+j-lbw-1)
-       end do
-    end do
-  end subroutine d_extract_diagonals_bv
 
   ! Errors:
   ! 0: no error
@@ -173,6 +151,7 @@ contains
     end if
     nl=1
     klast=n
+    ! k is the trailing principal submatrix size.
     kloop: do k=1,n
        ! Current, possibly singular, L should be contained in
        ! a(n-k-nl+1:n-k,n-k+1:n-k+nl)
@@ -505,37 +484,14 @@ contains
     end if
 
     call f_c_general_bv(a, n, ubws, ubwmax, numrotsv, ksv, csv, ssv, tol, error)
-
-    if (maxval(ubws) > ubwmax) then
+    
+    ubw=maxval(ubws)
+    if (ubw > ubwmax) then
        call set_error(error, 2, id_f_c_upper_to_bv)
     else
-       call c_extract_diagonals_bv(a,n,b,lbw,ubw,lbwmax, ubwmax,ubws)
+       call c_extract_diagonals_br(a,n,b,lbw,ubw,lbwmax, ubwmax)
     end if
   end subroutine f_c_upper_to_bv
-
-  subroutine c_extract_diagonals_bv(a, n, b, lbw, ubw, lbwmax, ubwmax, ubws)
-    complex(kind=dp), target, dimension(n,n), intent(in) :: a
-    complex(kind=dp), dimension(n,lbwmax+ubwmax+1), intent(out) :: b
-    integer(kind=int32), intent(out) :: ubw
-    integer(kind=int32), intent(in) :: n, lbw, lbwmax, ubwmax
-    integer(kind=int32), dimension(n), intent(in) :: ubws
-    !
-    integer(kind=int32) :: j, d
-    ubw=maxval(ubws)
-    ! put diagonals in b
-    b=(0.0_dp, 0.0_dp)
-    do d=1,lbw+1
-       do j=lbw-d+2, n
-          b(j,d)=a(j,d+j-lbw-1)
-       end do
-    end do
-    do d=lbw+2,ubw+lbw+1
-       do j=1, n-d+lbw+1
-          b(j,d)=a(j,d+j-lbw-1)
-       end do
-    end do
-  end subroutine c_extract_diagonals_bv
-
 
   subroutine f_c_general_bv(a, n, ubws, ubwmax, &
        numrotsv, ksv, csv, ssv, tol, error)

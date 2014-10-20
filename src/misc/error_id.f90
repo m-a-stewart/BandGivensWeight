@@ -18,166 +18,182 @@ module error_id
      integer(kind=int32), dimension(max_routines) :: routines=-1
   end type error_info
 
-  ! src/assemble/assemble.f90, 000s
+  ! src/assemble/assemble.f90, 000s, 010s, and 020s
   integer(int32), parameter :: id_d_ub_to_upper=000
   integer(int32), parameter :: id_f_d_ub_to_upper=001
   integer(int32), parameter :: id_c_ub_to_upper=002
   integer(int32), parameter :: id_f_c_ub_to_upper=003
-  integer(int32), parameter :: id_d_bv_to_upper=004
-  integer(int32), parameter :: id_f_d_bv_to_upper=005
-  integer(int32), parameter :: id_c_bv_to_upper=006
-  integer(int32), parameter :: id_f_c_bv_to_upper=007
+  integer(int32), parameter :: id_d_bt_to_lower=004
+  integer(int32), parameter :: id_f_d_bt_to_lower=005
+  integer(int32), parameter :: id_c_bt_to_lower=006
+  integer(int32), parameter :: id_f_c_bt_to_lower=007
+  integer(int32), parameter :: id_d_ubt_to_general=008
+  integer(int32), parameter :: id_f_d_ubt_to_general=009
+  integer(int32), parameter :: id_c_ubt_to_general=010
+  integer(int32), parameter :: id_f_c_ubt_to_general=011
+  integer(int32), parameter :: id_d_bv_to_upper=012
+  integer(int32), parameter :: id_f_d_bv_to_upper=013
+  integer(int32), parameter :: id_c_bv_to_upper=014
+  integer(int32), parameter :: id_f_c_bv_to_upper=015
+  integer(int32), parameter :: id_d_wb_to_lower=016
+  integer(int32), parameter :: id_f_d_wb_to_lower=017
+  integer(int32), parameter :: id_c_wb_to_lower=018
+  integer(int32), parameter :: id_f_c_wb_to_lower=019
+  integer(int32), parameter :: id_d_wbv_to_general=020
+  integer(int32), parameter :: id_f_d_wbv_to_general=021
+  integer(int32), parameter :: id_c_wbv_to_general=022
+  integer(int32), parameter :: id_f_c_wbv_to_general=023
 
-  ! src/recompress/recompression_bv_to_ub, 010s
+  ! src/recompress/recompression_bv_to_ub, 030s
 
-  integer(int32), parameter :: id_d_recompress_bv_to_ub=010
-  integer(int32), parameter :: id_f_d_recompress_bv_to_ub=011
-  integer(int32), parameter :: id_c_recompress_bv_to_ub=012
-  integer(int32), parameter :: id_f_c_recompress_bv_to_ub=013
+  integer(int32), parameter :: id_d_recompress_bv_to_ub=030
+  integer(int32), parameter :: id_f_d_recompress_bv_to_ub=031
+  integer(int32), parameter :: id_c_recompress_bv_to_ub=032
+  integer(int32), parameter :: id_f_c_recompress_bv_to_ub=033
 
-  ! src/recompress/recompression_ub_to_bv, 020s
+  ! src/recompress/recompression_ub_to_bv, 040s
 
-  integer(int32), parameter :: id_d_recompress_ub_to_bv=020
-  integer(int32), parameter :: id_f_d_recompress_ub_to_bv=021
-  integer(int32), parameter :: id_c_recompress_ub_to_bv=022
-  integer(int32), parameter :: id_f_c_recompress_ub_to_bv=023
+  integer(int32), parameter :: id_d_recompress_ub_to_bv=040
+  integer(int32), parameter :: id_f_d_recompress_ub_to_bv=041
+  integer(int32), parameter :: id_c_recompress_ub_to_bv=042
+  integer(int32), parameter :: id_f_c_recompress_ub_to_bv=043
 
-  ! src/convert/conversion_bv_to_ub, 030s
+  ! src/convert/conversion_bv_to_ub, 050s
 
-  integer(int32), parameter :: id_d_convert_bv_to_ub=030
-  integer(int32), parameter :: id_f_d_convert_bv_to_ub=031
-  integer(int32), parameter :: id_c_convert_bv_to_ub=032
-  integer(int32), parameter :: id_f_c_convert_bv_to_ub=033
+  integer(int32), parameter :: id_d_convert_bv_to_ub=050
+  integer(int32), parameter :: id_f_d_convert_bv_to_ub=051
+  integer(int32), parameter :: id_c_convert_bv_to_ub=052
+  integer(int32), parameter :: id_f_c_convert_bv_to_ub=053
 
-  ! src/convert/conversion_ub_to_bv, 040s
+  ! src/convert/conversion_ub_to_bv, 060s
 
-  integer(int32), parameter :: id_d_convert_ub_to_bv=040
-  integer(int32), parameter :: id_f_d_convert_ub_to_bv=041
-  integer(int32), parameter :: id_c_convert_ub_to_bv=042
-  integer(int32), parameter :: id_f_c_convert_ub_to_bv=043
+  integer(int32), parameter :: id_d_convert_ub_to_bv=060
+  integer(int32), parameter :: id_f_d_convert_ub_to_bv=061
+  integer(int32), parameter :: id_c_convert_ub_to_bv=062
+  integer(int32), parameter :: id_f_c_convert_ub_to_bv=063
 
-  ! src/general/general_bv, 050s
-  integer(int32), parameter :: id_d_upper_to_bv=050
-  integer(int32), parameter :: id_f_d_upper_to_bv=051
-  integer(int32), parameter :: id_f_d_general_bv=052
-  integer(int32), parameter :: id_c_upper_to_bv=053
-  integer(int32), parameter :: id_f_c_upper_to_bv=054
-  integer(int32), parameter :: id_f_c_general_bv=055
+  ! src/general/general_bv, 070s
+  integer(int32), parameter :: id_d_upper_to_bv=070
+  integer(int32), parameter :: id_f_d_upper_to_bv=071
+  integer(int32), parameter :: id_f_d_general_bv=072
+  integer(int32), parameter :: id_c_upper_to_bv=073
+  integer(int32), parameter :: id_f_c_upper_to_bv=074
+  integer(int32), parameter :: id_f_c_general_bv=075
 
-  ! src/general/general_ub, 060s
-  integer(int32), parameter :: id_d_upper_to_ub=060
-  integer(int32), parameter :: id_f_d_upper_to_ub=061
-  integer(int32), parameter :: id_f_d_general_ub=062
-  integer(int32), parameter :: id_c_upper_to_ub=063
-  integer(int32), parameter :: id_f_c_upper_to_ub=064
-  integer(int32), parameter :: id_f_c_general_ub=065
+  ! src/general/general_ub, 080s
+  integer(int32), parameter :: id_d_upper_to_ub=080
+  integer(int32), parameter :: id_f_d_upper_to_ub=081
+  integer(int32), parameter :: id_f_d_general_ub=082
+  integer(int32), parameter :: id_c_upper_to_ub=083
+  integer(int32), parameter :: id_f_c_upper_to_ub=084
+  integer(int32), parameter :: id_f_c_general_ub=085
 
-  ! /src/general/general_bt 070s
-  integer(int32), parameter :: id_d_lower_to_bt=070
-  integer(int32), parameter :: id_f_d_lower_to_bt=071
-  integer(int32), parameter :: id_f_d_general_bt=072
-  integer(int32), parameter :: id_c_lower_to_bt=073
-  integer(int32), parameter :: id_f_c_lower_to_bt=074
-  integer(int32), parameter :: id_f_c_general_bt=075
+  ! /src/general/general_bt 090s
+  integer(int32), parameter :: id_d_lower_to_bt=090
+  integer(int32), parameter :: id_f_d_lower_to_bt=091
+  integer(int32), parameter :: id_f_d_general_bt=092
+  integer(int32), parameter :: id_c_lower_to_bt=093
+  integer(int32), parameter :: id_f_c_lower_to_bt=094
+  integer(int32), parameter :: id_f_c_general_bt=095
 
-  ! /src/general/general_wb 080s
-  integer(int32), parameter :: id_d_lower_to_wb=080
-  integer(int32), parameter :: id_f_d_lower_to_wb=081
-  integer(int32), parameter :: id_f_d_general_wb=082
-  integer(int32), parameter :: id_c_lower_to_wb=083
-  integer(int32), parameter :: id_f_c_lower_to_wb=084
-  integer(int32), parameter :: id_f_c_general_wb=085
+  ! /src/general/general_wb 100s
+  integer(int32), parameter :: id_d_lower_to_wb=100
+  integer(int32), parameter :: id_f_d_lower_to_wb=101
+  integer(int32), parameter :: id_f_d_general_wb=102
+  integer(int32), parameter :: id_c_lower_to_wb=103
+  integer(int32), parameter :: id_f_c_lower_to_wb=104
+  integer(int32), parameter :: id_f_c_general_wb=105
 
-  ! src/general/general_ubt, 090s
-  integer(int32), parameter :: id_d_general_to_ubt=090
-  integer(int32), parameter :: id_f_d_general_to_ubt=091
-  integer(int32), parameter :: id_f_d_general_ubt=092
-  integer(int32), parameter :: id_c_general_to_ubt=093
-  integer(int32), parameter :: id_f_c_general_to_ubt=094
-  integer(int32), parameter :: id_f_c_general_ubt=095
+  ! src/general/general_ubt, 110s
+  integer(int32), parameter :: id_d_general_to_ubt=110
+  integer(int32), parameter :: id_f_d_general_to_ubt=111
+  integer(int32), parameter :: id_f_d_general_ubt=112
+  integer(int32), parameter :: id_c_general_to_ubt=113
+  integer(int32), parameter :: id_f_c_general_to_ubt=114
+  integer(int32), parameter :: id_f_c_general_ubt=115
 
-  ! src/general/general_wbv, 100s
-  integer(int32), parameter :: id_d_general_to_wbv=100
-  integer(int32), parameter :: id_f_d_general_to_wbv=101
-  integer(int32), parameter :: id_f_d_general_wbv=102
-  integer(int32), parameter :: id_c_general_to_wbv=103
-  integer(int32), parameter :: id_f_c_general_to_wbv=104
-  integer(int32), parameter :: id_f_c_general_wbv=105
+  ! src/general/general_wbv, 120s
+  integer(int32), parameter :: id_d_general_to_wbv=120
+  integer(int32), parameter :: id_f_d_general_to_wbv=121
+  integer(int32), parameter :: id_f_d_general_wbv=122
+  integer(int32), parameter :: id_c_general_to_wbv=123
+  integer(int32), parameter :: id_f_c_general_to_wbv=124
+  integer(int32), parameter :: id_f_c_general_wbv=125
 
-  ! src/orth/gs 110s
-  integer(int32), parameter :: id_d_extend_gs_rows=110
-  integer(int32), parameter :: id_c_extend_gs_rows=111
-  integer(int32), parameter :: id_d_extend_gs_columns=112
-  integer(int32), parameter :: id_c_extend_gs_columns=113
+  ! src/orth/gs 130s
+  integer(int32), parameter :: id_d_extend_gs_rows=130
+  integer(int32), parameter :: id_c_extend_gs_rows=131
+  integer(int32), parameter :: id_d_extend_gs_columns=132
+  integer(int32), parameter :: id_c_extend_gs_columns=133
 
-  ! src/orth/nullvec 120s
-  integer(int32), parameter :: id_d_lower_left_nullvec=120
-  integer(int32), parameter :: id_c_lower_left_nullvec=121
-  integer(int32), parameter :: id_d_lower_right_nullvec=122
-  integer(int32), parameter :: id_c_lower_right_nullvec=123
+  ! src/orth/nullvec 140s
+  integer(int32), parameter :: id_d_lower_left_nullvec=140
+  integer(int32), parameter :: id_c_lower_left_nullvec=141
+  integer(int32), parameter :: id_d_lower_right_nullvec=142
+  integer(int32), parameter :: id_c_lower_right_nullvec=143
 
-  ! src/qr_iteration/qr_iteration 130s
-  integer(int32), parameter :: id_ss_r1_qr=130
-  integer(int32), parameter :: id_f_ss_r1_qr=131
-  integer(int32), parameter :: id_ss_qr_iteration=132
-  integer(int32), parameter :: id_f_ss_qr_iteration=133
+  ! src/qr_iteration/qr_iteration 150s
+  integer(int32), parameter :: id_ss_r1_qr=150
+  integer(int32), parameter :: id_f_ss_r1_qr=151
+  integer(int32), parameter :: id_ss_qr_iteration=152
+  integer(int32), parameter :: id_f_ss_qr_iteration=153
 
-  ! src/qr_factorization/qr_factorization 140s
-  integer(int32), parameter :: id_d_reduce_lbw_bv_to_ub=140
-  integer(int32), parameter :: id_f_d_reduce_lbw_bv_to_ub=141
-  integer(int32), parameter :: id_c_reduce_lbw_bv_to_ub=142
-  integer(int32), parameter :: id_f_c_reduce_lbw_bv_to_ub=143
-  integer(int32), parameter :: id_d_qr_bv_to_ub=144
-  integer(int32), parameter :: id_f_d_qr_bv_to_ub=145
-  integer(int32), parameter :: id_c_qr_bv_to_ub=146
-  integer(int32), parameter :: id_f_c_qr_bv_to_ub=147
+  ! src/qr_factorization/qr_factorization 160s
+  integer(int32), parameter :: id_d_reduce_lbw_bv_to_ub=160
+  integer(int32), parameter :: id_f_d_reduce_lbw_bv_to_ub=161
+  integer(int32), parameter :: id_c_reduce_lbw_bv_to_ub=162
+  integer(int32), parameter :: id_f_c_reduce_lbw_bv_to_ub=163
+  integer(int32), parameter :: id_d_qr_bv_to_ub=164
+  integer(int32), parameter :: id_f_d_qr_bv_to_ub=165
+  integer(int32), parameter :: id_c_qr_bv_to_ub=166
+  integer(int32), parameter :: id_f_c_qr_bv_to_ub=167
 
-  ! src/solve/back_substitution 150s and 160s
-  integer(int32), parameter :: id_d_back_substitution_ub=150
-  integer(int32), parameter :: id_f_d_back_substitution_ub=151
-  integer(int32), parameter :: id_c_back_substitution_ub=152
-  integer(int32), parameter :: id_f_c_back_substitution_ub=153
-  integer(int32), parameter :: id_d_v_back_substitution_ub=154
-  integer(int32), parameter :: id_f_d_v_back_substitution_ub=155
-  integer(int32), parameter :: id_c_v_back_substitution_ub=156
-  integer(int32), parameter :: id_f_c_v_back_substitution_ub=157
+  ! src/solve/back_substitution 170s and 180s
+  integer(int32), parameter :: id_d_back_substitution_ub=170
+  integer(int32), parameter :: id_f_d_back_substitution_ub=171
+  integer(int32), parameter :: id_c_back_substitution_ub=172
+  integer(int32), parameter :: id_f_c_back_substitution_ub=173
+  integer(int32), parameter :: id_d_v_back_substitution_ub=174
+  integer(int32), parameter :: id_f_d_v_back_substitution_ub=175
+  integer(int32), parameter :: id_c_v_back_substitution_ub=176
+  integer(int32), parameter :: id_f_c_v_back_substitution_ub=177
 
-  integer(int32), parameter :: id_d_forward_substitution_bv=158
-  integer(int32), parameter :: id_f_d_forward_substitution_bv=159
-  integer(int32), parameter :: id_d_v_forward_substitution_bv=160
-  integer(int32), parameter :: id_f_d_v_forward_substitution_bv=161
+  integer(int32), parameter :: id_d_forward_substitution_bv=178
+  integer(int32), parameter :: id_f_d_forward_substitution_bv=179
+  integer(int32), parameter :: id_d_v_forward_substitution_bv=180
+  integer(int32), parameter :: id_f_d_v_forward_substitution_bv=181
   integer(int32), parameter :: id_c_forward_substitution_bv=118
   integer(int32), parameter :: id_f_c_forward_substitution_bv=119
-  integer(int32), parameter :: id_c_v_forward_substitution_bv=160
-  integer(int32), parameter :: id_f_c_v_forward_substitution_bv=161
+  integer(int32), parameter :: id_c_v_forward_substitution_bv=180
+  integer(int32), parameter :: id_f_c_v_forward_substitution_bv=181
 
-  ! src/sweeps 170s and 180s
-  integer(int32), parameter :: id_d_sweeps_times_ub=170
-  integer(int32), parameter :: id_f_d_sweeps_times_ub=171
-  integer(int32), parameter :: id_c_sweeps_times_ub=172
-  integer(int32), parameter :: id_f_c_sweeps_times_ub=173
-  integer(int32), parameter :: id_d_bv_times_sweeps=174
-  integer(int32), parameter :: id_f_d_bv_times_sweeps=175
-  integer(int32), parameter :: id_c_bv_times_sweeps=176
-  integer(int32), parameter :: id_f_c_bv_times_sweeps=177
-  integer(int32), parameter :: id_d_trp_sweeps_times_bv=178
-  integer(int32), parameter :: id_f_d_trp_sweeps_times_bv=179
-  integer(int32), parameter :: id_c_trp_sweeps_times_bv=180
-  integer(int32), parameter :: id_f_c_trp_sweeps_times_bv=181
-  integer(int32), parameter :: id_d_ub_times_trp_sweeps=182
-  integer(int32), parameter :: id_f_d_ub_times_trp_sweeps=183
-  integer(int32), parameter :: id_c_ub_times_trp_sweeps=184
-  integer(int32), parameter :: id_f_c_ub_times_trp_sweeps=185
+  ! src/sweeps 190s and 200s
+  integer(int32), parameter :: id_d_sweeps_times_ub=190
+  integer(int32), parameter :: id_f_d_sweeps_times_ub=191
+  integer(int32), parameter :: id_c_sweeps_times_ub=192
+  integer(int32), parameter :: id_f_c_sweeps_times_ub=193
+  integer(int32), parameter :: id_d_bv_times_sweeps=194
+  integer(int32), parameter :: id_f_d_bv_times_sweeps=195
+  integer(int32), parameter :: id_c_bv_times_sweeps=196
+  integer(int32), parameter :: id_f_c_bv_times_sweeps=197
+  integer(int32), parameter :: id_d_trp_sweeps_times_bv=198
+  integer(int32), parameter :: id_f_d_trp_sweeps_times_bv=199
+  integer(int32), parameter :: id_c_trp_sweeps_times_bv=200
+  integer(int32), parameter :: id_f_c_trp_sweeps_times_bv=201
+  integer(int32), parameter :: id_d_ub_times_trp_sweeps=202
+  integer(int32), parameter :: id_f_d_ub_times_trp_sweeps=203
+  integer(int32), parameter :: id_c_ub_times_trp_sweeps=204
+  integer(int32), parameter :: id_f_c_ub_times_trp_sweeps=205
 
-  ! src/update 190s
-  integer(int32), parameter :: id_d_r1_update_ub_to_bv=190
-  integer(int32), parameter :: id_f_d_r1_update_ub_to_bv=191
-  integer(int32), parameter :: id_c_r1_update_ub_to_bv=192
-  integer(int32), parameter :: id_f_c_r1_update_ub_to_bv=193
-  integer(int32), parameter :: id_d_e1v_update_ub_to_bv=194
-  integer(int32), parameter :: id_f_d_e1v_update_ub_to_bv=195
-  integer(int32), parameter :: id_c_e1v_update_ub_to_bv=196
-  integer(int32), parameter :: id_f_c_e1v_update_ub_to_bv=197
+  ! src/update 210s
+  integer(int32), parameter :: id_d_r1_update_ub_to_bv=210
+  integer(int32), parameter :: id_f_d_r1_update_ub_to_bv=211
+  integer(int32), parameter :: id_c_r1_update_ub_to_bv=212
+  integer(int32), parameter :: id_f_c_r1_update_ub_to_bv=213
+  integer(int32), parameter :: id_d_e1v_update_ub_to_bv=214
+  integer(int32), parameter :: id_f_d_e1v_update_ub_to_bv=215
+  integer(int32), parameter :: id_c_e1v_update_ub_to_bv=216
+  integer(int32), parameter :: id_f_c_e1v_update_ub_to_bv=217
 
 contains
 
