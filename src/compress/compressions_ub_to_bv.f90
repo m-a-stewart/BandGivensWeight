@@ -39,7 +39,7 @@ contains
   ! Errors:
   ! 0: no error
   ! 1: n<1
-  ! 2: insufficient temp storage in ub%b
+  ! 2: insufficient temp storage in ub%bc
   ! 3: insufficient lbw in bv.
   ! 4: ub%n /= bv%n
   ! 
@@ -69,15 +69,15 @@ contains
     if (get_n(ub) /= get_n(bv)) then
        call set_error(error, 4, id_d_compress_ub_to_bv); return
     end if
-    call f_d_compress_ub_to_bv(ub%b, get_n(ub), ub%lbw, ub%ubw, get_lbwmax(ub), &
-         get_ubwmax(ub), ub%numrotsu, ub%jsu, ub%csu, ub%ssu, bv%b, bv%lbw, bv%ubw, &
+    call f_d_compress_ub_to_bv(ub%bc, get_n(ub), ub%lbw, ub%ubw, get_lbwmax(ub), &
+         get_ubwmax(ub), ub%numrotsu, ub%jsu, ub%csu, ub%ssu, bv%br, bv%lbw, bv%ubw, &
          get_lbwmax(bv), get_ubwmax(bv), bv%numrotsv, bv%ksv, bv%csv, bv%ssv, &
          told, tol, dr, error)
   end subroutine d_compress_ub_to_bv
 
   ! Errors:
   ! 0: no error
-  ! 1: insufficient upper bw in bv%b
+  ! 1: insufficient upper bw in bv%br
   subroutine f_d_compress_ub_to_bv(b_ub, n, lbw, ubw, lbwmax_ub, ubwmax_ub, numrots_ub, &
        js_ub, cs_ub, ss_ub, &
        b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrots_bv, ks_bv, cs_bv, ss_bv, told, tol, dr, error)
@@ -347,8 +347,8 @@ contains
     if (get_n(ub) /= get_n(bv)) then
        call set_error(error, 4, id_c_compress_ub_to_bv); return
     end if
-    call f_c_compress_ub_to_bv(ub%b, get_n(ub), ub%lbw, ub%ubw, get_lbwmax(ub), &
-         get_ubwmax(ub), ub%numrotsu, ub%jsu, ub%csu, ub%ssu, bv%b, bv%lbw, bv%ubw, &
+    call f_c_compress_ub_to_bv(ub%bc, get_n(ub), ub%lbw, ub%ubw, get_lbwmax(ub), &
+         get_ubwmax(ub), ub%numrotsu, ub%jsu, ub%csu, ub%ssu, bv%br, bv%lbw, bv%ubw, &
          get_lbwmax(bv), get_ubwmax(bv), bv%numrotsv, bv%ksv, bv%csv, bv%ssv, &
          told, tol, dr, error)
   end subroutine c_compress_ub_to_bv

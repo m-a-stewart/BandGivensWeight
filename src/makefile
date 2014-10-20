@@ -21,9 +21,14 @@ $(OBJDIR)/gs.o : $(OBJDIR)/misc.o
 
 $(OBJDIR)/assemble.o : $(OBJDIR)/band_types.o $(OBJDIR)/nested_types.o $(OBJDIR)/misc.o
 
-$(OBJDIR)/general.o : $(OBJDIR)/general_bv.o $(OBJDIR)/general_ub.o
+$(OBJDIR)/general.o : $(OBJDIR)/general_bv.o $(OBJDIR)/general_ub.o $(OBJDIR)/general_bt.o \
+	$(OBJDIR)/general_wb.o $(OBJDIR)/general_ubt.o $(OBJDIR)/general_wbv.o
 $(OBJDIR)/general_bv.o : $(OBJDIR)/orth.o $(OBJDIR)/shift.o $(OBJDIR)/rotation.o $(OBJDIR)/types.o
 $(OBJDIR)/general_ub.o : $(OBJDIR)/orth.o $(OBJDIR)/shift.o $(OBJDIR)/rotation.o $(OBJDIR)/types.o
+$(OBJDIR)/general_bt.o : $(OBJDIR)/orth.o $(OBJDIR)/shift.o $(OBJDIR)/rotation.o $(OBJDIR)/types.o
+$(OBJDIR)/general_wb.o : $(OBJDIR)/orth.o $(OBJDIR)/shift.o $(OBJDIR)/rotation.o $(OBJDIR)/types.o
+$(OBJDIR)/general_ubt.o : $(OBJDIR)/orth.o $(OBJDIR)/shift.o $(OBJDIR)/rotation.o $(OBJDIR)/types.o
+$(OBJDIR)/general_wbv.o : $(OBJDIR)/orth.o $(OBJDIR)/shift.o $(OBJDIR)/rotation.o $(OBJDIR)/types.o
 
 $(OBJDIR)/conversions.o : $(OBJDIR)/conversions_bv_to_ub.o $(OBJDIR)/conversions_ub_to_bv.o
 $(OBJDIR)/conversions_bv_to_ub.o : $(OBJDIR)/misc.o $(OBJDIR)/shift.o $(OBJDIR)/rotation.o $(OBJDIR)/types.o

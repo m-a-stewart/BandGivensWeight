@@ -108,7 +108,7 @@ contains
     if (size(x,1)/=n .or. size(x,2) /= size(c,2)) then
        call set_error(error, 4, id_d_back_substitution_ub); return
     end if
-    call f_d_back_substitution_ub(ub%b, n, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
+    call f_d_back_substitution_ub(ub%bc, n, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
          ub%numrotsu, ub%jsu, ub%csu, ub%ssu, x, c, size(c,2), error)
   end subroutine d_back_substitution_ub
 
@@ -134,7 +134,7 @@ contains
     if (size(x)/=n) then
        call set_error(error, 4, id_d_v_back_substitution_ub); return
     end if
-    call f_d_v_back_substitution_ub(ub%b, n, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
+    call f_d_v_back_substitution_ub(ub%bc, n, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
          ub%numrotsu, ub%jsu, ub%csu, ub%ssu, x, c, error)
   end subroutine d_v_back_substitution_ub
 
@@ -245,7 +245,7 @@ contains
     if (size(x,1)/=n .or. size(x,2) /= size(c,2)) then
        call set_error(error, 4, id_d_back_substitution_ub); return
     end if
-    call f_c_back_substitution_ub(ub%b, n, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
+    call f_c_back_substitution_ub(ub%bc, n, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
          ub%numrotsu, ub%jsu, ub%csu, ub%ssu, x, c, size(c,2), error)
   end subroutine c_back_substitution_ub
 
@@ -271,7 +271,7 @@ contains
     if (size(x)/=n) then
        call set_error(error, 4, id_d_v_back_substitution_ub); return
     end if
-    call f_c_v_back_substitution_ub(ub%b, n, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
+    call f_c_v_back_substitution_ub(ub%bc, n, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
          ub%numrotsu, ub%jsu, ub%csu, ub%ssu, x, c, error)
   end subroutine c_v_back_substitution_ub
 
@@ -391,7 +391,7 @@ contains
     if (size(x,2)/=n .or. size(x,1) /= size(c,1)) then
        call set_error(error, 4,id_d_forward_substitution_bv); return
     end if
-    call f_d_forward_substitution_bv(x, bv%b, n, bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
+    call f_d_forward_substitution_bv(x, bv%br, n, bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
          bv%numrotsv, bv%ksv, bv%csv, bv%ssv, c, size(c,1), error)
 
   end subroutine d_forward_substitution_bv
@@ -460,7 +460,7 @@ contains
     if (size(x)/=n) then
        call set_error(error, 4,id_d_forward_substitution_bv); return
     end if
-    call f_d_v_forward_substitution_bv(x, bv%b, n, bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
+    call f_d_v_forward_substitution_bv(x, bv%br, n, bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
          bv%numrotsv, bv%ksv, bv%csv, bv%ssv, c, error)
   end subroutine d_v_forward_substitution_bv
 
@@ -527,7 +527,7 @@ contains
     if (size(x,2)/=n .or. size(x,1) /= size(c,1)) then
        call set_error(error, 4,id_c_forward_substitution_bv); return
     end if
-    call f_c_forward_substitution_bv(x, bv%b, n, bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
+    call f_c_forward_substitution_bv(x, bv%br, n, bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
          bv%numrotsv, bv%ksv, bv%csv, bv%ssv, c, size(c,1), error)
   end subroutine c_forward_substitution_bv
 
@@ -594,7 +594,7 @@ contains
     if (size(x)/=n) then
        call set_error(error, 4,id_c_forward_substitution_bv); return
     end if
-    call f_c_v_forward_substitution_bv(x, bv%b, n, bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
+    call f_c_v_forward_substitution_bv(x, bv%br, n, bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
          bv%numrotsv, bv%ksv, bv%csv, bv%ssv, c, error)
   end subroutine c_v_forward_substitution_bv
 

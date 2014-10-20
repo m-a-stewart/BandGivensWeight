@@ -66,14 +66,14 @@ contains
     if (get_n(bv) /= size(a,1) .or. get_n(bv) /= size(a,2)) then
        call set_error(error, 3, id_d_upper_to_bv)
     end if
-    call f_d_upper_to_bv(a,get_n(bv),bv%b, lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
+    call f_d_upper_to_bv(a,get_n(bv),bv%br, lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
          bv%numrotsv, bv%ksv, bv%csv, bv%ssv, tol, error)
     bv%lbw=lbw
   end subroutine d_upper_to_bv
 
   ! Errors:
   ! 0: no error
-  ! 1: insufficient upper bw in bv%b
+  ! 1: insufficient upper bw in bv%br
   subroutine f_d_upper_to_bv(a, n, b, lbw, ubw, lbwmax, ubwmax, &
        numrotsv, ksv, csv, ssv, tol, error)
     real(kind=dp), target, dimension(n,n), intent(inout) :: a
@@ -133,7 +133,7 @@ contains
 
   ! Errors:
   ! 0: no error
-  ! 1: insufficient upper bw in bv%b
+  ! 1: insufficient upper bw in bv%br
   subroutine f_d_general_bv(a, n, ubws, ubwmax, &
        numrotsv, ksv, csv, ssv, tol, error)
     real(kind=dp), target, dimension(n,n), intent(inout) :: a
@@ -474,7 +474,7 @@ contains
     if (get_n(bv) /= size(a,1) .or. get_n(bv) /= size(a,2)) then
        call set_error(error, 3, id_c_upper_to_bv)
     end if
-    call f_c_upper_to_bv(a,get_n(bv),bv%b, lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
+    call f_c_upper_to_bv(a,get_n(bv),bv%br, lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
          bv%numrotsv, bv%ksv, bv%csv, bv%ssv, tol, error)
     bv%lbw=lbw
   end subroutine c_upper_to_bv

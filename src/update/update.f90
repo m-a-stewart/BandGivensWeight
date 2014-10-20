@@ -76,9 +76,9 @@ contains
          get_ubwmax(bv) < ub%ubw+3) then
        call set_error(error,5,id_d_r1_update_ub_to_bv)
     end if
-    call f_d_r1_update_ub_to_bv(ub%b, get_n(ub), ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
+    call f_d_r1_update_ub_to_bv(ub%bc, get_n(ub), ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
          ub%numrotsu, ub%jsu, ub%csu, ub%ssu, u, v, &
-         bv%b, bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
+         bv%br, bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
          bv%numrotsv, bv%ksv, bv%csv, bv%ssv, &
          sw%cs, sw%ss, sw%numsweeps, get_maxsweeps(sw), &
          error)
@@ -175,9 +175,9 @@ contains
          get_ubwmax(bv) < ub%ubw+2) then
        call set_error(error,4,id_d_e1v_update_ub_to_bv)
     end if
-    call f_d_e1v_update_ub_to_bv(ub%b, get_n(ub), ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
+    call f_d_e1v_update_ub_to_bv(ub%bc, get_n(ub), ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
          ub%numrotsu, ub%jsu, ub%csu, ub%ssu, v, &
-         bv%b, bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
+         bv%br, bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
          bv%numrotsv, bv%ksv, bv%csv, bv%ssv, &
          error)
   end subroutine d_e1v_update_ub_to_bv
@@ -285,9 +285,9 @@ contains
          get_ubwmax(bv) < ub%ubw+3) then
        call set_error(error,5,id_c_r1_update_ub_to_bv)
     end if
-    call f_c_r1_update_ub_to_bv(ub%b, get_n(ub), ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
+    call f_c_r1_update_ub_to_bv(ub%bc, get_n(ub), ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
          ub%numrotsu, ub%jsu, ub%csu, ub%ssu, u, v, &
-         bv%b, bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
+         bv%br, bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
          bv%numrotsv, bv%ksv, bv%csv, bv%ssv, &
          sw%cs, sw%ss, sw%numsweeps, get_maxsweeps(sw), &
          error)
@@ -384,9 +384,9 @@ contains
          get_ubwmax(bv) < ub%ubw+2) then
        call set_error(error,4,id_c_e1v_update_ub_to_bv)
     end if
-    call f_c_e1v_update_ub_to_bv(ub%b, get_n(ub), ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
+    call f_c_e1v_update_ub_to_bv(ub%bc, get_n(ub), ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
          ub%numrotsu, ub%jsu, ub%csu, ub%ssu, v, &
-         bv%b, bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
+         bv%br, bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
          bv%numrotsv, bv%ksv, bv%csv, bv%ssv, &
          error)
   end subroutine c_e1v_update_ub_to_bv

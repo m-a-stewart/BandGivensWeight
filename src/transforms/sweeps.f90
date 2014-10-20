@@ -471,9 +471,9 @@ contains
        call set_error(error,6,id_d_sweeps_times_ub); return
     end if
     call f_d_sweeps_times_ub(sw%cs, sw%ss, sw%numsweeps, get_maxsweeps(sw), get_n(sw), &
-         ub%b, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
+         ub%bc, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
          ub%numrotsu, ub%jsu, ub%csu, ub%ssu, &
-         bv%b, bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
+         bv%br, bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
          bv%numrotsv, bv%ksv, bv%csv, bv%ssv, error)
   end subroutine d_sweeps_times_ub
 
@@ -619,9 +619,9 @@ contains
        call set_error(error,6,id_c_sweeps_times_ub); return
     end if
     call f_c_sweeps_times_ub(sw%cs, sw%ss, sw%numsweeps, get_maxsweeps(sw), get_n(sw), &
-         ub%b, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
+         ub%bc, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
          ub%numrotsu, ub%jsu, ub%csu, ub%ssu, &
-         bv%b, bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
+         bv%br, bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
          bv%numrotsv, bv%ksv, bv%csv, bv%ssv, error)
   end subroutine c_sweeps_times_ub
 
@@ -775,10 +775,10 @@ contains
     if (get_n(bv) < 1) then
        call set_error(error,6,id_d_bv_times_sweeps); return
     end if
-    call f_d_bv_times_sweeps(bv%b, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
+    call f_d_bv_times_sweeps(bv%br, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
          bv%numrotsv, bv%ksv, bv%csv, bv%ssv, &
          sw%cs, sw%ss, sw%numsweeps, get_maxsweeps(sw), &
-         ub%b, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
+         ub%bc, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
          ub%numrotsu, ub%jsu, ub%csu, ub%ssu, error)
   end subroutine d_bv_times_sweeps
 
@@ -923,10 +923,10 @@ contains
     if (get_n(bv) < 1) then
        call set_error(error,6,id_c_bv_times_sweeps); return
     end if
-    call f_c_bv_times_sweeps(bv%b, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
+    call f_c_bv_times_sweeps(bv%br, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
          bv%numrotsv, bv%ksv, bv%csv, bv%ssv, &
          sw%cs, sw%ss, sw%numsweeps, get_maxsweeps(sw), &
-         ub%b, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
+         ub%bc, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
          ub%numrotsu, ub%jsu, ub%csu, ub%ssu, error)
   end subroutine c_bv_times_sweeps
 
@@ -1076,9 +1076,9 @@ contains
        call set_error(error,4,id_d_trp_sweeps_times_bv); return
     end if
     call f_d_trp_sweeps_times_bv(sw%cs, sw%ss, get_n(sw), sw%numsweeps, get_maxsweeps(sw), &
-         bv%b, bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
+         bv%br, bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
          bv%numrotsv, bv%ksv, bv%csv, bv%ssv, &
-         ub%b, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
+         ub%bc, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
          ub%numrotsu, ub%jsu, ub%csu, ub%ssu, error)
   end subroutine d_trp_sweeps_times_bv
 
@@ -1218,9 +1218,9 @@ contains
        call set_error(error,4,id_c_trp_sweeps_times_bv); return
     end if
     call f_c_trp_sweeps_times_bv(sw%cs, sw%ss, get_n(sw), sw%numsweeps, get_maxsweeps(sw), &
-         bv%b, bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
+         bv%br, bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
          bv%numrotsv, bv%ksv, bv%csv, bv%ssv, &
-         ub%b, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
+         ub%bc, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
          ub%numrotsu, ub%jsu, ub%csu, ub%ssu, error)
   end subroutine c_trp_sweeps_times_bv
 
@@ -1367,10 +1367,10 @@ contains
     if (get_n(bv) < 1) then
        call set_error(error,4,id_d_ub_times_trp_sweeps); return
     end if
-    call f_d_ub_times_trp_sweeps(ub%b, get_n(ub), ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
+    call f_d_ub_times_trp_sweeps(ub%bc, get_n(ub), ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
          ub%numrotsu, ub%jsu, ub%csu, ub%ssu, &
          sw%cs, sw%ss, sw%numsweeps, get_maxsweeps(sw), &
-         bv%b, bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
+         bv%br, bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
          bv%numrotsv, bv%ksv, bv%csv, bv%ssv, error)
   end subroutine d_ub_times_trp_sweeps
 
@@ -1513,10 +1513,10 @@ contains
     if (get_n(bv) < 1) then
        call set_error(error,4,id_c_ub_times_trp_sweeps); return
     end if
-    call f_c_ub_times_trp_sweeps(ub%b, get_n(ub), ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
+    call f_c_ub_times_trp_sweeps(ub%bc, get_n(ub), ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
          ub%numrotsu, ub%jsu, ub%csu, ub%ssu, &
          sw%cs, sw%ss, sw%numsweeps, get_maxsweeps(sw), &
-         bv%b, bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
+         bv%br, bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
          bv%numrotsv, bv%ksv, bv%csv, bv%ssv, error)
   end subroutine c_ub_times_trp_sweeps
 

@@ -28,7 +28,7 @@ module compressions_bv_to_ub
 
   type(routine_info), parameter :: info_c_compress_bv_to_ub=routine_info(id_c_compress_bv_to_ub, &
        'c_compress_bv_to_ub', &
-       [ character(len=error_message_length) :: 'n<1', 'Insufficient temporary storage in bv%b', &
+       [ character(len=error_message_length) :: 'n<1', 'Insufficient temporary storage in bv%br', &
        'Insufficient Upper Bandwidth in ub', 'Insufficient Lower Bandwidth in ub' ] )
 
   type(routine_info), parameter :: info_f_c_compress_bv_to_ub=routine_info(id_f_c_compress_bv_to_ub, &
@@ -41,7 +41,7 @@ contains
   ! Errors:
   ! 0: no error
   ! 1: n<1
-  ! 2: insufficient temp storage in bv%b
+  ! 2: insufficient temp storage in bv%br
   ! 3: insufficient lbw in ub.
   ! 4: ub%n /= bv%n
   ! 
@@ -71,8 +71,8 @@ contains
     if (get_n(bv) /= get_n(ub)) then
        call set_error(error, 4, id_d_compress_bv_to_ub); return
     end if
-    call f_d_compress_bv_to_ub(bv%b, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), &
-         get_ubwmax(bv), bv%numrotsv, bv%ksv, bv%csv, bv%ssv, ub%b, ub%lbw, ub%ubw, & 
+    call f_d_compress_bv_to_ub(bv%br, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), &
+         get_ubwmax(bv), bv%numrotsv, bv%ksv, bv%csv, bv%ssv, ub%bc, ub%lbw, ub%ubw, & 
          get_lbwmax(ub), get_ubwmax(ub), ub%numrotsu, ub%jsu, ub%csu, ub%ssu, &
          told, tol, dr, error)
   end subroutine d_compress_bv_to_ub
@@ -349,8 +349,8 @@ contains
     if (get_n(bv) /= get_n(ub)) then
        call set_error(error, 4, id_c_compress_bv_to_ub); return
     end if
-    call f_c_compress_bv_to_ub(bv%b, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), &
-         get_ubwmax(bv), bv%numrotsv, bv%ksv, bv%csv, bv%ssv, ub%b, ub%lbw, ub%ubw, & 
+    call f_c_compress_bv_to_ub(bv%br, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), &
+         get_ubwmax(bv), bv%numrotsv, bv%ksv, bv%csv, bv%ssv, ub%bc, ub%lbw, ub%ubw, & 
          get_lbwmax(ub), get_ubwmax(ub), ub%numrotsu, ub%jsu, ub%csu, ub%ssu, &
          told, tol, dr, error)
   end subroutine c_compress_bv_to_ub

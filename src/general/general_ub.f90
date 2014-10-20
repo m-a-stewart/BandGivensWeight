@@ -65,7 +65,7 @@ contains
     if (get_n(ub) /= size(a,1) .or. get_n(ub) /= size(a,2)) then
        call set_error(error, 3, id_d_upper_to_ub); return
     end if
-    call f_d_upper_to_ub(a,get_n(ub),ub%b, lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
+    call f_d_upper_to_ub(a,get_n(ub),ub%bc, lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
          ub%numrotsu, ub%jsu, ub%csu, ub%ssu, tol, error)
     ub%lbw=lbw
   end subroutine d_upper_to_ub
@@ -73,7 +73,7 @@ contains
 
   ! Errors:
   ! 0: no error
-  ! 1: insufficient upper bw in bv%b
+  ! 1: insufficient upper bw in ub%bc
   subroutine f_d_upper_to_ub(a, n, b, lbw, ubw, lbwmax, ubwmax, &
        numrotsu, jsu, csu, ssu, tol, error)
     real(kind=dp), target, dimension(n,n), intent(inout) :: a
@@ -475,7 +475,7 @@ contains
     if (get_n(ub) /= size(a,1) .or. get_n(ub) /= size(a,2)) then
        call set_error(error, 3, id_c_upper_to_ub); return
     end if
-    call f_c_upper_to_ub(a,get_n(ub),ub%b, lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
+    call f_c_upper_to_ub(a,get_n(ub),ub%bc, lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
          ub%numrotsu, ub%jsu, ub%csu, ub%ssu, tol, error)
     ub%lbw=lbw
   end subroutine c_upper_to_ub

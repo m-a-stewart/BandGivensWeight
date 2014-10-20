@@ -43,7 +43,7 @@ contains
     if (get_n(ub) /= size(a,1) .or. get_n(ub) /= size(a,2)) then
        call set_error(error, 1, id_d_ub_to_upper); return
     end if
-    call f_d_ub_to_upper(ub%b, get_n(ub), ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
+    call f_d_ub_to_upper(ub%bc, get_n(ub), ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
          ub%numrotsu, ub%jsu, ub%csu, ub%ssu, a)
   end subroutine d_ub_to_upper
 
@@ -77,7 +77,7 @@ contains
     if (get_n(ub) /= size(a,1) .or. get_n(ub) /= size(a,2)) then
        call set_error(error, 1, id_c_ub_to_upper); return
     end if
-    call f_c_ub_to_upper(ub%b, get_n(ub), ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
+    call f_c_ub_to_upper(ub%bc, get_n(ub), ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
          ub%numrotsu, ub%jsu, ub%csu, ub%ssu, a)
   end subroutine c_ub_to_upper
 
@@ -112,7 +112,7 @@ contains
     if (get_n(bv) /= size(a,1) .or. get_n(bv) /= size(a,2)) then
        call set_error(error, 1, id_d_bv_to_upper); return
     end if
-    call f_d_bv_to_upper(bv%b, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
+    call f_d_bv_to_upper(bv%br, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
          bv%numrotsv, bv%ksv, bv%csv, bv%ssv, a)
   end subroutine d_bv_to_upper
 
@@ -146,7 +146,7 @@ contains
     if (get_n(bv) /= size(a,1) .or. get_n(bv) /= size(a,2)) then
        call set_error(error, 1, id_c_bv_to_upper); return
     end if
-    call f_c_bv_to_upper(bv%b, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
+    call f_c_bv_to_upper(bv%br, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
          bv%numrotsv, bv%ksv, bv%csv, bv%ssv, a)
   end subroutine c_bv_to_upper
 

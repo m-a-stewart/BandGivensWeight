@@ -76,9 +76,9 @@ contains
        call set_error(error, 6, id_d_reduce_lbw_bv_to_ub); return
     end if
 
-    call f_d_reduce_lbw_bv_to_ub(bv%b, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), &
+    call f_d_reduce_lbw_bv_to_ub(bv%br, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), &
          get_ubwmax(bv), bv%numrotsv, bv%ksv, bv%csv, bv%ssv, & 
-         ub%b, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), ub%numrotsu, ub%jsu, ub%csu, ub%ssu, &
+         ub%bc, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), ub%numrotsu, ub%jsu, ub%csu, ub%ssu, &
          cs, ss, error)
   end subroutine d_reduce_lbw_bv_to_ub
 
@@ -187,9 +187,9 @@ contains
     if (size(cs) /= get_n(ub) - 1 .or. size(ss) /= get_n(ub) - 1) then
        call set_error(error, 6, id_d_reduce_lbw_bv_to_ub); return
     end if
-    call f_c_reduce_lbw_bv_to_ub(bv%b, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), &
+    call f_c_reduce_lbw_bv_to_ub(bv%br, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), &
          get_ubwmax(bv), bv%numrotsv, bv%ksv, bv%csv, bv%ssv, & 
-         ub%b, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), ub%numrotsu, ub%jsu, ub%csu, ub%ssu, &
+         ub%bc, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), ub%numrotsu, ub%jsu, ub%csu, ub%ssu, &
          cs, ss, error)
   end subroutine c_reduce_lbw_bv_to_ub
 
@@ -303,9 +303,9 @@ contains
     if (get_maxsweeps(sw) < lbw) then
        call set_error(error, 2, id_d_qr_bv_to_ub); return
     end if
-    call f_d_qr_bv_to_ub(bv%b, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), &
+    call f_d_qr_bv_to_ub(bv%br, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), &
          get_ubwmax(bv), bv%numrotsv, bv%ksv, bv%csv, bv%ssv, & 
-         ub%b, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), ub%numrotsu, ub%jsu, ub%csu, ub%ssu, &
+         ub%bc, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), ub%numrotsu, ub%jsu, ub%csu, ub%ssu, &
          sw%cs(:,1:lbw), sw%ss(:,1:lbw), error)
   end subroutine d_qr_bv_to_ub
 
@@ -379,9 +379,9 @@ contains
     if (get_maxsweeps(sw) < lbw) then
        call set_error(error, 2, id_d_qr_bv_to_ub); return
     end if
-    call f_c_qr_bv_to_ub(bv%b, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), &
+    call f_c_qr_bv_to_ub(bv%br, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), &
          get_ubwmax(bv), bv%numrotsv, bv%ksv, bv%csv, bv%ssv, & 
-         ub%b, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), ub%numrotsu, ub%jsu, ub%csu, ub%ssu, &
+         ub%bc, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), ub%numrotsu, ub%jsu, ub%csu, ub%ssu, &
          sw%cs(:,1:lbw), sw%ss(:,1:lbw), error)
   end subroutine c_qr_bv_to_ub
 

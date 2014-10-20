@@ -49,8 +49,8 @@ contains
        call set_error(error, 4, id_d_convert_bv_to_ub); return
     end if
 
-    call f_d_convert_bv_to_ub(bv%b, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), &
-         get_ubwmax(bv), bv%numrotsv, bv%ksv, bv%csv, bv%ssv, ub%b,  ub%lbw, ub%ubw, get_lbwmax(ub), &
+    call f_d_convert_bv_to_ub(bv%br, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), &
+         get_ubwmax(bv), bv%numrotsv, bv%ksv, bv%csv, bv%ssv, ub%bc,  ub%lbw, ub%ubw, get_lbwmax(ub), &
          get_ubwmax(ub), ub%numrotsu, ub%jsu, ub%csu, ub%ssu, error)
   end subroutine d_convert_bv_to_ub
 
@@ -126,9 +126,9 @@ contains
     if (get_n(ub) /= get_n(bv)) then
        call set_error(error, 4, id_d_convert_bv_to_ub); return
     end if
-    call f_c_convert_bv_to_ub(bv%b, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), &
+    call f_c_convert_bv_to_ub(bv%br, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), &
          get_ubwmax(bv), bv%numrotsv, bv%ksv, &
-         bv%csv, bv%ssv, ub%b,  ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), ub%numrotsu, ub%jsu, &
+         bv%csv, bv%ssv, ub%bc,  ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), ub%numrotsu, ub%jsu, &
          ub%csu, ub%ssu, error)
   end subroutine c_convert_bv_to_ub
 

@@ -58,9 +58,9 @@ contains
 
     ub=c_new_ub(n,get_lbwmax(bv), get_ubwmax(bv))
     
-    call f_ss_r1_qr(bv%b, n, bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), bv%numrotsv, bv%ksv, &
+    call f_ss_r1_qr(bv%br, n, bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), bv%numrotsv, bv%ksv, &
          bv%csv, bv%ssv, u,v,q,size(q,1), &
-         ub%b, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), ub%numrotsu, ub%jsu, ub%csu, ub%ssu, &
+         ub%bc, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), ub%numrotsu, ub%jsu, ub%csu, ub%ssu, &
          cs_sw, ss_sw, shifts_c, shifts_i, b_bv_tmp, error)
     deallocate(shifts_c, shifts_i, cs_sw, ss_sw, b_bv_tmp)
     call deallocate_ub(ub)
@@ -348,9 +348,9 @@ contains
           shifts_i(j)=1
        end if
     end do
-    call f_ss_qr_iteration(bv%b, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
+    call f_ss_qr_iteration(bv%br, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
          bv%numrotsv, bv%ksv, bv%csv, bv%ssv, & 
-         ub%b, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), ub%numrotsu, ub%jsu, &
+         ub%bc, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), ub%numrotsu, ub%jsu, &
          ub%csu, ub%ssu, shifts_i, shifts_c, sw%cs(:,1), sw%ss(:,1), error)
   end subroutine ss_qr_iteration
 
@@ -448,10 +448,10 @@ contains
 
   ! These function are destructive.  bv is modified so that it
   ! is no longer really a nested bv decomposition.  The
-  ! superdiagonal of A is revealed in bv%b.
+  ! superdiagonal of A is revealed in bv%br.
   subroutine c_bv_reveal_superdiag(bv)
     type(c_bv) :: bv
-    call f_c_bv_reveal_superdiag(bv%b,get_n(bv),bv%lbw,bv%ubw,get_lbwmax(bv),get_ubwmax(bv), &
+    call f_c_bv_reveal_superdiag(bv%br,get_n(bv),bv%lbw,bv%ubw,get_lbwmax(bv),get_ubwmax(bv), &
          bv%numrotsv, bv%ksv, bv%csv, bv%ssv)
   end subroutine c_bv_reveal_superdiag
 

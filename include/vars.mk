@@ -15,7 +15,9 @@ TRANSFORMSOBJS = $(OBJDIR)/transforms.o $(OBJDIR)/rotation.o $(OBJDIR)/shift.o $
 
 ORTHOBJS = $(OBJDIR)/triangular.o $(OBJDIR)/nullvec.o $(OBJDIR)/gs.o
 
-GENERALOBJS = $(OBJDIR)/general.o $(OBJDIR)/general_bv.o $(OBJDIR)/general_ub.o
+GENERALOBJS = $(OBJDIR)/general.o $(OBJDIR)/general_bv.o $(OBJDIR)/general_ub.o \
+	$(OBJDIR)/general_bt.o $(OBJDIR)/general_wb.o $(OBJDIR)/general_ubt.o \
+	$(OBJDIR)/general_wbv.o
 
 CONVERSIONOBJS = $(OBJDIR)/conversions.o $(OBJDIR)/conversions_ub_to_bv.o \
 	$(OBJDIR)/conversions_bv_to_ub.o

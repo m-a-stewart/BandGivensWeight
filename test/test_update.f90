@@ -75,10 +75,10 @@ program test_update
   call cpu_time(t0)
   call d_r1_update_ub_to_bv(ub_d, wp_d, xp_d, sw_d, bv_d, error)
   call cpu_time(t1)
-  b11_d=get_el_br(bv_d%b, bv_d%lbw,1,1)
-  call set_el_br(bv_d%b,bv_d%lbw,1,1,b11_d+wp_d(1)*xp_d(1))
-  b12_d=get_el_br(bv_d%b, bv_d%lbw,1,2)
-  call set_el_br(bv_d%b,bv_d%lbw,1,2,b12_d+wp_d(1)*xp_d(2))
+  b11_d=get_el_br(bv_d%br, bv_d%lbw,1,1)
+  call set_el_br(bv_d%br,bv_d%lbw,1,1,b11_d+wp_d(1)*xp_d(1))
+  b12_d=get_el_br(bv_d%br, bv_d%lbw,1,2)
+  call set_el_br(bv_d%br,bv_d%lbw,1,2,b12_d+wp_d(1)*xp_d(2))
   do j=1,na
      do k=1,na
         a1_d(j,k)=a0_d(j,k)+w0_d(j)* x0_d(k)
@@ -115,10 +115,10 @@ program test_update
   call cpu_time(t0)
   call d_r1_update_ub_to_bv(ub_d, wp_d, xp_d, sw_d, bv_d, error)
   call cpu_time(t1)
-  b11_d=get_el_br(bv_d%b, bv_d%lbw,1,1)
-  call set_el_br(bv_d%b,bv_d%lbw,1,1,b11_d+wp_d(1)*xp_d(1))
-  b12_d=get_el_br(bv_d%b, bv_d%lbw,1,2)
-  call set_el_br(bv_d%b,bv_d%lbw,1,2,b12_d+wp_d(1)*xp_d(2))
+  b11_d=get_el_br(bv_d%br, bv_d%lbw,1,1)
+  call set_el_br(bv_d%br,bv_d%lbw,1,1,b11_d+wp_d(1)*xp_d(1))
+  b12_d=get_el_br(bv_d%br, bv_d%lbw,1,2)
+  call set_el_br(bv_d%br,bv_d%lbw,1,2,b12_d+wp_d(1)*xp_d(2))
   do j=1,na
      do k=1,na
         a1_d(j,k)=a0_d(j,k)+w0_d(j)* x0_d(k)
@@ -156,10 +156,10 @@ program test_update
   call cpu_time(t0)
   call c_r1_update_ub_to_bv(ub_c, wp_c, xp_c, sw_c, bv_c, error)
   call cpu_time(t1)
-  b11_c=get_el_br(bv_c%b, bv_c%lbw,1,1)
-  call set_el_br(bv_c%b,bv_c%lbw,1,1,b11_c+wp_c(1)*conjg(xp_c(1)))
-  b12_c=get_el_br(bv_c%b, bv_c%lbw,1,2)
-  call set_el_br(bv_c%b,bv_c%lbw,1,2,b12_c+wp_c(1)*conjg(xp_c(2)))
+  b11_c=get_el_br(bv_c%br, bv_c%lbw,1,1)
+  call set_el_br(bv_c%br,bv_c%lbw,1,1,b11_c+wp_c(1)*conjg(xp_c(1)))
+  b12_c=get_el_br(bv_c%br, bv_c%lbw,1,2)
+  call set_el_br(bv_c%br,bv_c%lbw,1,2,b12_c+wp_c(1)*conjg(xp_c(2)))
   do j=1,na
      do k=1,na
         a1_c(j,k)=a0_c(j,k)+w0_c(j)* conjg(x0_c(k))
@@ -196,10 +196,10 @@ program test_update
   call cpu_time(t0)
   call c_r1_update_ub_to_bv(ub_c, wp_c, xp_c, sw_c, bv_c, error)
   call cpu_time(t1)
-  b11_c=get_el_br(bv_c%b, bv_c%lbw,1,1)
-  call set_el_br(bv_c%b,bv_c%lbw,1,1,b11_c+wp_c(1)*conjg(xp_c(1)))
-  b12_c=get_el_br(bv_c%b, bv_c%lbw,1,2)
-  call set_el_br(bv_c%b,bv_c%lbw,1,2,b12_c+wp_c(1)*conjg(xp_c(2)))
+  b11_c=get_el_br(bv_c%br, bv_c%lbw,1,1)
+  call set_el_br(bv_c%br,bv_c%lbw,1,1,b11_c+wp_c(1)*conjg(xp_c(1)))
+  b12_c=get_el_br(bv_c%br, bv_c%lbw,1,2)
+  call set_el_br(bv_c%br,bv_c%lbw,1,2,b12_c+wp_c(1)*conjg(xp_c(2)))
   do j=1,na
      do k=1,na
         a1_c(j,k)=a0_c(j,k)+w0_c(j)* conjg(x0_c(k))
