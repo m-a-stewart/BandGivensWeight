@@ -31,6 +31,8 @@ OBJS =  $(MISCOBJS) $(TYPESOBJS) $(TRANSFORMSOBJS) $(ORTHOBJS) $(GENERALOBJS) \
 	$(OBJDIR)/qr_iteration.o $(OBJDIR)/qr_factorization.o $(OBJDIR)/substitution.o \
 	$(OBJDIR)/nested.o $(OBJDIR)/update.o
 
-TEST_EXECS =  $(OBJDIR)/test_general $(OBJDIR)/test_convert $(OBJDIR)/test_recompress \
+TEST_EXECS =  $(OBJDIR)/test_general $(OBJDIR)/test_general_bt $(OBJDIR)/test_general_wb \
+	$(OBJDIR)/test_general_ubt $(OBJDIR)/test_general_wbv \
+	$(OBJDIR)/test_convert $(OBJDIR)/test_recompress \
 	$(OBJDIR)/test_qr_iteration $(OBJDIR)/test_qr_factorization $(OBJDIR)/test_solve \
 	$(OBJDIR)/test_sweeps $(OBJDIR)/test_update

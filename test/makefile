@@ -1,9 +1,15 @@
 include ../include/vars.mk
 
-run_test : $(OBJDIR)/test_recompress $(OBJDIR)/test_general $(OBJDIR)/test_convert \
+run_test : $(OBJDIR)/test_recompress $(OBJDIR)/test_general $(OBJDIR)/test_general_bt \
+		$(OBJDIR)/test_general_wb $(OBJDIR)/test_general_ubt $(OBJDIR)/test_general_wbv \
+		$(OBJDIR)/test_convert \
 		$(OBJDIR)/test_qr_iteration $(OBJDIR)/test_qr_factorization $(OBJDIR)/test_solve \
 		$(OBJDIR)/test_sweeps $(OBJDIR)/test_update
 	$(OBJDIR)/test_general
+	$(OBJDIR)/test_general_bt
+	$(OBJDIR)/test_general_wb
+	$(OBJDIR)/test_general_ubt
+	$(OBJDIR)/test_general_wbv
 	$(OBJDIR)/test_convert
 	$(OBJDIR)/test_recompress
 	$(OBJDIR)/test_qr_iteration
@@ -16,6 +22,22 @@ run_test : $(OBJDIR)/test_recompress $(OBJDIR)/test_general $(OBJDIR)/test_conve
 $(OBJDIR)/test_general : $(OBJDIR)/test_general.o $(OBJS) $(OBJDIR)/test_data.o
 	$(FC) $(LFLAGS) $(PROFLFLAGS) $(OBJDIR)/test_general.o $(OBJS) \
 	$(OBJDIR)/test_data.o -o $(OBJDIR)/test_general
+
+$(OBJDIR)/test_general_bt : $(OBJDIR)/test_general_bt.o $(OBJS) $(OBJDIR)/test_data.o
+	$(FC) $(LFLAGS) $(PROFLFLAGS) $(OBJDIR)/test_general_bt.o $(OBJS) \
+	$(OBJDIR)/test_data.o -o $(OBJDIR)/test_general_bt
+
+$(OBJDIR)/test_general_wb : $(OBJDIR)/test_general_wb.o $(OBJS) $(OBJDIR)/test_data.o
+	$(FC) $(LFLAGS) $(PROFLFLAGS) $(OBJDIR)/test_general_wb.o $(OBJS) \
+	$(OBJDIR)/test_data.o -o $(OBJDIR)/test_general_wb
+
+$(OBJDIR)/test_general_ubt : $(OBJDIR)/test_general_ubt.o $(OBJS) $(OBJDIR)/test_data.o
+	$(FC) $(LFLAGS) $(PROFLFLAGS) $(OBJDIR)/test_general_ubt.o $(OBJS) \
+	$(OBJDIR)/test_data.o -o $(OBJDIR)/test_general_ubt
+
+$(OBJDIR)/test_general_wbv : $(OBJDIR)/test_general_wbv.o $(OBJS) $(OBJDIR)/test_data.o
+	$(FC) $(LFLAGS) $(PROFLFLAGS) $(OBJDIR)/test_general_wbv.o $(OBJS) \
+	$(OBJDIR)/test_data.o -o $(OBJDIR)/test_general_wbv
 
 $(OBJDIR)/test_convert : $(OBJDIR)/test_convert.o $(OBJS) $(OBJDIR)/test_data.o
 	$(FC) $(LFLAGS) $(PROFLFLAGS) $(OBJDIR)/test_convert.o $(OBJS) \
@@ -48,6 +70,10 @@ $(OBJDIR)/test_update : $(OBJDIR)/test_update.o $(OBJS) $(OBJDIR)/test_data.o
 
 $(OBJDIR)/test_data.o : test_data.f90 $(OBJDIR)/prec.o $(OBJS)
 $(OBJDIR)/test_general.o : test_general.f90 $(OBJDIR)/prec.o $(OBJDIR)/test_data.o $(OBJS)
+$(OBJDIR)/test_general_bt.o : test_general_bt.f90 $(OBJDIR)/prec.o $(OBJDIR)/test_data.o $(OBJS)
+$(OBJDIR)/test_general_wb.o : test_general_wb.f90 $(OBJDIR)/prec.o $(OBJDIR)/test_data.o $(OBJS)
+$(OBJDIR)/test_general_ubt.o : test_general_ubt.f90 $(OBJDIR)/prec.o $(OBJDIR)/test_data.o $(OBJS)
+$(OBJDIR)/test_general_wbv.o : test_general_wbv.f90 $(OBJDIR)/prec.o $(OBJDIR)/test_data.o $(OBJS)
 $(OBJDIR)/test_recompress.o : test_recompress.f90 $(OBJDIR)/prec.o $(OBJDIR)/test_data.o $(OBJS)
 $(OBJDIR)/test_convert.o : test_convert.f90 $(OBJDIR)/prec.o $(OBJDIR)/test_data.o $(OBJS)
 $(OBJDIR)/test_qr_factorization.o : test_qr_factorization.f90 $(OBJDIR)/prec.o $(OBJDIR)/test_data.o $(OBJS)

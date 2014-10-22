@@ -6,11 +6,18 @@ module general_bt
   use general_ub
   use misc
   implicit none
-  integer(kind=int32), private, parameter :: nullmaxits=5
 
   interface f_general_bt
      module procedure f_d_general_bt, f_c_general_bt
   end interface f_general_bt
+
+  interface f_lower_to_bt
+     module procedure f_d_lower_to_bt, f_c_lower_to_bt
+  end interface f_lower_to_bt
+
+  interface lower_to_bt
+     module procedure d_lower_to_bt, c_lower_to_bt
+  end interface lower_to_bt
 
   type(routine_info), parameter :: info_d_lower_to_bt=routine_info(id_d_lower_to_bt, &
        'd_lower_to_bt', &
@@ -32,16 +39,12 @@ module general_bt
        'f_c_lower_to_bt', &
        [ character(len=error_message_length) :: 'Insufficient lower bandwidth in bt' ])
 
-  type(routine_info), parameter :: info_f_c_general_bt=routine_info(id_f_c_general_bt, &
-       'f_c_general_bt', &
-       [ character(len=error_message_length) :: 'Insufficient lower bandwidth.' ])
-
 contains
 
   subroutine f_d_general_bt(a, n, lbws, lbwmax, numrotst, kst, cst, sst, tol, error)
     real(kind=dp), target, dimension(n,n), intent(inout) :: a
-    integer(kind=int32), dimension(lbwmax,n), intent(out) :: kst
-    real(kind=dp), dimension(lbwmax,n), intent(out) :: cst, sst
+    integer(kind=int32), dimension(n,lbwmax), intent(out) :: kst
+    real(kind=dp), dimension(n,lbwmax), intent(out) :: cst, sst
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), dimension(n), intent(out) :: numrotst
     integer(kind=int32), dimension(n), intent(out) :: lbws
@@ -57,7 +60,7 @@ contains
     
     kst=transpose(jsu)
     cst=transpose(csu)
-    sst=-transpose(ssu)
+    sst=transpose(ssu)
 
   end subroutine f_d_general_bt
 
@@ -99,10 +102,37 @@ contains
     end if
   end subroutine f_d_lower_to_bt
 
+  ! Errors:
+  ! 0: no error
+  ! 1: n < 1
+  ! 2: bt%lbwmax < lbw
+  ! 3: n is not the same for a and ub or bv.
+  subroutine d_lower_to_bt(a,bt,ubw,tol,error)
+    real(kind=dp), target, dimension(:,:), intent(inout) :: a
+    type(d_bt), intent(inout) :: bt
+    type(error_info), intent(out) :: error
+    real(kind=dp), intent(in) :: tol
+    integer(kind=int32), intent(in) :: ubw
+    call clear_error(error)
+    if (size(a,1) < 1) then
+       call set_error(error, 1, id_d_lower_to_bt); return
+    end if
+    if (get_ubwmax(bt) < ubw) then
+       call set_error(error, 2, id_d_lower_to_bt); return
+    end if
+    if (get_n(bt) /= size(a,1) .or. get_n(bt) /= size(a,2)) then
+       call set_error(error, 3, id_d_lower_to_bt); return
+    end if
+    call f_d_lower_to_bt(a,get_n(bt),bt%br, bt%lbw, ubw, get_lbwmax(bt), get_ubwmax(bt), &
+         bt%numrotst, bt%kst, bt%cst, bt%sst, tol, error)
+    bt%ubw=ubw
+  end subroutine d_lower_to_bt
+
+
   subroutine f_c_general_bt(a, n, lbws, lbwmax, numrotst, kst, cst, sst, tol, error)
     complex(kind=dp), target, dimension(n,n), intent(inout) :: a
-    integer(kind=int32), dimension(lbwmax,n), intent(out) :: kst
-    complex(kind=dp), dimension(lbwmax,n), intent(out) :: cst, sst
+    integer(kind=int32), dimension(n,lbwmax), intent(out) :: kst
+    complex(kind=dp), dimension(n,lbwmax), intent(out) :: cst, sst
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), dimension(n), intent(out) :: numrotst
     integer(kind=int32), dimension(n), intent(out) :: lbws
@@ -118,7 +148,7 @@ contains
     
     kst=transpose(jsu)
     cst=transpose(csu)
-    sst=-conjg(transpose(ssu))
+    sst=transpose(ssu)
 
   end subroutine f_c_general_bt
 
@@ -159,5 +189,31 @@ contains
        call c_extract_diagonals_br(a, n, b, lbw, ubw, lbwmax, ubwmax)
     end if
   end subroutine f_c_lower_to_bt
+
+  ! Errors:
+  ! 0: no error
+  ! 1: n < 1
+  ! 2: ub%ubwmax < ubw
+  ! 3: n is not the same for a and ub or bv.
+  subroutine c_lower_to_bt(a,bt,ubw,tol,error)
+    complex(kind=dp), target, dimension(:,:), intent(inout) :: a
+    type(c_bt), intent(inout) :: bt
+    type(error_info), intent(out) :: error
+    real(kind=dp), intent(in) :: tol
+    integer(kind=int32), intent(in) :: ubw
+    call clear_error(error)
+    if (size(a,1) < 1) then
+       call set_error(error, 1, id_c_lower_to_bt); return
+    end if
+    if (get_ubwmax(bt) < ubw) then
+       call set_error(error, 2, id_c_lower_to_bt); return
+    end if
+    if (get_n(bt) /= size(a,1) .or. get_n(bt) /= size(a,2)) then
+       call set_error(error, 3, id_c_lower_to_bt); return
+    end if
+    call f_c_lower_to_bt(a,get_n(bt),bt%br, bt%lbw, ubw, get_lbwmax(bt), get_ubwmax(bt), &
+         bt%numrotst, bt%kst, bt%cst, bt%sst, tol, error)
+    bt%ubw=ubw
+  end subroutine c_lower_to_bt
 
 end module general_bt

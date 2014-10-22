@@ -53,7 +53,7 @@ program test_solve
   ub_d=d_new_ub(na,lbwmax,ubwmax)
   bv_d=d_new_bv(na,lbwmax,ubwmax)
   sw_d=d_new_sweeps(na,lbwmax)
-  call d_assemble_a(a_d,u_d(1:na,1:ubwa),v_d(1:ubwa,1:na),d_d(1:na)+shiftr,lbwa)
+  call d_assemble_upper(a_d,u_d(1:na,1:ubwa),v_d(1:ubwa,1:na),d_d(1:na)+shiftr,lbwa)
   a0_d=a_d
   call upper_to_bv(a_d,bv_d,lbwa, tol,error)
   call qr_bv_to_ub(bv_d,ub_d,sw_d,error)
@@ -64,7 +64,7 @@ program test_solve
   rhs_d=matmul(a0_d,x_d)
   test_name = "Real Back Solver (n=100)"
   scale=maxabs(a0_d)*maxabs(x_d)
-  call d_output_result(test_name,rhs0_d/scale,rhs_d/scale,ub_d%ubw,ub_d%ubw,t0,t1,tol2,error)
+  call d_output_result_upper(test_name,rhs0_d/scale,rhs_d/scale,ub_d%ubw,ub_d%ubw,t0,t1,tol2,error)
   deallocate(a_d, a0_d, a1_d, rhs_d, rhs0_d, x_d)
   call deallocate_ub(ub_d); call deallocate_bv(bv_d)
   call deallocate_sweeps(sw_d)
@@ -78,7 +78,7 @@ program test_solve
   ub_d=d_new_ub(na,lbwmax,ubwmax)
   bv_d=d_new_bv(na,lbwmax,ubwmax)
   sw_d=d_new_sweeps(na,lbwmax)
-  call d_assemble_a(a_d,u_d(1:na,1:ubwa),v_d(1:ubwa,1:na),d_d(1:na)+shiftr,lbwa)
+  call d_assemble_upper(a_d,u_d(1:na,1:ubwa),v_d(1:ubwa,1:na),d_d(1:na)+shiftr,lbwa)
   a0_d=a_d
   call upper_to_bv(a_d,bv_d,lbwa, tol,error)
   call qr_bv_to_ub(bv_d,ub_d,sw_d,error)
@@ -89,7 +89,7 @@ program test_solve
   rhs_d=matmul(a0_d,x_d)
   test_name = "Real Back Solver (n=1000)"
   scale=maxabs(a0_d)*maxabs(x_d)
-  call d_output_result(test_name,rhs0_d/scale,rhs_d/scale,ub_d%ubw,ub_d%ubw,t0,t1,tol2,error)
+  call d_output_result_upper(test_name,rhs0_d/scale,rhs_d/scale,ub_d%ubw,ub_d%ubw,t0,t1,tol2,error)
   deallocate(a_d, a0_d, a1_d, rhs_d, rhs0_d, x_d)
   call deallocate_ub(ub_d); call deallocate_bv(bv_d)
   call deallocate_sweeps(sw_d)
@@ -103,7 +103,7 @@ program test_solve
   ub_d=d_new_ub(na,lbwmax,ubwmax)
   bv_d=d_new_bv(na,lbwmax,ubwmax)
   sw_d=d_new_sweeps(na,lbwmax)
-  call d_assemble_a(a_d,u_d(1:na,1:ubwa),v_d(1:ubwa,1:na),d_d(1:na)+shiftr,lbwa)
+  call d_assemble_upper(a_d,u_d(1:na,1:ubwa),v_d(1:ubwa,1:na),d_d(1:na)+shiftr,lbwa)
   a0_d=a_d
   call upper_to_bv(a_d,bv_d,lbwa, tol,error)
   call qr_bv_to_ub(bv_d,ub_d,sw_d,error)
@@ -114,7 +114,7 @@ program test_solve
   rhs_v_d=matmul(a0_d,x_v_d)
   test_name = "Real Back Solver, vector rhs (n=1000)"
   scale=maxabs(a0_d)*maxabs(x_v_d)
-  call d_output_result(test_name,reshape(rhs0_v_d/scale,[na,1]),reshape(rhs_v_d/scale,[na,1]), &
+  call d_output_result_upper(test_name,reshape(rhs0_v_d/scale,[na,1]),reshape(rhs_v_d/scale,[na,1]), &
        ub_d%ubw,ub_d%ubw,t0,t1,tol2,error)
   deallocate(a_d, a0_d, a1_d, rhs_v_d, rhs0_v_d, x_v_d)
   call deallocate_ub(ub_d); call deallocate_bv(bv_d)
@@ -135,7 +135,7 @@ program test_solve
   ub_d=d_new_ub(na,lbwmax,ubwmax)
   bv_d=d_new_bv(na,lbwmax,ubwmax)
   sw_d=d_new_sweeps(na,lbwmax)
-  call d_assemble_a(a_d,u_d(1:na,1:ubwa),v_d(1:ubwa,1:na),d_d(1:na)+shiftr,lbwa)
+  call d_assemble_upper(a_d,u_d(1:na,1:ubwa),v_d(1:ubwa,1:na),d_d(1:na)+shiftr,lbwa)
   a0_d=a_d
   call upper_to_bv(a_d,bv_d,lbwa, tol,error)
   call cpu_time(t0)
@@ -144,7 +144,7 @@ program test_solve
   rhs_d=matmul(x_d,a0_d)
   test_name = "Real Forward Solver (n=100)"
   scale=maxabs(a0_d)*maxabs(x_d)
-  call d_output_result(test_name,rhs0_d/scale,rhs_d/scale,bv_d%ubw,bv_d%ubw,t0,t1,tol2,error)
+  call d_output_result_upper(test_name,rhs0_d/scale,rhs_d/scale,bv_d%ubw,bv_d%ubw,t0,t1,tol2,error)
   deallocate(a_d, a0_d, a1_d, rhs_d, rhs0_d, x_d)
   call deallocate_ub(ub_d); call deallocate_bv(bv_d)
   call deallocate_sweeps(sw_d)
@@ -158,7 +158,7 @@ program test_solve
   ub_d=d_new_ub(na,lbwmax,ubwmax)
   bv_d=d_new_bv(na,lbwmax,ubwmax)
   sw_d=d_new_sweeps(na,lbwmax)
-  call d_assemble_a(a_d,u_d(1:na,1:ubwa),v_d(1:ubwa,1:na),d_d(1:na)+shiftr,lbwa)
+  call d_assemble_upper(a_d,u_d(1:na,1:ubwa),v_d(1:ubwa,1:na),d_d(1:na)+shiftr,lbwa)
   a0_d=a_d
   call upper_to_bv(a_d,bv_d,lbwa, tol,error)
   call cpu_time(t0)
@@ -167,7 +167,7 @@ program test_solve
   rhs_d=matmul(x_d,a0_d)
   test_name = "Real Forward Solver (n=1000)"
   scale=maxabs(a0_d)*maxabs(x_d)
-  call d_output_result(test_name,rhs0_d/scale,rhs_d/scale,bv_d%ubw,bv_d%ubw,t0,t1,tol2,error)
+  call d_output_result_upper(test_name,rhs0_d/scale,rhs_d/scale,bv_d%ubw,bv_d%ubw,t0,t1,tol2,error)
   deallocate(a_d, a0_d, a1_d, rhs_d, rhs0_d, x_d)
   call deallocate_ub(ub_d); call deallocate_bv(bv_d)
   call deallocate_sweeps(sw_d)
@@ -181,7 +181,7 @@ program test_solve
   ub_d=d_new_ub(na,lbwmax,ubwmax)
   bv_d=d_new_bv(na,lbwmax,ubwmax)
   sw_d=d_new_sweeps(na,lbwmax)
-  call d_assemble_a(a_d,u_d(1:na,1:ubwa),v_d(1:ubwa,1:na),d_d(1:na)+shiftr,lbwa)
+  call d_assemble_upper(a_d,u_d(1:na,1:ubwa),v_d(1:ubwa,1:na),d_d(1:na)+shiftr,lbwa)
   a0_d=a_d
   call upper_to_bv(a_d,bv_d,lbwa, tol,error)
   call cpu_time(t0)
@@ -190,7 +190,7 @@ program test_solve
   rhs_v_d=matmul(x_v_d,a0_d)
   test_name = "Real Forward Solver, Vector (n=1000)"
   scale=maxabs(a0_d)*maxabs(x_v_d)
-  call d_output_result(test_name,reshape(rhs0_v_d/scale,[1,na]),&
+  call d_output_result_upper(test_name,reshape(rhs0_v_d/scale,[1,na]),&
        reshape(rhs_v_d/scale,[1,na]),bv_d%ubw,bv_d%ubw,t0,t1,tol2,error)
   deallocate(a_d, a0_d, a1_d, rhs_v_d, rhs0_v_d, x_v_d)
   call deallocate_ub(ub_d); call deallocate_bv(bv_d)
@@ -216,7 +216,7 @@ program test_solve
   ub_c=c_new_ub(na,lbwmax,ubwmax)
   bv_c=c_new_bv(na,lbwmax,ubwmax)
   sw_c=c_new_sweeps(na,lbwmax)
-  call c_assemble_a(a_c,u_c(1:na,1:ubwa),v_c(1:ubwa,1:na),d_c(1:na)+shiftc,lbwa)
+  call c_assemble_upper(a_c,u_c(1:na,1:ubwa),v_c(1:ubwa,1:na),d_c(1:na)+shiftc,lbwa)
   a0_c=a_c
   call upper_to_bv(a_c,bv_c,lbwa, tol,error)
   call qr_bv_to_ub(bv_c,ub_c,sw_c,error)
@@ -227,7 +227,7 @@ program test_solve
   rhs_c=matmul(a0_c,x_c)
   test_name = "Complex Back Solver (n=100)"
   scale=maxabs(a0_c)*maxabs(x_c)
-  call c_output_result(test_name,rhs0_c/scale,rhs_c/scale,ub_c%ubw,ub_c%ubw,t0,t1,tol2,error)
+  call c_output_result_upper(test_name,rhs0_c/scale,rhs_c/scale,ub_c%ubw,ub_c%ubw,t0,t1,tol2,error)
   deallocate(a_c, a0_c, a1_c, rhs_c, rhs0_c, x_c)
   call deallocate_ub(ub_c); call deallocate_bv(bv_c)
   call deallocate_sweeps(sw_c)
@@ -241,7 +241,7 @@ program test_solve
   ub_c=c_new_ub(na,lbwmax,ubwmax)
   bv_c=c_new_bv(na,lbwmax,ubwmax)
   sw_c=c_new_sweeps(na,lbwmax)
-  call c_assemble_a(a_c,u_c(1:na,1:ubwa),v_c(1:ubwa,1:na),d_c(1:na)+shiftc,lbwa)
+  call c_assemble_upper(a_c,u_c(1:na,1:ubwa),v_c(1:ubwa,1:na),d_c(1:na)+shiftc,lbwa)
   a0_c=a_c
   call upper_to_bv(a_c,bv_c,lbwa, tol,error)
   call qr_bv_to_ub(bv_c,ub_c,sw_c,error)
@@ -253,7 +253,7 @@ program test_solve
   rhs_c=matmul(a0_c,x_c)
   test_name = "Complex Back Solver (n=1000)"
   scale=maxabs(a0_c)*maxabs(x_c)
-  call c_output_result(test_name,rhs0_c/scale,rhs_c/scale,ub_c%ubw,ub_c%ubw,t0,t1,tol2,error)
+  call c_output_result_upper(test_name,rhs0_c/scale,rhs_c/scale,ub_c%ubw,ub_c%ubw,t0,t1,tol2,error)
   deallocate(a_c, a0_c, a1_c, rhs_c, rhs0_c, x_c)
   call deallocate_ub(ub_c); call deallocate_bv(bv_c)
   call deallocate_sweeps(sw_c)
@@ -267,7 +267,7 @@ program test_solve
   ub_c=c_new_ub(na,lbwmax,ubwmax)
   bv_c=c_new_bv(na,lbwmax,ubwmax)
   sw_c=c_new_sweeps(na,lbwmax)
-  call c_assemble_a(a_c,u_c(1:na,1:ubwa),v_c(1:ubwa,1:na),d_c(1:na)+shiftc,lbwa)
+  call c_assemble_upper(a_c,u_c(1:na,1:ubwa),v_c(1:ubwa,1:na),d_c(1:na)+shiftc,lbwa)
   a0_c=a_c
   call upper_to_bv(a_c,bv_c,lbwa, tol,error)
   call qr_bv_to_ub(bv_c,ub_c,sw_c,error)
@@ -278,7 +278,7 @@ program test_solve
   rhs_v_c=matmul(a0_c,x_v_c)
   test_name = "Complex Back Solver, vector (n=1000)"
   scale=maxabs(a0_c)*maxabs(x_v_c)
-  call c_output_result(test_name,reshape(rhs0_v_c/scale,[na,1]),reshape(rhs_v_c/scale,[na,1]), &
+  call c_output_result_upper(test_name,reshape(rhs0_v_c/scale,[na,1]),reshape(rhs_v_c/scale,[na,1]), &
        ub_c%ubw,ub_c%ubw,t0,t1,tol2,error)
   deallocate(a_c, a0_c, a1_c, rhs_v_c, rhs0_v_c, x_v_c)
   call deallocate_ub(ub_c); call deallocate_bv(bv_c)
@@ -299,7 +299,7 @@ program test_solve
   ub_c=c_new_ub(na,lbwmax,ubwmax)
   bv_c=c_new_bv(na,lbwmax,ubwmax)
   sw_c=c_new_sweeps(na,lbwmax)
-  call c_assemble_a(a_c,u_c(1:na,1:ubwa),v_c(1:ubwa,1:na),d_c(1:na)+shiftc,lbwa)
+  call c_assemble_upper(a_c,u_c(1:na,1:ubwa),v_c(1:ubwa,1:na),d_c(1:na)+shiftc,lbwa)
   a0_c=a_c
   call upper_to_bv(a_c,bv_c,lbwa, tol,error)
   call cpu_time(t0)
@@ -308,7 +308,7 @@ program test_solve
   rhs_c=matmul(x_c,a0_c)
   test_name = "Complex Forward Solver (n=100)"
   scale=maxabs(a0_c)*maxabs(x_c)
-  call c_output_result(test_name,rhs0_c/scale,rhs_c/scale,bv_c%ubw,bv_c%ubw,t0,t1,tol2,error)
+  call c_output_result_upper(test_name,rhs0_c/scale,rhs_c/scale,bv_c%ubw,bv_c%ubw,t0,t1,tol2,error)
   deallocate(a_c, a0_c, a1_c, rhs_c, rhs0_c, x_c)
   call deallocate_ub(ub_c); call deallocate_bv(bv_c)
   call deallocate_sweeps(sw_c)
@@ -322,7 +322,7 @@ program test_solve
   ub_c=c_new_ub(na,lbwmax,ubwmax)
   bv_c=c_new_bv(na,lbwmax,ubwmax)
   sw_c=c_new_sweeps(na,lbwmax)
-  call c_assemble_a(a_c,u_c(1:na,1:ubwa),v_c(1:ubwa,1:na),d_c(1:na)+shiftc,lbwa)
+  call c_assemble_upper(a_c,u_c(1:na,1:ubwa),v_c(1:ubwa,1:na),d_c(1:na)+shiftc,lbwa)
   a0_c=a_c
   call upper_to_bv(a_c,bv_c,lbwa, tol,error)
   call cpu_time(t0)
@@ -331,7 +331,7 @@ program test_solve
   rhs_c=matmul(x_c,a0_c)
   test_name = "Complex Forward Solver (n=1000)"
   scale=maxabs(a0_c)*maxabs(x_c)
-  call c_output_result(test_name,rhs0_c/scale,rhs_c/scale,bv_c%ubw,bv_c%ubw,t0,t1,tol2,error)
+  call c_output_result_upper(test_name,rhs0_c/scale,rhs_c/scale,bv_c%ubw,bv_c%ubw,t0,t1,tol2,error)
   deallocate(a_c, a0_c, a1_c, rhs_c, rhs0_c, x_c)
   call deallocate_ub(ub_c); call deallocate_bv(bv_c)
   call deallocate_sweeps(sw_c)
@@ -345,7 +345,7 @@ program test_solve
   ub_c=c_new_ub(na,lbwmax,ubwmax)
   bv_c=c_new_bv(na,lbwmax,ubwmax)
   sw_c=c_new_sweeps(na,lbwmax)
-  call c_assemble_a(a_c,u_c(1:na,1:ubwa),v_c(1:ubwa,1:na),d_c(1:na)+shiftc,lbwa)
+  call c_assemble_upper(a_c,u_c(1:na,1:ubwa),v_c(1:ubwa,1:na),d_c(1:na)+shiftc,lbwa)
   a0_c=a_c
   call upper_to_bv(a_c,bv_c,lbwa, tol,error)
   call cpu_time(t0)
@@ -354,7 +354,7 @@ program test_solve
   rhs_v_c=matmul(x_v_c,a0_c)
   test_name = "Complex Forward Solver, Vector (n=1000)"
   scale=maxabs(a0_c)*maxabs(x_v_c)
-  call c_output_result(test_name,reshape(rhs0_v_c/scale,[1,na]),&
+  call c_output_result_upper(test_name,reshape(rhs0_v_c/scale,[1,na]),&
        reshape(rhs_v_c/scale,[1,na]),bv_c%ubw,bv_c%ubw,t0,t1,tol2,error)
   deallocate(a_c, a0_c, a1_c, rhs_v_c, rhs0_v_c, x_v_c)
   call deallocate_ub(ub_c); call deallocate_bv(bv_c)
