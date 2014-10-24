@@ -2,7 +2,8 @@ include ../include/vars.mk
 
 run_test : $(OBJDIR)/test_recompress $(OBJDIR)/test_general $(OBJDIR)/test_general_bt \
 		$(OBJDIR)/test_general_wb $(OBJDIR)/test_general_ubt $(OBJDIR)/test_general_wbv \
-		$(OBJDIR)/test_convert \
+		$(OBJDIR)/test_convert_ub_and_bv $(OBJDIR)/test_convert_wb_and_bt  \
+		$(OBJDIR)/test_convert_ubt_and_wbv \
 		$(OBJDIR)/test_qr_iteration $(OBJDIR)/test_qr_factorization $(OBJDIR)/test_solve \
 		$(OBJDIR)/test_sweeps $(OBJDIR)/test_update
 	$(OBJDIR)/test_general
@@ -10,7 +11,9 @@ run_test : $(OBJDIR)/test_recompress $(OBJDIR)/test_general $(OBJDIR)/test_gener
 	$(OBJDIR)/test_general_wb
 	$(OBJDIR)/test_general_ubt
 	$(OBJDIR)/test_general_wbv
-	$(OBJDIR)/test_convert
+	$(OBJDIR)/test_convert_ub_and_bv
+	$(OBJDIR)/test_convert_wb_and_bt
+	$(OBJDIR)/test_convert_ubt_and_wbv
 	$(OBJDIR)/test_recompress
 	$(OBJDIR)/test_qr_iteration
 	$(OBJDIR)/test_qr_factorization
@@ -39,9 +42,17 @@ $(OBJDIR)/test_general_wbv : $(OBJDIR)/test_general_wbv.o $(OBJS) $(OBJDIR)/test
 	$(FC) $(LFLAGS) $(PROFLFLAGS) $(OBJDIR)/test_general_wbv.o $(OBJS) \
 	$(OBJDIR)/test_data.o -o $(OBJDIR)/test_general_wbv
 
-$(OBJDIR)/test_convert : $(OBJDIR)/test_convert.o $(OBJS) $(OBJDIR)/test_data.o
-	$(FC) $(LFLAGS) $(PROFLFLAGS) $(OBJDIR)/test_convert.o $(OBJS) \
-	$(OBJDIR)/test_data.o -o $(OBJDIR)/test_convert
+$(OBJDIR)/test_convert_ub_and_bv : $(OBJDIR)/test_convert_ub_and_bv.o $(OBJS) $(OBJDIR)/test_data.o
+	$(FC) $(LFLAGS) $(PROFLFLAGS) $(OBJDIR)/test_convert_ub_and_bv.o $(OBJS) \
+	$(OBJDIR)/test_data.o -o $(OBJDIR)/test_convert_ub_and_bv
+
+$(OBJDIR)/test_convert_wb_and_bt : $(OBJDIR)/test_convert_wb_and_bt.o $(OBJS) $(OBJDIR)/test_data.o
+	$(FC) $(LFLAGS) $(PROFLFLAGS) $(OBJDIR)/test_convert_wb_and_bt.o $(OBJS) \
+	$(OBJDIR)/test_data.o -o $(OBJDIR)/test_convert_wb_and_bt
+
+$(OBJDIR)/test_convert_ubt_and_wbv : $(OBJDIR)/test_convert_ubt_and_wbv.o $(OBJS) $(OBJDIR)/test_data.o
+	$(FC) $(LFLAGS) $(PROFLFLAGS) $(OBJDIR)/test_convert_ubt_and_wbv.o $(OBJS) \
+	$(OBJDIR)/test_data.o -o $(OBJDIR)/test_convert_ubt_and_wbv
 
 $(OBJDIR)/test_recompress : $(OBJDIR)/test_recompress.o $(OBJS) $(OBJDIR)/test_data.o
 	$(FC) $(LFLAGS) $(PROFLFLAGS) $(OBJDIR)/test_recompress.o $(OBJS) \
@@ -75,7 +86,9 @@ $(OBJDIR)/test_general_wb.o : test_general_wb.f90 $(OBJDIR)/prec.o $(OBJDIR)/tes
 $(OBJDIR)/test_general_ubt.o : test_general_ubt.f90 $(OBJDIR)/prec.o $(OBJDIR)/test_data.o $(OBJS)
 $(OBJDIR)/test_general_wbv.o : test_general_wbv.f90 $(OBJDIR)/prec.o $(OBJDIR)/test_data.o $(OBJS)
 $(OBJDIR)/test_recompress.o : test_recompress.f90 $(OBJDIR)/prec.o $(OBJDIR)/test_data.o $(OBJS)
-$(OBJDIR)/test_convert.o : test_convert.f90 $(OBJDIR)/prec.o $(OBJDIR)/test_data.o $(OBJS)
+$(OBJDIR)/test_convert_ub_and_bv.o : test_convert_ub_and_bv.f90 $(OBJDIR)/prec.o $(OBJDIR)/test_data.o $(OBJS)
+$(OBJDIR)/test_convert_wb_and_bt.o : test_convert_wb_and_bt.f90 $(OBJDIR)/prec.o $(OBJDIR)/test_data.o $(OBJS)
+$(OBJDIR)/test_convert_ubt_and_wbv.o : test_convert_ubt_and_wbv.f90 $(OBJDIR)/prec.o $(OBJDIR)/test_data.o $(OBJS)
 $(OBJDIR)/test_qr_factorization.o : test_qr_factorization.f90 $(OBJDIR)/prec.o $(OBJDIR)/test_data.o $(OBJS)
 $(OBJDIR)/test_qr_iteration.o : test_qr_iteration.f90 $(OBJDIR)/prec.o $(OBJDIR)/test_data.o $(OBJS)
 $(OBJDIR)/test_solve.o : test_solve.f90 $(OBJDIR)/prec.o $(OBJDIR)/test_data.o $(OBJS)

@@ -91,6 +91,7 @@ contains
     end if
     ! k is the size of the leading principal submatrix
     do k=1,n-2
+       ! Apply V_k
        do j=1,numrotsv(k)
           rot%cosine=csv(k,j); rot%sine=ssv(k,j)
           call tbr_times_rotation(b_bv,n,lbw1,ubw1,0,n-k,trp_rot(rot),ksv(k,j))

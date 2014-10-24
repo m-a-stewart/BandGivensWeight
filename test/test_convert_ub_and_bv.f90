@@ -1,4 +1,4 @@
-program test_convert
+program test_convert_ub_and_bv
   use nested
   use test_data
   implicit none
@@ -371,4 +371,4 @@ program test_convert
   call c_deallocate_bv(bv_na_c)
   print *
 
-end program test_convert
+end program test_convert_ub_and_bv

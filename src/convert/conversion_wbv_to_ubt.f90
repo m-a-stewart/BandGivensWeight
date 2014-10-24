@@ -1,0 +1,291 @@
+module conversion_wbv_to_ubt
+  use misc
+  use shift
+  use rotation
+  use types
+  implicit none
+
+  interface convert_wbv_to_ubt
+     module procedure d_convert_wbv_to_ubt, c_convert_wbv_to_ubt
+  end interface convert_wbv_to_ubt
+
+  interface f_convert_wbv_to_ubt
+     module procedure f_d_convert_wbv_to_ubt, f_c_convert_wbv_to_ubt
+  end interface f_convert_wbv_to_ubt
+
+  type(routine_info), parameter :: info_d_convert_wbv_to_ubt=routine_info(id_d_convert_wbv_to_ubt, &
+       'd_convert_wbv_to_ubt', &
+       [ character(len=error_message_length) :: 'n<1', 'Insufficient storage in wbv', &
+       'Insufficient storage in ubt.', 'wbv%n /= ubt%n' ] )
+
+  type(routine_info), parameter :: info_c_convert_wbv_to_ubt=routine_info(id_c_convert_wbv_to_ubt, &
+       'c_convert_wbv_to_ubt', &
+       [ character(len=error_message_length) :: 'Insufficient storage in wbv', &
+       'Insufficient storage in ubt.', 'wbv%n /= ubt%n' ] )
+
+contains
+
+  ! Errors:
+  ! 0: no error
+  ! 1: n<1
+  ! 2: Insufficient storage in wbv
+  ! 3: Insufficient stroage in ubt
+  ! 4: wbv%n /= ubt%n
+
+  subroutine d_convert_wbv_to_ubt(wbv, ubt, error)
+    type(d_wbv) :: wbv
+    type(d_ubt) :: ubt
+    type(error_info), intent(out) :: error
+    call clear_error(error)
+    if (get_n(wbv) < 1) then
+       call set_error(error, 1, id_d_convert_wbv_to_ubt); return
+    end if
+    if ((get_ubwmax(wbv) < wbv%ubw+1 .and. wbv%ubw < get_n(wbv)-1) .or. &
+         (get_lbwmax(wbv) < wbv%lbw+1 .and. wbv%lbw < get_n(wbv)-1)) then
+       call set_error(error, 2, id_d_convert_wbv_to_ubt); return
+    end if
+    if (get_lbwmax(ubt) < wbv%lbw .or. get_ubwmax(ubt) < wbv%ubw) then
+       call set_error(error, 3, id_d_convert_wbv_to_ubt); return
+    end if
+    if (get_n(wbv) /= get_n(ubt)) then
+       call set_error(error, 4, id_d_convert_wbv_to_ubt); return
+    end if
+    call f_d_convert_wbv_to_ubt(wbv%br, get_n(wbv), wbv%lbw, wbv%ubw, get_lbwmax(wbv), &
+         get_ubwmax(wbv), wbv%numrotsw, wbv%jsw, wbv%csw, wbv%ssw, &
+         wbv%numrotsv, wbv%ksv, wbv%csv, wbv%ssv, &
+         ubt%bc, ubt%lbw, ubt%ubw, get_lbwmax(ubt), get_ubwmax(ubt), &
+         ubt%numrotsu, ubt%jsu, ubt%csu, ubt%ssu, &
+         ubt%numrotst, ubt%kst, ubt%cst, ubt%sst, error)
+  end subroutine d_convert_wbv_to_ubt
+
+  subroutine f_d_convert_wbv_to_ubt(b_wbv, n, lbw, ubw, lbwmax_wbv, ubwmax_wbv, numrotsw, &
+       jsw, csw, ssw, numrotsv, ksv, csv, ssv, &
+       b_ubt, lbw_ubt, ubw_ubt, lbwmax_ubt, ubwmax_ubt, &
+       numrotsu, jsu, csu, ssu, numrotst, kst, cst, sst, error)
+    real(kind=dp), dimension(n,lbwmax_wbv+ubwmax_wbv+1), intent(inout) :: b_wbv
+    integer(kind=int32), intent(in) :: n, lbw, ubw, lbwmax_wbv, ubwmax_wbv, lbwmax_ubt, ubwmax_ubt
+    integer(kind=int32), dimension(n), intent(in) :: numrotsw
+    integer(kind=int32), dimension(lbwmax_wbv,n), intent(in) :: jsw
+    real(kind=dp), dimension(lbwmax_wbv,n), intent(in) :: csw, ssw
+    integer(kind=int32), dimension(n), intent(in) :: numrotsv
+    integer(kind=int32), dimension(n,ubwmax_wbv), intent(in) :: ksv
+    real(kind=dp), dimension(n,ubwmax_wbv), intent(in) :: csv, ssv
+
+    real(kind=dp), dimension(lbwmax_ubt+ubwmax_ubt+1,n), intent(out) :: b_ubt
+    integer(kind=int32), dimension(n), intent(out) :: numrotsu
+    integer(kind=int32), dimension(ubwmax_ubt,n), intent(out) :: jsu
+    real(kind=dp), dimension(ubwmax_ubt,n), intent(out) :: csu, ssu
+    integer(kind=int32), dimension(n), intent(out) :: numrotst
+    integer(kind=int32), dimension(n,lbwmax_ubt), intent(out) :: kst
+    real(kind=dp), dimension(n,lbwmax_ubt), intent(out) :: cst, sst
+    integer(kind=int32), intent(out) :: lbw_ubt, ubw_ubt
+    type(error_info), intent(out) :: error
+
+    integer(kind=int32) :: j, k, k0, k1, ubw1, lbw1
+    type(d_rotation) :: rot
+    logical :: full_lbw
+
+    call clear_error(error)
+    b_ubt(1:lbw+ubw+1,:)=0.0_dp; numrotsu=0
+    ssu(1:ubw,:)=0.0_dp; csu(1:ubw,:)=0.0_dp
+    jsu(1:ubw,:)=0
+    numrotst=0
+    sst(:,1:lbw)=0.0_dp; cst(:,1:lbw)=0.0_dp
+    kst(:,1:lbw)=0
+    lbw_ubt=lbw; ubw_ubt=ubw
+    if (n == 1) then
+       b_ubt(1,1)=b_wbv(1,1);
+       lbw_ubt=0; ubw_ubt=0; return
+    end if
+    ! must allow for temporary fill-in
+    if (lbw < n-1) then
+       lbw1=lbw+1
+       call right_shift(b_wbv)
+       full_lbw=.false.
+    else
+       lbw1=lbw
+       full_lbw=.true.
+    end if
+    if (ubw < n-1) then
+       ubw1=ubw+1
+       b_wbv(:,lbw1+ubw1+1)=0.0_dp
+    else
+       lbw1=lbw
+    end if
+    ! Do the lower triangular part.
+    ! k is the size of the leading principal submatrix
+    do k=1,n-2
+       ! Apply W_k
+       do j=1,numrotsw(k)
+          rot%cosine=csw(j,k); rot%sine=ssw(j,k)
+          call rotation_times_tbr(rot,b_wbv,n,lbw1,ubw1,0,n-k,jsw(j,k))
+       end do
+       ! columns in which nonzeros have been introduced into the extra subdiagonal
+       k0=max(k-lbw+1,1)
+       k1=min(k,n-lbw1)
+       ! Apply T_{k+1}
+       numrotst(k+1)=max(k1-k0+1,0)
+       do j=k1,k0,-1
+          rot=rgivens2(get_el_br(b_wbv,lbw1,j+lbw1,j), get_el_br(b_wbv,lbw1,j+lbw1,j+1))
+          kst(k+1,j-k0+1)=j
+          cst(k+1,j-k0+1)=rot%cosine; sst(k+1,j-k0+1)=rot%sine
+          call tbr_times_rotation(b_wbv,n,lbw1,ubw1,k+1,0,rot,j)
+       end do
+    end do
+    ! upper
+    do k=1,n-2
+       ! Apply V_k
+       do j=1,numrotsv(k)
+          rot%cosine=csv(k,j); rot%sine=ssv(k,j)
+          call tbr_times_rotation(b_wbv,n,lbw1,ubw1,0,n-k,trp_rot(rot),ksv(k,j))
+       end do
+       !
+       k0=max(k+2,ubw1+1)
+       k1=min(k+ubw1,n)
+       numrotsu(k+1)=max(k1-k0+1,0)
+       do j=k1,k0,-1
+          rot=lgivens2(get_el_br(b_wbv,lbw1,j-ubw1,j), get_el_br(b_wbv,lbw1,j-ubw1+1,j))
+          jsu(j-k0+1,k+1)=j-ubw1
+          csu(j-k0+1,k+1)=rot%cosine; ssu(j-k0+1,k+1)=rot%sine
+          call rotation_times_tbr(trp_rot(rot),b_wbv,n,lbw1,ubw1,k+1,0,j-ubw1)
+       end do
+    end do
+    if (.not. full_lbw) then
+       call left_shift(b_wbv)
+    end if
+    call br_to_bc(b_wbv,b_ubt,lbw,ubw)
+  end subroutine f_d_convert_wbv_to_ubt
+
+  ! Errors:
+  ! 0: no error
+  ! 1: n<1
+  ! 2: Insufficient storage in wbv
+  ! 3: Insufficient stroage in ubt
+  ! 4: wbv%n /= ubt%n
+
+  subroutine c_convert_wbv_to_ubt(wbv, ubt, error)
+    type(c_wbv) :: wbv
+    type(c_ubt) :: ubt
+    type(error_info), intent(out) :: error
+    call clear_error(error)
+    if (get_n(wbv) < 1) then
+       call set_error(error, 1, id_c_convert_wbv_to_ubt); return
+    end if
+    if ((get_ubwmax(wbv) < wbv%ubw+1 .and. wbv%ubw < get_n(wbv)-1) .or. &
+         (get_lbwmax(wbv) < wbv%lbw+1 .and. wbv%lbw < get_n(wbv)-1)) then
+       call set_error(error, 2, id_c_convert_wbv_to_ubt); return
+    end if
+    if (get_lbwmax(ubt) < wbv%lbw .or. get_ubwmax(ubt) < wbv%ubw) then
+       call set_error(error, 3, id_c_convert_wbv_to_ubt); return
+    end if
+    if (get_n(wbv) /= get_n(ubt)) then
+       call set_error(error, 4, id_c_convert_wbv_to_ubt); return
+    end if
+    call f_c_convert_wbv_to_ubt(wbv%br, get_n(wbv), wbv%lbw, wbv%ubw, get_lbwmax(wbv), &
+         get_ubwmax(wbv), wbv%numrotsw, wbv%jsw, wbv%csw, wbv%ssw, &
+         wbv%numrotsv, wbv%ksv, wbv%csv, wbv%ssv, &
+         ubt%bc, ubt%lbw, ubt%ubw, get_lbwmax(ubt), get_ubwmax(ubt), &
+         ubt%numrotsu, ubt%jsu, ubt%csu, ubt%ssu, &
+         ubt%numrotst, ubt%kst, ubt%cst, ubt%sst, error)
+  end subroutine c_convert_wbv_to_ubt
+
+  subroutine f_c_convert_wbv_to_ubt(b_wbv, n, lbw, ubw, lbwmax_wbv, ubwmax_wbv, numrotsw, &
+       jsw, csw, ssw, numrotsv, ksv, csv, ssv, &
+       b_ubt, lbw_ubt, ubw_ubt, lbwmax_ubt, ubwmax_ubt, &
+       numrotsu, jsu, csu, ssu, numrotst, kst, cst, sst, error)
+    complex(kind=dp), dimension(n,lbwmax_wbv+ubwmax_wbv+1), intent(inout) :: b_wbv
+    integer(kind=int32), intent(in) :: n, lbw, ubw, lbwmax_wbv, ubwmax_wbv, lbwmax_ubt, ubwmax_ubt
+    integer(kind=int32), dimension(n), intent(in) :: numrotsw
+    integer(kind=int32), dimension(lbwmax_wbv,n), intent(in) :: jsw
+    complex(kind=dp), dimension(lbwmax_wbv,n), intent(in) :: csw, ssw
+    integer(kind=int32), dimension(n), intent(in) :: numrotsv
+    integer(kind=int32), dimension(n,ubwmax_wbv), intent(in) :: ksv
+    complex(kind=dp), dimension(n,ubwmax_wbv), intent(in) :: csv, ssv
+
+    complex(kind=dp), dimension(lbwmax_ubt+ubwmax_ubt+1,n), intent(out) :: b_ubt
+    integer(kind=int32), dimension(n), intent(out) :: numrotsu
+    integer(kind=int32), dimension(ubwmax_ubt,n), intent(out) :: jsu
+    complex(kind=dp), dimension(ubwmax_ubt,n), intent(out) :: csu, ssu
+    integer(kind=int32), dimension(n), intent(out) :: numrotst
+    integer(kind=int32), dimension(n,lbwmax_ubt), intent(out) :: kst
+    complex(kind=dp), dimension(n,lbwmax_ubt), intent(out) :: cst, sst
+    integer(kind=int32), intent(out) :: lbw_ubt, ubw_ubt
+    type(error_info), intent(out) :: error
+
+    integer(kind=int32) :: j, k, k0, k1, ubw1, lbw1
+    type(c_rotation) :: rot
+    logical :: full_lbw
+
+    call clear_error(error)
+    b_ubt(1:lbw+ubw+1,:)=(0.0_dp,0.0_dp); numrotsu=0
+    ssu(1:ubw,:)=(0.0_dp,0.0_dp); csu(1:ubw,:)=(0.0_dp,0.0_dp)
+    jsu(1:ubw,:)=0
+    numrotst=0
+    sst(:,1:lbw)=(0.0_dp,0.0_dp); cst(:,1:lbw)=(0.0_dp,0.0_dp)
+    kst(:,1:lbw)=0
+    lbw_ubt=lbw; ubw_ubt=ubw
+    if (n == 1) then
+       b_ubt(1,1)=b_wbv(1,1);
+       lbw_ubt=0; ubw_ubt=0; return
+    end if
+    ! must allow for temporary fill-in
+    if (lbw < n-1) then
+       lbw1=lbw+1
+       call right_shift(b_wbv)
+       full_lbw=.false.
+    else
+       lbw1=lbw
+       full_lbw=.true.
+    end if
+    if (ubw < n-1) then
+       ubw1=ubw+1
+       b_wbv(:,lbw1+ubw1+1)=(0.0_dp,0.0_dp)
+    else
+       lbw1=lbw
+    end if
+    ! Do the lower triangular part.
+    ! k is the size of the leading principal submatrix
+    do k=1,n-2
+       ! Apply W_k
+       do j=1,numrotsw(k)
+          rot%cosine=csw(j,k); rot%sine=ssw(j,k)
+          call rotation_times_tbr(rot,b_wbv,n,lbw1,ubw1,0,n-k,jsw(j,k))
+       end do
+       ! columns in which nonzeros have been introduced into the extra subdiagonal
+       k0=max(k-lbw+1,1)
+       k1=min(k,n-lbw1)
+       ! Apply T_{k+1}
+       numrotst(k+1)=max(k1-k0+1,0)
+       do j=k1,k0,-1
+          rot=rgivens2(get_el_br(b_wbv,lbw1,j+lbw1,j), get_el_br(b_wbv,lbw1,j+lbw1,j+1))
+          kst(k+1,j-k0+1)=j
+          cst(k+1,j-k0+1)=rot%cosine; sst(k+1,j-k0+1)=rot%sine
+          call tbr_times_rotation(b_wbv,n,lbw1,ubw1,k+1,0,rot,j)
+       end do
+    end do
+    ! upper
+    do k=1,n-2
+       ! Apply V_k
+       do j=1,numrotsv(k)
+          rot%cosine=csv(k,j); rot%sine=ssv(k,j)
+          call tbr_times_rotation(b_wbv,n,lbw1,ubw1,0,n-k,trp_rot(rot),ksv(k,j))
+       end do
+       !
+       k0=max(k+2,ubw1+1)
+       k1=min(k+ubw1,n)
+       numrotsu(k+1)=max(k1-k0+1,0)
+       do j=k1,k0,-1
+          rot=lgivens2(get_el_br(b_wbv,lbw1,j-ubw1,j), get_el_br(b_wbv,lbw1,j-ubw1+1,j))
+          jsu(j-k0+1,k+1)=j-ubw1
+          csu(j-k0+1,k+1)=rot%cosine; ssu(j-k0+1,k+1)=rot%sine
+          call rotation_times_tbr(trp_rot(rot),b_wbv,n,lbw1,ubw1,k+1,0,j-ubw1)
+       end do
+    end do
+    if (.not. full_lbw) then
+       call left_shift(b_wbv)
+    end if
+    call br_to_bc(b_wbv,b_ubt,lbw,ubw)
+  end subroutine f_c_convert_wbv_to_ubt
+
+
+end module conversion_wbv_to_ubt

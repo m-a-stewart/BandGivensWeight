@@ -71,7 +71,6 @@ program test_general
   call upper_to_bv(a,bv_d,lbw,tol,error)
   call cpu_time(t1)
   call bv_to_upper(bv_d,a1,error)
-  print *, "Here!"
   test_name="Real BV;"
   call d_output_result_upper(test_name,a0,a1,rmax,bv_d%ubw,t0,t0,tol2,error)
   ! square termination BV

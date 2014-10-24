@@ -30,9 +30,15 @@ $(OBJDIR)/general_wb.o : $(OBJDIR)/orth.o $(OBJDIR)/shift.o $(OBJDIR)/rotation.o
 $(OBJDIR)/general_ubt.o : $(OBJDIR)/orth.o $(OBJDIR)/shift.o $(OBJDIR)/rotation.o $(OBJDIR)/types.o
 $(OBJDIR)/general_wbv.o : $(OBJDIR)/orth.o $(OBJDIR)/shift.o $(OBJDIR)/rotation.o $(OBJDIR)/types.o
 
-$(OBJDIR)/conversion.o : $(OBJDIR)/conversion_bv_to_ub.o $(OBJDIR)/conversion_ub_to_bv.o
+$(OBJDIR)/conversion.o : $(OBJDIR)/conversion_bv_to_ub.o $(OBJDIR)/conversion_ub_to_bv.o \
+	$(OBJDIR)/conversion_wb_to_bt.o $(OBJDIR)/conversion_bt_to_wb.o \
+	$(OBJDIR)/conversion_wbv_to_ubt.o $(OBJDIR)/conversion_ubt_to_wbv.o 
 $(OBJDIR)/conversion_bv_to_ub.o : $(OBJDIR)/misc.o $(OBJDIR)/shift.o $(OBJDIR)/rotation.o $(OBJDIR)/types.o
 $(OBJDIR)/conversion_ub_to_bv.o : $(OBJDIR)/misc.o $(OBJDIR)/shift.o $(OBJDIR)/rotation.o $(OBJDIR)/types.o
+$(OBJDIR)/conversion_wb_to_bt.o : $(OBJDIR)/misc.o $(OBJDIR)/shift.o $(OBJDIR)/rotation.o $(OBJDIR)/types.o
+$(OBJDIR)/conversion_bt_to_wb.o : $(OBJDIR)/misc.o $(OBJDIR)/shift.o $(OBJDIR)/rotation.o $(OBJDIR)/types.o
+$(OBJDIR)/conversion_wbv_to_ubt.o : $(OBJDIR)/misc.o $(OBJDIR)/shift.o $(OBJDIR)/rotation.o $(OBJDIR)/types.o
+$(OBJDIR)/conversion_ubt_to_wbv.o : $(OBJDIR)/misc.o $(OBJDIR)/shift.o $(OBJDIR)/rotation.o $(OBJDIR)/types.o
 
 $(OBJDIR)/recompression.o : $(OBJDIR)/recompression_bv_to_ub.o $(OBJDIR)/recompression_ub_to_bv.o
 $(OBJDIR)/recompression_bv_to_ub.o : $(OBJDIR)/misc.o $(OBJDIR)/shift.o $(OBJDIR)/rotation.o $(OBJDIR)/types.o \
