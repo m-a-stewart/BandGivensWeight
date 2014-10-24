@@ -15,7 +15,7 @@ program test_qr_iteration
   type(c_bv) :: bv_c
 
   type(c_shift), dimension(4) :: shifts
-  type(c_sweeps) :: sw_c
+  type(c_sweeps1) :: sw_c
 
   shifts%flag=.false.
   shifts(1)%flag=.true.
@@ -56,7 +56,7 @@ program test_qr_iteration
   allocate(a_c(na,na), q(na,na), a0_c(na,na), a1_c(na,na), u_c(na), v_c(na))
   ub_c=c_new_ub(na,lbwmaxa,ubwmaxa)
   bv_c=c_new_bv(na,lbwmaxa,ubwmaxa)
-  sw_c=c_new_sweeps(4,4)
+  sw_c=c_new_sweeps1(4,4)
   a_c=transpose(reshape([ complex(kind=dp) :: &
        0, 0, 0, -24, &
        1, 0 ,0, 50, &
@@ -161,13 +161,13 @@ program test_qr_iteration
   a_c=reshape([ complex(kind=dp) :: ((c_delta(j,k), j=1,na), k=1,na) ], shape(a_c))
   call random_matrix(u_c)
   a_c(:,na)=a_c(:,na)+u_c
-  sw_c=c_random_sweeps(na/2,1)
-  call sweeps_times_general(sw_c, a_c(1:na/2,:))
-  call sweeps_times_general(sw_c, u_c(1:na/2))
-  call deallocate_sweeps(sw_c)
-  sw_c=c_random_sweeps(na/2,1)
-  call sweeps_times_general(sw_c, a_c(na/2+1:na,:))
-  call sweeps_times_general(sw_c, u_c(na/2+1:na))
+  sw_c=c_random_sweeps1(na/2,1)
+  call sweeps1_times_general(sw_c, a_c(1:na/2,:))
+  call sweeps1_times_general(sw_c, u_c(1:na/2))
+  call deallocate_sweeps1(sw_c)
+  sw_c=c_random_sweeps1(na/2,1)
+  call sweeps1_times_general(sw_c, a_c(na/2+1:na,:))
+  call sweeps1_times_general(sw_c, u_c(na/2+1:na))
   v_c=(0.0_dp,0.0_dp); v_c(na)=1
   q=reshape([ complex(kind=dp) :: ((c_delta(j,k), j=1,na), k=1,na) ], shape(q))
   call upper_to_bv(a_c,bv_c,1,tol2,error)

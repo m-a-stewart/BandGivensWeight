@@ -2,7 +2,7 @@ module update
   use misc
   use types
   use shift
-  use sweeps
+  use sweeps1
   use conversion
   implicit none
 
@@ -52,7 +52,7 @@ contains
   subroutine d_r1_update_ub_to_bv(ub,u,v,sw,bv,error)
     type(d_bv) :: bv
     type(d_ub) :: ub
-    type(d_sweeps) :: sw
+    type(d_sweeps1) :: sw
     real(kind=dp), dimension(:) :: u, v
     type(error_info) :: error
 
@@ -65,7 +65,7 @@ contains
          .or. get_n(bv) /= size(v)) then
        call set_error(error,2,id_d_r1_update_ub_to_bv)
     end if
-    if (get_maxsweeps(sw) - sw%numsweeps < 1) then
+    if (get_maxsweeps1(sw) - sw%numsweeps1 < 1) then
        call set_error(error,3,id_d_r1_update_ub_to_bv)
     end if
     if (get_lbwmax(ub) < ub%lbw+1 .or. &
@@ -80,14 +80,14 @@ contains
          ub%numrotsu, ub%jsu, ub%csu, ub%ssu, u, v, &
          bv%br, bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
          bv%numrotsv, bv%ksv, bv%csv, bv%ssv, &
-         sw%cs, sw%ss, sw%numsweeps, get_maxsweeps(sw), &
+         sw%cs, sw%ss, sw%numsweeps1, get_maxsweeps1(sw), &
          error)
   end subroutine d_r1_update_ub_to_bv
 
   subroutine f_d_r1_update_ub_to_bv(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, &
        jsu, csu, ssu, u, v, &
        b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, ssv, &
-       cs_sw, ss_sw, numsweeps_sw, maxsweeps_sw, &
+       cs_sw, ss_sw, numsweeps1_sw, maxsweeps1_sw, &
        error)
 
     real(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(inout) :: b_ub
@@ -95,9 +95,9 @@ contains
     integer(kind=int32), dimension(ubwmax_ub,n), intent(inout) :: jsu
     real(kind=dp), dimension(ubwmax_ub,n), intent(inout) :: csu, ssu
 
-    real(kind=dp), dimension(n,maxsweeps_sw), intent(out) :: cs_sw, ss_sw
-    integer(kind=int32), intent(inout) :: numsweeps_sw
-    integer(kind=int32), intent(in) :: maxsweeps_sw, n
+    real(kind=dp), dimension(n,maxsweeps1_sw), intent(out) :: cs_sw, ss_sw
+    integer(kind=int32), intent(inout) :: numsweeps1_sw
+    integer(kind=int32), intent(in) :: maxsweeps1_sw, n
 
     real(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(out) :: b_bv
     integer(kind=int32), dimension(n), intent(out) :: numrotsv
@@ -126,11 +126,11 @@ contains
     ksv(:,1:ubw_ub+3)=0
 
     ! zero elements in u
-    if (numsweeps_sw >= 1) then
-       call right_shift(cs_sw(:,1:numsweeps_sw+1))
-       call right_shift(ss_sw(:,1:numsweeps_sw+1))
+    if (numsweeps1_sw >= 1) then
+       call right_shift(cs_sw(:,1:numsweeps1_sw+1))
+       call right_shift(ss_sw(:,1:numsweeps1_sw+1))
     end if
-    numsweeps_sw=numsweeps_sw+1
+    numsweeps1_sw=numsweeps1_sw+1
     do j=n,2,-1
        rot = lgivens(u(j-1), u(j))
        call rotation_times_general(trp_rot(rot), u, j-1, j)
@@ -140,7 +140,7 @@ contains
     end do
 
     ! apply to ub, filling in one subdiagonal and increasing ubw by one.
-    call f_d_sweeps_times_ub(cs_sw, ss_sw, 1, maxsweeps_sw, n, &
+    call f_d_sweeps1_times_ub(cs_sw, ss_sw, 1, maxsweeps1_sw, n, &
          b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, csu, ssu, &
          b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, ssv, error)
 
@@ -261,7 +261,7 @@ contains
   subroutine c_r1_update_ub_to_bv(ub,u,v,sw,bv,error)
     type(c_bv) :: bv
     type(c_ub) :: ub
-    type(c_sweeps) :: sw
+    type(c_sweeps1) :: sw
     complex(kind=dp), dimension(:) :: u, v
     type(error_info) :: error
 
@@ -274,7 +274,7 @@ contains
          .or. get_n(bv) /= size(v)) then
        call set_error(error,2,id_c_r1_update_ub_to_bv)
     end if
-    if (get_maxsweeps(sw) - sw%numsweeps < 1) then
+    if (get_maxsweeps1(sw) - sw%numsweeps1 < 1) then
        call set_error(error,3,id_c_r1_update_ub_to_bv)
     end if
     if (get_lbwmax(ub) < ub%lbw+1 .or. &
@@ -289,14 +289,14 @@ contains
          ub%numrotsu, ub%jsu, ub%csu, ub%ssu, u, v, &
          bv%br, bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
          bv%numrotsv, bv%ksv, bv%csv, bv%ssv, &
-         sw%cs, sw%ss, sw%numsweeps, get_maxsweeps(sw), &
+         sw%cs, sw%ss, sw%numsweeps1, get_maxsweeps1(sw), &
          error)
   end subroutine c_r1_update_ub_to_bv
 
   subroutine f_c_r1_update_ub_to_bv(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, &
        jsu, csu, ssu, u, v, &
        b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, ssv, &
-       cs_sw, ss_sw, numsweeps_sw, maxsweeps_sw, &
+       cs_sw, ss_sw, numsweeps1_sw, maxsweeps1_sw, &
        error)
 
     complex(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(inout) :: b_ub
@@ -304,9 +304,9 @@ contains
     integer(kind=int32), dimension(ubwmax_ub,n), intent(inout) :: jsu
     complex(kind=dp), dimension(ubwmax_ub,n), intent(inout) :: csu, ssu
 
-    complex(kind=dp), dimension(n,maxsweeps_sw), intent(out) :: cs_sw, ss_sw
-    integer(kind=int32), intent(inout) :: numsweeps_sw
-    integer(kind=int32), intent(in) :: maxsweeps_sw, n
+    complex(kind=dp), dimension(n,maxsweeps1_sw), intent(out) :: cs_sw, ss_sw
+    integer(kind=int32), intent(inout) :: numsweeps1_sw
+    integer(kind=int32), intent(in) :: maxsweeps1_sw, n
 
     complex(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(out) :: b_bv
     integer(kind=int32), dimension(n), intent(out) :: numrotsv
@@ -335,11 +335,11 @@ contains
     ksv(:,1:ubw_ub+3)=0
 
     ! zero elements in u
-    if (numsweeps_sw >= 1) then
-       call right_shift(cs_sw(:,1:numsweeps_sw+1))
-       call right_shift(ss_sw(:,1:numsweeps_sw+1))
+    if (numsweeps1_sw >= 1) then
+       call right_shift(cs_sw(:,1:numsweeps1_sw+1))
+       call right_shift(ss_sw(:,1:numsweeps1_sw+1))
     end if
-    numsweeps_sw=numsweeps_sw+1
+    numsweeps1_sw=numsweeps1_sw+1
     do j=n,2,-1
        rot = lgivens(u(j-1), u(j))
        call rotation_times_general(trp_rot(rot), u, j-1, j)
@@ -349,7 +349,7 @@ contains
     end do
 
     ! apply to ub, filling in one subdiagonal and increasing ubw by one.
-    call f_c_sweeps_times_ub(cs_sw, ss_sw, 1, maxsweeps_sw, n, &
+    call f_c_sweeps1_times_ub(cs_sw, ss_sw, 1, maxsweeps1_sw, n, &
          b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, csu, ssu, &
          b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, ssv, error)
 

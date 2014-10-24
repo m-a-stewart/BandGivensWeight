@@ -11,7 +11,7 @@ MISCOBJS = $(OBJDIR)/misc.o $(OBJDIR)/prec.o $(OBJDIR)/utility.o $(OBJDIR)/error
 
 TYPESOBJS = $(OBJDIR)/types.o $(OBJDIR)/band_types.o $(OBJDIR)/nested_types.o
 
-TRANSFORMSOBJS = $(OBJDIR)/transforms.o $(OBJDIR)/rotation.o $(OBJDIR)/shift.o $(OBJDIR)/sweeps.o
+TRANSFORMSOBJS = $(OBJDIR)/transforms.o $(OBJDIR)/rotation.o $(OBJDIR)/shift.o $(OBJDIR)/sweeps1.o
 
 ORTHOBJS = $(OBJDIR)/triangular.o $(OBJDIR)/nullvec.o $(OBJDIR)/gs.o
 
@@ -31,11 +31,11 @@ RECOMPRESSIONOBJS = $(OBJDIR)/recompression.o $(OBJDIR)/recompression_ub_to_bv.o
 OBJS =  $(MISCOBJS) $(TYPESOBJS) $(TRANSFORMSOBJS) $(ORTHOBJS) $(GENERALOBJS) \
 	$(CONVERSIONOBJS) $(OBJDIR)/assemble.o $(RECOMPRESSIONOBJS) \
 	$(OBJDIR)/qr_iteration.o $(OBJDIR)/qr_factorization.o $(OBJDIR)/substitution.o \
-	$(OBJDIR)/nested.o $(OBJDIR)/update.o
+	$(OBJDIR)/nested.o $(OBJDIR)/update.o $(OBJDIR)/row_compression.o
 
 TEST_EXECS =  $(OBJDIR)/test_general $(OBJDIR)/test_general_bt $(OBJDIR)/test_general_wb \
 	$(OBJDIR)/test_general_ubt $(OBJDIR)/test_general_wbv \
 	$(OBJDIR)/test_convert_ub_and_bv $(OBJDIR)/test_convert_wb_and_bt \
 	$(OBJDIR)/test_convert_ubt_and_wbv $(OBJDIR)/test_recompress \
 	$(OBJDIR)/test_qr_iteration $(OBJDIR)/test_qr_factorization $(OBJDIR)/test_solve \
-	$(OBJDIR)/test_sweeps $(OBJDIR)/test_update
+	$(OBJDIR)/test_sweeps1 $(OBJDIR)/test_update

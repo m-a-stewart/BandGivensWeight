@@ -1,6 +1,6 @@
 module qr_factorization
   use conversion
-  use sweeps
+  use sweeps1
   use rotation
   implicit none
 
@@ -33,7 +33,7 @@ module qr_factorization
   type(routine_info), parameter :: info_d_qr_bv_to_ub=routine_info(id_d_qr_bv_to_ub, &
        'd_qr_bv_to_ub', &
        [ character(len=error_message_length) :: 'ub%n /= bv%n or sw%n /= ub%n', &
-       'Not enough stroage for sweeps' ])
+       'Not enough stroage for sweeps1' ])
 
   type(routine_info), parameter :: info_c_qr_bv_to_ub=routine_info(id_c_qr_bv_to_ub, &
        'c_qr_bv_to_ub', &
@@ -282,17 +282,17 @@ contains
   ! Errors
   ! 0: no error
   ! 1: ub%n /= bv%n .or. sw%n /= ub%n
-  ! 2: Not enough storage for sweeps.
+  ! 2: Not enough storage for sweeps1.
   !
   subroutine d_qr_bv_to_ub(bv,ub,sw,error)
     type(d_ub) :: ub
     type(d_bv) :: bv
-    type(d_sweeps) :: sw
+    type(d_sweeps1) :: sw
     type(error_info), intent(out) :: error
 
     integer(kind=int32) :: lbw
     lbw=bv%lbw
-    sw%numsweeps=lbw
+    sw%numsweeps1=lbw
     call clear_error(error)
     if (get_n(ub) /= get_n(bv) .or. get_n(ub) /= get_n(sw)) then
        call set_error(error, 1, id_d_qr_bv_to_ub); return
@@ -300,7 +300,7 @@ contains
     if (lbw <= 0) then
        call convert_bv_to_ub(bv,ub,error); return
     end if
-    if (get_maxsweeps(sw) < lbw) then
+    if (get_maxsweeps1(sw) < lbw) then
        call set_error(error, 2, id_d_qr_bv_to_ub); return
     end if
     call f_d_qr_bv_to_ub(bv%br, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), &
@@ -360,12 +360,12 @@ contains
   subroutine c_qr_bv_to_ub(bv,ub,sw,error)
     type(c_ub) :: ub
     type(c_bv) :: bv
-    type(c_sweeps) :: sw
+    type(c_sweeps1) :: sw
     type(error_info), intent(out) :: error
 
     integer(kind=int32) :: lbw
     lbw=bv%lbw
-    sw%numsweeps=lbw
+    sw%numsweeps1=lbw
     call clear_error(error)
     if (get_n(ub) /= get_n(bv) .or. get_n(ub) /= get_n(sw)) then
        call set_error(error, 1, id_d_qr_bv_to_ub); return
@@ -376,7 +376,7 @@ contains
     if (lbw <= 0) then
        call convert_bv_to_ub(bv,ub,error); return
     end if
-    if (get_maxsweeps(sw) < lbw) then
+    if (get_maxsweeps1(sw) < lbw) then
        call set_error(error, 2, id_d_qr_bv_to_ub); return
     end if
     call f_c_qr_bv_to_ub(bv%br, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), &

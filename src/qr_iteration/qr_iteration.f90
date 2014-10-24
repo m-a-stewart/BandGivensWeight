@@ -6,7 +6,7 @@ module qr_iteration
   use update
   use substitution
   use assemble
-  use sweeps
+  use sweeps1
 
   implicit none
 
@@ -208,7 +208,7 @@ contains
 
     type(error_info), intent(out) :: error
 
-    integer(kind=int32) :: j, numsweeps
+    integer(kind=int32) :: j, numsweeps1
     complex(kind=dp), dimension(n) :: d
     complex(kind=dp) :: x
 
@@ -219,13 +219,13 @@ contains
        end if
     end do
     
-    numsweeps=0
+    numsweeps1=0
     u_tmp=u; v_tmp=v
 
     call f_c_r1_update_ub_to_bv(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, &
          jsu, csu, ssu, u_tmp, v_tmp, &
          b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, ssv, &
-         cs_sw, ss_sw, numsweeps, 4, error)
+         cs_sw, ss_sw, numsweeps1, 4, error)
     
     b_bv(1,lbw_bv+1)=b_bv(1,lbw_bv+1) - u_tmp(1)*conjg(v_tmp(1))
     b_bv(1,lbw_bv+2)=b_bv(1,lbw_bv+2) - u_tmp(1)*conjg(v_tmp(2))
@@ -256,7 +256,7 @@ contains
        b_ub(1,j)=d(j)
     end do
 
-    call f_c_sweeps_times_ub(cs_sw(:,2:3), ss_sw(:,2:3), 2, 3, n, &
+    call f_c_sweeps1_times_ub(cs_sw(:,2:3), ss_sw(:,2:3), 2, 3, n, &
        b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, csu, ssu, &
        b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, ssv, error)
 
@@ -274,7 +274,7 @@ contains
     b_bv(1,lbw_bv+1)=b_bv(1,lbw_bv+1) + u_tmp(1)*conjg(v_tmp(1))
     b_bv(1,lbw_bv+2)=b_bv(1,lbw_bv+2) + u_tmp(1)*conjg(v_tmp(2))
 
-    call f_c_trp_sweeps_times_bv(cs_sw(:,1), ss_sw(:,1), n, 1, 1, &
+    call f_c_trp_sweeps1_times_bv(cs_sw(:,1), ss_sw(:,1), n, 1, 1, &
        b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, ssv, &
        b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, csu, ssu, error)
 
@@ -315,7 +315,7 @@ contains
     type(c_ub) :: ub
     type(c_shift), dimension(:), intent(in) :: shifts
     type(error_info), intent(out) :: error
-    type(c_sweeps), intent(inout) :: sw
+    type(c_sweeps1), intent(inout) :: sw
 
     integer :: n, j
     integer(kind=int32), dimension(size(shifts)) :: shifts_i
@@ -340,7 +340,7 @@ contains
        call set_error(error, 5, id_ss_qr_iteration); return
     end if
 
-    sw%numsweeps=1
+    sw%numsweeps1=1
     shifts_i=0
     do j=1,n
        shifts_c(j)=shifts(j)%shift

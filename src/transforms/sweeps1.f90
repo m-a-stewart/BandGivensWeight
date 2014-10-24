@@ -1,4 +1,4 @@
-module sweeps
+module sweeps1
   use misc
   use types
   use shift
@@ -8,228 +8,228 @@ module sweeps
 
   !
   ! These types represent a linear transformation
-  ! Q = Q_1 Q_2 ... Q_{numsweeps}
+  ! Q = Q_1 Q_2 ... Q_{numsweeps1}
   ! where
   ! Q_k = G_{k,1} ... G_{k,n-1}.
   ! G_{k,j} acts in rows j and j+1.  Thus Q is a product of upper Hessenberg matrices.
 
 
-  type d_sweeps
-     integer(kind=int32), private :: maxsweeps, n
-     integer(kind=int32) :: numsweeps
+  type d_sweeps1
+     integer(kind=int32), private :: maxsweeps1, n
+     integer(kind=int32) :: numsweeps1
      real(kind=dp), allocatable, dimension(:,:) :: cs, ss
-  end type d_sweeps
+  end type d_sweeps1
 
-  type c_sweeps
-     integer(kind=int32), private :: maxsweeps, n
-     integer(kind=int32) :: numsweeps
+  type c_sweeps1
+     integer(kind=int32), private :: maxsweeps1, n
+     integer(kind=int32) :: numsweeps1
      complex(kind=dp), allocatable, dimension(:,:) :: cs, ss
-  end type c_sweeps
+  end type c_sweeps1
 
-  interface deallocate_sweeps
-     module procedure d_deallocate_sweeps, c_deallocate_sweeps
-  end interface deallocate_sweeps
+  interface deallocate_sweeps1
+     module procedure d_deallocate_sweeps1, c_deallocate_sweeps1
+  end interface deallocate_sweeps1
 
-  interface get_maxsweeps
-     module procedure d_get_maxsweeps, c_get_maxsweeps
-  end interface get_maxsweeps
+  interface get_maxsweeps1
+     module procedure d_get_maxsweeps1, c_get_maxsweeps1
+  end interface get_maxsweeps1
 
   interface get_n
-     module procedure d_get_n_sweeps, c_get_n_sweeps
+     module procedure d_get_n_sweeps1, c_get_n_sweeps1
   end interface get_n
 
-  interface sweeps_times_general
-     module procedure d_sweeps_times_general, c_sweeps_times_general, &
-          d_v_sweeps_times_general, c_v_sweeps_times_general
-  end interface sweeps_times_general
+  interface sweeps1_times_general
+     module procedure d_sweeps1_times_general, c_sweeps1_times_general, &
+          d_v_sweeps1_times_general, c_v_sweeps1_times_general
+  end interface sweeps1_times_general
 
-  interface trp_sweeps_times_general
-     module procedure d_trp_sweeps_times_general, c_trp_sweeps_times_general, &
-          d_v_trp_sweeps_times_general, c_v_trp_sweeps_times_general
-  end interface trp_sweeps_times_general
+  interface trp_sweeps1_times_general
+     module procedure d_trp_sweeps1_times_general, c_trp_sweeps1_times_general, &
+          d_v_trp_sweeps1_times_general, c_v_trp_sweeps1_times_general
+  end interface trp_sweeps1_times_general
 
-  interface general_times_sweeps
-     module procedure d_general_times_sweeps, c_general_times_sweeps, &
-          d_v_general_times_sweeps, c_v_general_times_sweeps
-  end interface general_times_sweeps
+  interface general_times_sweeps1
+     module procedure d_general_times_sweeps1, c_general_times_sweeps1, &
+          d_v_general_times_sweeps1, c_v_general_times_sweeps1
+  end interface general_times_sweeps1
 
-  interface general_times_trp_sweeps
-     module procedure d_general_times_trp_sweeps, c_general_times_trp_sweeps, &
-          d_v_general_times_trp_sweeps, c_v_general_times_trp_sweeps
-  end interface general_times_trp_sweeps
+  interface general_times_trp_sweeps1
+     module procedure d_general_times_trp_sweeps1, c_general_times_trp_sweeps1, &
+          d_v_general_times_trp_sweeps1, c_v_general_times_trp_sweeps1
+  end interface general_times_trp_sweeps1
 
-  interface sweeps_times_ub
-     module procedure d_sweeps_times_ub, c_sweeps_times_ub
-  end interface sweeps_times_ub
+  interface sweeps1_times_ub
+     module procedure d_sweeps1_times_ub, c_sweeps1_times_ub
+  end interface sweeps1_times_ub
 
-  interface f_sweeps_times_ub
-     module procedure f_d_sweeps_times_ub, f_c_sweeps_times_ub
-  end interface f_sweeps_times_ub
+  interface f_sweeps1_times_ub
+     module procedure f_d_sweeps1_times_ub, f_c_sweeps1_times_ub
+  end interface f_sweeps1_times_ub
 
-  interface bv_times_sweeps
-     module procedure d_bv_times_sweeps, c_bv_times_sweeps
-  end interface bv_times_sweeps
+  interface bv_times_sweeps1
+     module procedure d_bv_times_sweeps1, c_bv_times_sweeps1
+  end interface bv_times_sweeps1
 
-  interface f_bv_times_sweeps
-     module procedure f_d_bv_times_sweeps, f_c_bv_times_sweeps
-  end interface f_bv_times_sweeps
+  interface f_bv_times_sweeps1
+     module procedure f_d_bv_times_sweeps1, f_c_bv_times_sweeps1
+  end interface f_bv_times_sweeps1
 
-  interface trp_sweeps_times_bv
-     module procedure d_trp_sweeps_times_bv, c_trp_sweeps_times_bv
-  end interface trp_sweeps_times_bv
+  interface trp_sweeps1_times_bv
+     module procedure d_trp_sweeps1_times_bv, c_trp_sweeps1_times_bv
+  end interface trp_sweeps1_times_bv
 
-  interface f_trp_sweeps_times_bv
-     module procedure f_d_trp_sweeps_times_bv, f_c_trp_sweeps_times_bv
-  end interface f_trp_sweeps_times_bv
+  interface f_trp_sweeps1_times_bv
+     module procedure f_d_trp_sweeps1_times_bv, f_c_trp_sweeps1_times_bv
+  end interface f_trp_sweeps1_times_bv
 
-  interface ub_times_trp_sweeps
-     module procedure d_ub_times_trp_sweeps, c_ub_times_trp_sweeps 
-  end interface ub_times_trp_sweeps
+  interface ub_times_trp_sweeps1
+     module procedure d_ub_times_trp_sweeps1, c_ub_times_trp_sweeps1 
+  end interface ub_times_trp_sweeps1
 
-  interface f_ub_times_trp_sweeps
-     module procedure f_d_ub_times_trp_sweeps, f_c_ub_times_trp_sweeps 
-  end interface f_ub_times_trp_sweeps
+  interface f_ub_times_trp_sweeps1
+     module procedure f_d_ub_times_trp_sweeps1, f_c_ub_times_trp_sweeps1 
+  end interface f_ub_times_trp_sweeps1
 
-  type(routine_info), parameter :: info_d_sweeps_times_ub= &
-       routine_info(id_d_sweeps_times_ub, &
-       'd_sweeps_times_ub', &
+  type(routine_info), parameter :: info_d_sweeps1_times_ub= &
+       routine_info(id_d_sweeps1_times_ub, &
+       'd_sweeps1_times_ub', &
        [ character(len=error_message_length) :: 'Sizes of bv, ub, and sw do not match.', &
        'Insufficienty lbw in bv.', 'Insufficient ubw in bv.', 'Insufficient lbw in ub', &
        'Insufficient ubw in ub', 'n<1' ])
 
-  type(routine_info), parameter :: info_c_sweeps_times_ub= &
-       routine_info(id_c_sweeps_times_ub, &
-       'c_sweeps_times_ub', &
+  type(routine_info), parameter :: info_c_sweeps1_times_ub= &
+       routine_info(id_c_sweeps1_times_ub, &
+       'c_sweeps1_times_ub', &
        [ character(len=error_message_length) :: 'Sizes of bv, ub, and sw do not match.', &
        'Insufficienty lbw in bv.', 'Insufficient ubw in bv.', 'Insufficient lbw in ub', &
        'Insufficient ubw in ub', 'n<1' ])
 
-  type(routine_info), parameter :: info_f_d_sweeps_times_ub= &
-       routine_info(id_f_d_sweeps_times_ub, &
-       'f_d_sweeps_times_ub', &
+  type(routine_info), parameter :: info_f_d_sweeps1_times_ub= &
+       routine_info(id_f_d_sweeps1_times_ub, &
+       'f_d_sweeps1_times_ub', &
        [ character(len=error_message_length) :: '' ])
 
-  type(routine_info), parameter :: info_f_c_sweeps_times_ub= &
-       routine_info(id_f_c_sweeps_times_ub, &
-       'f_c_sweeps_times_ub', &
+  type(routine_info), parameter :: info_f_c_sweeps1_times_ub= &
+       routine_info(id_f_c_sweeps1_times_ub, &
+       'f_c_sweeps1_times_ub', &
        [ character(len=error_message_length) :: '' ])
 
-  type(routine_info), parameter :: info_d_bv_times_sweeps= &
-       routine_info(id_d_bv_times_sweeps, &
-       'd_bv_times_sweeps', &
+  type(routine_info), parameter :: info_d_bv_times_sweeps1= &
+       routine_info(id_d_bv_times_sweeps1, &
+       'd_bv_times_sweeps1', &
        [ character(len=error_message_length) :: 'Sizes of bv, ub, and sw do not match.', &
        'Insufficient lbw in ub.', 'Insufficient ubw in ub.', 'Insufficient lbw in bv', &
        'Insufficient ubw in bv', 'n<1' ])
 
-  type(routine_info), parameter :: info_f_d_bv_times_sweeps= &
-       routine_info(id_f_d_bv_times_sweeps, &
-       'f_d_bv_times_sweeps', &
+  type(routine_info), parameter :: info_f_d_bv_times_sweeps1= &
+       routine_info(id_f_d_bv_times_sweeps1, &
+       'f_d_bv_times_sweeps1', &
        [ character(len=error_message_length) :: '' ])
 
-  type(routine_info), parameter :: info_d_trp_sweeps_times_bv= &
-       routine_info(id_d_trp_sweeps_times_bv, &
-       'd_trp_sweeps_times_bv', &
+  type(routine_info), parameter :: info_d_trp_sweeps1_times_bv= &
+       routine_info(id_d_trp_sweeps1_times_bv, &
+       'd_trp_sweeps1_times_bv', &
        [ character(len=error_message_length) :: 'Sizes of bv, ub, and sw do not match.', &
        'Insufficient ubw in bv.', 'Insufficient ubw in ub.', 'n<1' ])
 
-  type(routine_info), parameter :: info_f_d_trp_sweeps_times_bv= &
-       routine_info(id_f_d_trp_sweeps_times_bv, &
-       'f_d_trp_sweeps_times_bv', &
+  type(routine_info), parameter :: info_f_d_trp_sweeps1_times_bv= &
+       routine_info(id_f_d_trp_sweeps1_times_bv, &
+       'f_d_trp_sweeps1_times_bv', &
        [ character(len=error_message_length) :: '' ])
 
-  type(routine_info), parameter :: info_d_ub_times_trp_sweeps= &
-       routine_info(id_d_ub_times_trp_sweeps, &
-       'd_ub_times_trp_sweeps', &
+  type(routine_info), parameter :: info_d_ub_times_trp_sweeps1= &
+       routine_info(id_d_ub_times_trp_sweeps1, &
+       'd_ub_times_trp_sweeps1', &
        [ character(len=error_message_length) :: 'Sizes of bv, ub, and sw do not match.', &
        'Insufficient ubw in bv.', 'Insufficient ubw in ub.', 'n<1' ])
 
-  type(routine_info), parameter :: info_f_d_ub_times_trp_sweeps= &
-       routine_info(id_f_d_ub_times_trp_sweeps, &
-       'f_d_ub_times_trp_sweeps', &
+  type(routine_info), parameter :: info_f_d_ub_times_trp_sweeps1= &
+       routine_info(id_f_d_ub_times_trp_sweeps1, &
+       'f_d_ub_times_trp_sweeps1', &
        [ character(len=error_message_length) :: '' ])
 
 contains
 
-  integer(kind=int32) function d_get_maxsweeps(sw) result(maxsweeps)
-    type(d_sweeps) :: sw
-    maxsweeps=sw%maxsweeps
-  end function d_get_maxsweeps
+  integer(kind=int32) function d_get_maxsweeps1(sw) result(maxsweeps1)
+    type(d_sweeps1) :: sw
+    maxsweeps1=sw%maxsweeps1
+  end function d_get_maxsweeps1
 
-  integer(kind=int32) function c_get_maxsweeps(sw) result(maxsweeps)
-    type(c_sweeps) :: sw
-    maxsweeps=sw%maxsweeps
-  end function c_get_maxsweeps
+  integer(kind=int32) function c_get_maxsweeps1(sw) result(maxsweeps1)
+    type(c_sweeps1) :: sw
+    maxsweeps1=sw%maxsweeps1
+  end function c_get_maxsweeps1
 
-  integer(kind=int32) function d_get_n_sweeps(sw) result(n)
-    type(d_sweeps) :: sw
+  integer(kind=int32) function d_get_n_sweeps1(sw) result(n)
+    type(d_sweeps1) :: sw
     n=sw%n
-  end function d_get_n_sweeps
+  end function d_get_n_sweeps1
 
-  integer(kind=int32) function c_get_n_sweeps(sw) result(n)
-    type(c_sweeps) :: sw
+  integer(kind=int32) function c_get_n_sweeps1(sw) result(n)
+    type(c_sweeps1) :: sw
     n=sw%n
-  end function c_get_n_sweeps
+  end function c_get_n_sweeps1
 
-  type(d_sweeps) function d_new_sweeps(n,maxsweeps) result(sw)
-    integer(kind=int32), intent(in) :: n, maxsweeps
-    sw%n=n; sw%maxsweeps=maxsweeps
-    allocate(sw%cs(n-1,maxsweeps), sw%ss(n-1,maxsweeps))
-    sw%numsweeps=0
+  type(d_sweeps1) function d_new_sweeps1(n,maxsweeps1) result(sw)
+    integer(kind=int32), intent(in) :: n, maxsweeps1
+    sw%n=n; sw%maxsweeps1=maxsweeps1
+    allocate(sw%cs(n-1,maxsweeps1), sw%ss(n-1,maxsweeps1))
+    sw%numsweeps1=0
     sw%cs=1.0_dp; sw%ss=0.0_dp
-  end function d_new_sweeps
+  end function d_new_sweeps1
 
-  type(c_sweeps) function c_new_sweeps(n,maxsweeps) result(sw)
-    integer(kind=int32), intent(in) :: n, maxsweeps
-    sw%n=n; sw%maxsweeps=maxsweeps
-    allocate(sw%cs(n-1,maxsweeps), sw%ss(n-1,maxsweeps))
-    sw%numsweeps=0
+  type(c_sweeps1) function c_new_sweeps1(n,maxsweeps1) result(sw)
+    integer(kind=int32), intent(in) :: n, maxsweeps1
+    sw%n=n; sw%maxsweeps1=maxsweeps1
+    allocate(sw%cs(n-1,maxsweeps1), sw%ss(n-1,maxsweeps1))
+    sw%numsweeps1=0
     sw%cs=(1.0_dp,0.0_dp); sw%ss=(0.0_dp,0.0_dp)
-  end function c_new_sweeps
+  end function c_new_sweeps1
 
-  subroutine d_deallocate_sweeps(sw)
-    type(d_sweeps), intent(inout) :: sw
+  subroutine d_deallocate_sweeps1(sw)
+    type(d_sweeps1), intent(inout) :: sw
     deallocate(sw%cs, sw%ss)
-  end subroutine d_deallocate_sweeps
+  end subroutine d_deallocate_sweeps1
 
-  subroutine c_deallocate_sweeps(sw)
-    type(c_sweeps), intent(inout) :: sw
+  subroutine c_deallocate_sweeps1(sw)
+    type(c_sweeps1), intent(inout) :: sw
     deallocate(sw%cs, sw%ss)
-  end subroutine c_deallocate_sweeps
+  end subroutine c_deallocate_sweeps1
 
-  subroutine d_sweeps_times_general(sw,a)
-    type(d_sweeps) :: sw
+  subroutine d_sweeps1_times_general(sw,a)
+    type(d_sweeps1) :: sw
     real(kind=dp), dimension(:,:), intent(inout) :: a
     type(d_rotation) :: rot
     integer(kind=int32) :: j, m, l
-    do l=sw%numsweeps,1,-1
+    do l=sw%numsweeps1,1,-1
        m=size(a,1)
        do j=m-1,1,-1
           rot%cosine=sw%cs(j,l); rot%sine=sw%ss(j,l)
           call d_rotation_times_general(rot,a,j,j+1)
        end do
     end do
-  end subroutine d_sweeps_times_general
+  end subroutine d_sweeps1_times_general
 
-  subroutine d_trp_sweeps_times_general(sw,a)
-    type(d_sweeps) :: sw
+  subroutine d_trp_sweeps1_times_general(sw,a)
+    type(d_sweeps1) :: sw
     real(kind=dp), dimension(:,:), intent(inout) :: a
     type(d_rotation) :: rot
     integer(kind=int32) :: j, m, l
-    do l=1,sw%numsweeps
+    do l=1,sw%numsweeps1
        m=size(a,1)
        do j=1,m-1
           rot%cosine=sw%cs(j,l); rot%sine=sw%ss(j,l)
           call d_rotation_times_general(trp_rot(rot),a,j,j+1)
        end do
     end do
-  end subroutine d_trp_sweeps_times_general
+  end subroutine d_trp_sweeps1_times_general
 
-  subroutine d_v_sweeps_times_general(sw,a)
-    type(d_sweeps) :: sw
+  subroutine d_v_sweeps1_times_general(sw,a)
+    type(d_sweeps1) :: sw
     real(kind=dp), dimension(:), intent(inout) :: a
     integer(kind=int32) :: j, m, l
     real(kind=dp) :: tmp, c, s 
-    do l=sw%numsweeps,1,-1
+    do l=sw%numsweeps1,1,-1
        m=size(a)
        do j=m-1,1,-1
           tmp=a(j)
@@ -238,14 +238,14 @@ contains
           a(j+1)=s*tmp+c*a(j+1)
        end do
     end do
-  end subroutine d_v_sweeps_times_general
+  end subroutine d_v_sweeps1_times_general
 
-  subroutine d_v_trp_sweeps_times_general(sw,a)
-    type(d_sweeps) :: sw
+  subroutine d_v_trp_sweeps1_times_general(sw,a)
+    type(d_sweeps1) :: sw
     real(kind=dp), dimension(:), intent(inout) :: a
     integer(kind=int32) :: j, m, l
     real(kind=dp) :: tmp, c, s 
-    do l=1,sw%numsweeps
+    do l=1,sw%numsweeps1
        m=size(a)
        do j=1,m-1
           tmp=a(j)
@@ -254,42 +254,42 @@ contains
           a(j+1)=-s*tmp+c*a(j+1)
        end do
     end do
-  end subroutine d_v_trp_sweeps_times_general
+  end subroutine d_v_trp_sweeps1_times_general
 
-  subroutine c_sweeps_times_general(sw,a)
-    type(c_sweeps) :: sw
+  subroutine c_sweeps1_times_general(sw,a)
+    type(c_sweeps1) :: sw
     complex(kind=dp), dimension(:,:), intent(inout) :: a
     type(c_rotation) :: rot
     integer(kind=int32) :: j, m, l
-    do l=sw%numsweeps,1,-1
+    do l=sw%numsweeps1,1,-1
        m=size(a,1)
        do j=m-1,1,-1
           rot%cosine=sw%cs(j,l); rot%sine=sw%ss(j,l)
           call c_rotation_times_general(rot,a,j,j+1)
        end do
     end do
-  end subroutine c_sweeps_times_general
+  end subroutine c_sweeps1_times_general
 
-  subroutine c_trp_sweeps_times_general(sw,a)
-    type(c_sweeps) :: sw
+  subroutine c_trp_sweeps1_times_general(sw,a)
+    type(c_sweeps1) :: sw
     complex(kind=dp), dimension(:,:), intent(inout) :: a
     type(c_rotation) :: rot
     integer(kind=int32) :: j, m, l
-    do l=1,sw%numsweeps
+    do l=1,sw%numsweeps1
        m=size(a,1)
        do j=1,m-1
           rot%cosine=sw%cs(j,l); rot%sine=sw%ss(j,l)
           call c_rotation_times_general(trp_rot(rot),a,j,j+1)
        end do
     end do
-  end subroutine c_trp_sweeps_times_general
+  end subroutine c_trp_sweeps1_times_general
 
-  subroutine c_v_sweeps_times_general(sw,a)
-    type(c_sweeps) :: sw
+  subroutine c_v_sweeps1_times_general(sw,a)
+    type(c_sweeps1) :: sw
     complex(kind=dp), dimension(:), intent(inout) :: a
     integer(kind=int32) :: j, m, l
     complex(kind=dp) :: tmp, c, s 
-    do l=sw%numsweeps,1,-1
+    do l=sw%numsweeps1,1,-1
        m=size(a)
        do j=m-1,1,-1
           tmp=a(j)
@@ -298,14 +298,14 @@ contains
           a(j+1)=s*tmp+c*a(j+1)
        end do
     end do
-  end subroutine c_v_sweeps_times_general
+  end subroutine c_v_sweeps1_times_general
 
-  subroutine c_v_trp_sweeps_times_general(sw,a)
-    type(c_sweeps) :: sw
+  subroutine c_v_trp_sweeps1_times_general(sw,a)
+    type(c_sweeps1) :: sw
     complex(kind=dp), dimension(:), intent(inout) :: a
     integer(kind=int32) :: j, m, l
     complex(kind=dp) :: tmp, c, s 
-    do l=1,sw%numsweeps
+    do l=1,sw%numsweeps1
        m=size(a)
        do j=1,m-1
           tmp=a(j)
@@ -314,42 +314,42 @@ contains
           a(j+1)=-s*tmp+c*a(j+1)
        end do
     end do
-  end subroutine c_v_trp_sweeps_times_general
+  end subroutine c_v_trp_sweeps1_times_general
 
-  subroutine d_general_times_sweeps(a,sw)
-    type(d_sweeps) :: sw
+  subroutine d_general_times_sweeps1(a,sw)
+    type(d_sweeps1) :: sw
     real(kind=dp), dimension(:,:), intent(inout) :: a
     type(d_rotation) :: rot
     integer(kind=int32) :: j, n, l
-    do l=1,sw%numsweeps
+    do l=1,sw%numsweeps1
        n=size(a,2)
        do j=1,n-1
           rot%cosine=sw%cs(j,l); rot%sine=sw%ss(j,l)
           call d_general_times_rotation(a,rot,j,j+1)
        end do
     end do
-  end subroutine d_general_times_sweeps
+  end subroutine d_general_times_sweeps1
 
-  subroutine d_general_times_trp_sweeps(a,sw)
-    type(d_sweeps) :: sw
+  subroutine d_general_times_trp_sweeps1(a,sw)
+    type(d_sweeps1) :: sw
     real(kind=dp), dimension(:,:), intent(inout) :: a
     type(d_rotation) :: rot
     integer(kind=int32) :: j, n, l
-    do l=sw%numsweeps,1,-1
+    do l=sw%numsweeps1,1,-1
        n=size(a,2)
        do j=n-1,1,-1
           rot%cosine=sw%cs(j,l); rot%sine=sw%ss(j,l)
           call d_general_times_rotation(a, trp_rot(rot),j,j+1)
        end do
     end do
-  end subroutine d_general_times_trp_sweeps
+  end subroutine d_general_times_trp_sweeps1
 
-  subroutine d_v_general_times_sweeps(a,sw)
-    type(d_sweeps) :: sw
+  subroutine d_v_general_times_sweeps1(a,sw)
+    type(d_sweeps1) :: sw
     real(kind=dp), dimension(:), intent(inout) :: a
     integer(kind=int32) :: j, n, l
     real(kind=dp) :: c,s,tmp
-    do l=1,sw%numsweeps
+    do l=1,sw%numsweeps1
        n=size(a)
        do j=1,n-1
           tmp=a(j)
@@ -358,14 +358,14 @@ contains
           a(j+1)=-s*tmp+c*a(j+1)
        end do
     end do
-  end subroutine d_v_general_times_sweeps
+  end subroutine d_v_general_times_sweeps1
 
-  subroutine d_v_general_times_trp_sweeps(a,sw)
-    type(d_sweeps) :: sw
+  subroutine d_v_general_times_trp_sweeps1(a,sw)
+    type(d_sweeps1) :: sw
     real(kind=dp), dimension(:), intent(inout) :: a
     integer(kind=int32) :: j, n, l
     real(kind=dp) :: c,s,tmp
-    do l=sw%numsweeps,1,-1
+    do l=sw%numsweeps1,1,-1
        n=size(a)
        do j=n-1,1,-1
           tmp=a(j)
@@ -374,42 +374,42 @@ contains
           a(j+1)=s*tmp+c*a(j+1)
        end do
     end do
-  end subroutine d_v_general_times_trp_sweeps
+  end subroutine d_v_general_times_trp_sweeps1
 
-  subroutine c_general_times_sweeps(a,sw)
-    type(c_sweeps) :: sw
+  subroutine c_general_times_sweeps1(a,sw)
+    type(c_sweeps1) :: sw
     complex(kind=dp), dimension(:,:), intent(inout) :: a
     type(c_rotation) :: rot
     integer(kind=int32) :: j, n, l
-    do l=1,sw%numsweeps
+    do l=1,sw%numsweeps1
        n=size(a,2)
        do j=1,n-1
           rot%cosine=sw%cs(j,l); rot%sine=sw%ss(j,l)
           call c_general_times_rotation(a,rot,j,j+1)
        end do
     end do
-  end subroutine c_general_times_sweeps
+  end subroutine c_general_times_sweeps1
 
-  subroutine c_general_times_trp_sweeps(a,sw)
-    type(c_sweeps) :: sw
+  subroutine c_general_times_trp_sweeps1(a,sw)
+    type(c_sweeps1) :: sw
     complex(kind=dp), dimension(:,:), intent(inout) :: a
     type(c_rotation) :: rot
     integer(kind=int32) :: j, n, l
-    do l=sw%numsweeps,1,-1
+    do l=sw%numsweeps1,1,-1
        n=size(a,2)
        do j=n-1,1,-1
           rot%cosine=sw%cs(j,l); rot%sine=sw%ss(j,l)
           call c_general_times_rotation(a, trp_rot(rot),j,j+1)
        end do
     end do
-  end subroutine c_general_times_trp_sweeps
+  end subroutine c_general_times_trp_sweeps1
 
-  subroutine c_v_general_times_sweeps(a,sw)
-    type(c_sweeps) :: sw
+  subroutine c_v_general_times_sweeps1(a,sw)
+    type(c_sweeps1) :: sw
     complex(kind=dp), dimension(:), intent(inout) :: a
     integer(kind=int32) :: j, n, l
     complex(kind=dp) :: c,s,tmp
-    do l=1,sw%numsweeps
+    do l=1,sw%numsweeps1
        n=size(a)
        do j=1,n-1
           tmp=a(j)
@@ -418,14 +418,14 @@ contains
           a(j+1)=-conjg(s)*tmp+c*a(j+1)
        end do
     end do
-  end subroutine c_v_general_times_sweeps
+  end subroutine c_v_general_times_sweeps1
 
-  subroutine c_v_general_times_trp_sweeps(a,sw)
-    type(c_sweeps) :: sw
+  subroutine c_v_general_times_trp_sweeps1(a,sw)
+    type(c_sweeps1) :: sw
     complex(kind=dp), dimension(:), intent(inout) :: a
     integer(kind=int32) :: j, n, l
     complex(kind=dp) :: c,s,tmp
-    do l=sw%numsweeps,1,-1
+    do l=sw%numsweeps1,1,-1
        n=size(a)
        do j=n-1,1,-1
           tmp=a(j)
@@ -434,10 +434,10 @@ contains
           a(j+1)=conjg(s)*tmp+c*a(j+1)
        end do
     end do
-  end subroutine c_v_general_times_trp_sweeps
+  end subroutine c_v_general_times_trp_sweeps1
 
 
-  ! sweeps times ub
+  ! sweeps1 times ub
   ! Errors:
   ! 1: Sizes of bv, ub, and sw do not match.
   ! 2: Insufficient lbw in bv.
@@ -446,36 +446,36 @@ contains
   ! 5: Insufficient ubw in ub.
   ! 6: n < 1.
 
-  subroutine d_sweeps_times_ub(sw,ub,bv,error)
-    type(d_sweeps) :: sw
+  subroutine d_sweeps1_times_ub(sw,ub,bv,error)
+    type(d_sweeps1) :: sw
     type(d_ub) :: ub
     type(d_bv) :: bv
     type(error_info) :: error
     call clear_error(error)
     if (get_n(bv) /= get_n(ub) .or. get_n(bv) /= get_n(sw)) then
-       call set_error(error,1,id_d_sweeps_times_ub); return
+       call set_error(error,1,id_d_sweeps1_times_ub); return
     end if
-    if (get_lbwmax(bv) < sw%numsweeps + ub%lbw .and. get_lbwmax(bv) < get_n(ub)-1) then
-       call set_error(error,2,id_d_sweeps_times_ub); return
+    if (get_lbwmax(bv) < sw%numsweeps1 + ub%lbw .and. get_lbwmax(bv) < get_n(ub)-1) then
+       call set_error(error,2,id_d_sweeps1_times_ub); return
     end if
-    if (get_ubwmax(bv) < sw%numsweeps + ub%ubw+1 .and. get_ubwmax(bv) < get_n(ub)-1) then
-       call set_error(error,3,id_d_sweeps_times_ub); return
+    if (get_ubwmax(bv) < sw%numsweeps1 + ub%ubw+1 .and. get_ubwmax(bv) < get_n(ub)-1) then
+       call set_error(error,3,id_d_sweeps1_times_ub); return
     end if
-    if (get_lbwmax(ub) < sw%numsweeps + ub%lbw .and. get_lbwmax(ub) < get_n(ub)-1) then
-       call set_error(error,4,id_d_sweeps_times_ub); return
+    if (get_lbwmax(ub) < sw%numsweeps1 + ub%lbw .and. get_lbwmax(ub) < get_n(ub)-1) then
+       call set_error(error,4,id_d_sweeps1_times_ub); return
     end if
-    if (get_ubwmax(ub) < sw%numsweeps + ub%ubw+1 .and. get_ubwmax(ub) < get_n(ub)-1) then
-       call set_error(error,5,id_d_sweeps_times_ub); return
+    if (get_ubwmax(ub) < sw%numsweeps1 + ub%ubw+1 .and. get_ubwmax(ub) < get_n(ub)-1) then
+       call set_error(error,5,id_d_sweeps1_times_ub); return
     end if
     if (get_n(bv) < 1) then
-       call set_error(error,6,id_d_sweeps_times_ub); return
+       call set_error(error,6,id_d_sweeps1_times_ub); return
     end if
-    call f_d_sweeps_times_ub(sw%cs, sw%ss, sw%numsweeps, get_maxsweeps(sw), get_n(sw), &
+    call f_d_sweeps1_times_ub(sw%cs, sw%ss, sw%numsweeps1, get_maxsweeps1(sw), get_n(sw), &
          ub%bc, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
          ub%numrotsu, ub%jsu, ub%csu, ub%ssu, &
          bv%br, bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
          bv%numrotsv, bv%ksv, bv%csv, bv%ssv, error)
-  end subroutine d_sweeps_times_ub
+  end subroutine d_sweeps1_times_ub
 
   subroutine f_d_sweep_times_ub(cs_sw, ss_sw, n, &
        b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, csu, ssu, &
@@ -510,7 +510,7 @@ contains
     end if
     ! Initial expansion for first sweep: one extra subdiagonal and
     ! one extra superdiagonal to fill-in.
-    ! Expand as need for later sweeps.
+    ! Expand as need for later sweeps1.
     
     dlbw=1; dlbw_tmp=0
     dubw=1; dubw_tmp=1
@@ -549,12 +549,12 @@ contains
     call bc_to_br(b_ub,b_bv,lbw_ub,ubw_ub)
   end subroutine f_d_sweep_times_ub
 
-  subroutine f_d_sweeps_times_ub(cs_sw, ss_sw, numsweeps_sw, maxsweeps_sw, n, &
+  subroutine f_d_sweeps1_times_ub(cs_sw, ss_sw, numsweeps1_sw, maxsweeps1_sw, n, &
        b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, csu, ssu, &
        b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, ssv, error)
 
-    real(kind=dp), dimension(n-1,maxsweeps_sw), intent(in) :: cs_sw, ss_sw
-    integer(kind=int32), intent(in) :: numsweeps_sw, maxsweeps_sw, n
+    real(kind=dp), dimension(n-1,maxsweeps1_sw), intent(in) :: cs_sw, ss_sw
+    integer(kind=int32), intent(in) :: numsweeps1_sw, maxsweeps1_sw, n
 
     real(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(inout) :: b_ub
     integer(kind=int32), dimension(n), intent(inout) :: numrotsu
@@ -581,8 +581,8 @@ contains
        lbw_bv=0; ubw_bv=0; numrotsv=0; return
     end if
 
-    do l=numsweeps_sw,1,-1
-       if (l < numsweeps_sw) then
+    do l=numsweeps1_sw,1,-1
+       if (l < numsweeps1_sw) then
           call f_d_convert_bv_to_ub(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, &
                numrotsv, ksv, csv, ssv, b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, & 
                numrotsu, jsu, csu, ssu, error)
@@ -592,38 +592,38 @@ contains
             b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, csu, ssu, &
             b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, ssv, error)
     end do
-  end subroutine f_d_sweeps_times_ub
+  end subroutine f_d_sweeps1_times_ub
 
-  subroutine c_sweeps_times_ub(sw,ub,bv,error)
-    type(c_sweeps) :: sw
+  subroutine c_sweeps1_times_ub(sw,ub,bv,error)
+    type(c_sweeps1) :: sw
     type(c_ub) :: ub
     type(c_bv) :: bv
     type(error_info) :: error
     call clear_error(error)
     if (get_n(bv) /= get_n(ub) .or. get_n(bv) /= get_n(sw)) then
-       call set_error(error,1,id_c_sweeps_times_ub); return
+       call set_error(error,1,id_c_sweeps1_times_ub); return
     end if
-    if (get_lbwmax(bv) < sw%numsweeps + ub%lbw .and. get_lbwmax(bv) < get_n(ub)-1) then
-       call set_error(error,2,id_c_sweeps_times_ub); return
+    if (get_lbwmax(bv) < sw%numsweeps1 + ub%lbw .and. get_lbwmax(bv) < get_n(ub)-1) then
+       call set_error(error,2,id_c_sweeps1_times_ub); return
     end if
-    if (get_ubwmax(bv) < sw%numsweeps + ub%ubw+1 .and. get_ubwmax(bv) < get_n(ub)-1) then
-       call set_error(error,3,id_c_sweeps_times_ub); return
+    if (get_ubwmax(bv) < sw%numsweeps1 + ub%ubw+1 .and. get_ubwmax(bv) < get_n(ub)-1) then
+       call set_error(error,3,id_c_sweeps1_times_ub); return
     end if
-    if (get_lbwmax(ub) < sw%numsweeps + ub%lbw .and. get_lbwmax(ub) < get_n(ub)-1) then
-       call set_error(error,4,id_c_sweeps_times_ub); return
+    if (get_lbwmax(ub) < sw%numsweeps1 + ub%lbw .and. get_lbwmax(ub) < get_n(ub)-1) then
+       call set_error(error,4,id_c_sweeps1_times_ub); return
     end if
-    if (get_ubwmax(ub) < sw%numsweeps + ub%ubw+1 .and. get_ubwmax(ub) < get_n(ub)-1) then
-       call set_error(error,5,id_c_sweeps_times_ub); return
+    if (get_ubwmax(ub) < sw%numsweeps1 + ub%ubw+1 .and. get_ubwmax(ub) < get_n(ub)-1) then
+       call set_error(error,5,id_c_sweeps1_times_ub); return
     end if
     if (get_n(bv) < 1) then
-       call set_error(error,6,id_c_sweeps_times_ub); return
+       call set_error(error,6,id_c_sweeps1_times_ub); return
     end if
-    call f_c_sweeps_times_ub(sw%cs, sw%ss, sw%numsweeps, get_maxsweeps(sw), get_n(sw), &
+    call f_c_sweeps1_times_ub(sw%cs, sw%ss, sw%numsweeps1, get_maxsweeps1(sw), get_n(sw), &
          ub%bc, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
          ub%numrotsu, ub%jsu, ub%csu, ub%ssu, &
          bv%br, bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
          bv%numrotsv, bv%ksv, bv%csv, bv%ssv, error)
-  end subroutine c_sweeps_times_ub
+  end subroutine c_sweeps1_times_ub
 
   subroutine f_c_sweep_times_ub(cs_sw, ss_sw, n, &
        b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, csu, ssu, &
@@ -658,7 +658,7 @@ contains
     end if
     ! Initial expansion for first sweep: one extra subdiagonal and
     ! one extra superdiagonal to fill-in.
-    ! Expand as need for later sweeps.
+    ! Expand as need for later sweeps1.
     
     dlbw=1; dlbw_tmp=0
     dubw=1; dubw_tmp=1
@@ -697,12 +697,12 @@ contains
     call bc_to_br(b_ub,b_bv,lbw_ub,ubw_ub)
   end subroutine f_c_sweep_times_ub
 
-  subroutine f_c_sweeps_times_ub(cs_sw, ss_sw, numsweeps_sw, maxsweeps_sw, n, &
+  subroutine f_c_sweeps1_times_ub(cs_sw, ss_sw, numsweeps1_sw, maxsweeps1_sw, n, &
        b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, csu, ssu, &
        b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, ssv, error)
 
-    complex(kind=dp), dimension(n-1,maxsweeps_sw), intent(in) :: cs_sw, ss_sw
-    integer(kind=int32), intent(in) :: numsweeps_sw, maxsweeps_sw, n
+    complex(kind=dp), dimension(n-1,maxsweeps1_sw), intent(in) :: cs_sw, ss_sw
+    integer(kind=int32), intent(in) :: numsweeps1_sw, maxsweeps1_sw, n
 
     complex(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(inout) :: b_ub
     integer(kind=int32), dimension(n), intent(inout) :: numrotsu
@@ -729,8 +729,8 @@ contains
        lbw_bv=0; ubw_bv=0; numrotsv=0; return
     end if
 
-    do l=numsweeps_sw,1,-1
-       if (l < numsweeps_sw) then
+    do l=numsweeps1_sw,1,-1
+       if (l < numsweeps1_sw) then
           call f_c_convert_bv_to_ub(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, &
                numrotsv, ksv, csv, ssv, b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, & 
                numrotsu, jsu, csu, ssu, error)
@@ -740,9 +740,9 @@ contains
             b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, csu, ssu, &
             b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, ssv, error)
     end do
-  end subroutine f_c_sweeps_times_ub
+  end subroutine f_c_sweeps1_times_ub
 
-  ! bv times sweeps
+  ! bv times sweeps1
   ! Errors:
   ! 1: Sizes of bv, ub, and sw do not match.
   ! 2: Insufficient lbw in ub.
@@ -751,44 +751,44 @@ contains
   ! 5: Insufficient ubw in bv.
   ! 6: n < 1.
 
-  subroutine d_bv_times_sweeps(bv,sw,ub,error)
-    type(d_sweeps) :: sw
+  subroutine d_bv_times_sweeps1(bv,sw,ub,error)
+    type(d_sweeps1) :: sw
     type(d_ub) :: ub
     type(d_bv) :: bv
     type(error_info) :: error
     call clear_error(error)
     if (get_n(bv) /= get_n(ub) .or. get_n(bv) /= get_n(sw)) then
-       call set_error(error,1,id_d_bv_times_sweeps); return
+       call set_error(error,1,id_d_bv_times_sweeps1); return
     end if
-    if (get_lbwmax(ub) < sw%numsweeps + bv%lbw .and. get_lbwmax(ub) < get_n(bv)-1) then
-       call set_error(error,2,id_d_bv_times_sweeps); return
+    if (get_lbwmax(ub) < sw%numsweeps1 + bv%lbw .and. get_lbwmax(ub) < get_n(bv)-1) then
+       call set_error(error,2,id_d_bv_times_sweeps1); return
     end if
-    if (get_ubwmax(ub) < sw%numsweeps + bv%ubw+1 .and. get_ubwmax(ub) < get_n(bv)-1) then
-       call set_error(error,3,id_d_bv_times_sweeps); return
+    if (get_ubwmax(ub) < sw%numsweeps1 + bv%ubw+1 .and. get_ubwmax(ub) < get_n(bv)-1) then
+       call set_error(error,3,id_d_bv_times_sweeps1); return
     end if
-    if (get_lbwmax(bv) < sw%numsweeps + bv%lbw .and. get_lbwmax(bv) < get_n(bv)-1) then
-       call set_error(error,4,id_d_bv_times_sweeps); return
+    if (get_lbwmax(bv) < sw%numsweeps1 + bv%lbw .and. get_lbwmax(bv) < get_n(bv)-1) then
+       call set_error(error,4,id_d_bv_times_sweeps1); return
     end if
-    if (get_ubwmax(bv) < sw%numsweeps + bv%ubw+1 .and. get_ubwmax(bv) < get_n(bv)-1) then
-       call set_error(error,5,id_d_bv_times_sweeps); return
+    if (get_ubwmax(bv) < sw%numsweeps1 + bv%ubw+1 .and. get_ubwmax(bv) < get_n(bv)-1) then
+       call set_error(error,5,id_d_bv_times_sweeps1); return
     end if
     if (get_n(bv) < 1) then
-       call set_error(error,6,id_d_bv_times_sweeps); return
+       call set_error(error,6,id_d_bv_times_sweeps1); return
     end if
-    call f_d_bv_times_sweeps(bv%br, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
+    call f_d_bv_times_sweeps1(bv%br, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
          bv%numrotsv, bv%ksv, bv%csv, bv%ssv, &
-         sw%cs, sw%ss, sw%numsweeps, get_maxsweeps(sw), &
+         sw%cs, sw%ss, sw%numsweeps1, get_maxsweeps1(sw), &
          ub%bc, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
          ub%numrotsu, ub%jsu, ub%csu, ub%ssu, error)
-  end subroutine d_bv_times_sweeps
+  end subroutine d_bv_times_sweeps1
 
   subroutine f_d_bv_times_sweep(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, & 
        csv, ssv, &
-       cs_sw, ss_sw, numsweeps_sw, maxsweeps_sw, &
+       cs_sw, ss_sw, numsweeps1_sw, maxsweeps1_sw, &
        b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, csu, ssu, error)
 
     real(kind=dp), dimension(n-1), intent(in) :: cs_sw, ss_sw
-    integer(kind=int32), intent(in) :: numsweeps_sw, maxsweeps_sw, n
+    integer(kind=int32), intent(in) :: numsweeps1_sw, maxsweeps1_sw, n
 
     real(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(inout) :: b_bv
     integer(kind=int32), dimension(n), intent(inout) :: numrotsv
@@ -853,13 +853,13 @@ contains
     call br_to_bc(b_bv,b_ub,lbw_ub,ubw_ub)
   end subroutine f_d_bv_times_sweep
 
-  subroutine f_d_bv_times_sweeps(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, & 
+  subroutine f_d_bv_times_sweeps1(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, & 
        csv, ssv, &
-       cs_sw, ss_sw, numsweeps_sw, maxsweeps_sw, &
+       cs_sw, ss_sw, numsweeps1_sw, maxsweeps1_sw, &
        b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, csu, ssu, error)
 
-    real(kind=dp), dimension(n-1,maxsweeps_sw), intent(in) :: cs_sw, ss_sw
-    integer(kind=int32), intent(in) :: numsweeps_sw, maxsweeps_sw, n
+    real(kind=dp), dimension(n-1,maxsweeps1_sw), intent(in) :: cs_sw, ss_sw
+    integer(kind=int32), intent(in) :: numsweeps1_sw, maxsweeps1_sw, n
 
     real(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(inout) :: b_bv
     integer(kind=int32), dimension(n), intent(inout) :: numrotsv
@@ -885,7 +885,7 @@ contains
        b_ub(1,1)=b_bv(1,1);
        lbw_ub=0; ubw_ub=0; numrotsu=0; return
     end if
-    do l=1, numsweeps_sw
+    do l=1, numsweeps1_sw
        if (l > 1) then
           call f_d_convert_ub_to_bv(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, & 
                numrotsu, jsu, csu, ssu, &
@@ -893,50 +893,50 @@ contains
        end if
        call f_d_bv_times_sweep(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, & 
             csv, ssv, &
-            cs_sw(:,l), ss_sw(:,l), numsweeps_sw, maxsweeps_sw, &
+            cs_sw(:,l), ss_sw(:,l), numsweeps1_sw, maxsweeps1_sw, &
             b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, csu, ssu, error)
     end do
 
-  end subroutine f_d_bv_times_sweeps
+  end subroutine f_d_bv_times_sweeps1
 
-  subroutine c_bv_times_sweeps(bv,sw,ub,error)
-    type(c_sweeps) :: sw
+  subroutine c_bv_times_sweeps1(bv,sw,ub,error)
+    type(c_sweeps1) :: sw
     type(c_ub) :: ub
     type(c_bv) :: bv
     type(error_info) :: error
     call clear_error(error)
     if (get_n(bv) /= get_n(ub) .or. get_n(bv) /= get_n(sw)) then
-       call set_error(error,1,id_c_bv_times_sweeps); return
+       call set_error(error,1,id_c_bv_times_sweeps1); return
     end if
-    if (get_lbwmax(ub) < sw%numsweeps + bv%lbw .and. get_lbwmax(ub) < get_n(bv)-1) then
-       call set_error(error,2,id_c_bv_times_sweeps); return
+    if (get_lbwmax(ub) < sw%numsweeps1 + bv%lbw .and. get_lbwmax(ub) < get_n(bv)-1) then
+       call set_error(error,2,id_c_bv_times_sweeps1); return
     end if
-    if (get_ubwmax(ub) < sw%numsweeps + bv%ubw+1 .and. get_ubwmax(ub) < get_n(bv)-1) then
-       call set_error(error,3,id_c_bv_times_sweeps); return
+    if (get_ubwmax(ub) < sw%numsweeps1 + bv%ubw+1 .and. get_ubwmax(ub) < get_n(bv)-1) then
+       call set_error(error,3,id_c_bv_times_sweeps1); return
     end if
-    if (get_lbwmax(bv) < sw%numsweeps + bv%lbw .and. get_lbwmax(bv) < get_n(bv)-1) then
-       call set_error(error,4,id_c_bv_times_sweeps); return
+    if (get_lbwmax(bv) < sw%numsweeps1 + bv%lbw .and. get_lbwmax(bv) < get_n(bv)-1) then
+       call set_error(error,4,id_c_bv_times_sweeps1); return
     end if
-    if (get_ubwmax(bv) < sw%numsweeps + bv%ubw+1 .and. get_ubwmax(bv) < get_n(bv)-1) then
-       call set_error(error,5,id_c_bv_times_sweeps); return
+    if (get_ubwmax(bv) < sw%numsweeps1 + bv%ubw+1 .and. get_ubwmax(bv) < get_n(bv)-1) then
+       call set_error(error,5,id_c_bv_times_sweeps1); return
     end if
     if (get_n(bv) < 1) then
-       call set_error(error,6,id_c_bv_times_sweeps); return
+       call set_error(error,6,id_c_bv_times_sweeps1); return
     end if
-    call f_c_bv_times_sweeps(bv%br, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
+    call f_c_bv_times_sweeps1(bv%br, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
          bv%numrotsv, bv%ksv, bv%csv, bv%ssv, &
-         sw%cs, sw%ss, sw%numsweeps, get_maxsweeps(sw), &
+         sw%cs, sw%ss, sw%numsweeps1, get_maxsweeps1(sw), &
          ub%bc, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
          ub%numrotsu, ub%jsu, ub%csu, ub%ssu, error)
-  end subroutine c_bv_times_sweeps
+  end subroutine c_bv_times_sweeps1
 
   subroutine f_c_bv_times_sweep(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, & 
        csv, ssv, &
-       cs_sw, ss_sw, numsweeps_sw, maxsweeps_sw, &
+       cs_sw, ss_sw, numsweeps1_sw, maxsweeps1_sw, &
        b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, csu, ssu, error)
 
     complex(kind=dp), dimension(n-1), intent(in) :: cs_sw, ss_sw
-    integer(kind=int32), intent(in) :: numsweeps_sw, maxsweeps_sw, n
+    integer(kind=int32), intent(in) :: numsweeps1_sw, maxsweeps1_sw, n
 
     complex(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(inout) :: b_bv
     integer(kind=int32), dimension(n), intent(inout) :: numrotsv
@@ -1000,13 +1000,13 @@ contains
     call br_to_bc(b_bv,b_ub,lbw_ub,ubw_ub)
   end subroutine f_c_bv_times_sweep
 
-  subroutine f_c_bv_times_sweeps(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, & 
+  subroutine f_c_bv_times_sweeps1(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, & 
        csv, ssv, &
-       cs_sw, ss_sw, numsweeps_sw, maxsweeps_sw, &
+       cs_sw, ss_sw, numsweeps1_sw, maxsweeps1_sw, &
        b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, csu, ssu, error)
 
-    complex(kind=dp), dimension(n-1,maxsweeps_sw), intent(in) :: cs_sw, ss_sw
-    integer(kind=int32), intent(in) :: numsweeps_sw, maxsweeps_sw, n
+    complex(kind=dp), dimension(n-1,maxsweeps1_sw), intent(in) :: cs_sw, ss_sw
+    integer(kind=int32), intent(in) :: numsweeps1_sw, maxsweeps1_sw, n
 
     complex(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(inout) :: b_bv
     integer(kind=int32), dimension(n), intent(inout) :: numrotsv
@@ -1032,7 +1032,7 @@ contains
        b_ub(1,1)=b_bv(1,1);
        lbw_ub=0; ubw_ub=0; numrotsu=0; return
     end if
-    do l=1, numsweeps_sw
+    do l=1, numsweeps1_sw
        if (l > 1) then
           call f_c_convert_ub_to_bv(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, & 
                numrotsu, jsu, csu, ssu, &
@@ -1040,13 +1040,13 @@ contains
        end if
        call f_c_bv_times_sweep(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, & 
             csv, ssv, &
-            cs_sw(:,l), ss_sw(:,l), numsweeps_sw, maxsweeps_sw, &
+            cs_sw(:,l), ss_sw(:,l), numsweeps1_sw, maxsweeps1_sw, &
             b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, csu, ssu, error)
     end do
 
-  end subroutine f_c_bv_times_sweeps
+  end subroutine f_c_bv_times_sweeps1
 
-  ! Transposed sweeps: The following assume bounded fill-in in the
+  ! Transposed sweeps1: The following assume bounded fill-in in the
   ! lower triangular part.  In particular, it is assumed that the lbw
   ! will not increase.  If there is partial fill-in, additional zero
   ! subdiagonals should be included to accomodate it.
@@ -1057,37 +1057,37 @@ contains
   ! 3: Insufficient ubw in ub.
   ! 4: n < 1.
 
-  subroutine d_trp_sweeps_times_bv(sw,bv,ub,error)
-    type(d_sweeps) :: sw
+  subroutine d_trp_sweeps1_times_bv(sw,bv,ub,error)
+    type(d_sweeps1) :: sw
     type(d_ub) :: ub
     type(d_bv) :: bv
     type(error_info) :: error
     call clear_error(error)
     if (get_n(bv) /= get_n(ub) .or. get_n(bv) /= get_n(sw)) then
-       call set_error(error,1,id_d_trp_sweeps_times_bv); return
+       call set_error(error,1,id_d_trp_sweeps1_times_bv); return
     end if
-    if (get_ubwmax(bv) < sw%numsweeps + ub%ubw+1 .and. get_ubwmax(bv) < get_n(ub)-1) then
-       call set_error(error,2,id_d_trp_sweeps_times_bv); return
+    if (get_ubwmax(bv) < sw%numsweeps1 + ub%ubw+1 .and. get_ubwmax(bv) < get_n(ub)-1) then
+       call set_error(error,2,id_d_trp_sweeps1_times_bv); return
     end if
-    if (get_ubwmax(ub) < sw%numsweeps + ub%ubw+1 .and. get_ubwmax(ub) < get_n(ub)-1) then
-       call set_error(error,3,id_d_trp_sweeps_times_bv); return
+    if (get_ubwmax(ub) < sw%numsweeps1 + ub%ubw+1 .and. get_ubwmax(ub) < get_n(ub)-1) then
+       call set_error(error,3,id_d_trp_sweeps1_times_bv); return
     end if
     if (get_n(bv) < 1) then
-       call set_error(error,4,id_d_trp_sweeps_times_bv); return
+       call set_error(error,4,id_d_trp_sweeps1_times_bv); return
     end if
-    call f_d_trp_sweeps_times_bv(sw%cs, sw%ss, get_n(sw), sw%numsweeps, get_maxsweeps(sw), &
+    call f_d_trp_sweeps1_times_bv(sw%cs, sw%ss, get_n(sw), sw%numsweeps1, get_maxsweeps1(sw), &
          bv%br, bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
          bv%numrotsv, bv%ksv, bv%csv, bv%ssv, &
          ub%bc, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
          ub%numrotsu, ub%jsu, ub%csu, ub%ssu, error)
-  end subroutine d_trp_sweeps_times_bv
+  end subroutine d_trp_sweeps1_times_bv
 
-  subroutine f_d_trp_sweep_times_bv(cs_sw, ss_sw, n, numsweeps_sw, maxsweeps_sw, &
+  subroutine f_d_trp_sweep_times_bv(cs_sw, ss_sw, n, numsweeps1_sw, maxsweeps1_sw, &
        b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, ssv, &
        b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, csu, ssu, error)
 
     real(kind=dp), dimension(n-1), intent(in) :: cs_sw, ss_sw
-    integer(kind=int32), intent(in) :: numsweeps_sw, maxsweeps_sw, n
+    integer(kind=int32), intent(in) :: numsweeps1_sw, maxsweeps1_sw, n
 
     real(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(inout) :: b_bv
     integer(kind=int32), dimension(n), intent(inout) :: numrotsv
@@ -1155,12 +1155,12 @@ contains
 
   end subroutine f_d_trp_sweep_times_bv
 
-  subroutine f_d_trp_sweeps_times_bv(cs_sw, ss_sw, n, numsweeps_sw, maxsweeps_sw, &
+  subroutine f_d_trp_sweeps1_times_bv(cs_sw, ss_sw, n, numsweeps1_sw, maxsweeps1_sw, &
        b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, ssv, &
        b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, csu, ssu, error)
 
-    real(kind=dp), dimension(n-1,maxsweeps_sw), intent(in) :: cs_sw, ss_sw
-    integer(kind=int32), intent(in) :: numsweeps_sw, maxsweeps_sw, n
+    real(kind=dp), dimension(n-1,maxsweeps1_sw), intent(in) :: cs_sw, ss_sw
+    integer(kind=int32), intent(in) :: numsweeps1_sw, maxsweeps1_sw, n
 
     real(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(inout) :: b_bv
     integer(kind=int32), dimension(n), intent(inout) :: numrotsv
@@ -1187,49 +1187,49 @@ contains
        lbw_ub=0; ubw_ub=0; numrotsu=0; return
     end if
 
-    do l=1, numsweeps_sw
+    do l=1, numsweeps1_sw
        if (l > 1) then
           call f_d_convert_ub_to_bv(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, & 
                numrotsu, jsu, csu, ssu, &
                b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, ssv, error)
        end if
-       call f_d_trp_sweep_times_bv(cs_sw(:,l), ss_sw(:,l), n, numsweeps_sw, maxsweeps_sw, &
+       call f_d_trp_sweep_times_bv(cs_sw(:,l), ss_sw(:,l), n, numsweeps1_sw, maxsweeps1_sw, &
             b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, ssv, &
             b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, csu, ssu, error)
     end do
-  end subroutine f_d_trp_sweeps_times_bv
+  end subroutine f_d_trp_sweeps1_times_bv
 
-  subroutine c_trp_sweeps_times_bv(sw,bv,ub,error)
-    type(c_sweeps) :: sw
+  subroutine c_trp_sweeps1_times_bv(sw,bv,ub,error)
+    type(c_sweeps1) :: sw
     type(c_ub) :: ub
     type(c_bv) :: bv
     type(error_info) :: error
     call clear_error(error)
     if (get_n(bv) /= get_n(ub) .or. get_n(bv) /= get_n(sw)) then
-       call set_error(error,1,id_c_trp_sweeps_times_bv); return
+       call set_error(error,1,id_c_trp_sweeps1_times_bv); return
     end if
-    if (get_ubwmax(bv) < sw%numsweeps + ub%ubw+1 .and. get_ubwmax(bv) < get_n(ub)-1) then
-       call set_error(error,2,id_c_trp_sweeps_times_bv); return
+    if (get_ubwmax(bv) < sw%numsweeps1 + ub%ubw+1 .and. get_ubwmax(bv) < get_n(ub)-1) then
+       call set_error(error,2,id_c_trp_sweeps1_times_bv); return
     end if
-    if (get_ubwmax(ub) < sw%numsweeps + ub%ubw+1 .and. get_ubwmax(ub) < get_n(ub)-1) then
-       call set_error(error,3,id_c_trp_sweeps_times_bv); return
+    if (get_ubwmax(ub) < sw%numsweeps1 + ub%ubw+1 .and. get_ubwmax(ub) < get_n(ub)-1) then
+       call set_error(error,3,id_c_trp_sweeps1_times_bv); return
     end if
     if (get_n(bv) < 1) then
-       call set_error(error,4,id_c_trp_sweeps_times_bv); return
+       call set_error(error,4,id_c_trp_sweeps1_times_bv); return
     end if
-    call f_c_trp_sweeps_times_bv(sw%cs, sw%ss, get_n(sw), sw%numsweeps, get_maxsweeps(sw), &
+    call f_c_trp_sweeps1_times_bv(sw%cs, sw%ss, get_n(sw), sw%numsweeps1, get_maxsweeps1(sw), &
          bv%br, bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
          bv%numrotsv, bv%ksv, bv%csv, bv%ssv, &
          ub%bc, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
          ub%numrotsu, ub%jsu, ub%csu, ub%ssu, error)
-  end subroutine c_trp_sweeps_times_bv
+  end subroutine c_trp_sweeps1_times_bv
 
-  subroutine f_c_trp_sweep_times_bv(cs_sw, ss_sw, n, numsweeps_sw, maxsweeps_sw, &
+  subroutine f_c_trp_sweep_times_bv(cs_sw, ss_sw, n, numsweeps1_sw, maxsweeps1_sw, &
        b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, ssv, &
        b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, csu, ssu, error)
 
     complex(kind=dp), dimension(n-1), intent(in) :: cs_sw, ss_sw
-    integer(kind=int32), intent(in) :: numsweeps_sw, maxsweeps_sw, n
+    integer(kind=int32), intent(in) :: numsweeps1_sw, maxsweeps1_sw, n
 
     complex(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(inout) :: b_bv
     integer(kind=int32), dimension(n), intent(inout) :: numrotsv
@@ -1297,12 +1297,12 @@ contains
 
   end subroutine f_c_trp_sweep_times_bv
 
-  subroutine f_c_trp_sweeps_times_bv(cs_sw, ss_sw, n, numsweeps_sw, maxsweeps_sw, &
+  subroutine f_c_trp_sweeps1_times_bv(cs_sw, ss_sw, n, numsweeps1_sw, maxsweeps1_sw, &
        b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, ssv, &
        b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, csu, ssu, error)
 
-    complex(kind=dp), dimension(n-1,maxsweeps_sw), intent(in) :: cs_sw, ss_sw
-    integer(kind=int32), intent(in) :: numsweeps_sw, maxsweeps_sw, n
+    complex(kind=dp), dimension(n-1,maxsweeps1_sw), intent(in) :: cs_sw, ss_sw
+    integer(kind=int32), intent(in) :: numsweeps1_sw, maxsweeps1_sw, n
 
     complex(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(inout) :: b_bv
     integer(kind=int32), dimension(n), intent(inout) :: numrotsv
@@ -1329,17 +1329,17 @@ contains
        lbw_ub=0; ubw_ub=0; numrotsu=0; return
     end if
 
-    do l=1, numsweeps_sw
+    do l=1, numsweeps1_sw
        if (l > 1) then
           call f_c_convert_ub_to_bv(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, & 
                numrotsu, jsu, csu, ssu, &
                b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, ssv, error)
        end if
-       call f_c_trp_sweep_times_bv(cs_sw(:,l), ss_sw(:,l), n, numsweeps_sw, maxsweeps_sw, &
+       call f_c_trp_sweep_times_bv(cs_sw(:,l), ss_sw(:,l), n, numsweeps1_sw, maxsweeps1_sw, &
             b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, ssv, &
             b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, csu, ssu, error)
     end do
-  end subroutine f_c_trp_sweeps_times_bv
+  end subroutine f_c_trp_sweeps1_times_bv
 
   !
   ! errors:
@@ -1349,38 +1349,38 @@ contains
   ! 4: n < 1.
 
 
-  subroutine d_ub_times_trp_sweeps(ub,sw,bv,error)
-    type(d_sweeps) :: sw
+  subroutine d_ub_times_trp_sweeps1(ub,sw,bv,error)
+    type(d_sweeps1) :: sw
     type(d_ub) :: ub
     type(d_bv) :: bv
     type(error_info) :: error
     call clear_error(error)
     if (get_n(bv) /= get_n(ub) .or. get_n(bv) /= get_n(sw)) then
-       call set_error(error,1,id_d_ub_times_trp_sweeps); return
+       call set_error(error,1,id_d_ub_times_trp_sweeps1); return
     end if
-    if (get_ubwmax(bv) < sw%numsweeps + ub%ubw+1 .and. get_ubwmax(bv) < get_n(ub)-1) then
-       call set_error(error,2,id_d_ub_times_trp_sweeps); return
+    if (get_ubwmax(bv) < sw%numsweeps1 + ub%ubw+1 .and. get_ubwmax(bv) < get_n(ub)-1) then
+       call set_error(error,2,id_d_ub_times_trp_sweeps1); return
     end if
-    if (get_ubwmax(ub) < sw%numsweeps + ub%ubw+1 .and. get_ubwmax(ub) < get_n(ub)-1) then
-       call set_error(error,3,id_d_ub_times_trp_sweeps); return
+    if (get_ubwmax(ub) < sw%numsweeps1 + ub%ubw+1 .and. get_ubwmax(ub) < get_n(ub)-1) then
+       call set_error(error,3,id_d_ub_times_trp_sweeps1); return
     end if
     if (get_n(bv) < 1) then
-       call set_error(error,4,id_d_ub_times_trp_sweeps); return
+       call set_error(error,4,id_d_ub_times_trp_sweeps1); return
     end if
-    call f_d_ub_times_trp_sweeps(ub%bc, get_n(ub), ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
+    call f_d_ub_times_trp_sweeps1(ub%bc, get_n(ub), ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
          ub%numrotsu, ub%jsu, ub%csu, ub%ssu, &
-         sw%cs, sw%ss, sw%numsweeps, get_maxsweeps(sw), &
+         sw%cs, sw%ss, sw%numsweeps1, get_maxsweeps1(sw), &
          bv%br, bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
          bv%numrotsv, bv%ksv, bv%csv, bv%ssv, error)
-  end subroutine d_ub_times_trp_sweeps
+  end subroutine d_ub_times_trp_sweeps1
 
   subroutine f_d_ub_times_trp_sweep(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, &
        numrotsu, jsu, csu, ssu, &
-       cs_sw, ss_sw, numsweeps_sw, maxsweeps_sw, &
+       cs_sw, ss_sw, numsweeps1_sw, maxsweeps1_sw, &
        b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, ssv, &
        error)
     real(kind=dp), dimension(n-1), intent(in) :: cs_sw, ss_sw
-    integer(kind=int32), intent(in) :: numsweeps_sw, maxsweeps_sw, n
+    integer(kind=int32), intent(in) :: numsweeps1_sw, maxsweeps1_sw, n
 
     real(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(inout) :: b_bv
     integer(kind=int32), dimension(n), intent(inout) :: numrotsv
@@ -1409,7 +1409,7 @@ contains
     end if
     ! Initial expansion for first sweep:
     ! one extra superdiagonal to fill-in.
-    ! Expand as need for later sweeps.
+    ! Expand as need for later sweeps1.
 
     dlbw=0; dlbw_tmp=0
     dubw=1; dubw_tmp=1
@@ -1448,13 +1448,13 @@ contains
 
   end subroutine f_d_ub_times_trp_sweep
 
-  subroutine f_d_ub_times_trp_sweeps(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, &
+  subroutine f_d_ub_times_trp_sweeps1(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, &
        numrotsu, jsu, csu, ssu, &
-       cs_sw, ss_sw, numsweeps_sw, maxsweeps_sw, &
+       cs_sw, ss_sw, numsweeps1_sw, maxsweeps1_sw, &
        b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, ssv, &
        error)
-    real(kind=dp), dimension(n-1,maxsweeps_sw), intent(in) :: cs_sw, ss_sw
-    integer(kind=int32), intent(in) :: numsweeps_sw, maxsweeps_sw, n
+    real(kind=dp), dimension(n-1,maxsweeps1_sw), intent(in) :: cs_sw, ss_sw
+    integer(kind=int32), intent(in) :: numsweeps1_sw, maxsweeps1_sw, n
 
     real(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(inout) :: b_bv
     integer(kind=int32), dimension(n), intent(inout) :: numrotsv
@@ -1481,52 +1481,52 @@ contains
        lbw_bv=0; ubw_bv=0; numrotsv=0; return
     end if
 
-    do l=numsweeps_sw,1,-1
-       if (l < numsweeps_sw) then
+    do l=numsweeps1_sw,1,-1
+       if (l < numsweeps1_sw) then
           call f_d_convert_bv_to_ub(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, &
                ksv, csv, ssv, b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, & 
                numrotsu, jsu, csu, ssu, error)
        end if
        call f_d_ub_times_trp_sweep(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, &
             numrotsu, jsu, csu, ssu, &
-            cs_sw(:,l), ss_sw(:,l), numsweeps_sw, maxsweeps_sw, &
+            cs_sw(:,l), ss_sw(:,l), numsweeps1_sw, maxsweeps1_sw, &
             b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, ssv, &
             error)
     end do
-  end subroutine f_d_ub_times_trp_sweeps
+  end subroutine f_d_ub_times_trp_sweeps1
 
-  subroutine c_ub_times_trp_sweeps(ub,sw,bv,error)
-    type(c_sweeps) :: sw
+  subroutine c_ub_times_trp_sweeps1(ub,sw,bv,error)
+    type(c_sweeps1) :: sw
     type(c_ub) :: ub
     type(c_bv) :: bv
     type(error_info) :: error
     call clear_error(error)
     if (get_n(bv) /= get_n(ub) .or. get_n(bv) /= get_n(sw)) then
-       call set_error(error,1,id_c_ub_times_trp_sweeps); return
+       call set_error(error,1,id_c_ub_times_trp_sweeps1); return
     end if
-    if (get_ubwmax(bv) < sw%numsweeps + ub%ubw+1 .and. get_ubwmax(bv) < get_n(ub)-1) then
-       call set_error(error,2,id_c_ub_times_trp_sweeps); return
+    if (get_ubwmax(bv) < sw%numsweeps1 + ub%ubw+1 .and. get_ubwmax(bv) < get_n(ub)-1) then
+       call set_error(error,2,id_c_ub_times_trp_sweeps1); return
     end if
-    if (get_ubwmax(ub) < sw%numsweeps + ub%ubw+1 .and. get_ubwmax(ub) < get_n(ub)-1) then
-       call set_error(error,3,id_c_ub_times_trp_sweeps); return
+    if (get_ubwmax(ub) < sw%numsweeps1 + ub%ubw+1 .and. get_ubwmax(ub) < get_n(ub)-1) then
+       call set_error(error,3,id_c_ub_times_trp_sweeps1); return
     end if
     if (get_n(bv) < 1) then
-       call set_error(error,4,id_c_ub_times_trp_sweeps); return
+       call set_error(error,4,id_c_ub_times_trp_sweeps1); return
     end if
-    call f_c_ub_times_trp_sweeps(ub%bc, get_n(ub), ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
+    call f_c_ub_times_trp_sweeps1(ub%bc, get_n(ub), ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
          ub%numrotsu, ub%jsu, ub%csu, ub%ssu, &
-         sw%cs, sw%ss, sw%numsweeps, get_maxsweeps(sw), &
+         sw%cs, sw%ss, sw%numsweeps1, get_maxsweeps1(sw), &
          bv%br, bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
          bv%numrotsv, bv%ksv, bv%csv, bv%ssv, error)
-  end subroutine c_ub_times_trp_sweeps
+  end subroutine c_ub_times_trp_sweeps1
 
   subroutine f_c_ub_times_trp_sweep(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, &
        numrotsu, jsu, csu, ssu, &
-       cs_sw, ss_sw, numsweeps_sw, maxsweeps_sw, &
+       cs_sw, ss_sw, numsweeps1_sw, maxsweeps1_sw, &
        b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, ssv, &
        error)
     complex(kind=dp), dimension(n-1), intent(in) :: cs_sw, ss_sw
-    integer(kind=int32), intent(in) :: numsweeps_sw, maxsweeps_sw, n
+    integer(kind=int32), intent(in) :: numsweeps1_sw, maxsweeps1_sw, n
 
     complex(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(inout) :: b_bv
     integer(kind=int32), dimension(n), intent(inout) :: numrotsv
@@ -1555,7 +1555,7 @@ contains
     end if
     ! Initial expansion for first sweep:
     ! one extra superdiagonal to fill-in.
-    ! Expand as need for later sweeps.
+    ! Expand as need for later sweeps1.
 
     dlbw=0; dlbw_tmp=0
     dubw=1; dubw_tmp=1
@@ -1594,13 +1594,13 @@ contains
 
   end subroutine f_c_ub_times_trp_sweep
 
-  subroutine f_c_ub_times_trp_sweeps(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, &
+  subroutine f_c_ub_times_trp_sweeps1(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, &
        numrotsu, jsu, csu, ssu, &
-       cs_sw, ss_sw, numsweeps_sw, maxsweeps_sw, &
+       cs_sw, ss_sw, numsweeps1_sw, maxsweeps1_sw, &
        b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, ssv, &
        error)
-    complex(kind=dp), dimension(n-1,maxsweeps_sw), intent(in) :: cs_sw, ss_sw
-    integer(kind=int32), intent(in) :: numsweeps_sw, maxsweeps_sw, n
+    complex(kind=dp), dimension(n-1,maxsweeps1_sw), intent(in) :: cs_sw, ss_sw
+    integer(kind=int32), intent(in) :: numsweeps1_sw, maxsweeps1_sw, n
 
     complex(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(inout) :: b_bv
     integer(kind=int32), dimension(n), intent(inout) :: numrotsv
@@ -1627,25 +1627,25 @@ contains
        lbw_bv=0; ubw_bv=0; numrotsv=0; return
     end if
 
-    do l=numsweeps_sw,1,-1
-       if (l < numsweeps_sw) then
+    do l=numsweeps1_sw,1,-1
+       if (l < numsweeps1_sw) then
           call f_c_convert_bv_to_ub(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, &
                ksv, csv, ssv, b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, & 
                numrotsu, jsu, csu, ssu, error)
        end if
        call f_c_ub_times_trp_sweep(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, &
             numrotsu, jsu, csu, ssu, &
-            cs_sw(:,l), ss_sw(:,l), numsweeps_sw, maxsweeps_sw, &
+            cs_sw(:,l), ss_sw(:,l), numsweeps1_sw, maxsweeps1_sw, &
             b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, ssv, &
             error)
     end do
-  end subroutine f_c_ub_times_trp_sweeps
+  end subroutine f_c_ub_times_trp_sweeps1
 
-  type(d_sweeps) function d_random_sweeps(n,l) result(sw)
+  type(d_sweeps1) function d_random_sweeps1(n,l) result(sw)
     integer(kind=int32) :: n, l, j, k
     real(kind=dp) :: nrm
-    sw=d_new_sweeps(n,l)
-    sw%numsweeps=l
+    sw=d_new_sweeps1(n,l)
+    sw%numsweeps1=l
     call random_matrix(sw%cs)
     call random_matrix(sw%ss)
     do j=1,n-1
@@ -1655,13 +1655,13 @@ contains
           sw%ss(j,k)=sw%ss(j,k)/nrm
        end do
     end do
-  end function d_random_sweeps
+  end function d_random_sweeps1
 
-  type(c_sweeps) function c_random_sweeps(n,l) result(sw)
+  type(c_sweeps1) function c_random_sweeps1(n,l) result(sw)
     integer(kind=int32) :: n, l, j, k
     real(kind=dp) :: nrm, cr
-    sw=c_new_sweeps(n,l)
-    sw%numsweeps=l
+    sw=c_new_sweeps1(n,l)
+    sw%numsweeps1=l
     call random_matrix(sw%cs)
     call random_matrix(sw%ss)
     do j=1,n-1
@@ -1673,6 +1673,6 @@ contains
           sw%ss(j,k)=sw%ss(j,k)/nrm
        end do
     end do
-  end function c_random_sweeps
+  end function c_random_sweeps1
 
-end module sweeps
+end module sweeps1

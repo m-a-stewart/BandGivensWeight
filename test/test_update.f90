@@ -3,7 +3,7 @@ program test_update
   use test_data
   implicit none
   real(kind=dp) :: t0, t1
-  integer(kind=int32) :: na, lbwa, ubwa, j, k, lbwmaxa, ubwmaxa, numsweeps
+  integer(kind=int32) :: na, lbwa, ubwa, j, k, lbwmaxa, ubwmaxa, numsweeps1
   integer(kind=int32), parameter :: nmax=1000, rmaxa=50
   type(error_info) :: error
   real(kind=dp), parameter :: tol=1e-14, tol1=1e-14, tol2=1e-10
@@ -32,8 +32,8 @@ program test_update
 
 
   type(c_bv) :: bv_c
-  type(d_sweeps) :: sw_d
-  type(c_sweeps) :: sw_c
+  type(d_sweeps1) :: sw_d
+  type(c_sweeps1) :: sw_c
 
   call random_seed
   call random_matrix(u_d)
@@ -58,7 +58,7 @@ program test_update
   print *, "Real Rank One Update Tests."
   print *
 
-  na=10; numsweeps=1
+  na=10; numsweeps1=1
   lbwa=2; ubwa=5
   ubwmaxa=ubwa+3
   lbwmaxa=lbwa+1
@@ -67,7 +67,7 @@ program test_update
   allocate(a_d(na,na), a0_d(na,na), a1_d(na,na))
   ub_d=d_new_ub(na,lbwmaxa,ubwmaxa)
   bv_d=d_new_bv(na,lbwmaxa,ubwmaxa)
-  sw_d=d_new_sweeps(na,numsweeps)
+  sw_d=d_new_sweeps1(na,numsweeps1)
   call d_assemble_upper(a_d,u_d(1:na,1:ubwa),v_d(1:ubwa,1:na),d_d(1:na),lbwa)
   a0_d=a_d
   wp_d => w_d(1:na); xp_d => x_d(1:na)
@@ -84,17 +84,17 @@ program test_update
         a1_d(j,k)=a0_d(j,k)+w0_d(j)* x0_d(k)
      end do
   end do
-  call sweeps_times_general(sw_d,a1_d)
+  call sweeps1_times_general(sw_d,a1_d)
   call d_bv_to_upper(bv_d,a_d,error)  
   test_name = "Real Rank 1 Update"
   call d_output_result_upper(test_name,a_d,a1_d,bv_d%ubw,bv_d%ubw,t0,t1,tol2,error)
   deallocate(a_d, a0_d, a1_d)
   call deallocate_ub(ub_d); call deallocate_bv(bv_d)
-  call deallocate_sweeps(sw_d)
+  call deallocate_sweeps1(sw_d)
   !
   ! full lbw and ubw
   !
-  na=10; numsweeps=10
+  na=10; numsweeps1=10
   lbwa=na-1; ubwa=na-1
   ubwmaxa=ubwa+3
   lbwmaxa=lbwa+1
@@ -103,15 +103,15 @@ program test_update
   allocate(a_d(na,na), a0_d(na,na), a1_d(na,na))
   ub_d=d_new_ub(na,lbwmaxa,ubwmaxa)
   bv_d=d_new_bv(na,lbwmaxa,ubwmaxa)
-  sw_d=d_random_sweeps(na,numsweeps)
+  sw_d=d_random_sweeps1(na,numsweeps1)
   call d_assemble_upper(a_d,u_d(1:na,1:ubwa),v_d(1:ubwa,1:na),d_d(1:na),lbwa)
   wp_d => w_d(1:na); xp_d => x_d(1:na)
   call upper_to_ub(a_d,ub_d,lbwa, tol,error)
-  call sweeps_times_ub(sw_d, ub_d, bv_d, error)
+  call sweeps1_times_ub(sw_d, ub_d, bv_d, error)
   call convert_bv_to_ub(bv_d, ub_d, error)
   call ub_to_upper(ub_d,a_d,error)
   a0_d=a_d
-  sw_d%numsweeps=0
+  sw_d%numsweeps1=0
   call cpu_time(t0)
   call d_r1_update_ub_to_bv(ub_d, wp_d, xp_d, sw_d, bv_d, error)
   call cpu_time(t1)
@@ -124,13 +124,13 @@ program test_update
         a1_d(j,k)=a0_d(j,k)+w0_d(j)* x0_d(k)
      end do
   end do
-  call sweeps_times_general(sw_d,a1_d)
+  call sweeps1_times_general(sw_d,a1_d)
   call d_bv_to_upper(bv_d,a_d,error)  
   test_name = "Real Rank 1 Update (full lbw and ubw)"
   call d_output_result_upper(test_name,a_d,a1_d,bv_d%ubw,bv_d%ubw,t0,t1,tol2,error)
   deallocate(a_d, a0_d, a1_d)
   call deallocate_ub(ub_d); call deallocate_bv(bv_d)
-  call deallocate_sweeps(sw_d)
+  call deallocate_sweeps1(sw_d)
 
 
   print *
@@ -139,7 +139,7 @@ program test_update
   print *, "Complex Rank One Update Tests."
   print *
 
-  na=10; numsweeps=1
+  na=10; numsweeps1=1
   lbwa=2; ubwa=5
   ubwmaxa=ubwa+3
   lbwmaxa=lbwa+1
@@ -148,7 +148,7 @@ program test_update
   allocate(a_c(na,na), a0_c(na,na), a1_c(na,na))
   ub_c=c_new_ub(na,lbwmaxa,ubwmaxa)
   bv_c=c_new_bv(na,lbwmaxa,ubwmaxa)
-  sw_c=c_new_sweeps(na,numsweeps)
+  sw_c=c_new_sweeps1(na,numsweeps1)
   call c_assemble_upper(a_c,u_c(1:na,1:ubwa),v_c(1:ubwa,1:na),d_c(1:na),lbwa)
   a0_c=a_c
   wp_c => w_c(1:na); xp_c => x_c(1:na)
@@ -165,17 +165,17 @@ program test_update
         a1_c(j,k)=a0_c(j,k)+w0_c(j)* conjg(x0_c(k))
      end do
   end do
-  call sweeps_times_general(sw_c,a1_c)
+  call sweeps1_times_general(sw_c,a1_c)
   call c_bv_to_upper(bv_c,a_c,error)  
   test_name = "Real Rank 1 Update"
   call c_output_result_upper(test_name,a_c,a1_c,bv_c%ubw,bv_c%ubw,t0,t1,tol2,error)
   deallocate(a_c, a0_c, a1_c)
   call deallocate_ub(ub_c); call deallocate_bv(bv_c)
-  call deallocate_sweeps(sw_c)
+  call deallocate_sweeps1(sw_c)
   !
   ! full lbw and ubw
   !
-  na=10; numsweeps=10
+  na=10; numsweeps1=10
   lbwa=na-1; ubwa=na-1
   ubwmaxa=ubwa+3
   lbwmaxa=lbwa+1
@@ -184,15 +184,15 @@ program test_update
   allocate(a_c(na,na), a0_c(na,na), a1_c(na,na))
   ub_c=c_new_ub(na,lbwmaxa,ubwmaxa)
   bv_c=c_new_bv(na,lbwmaxa,ubwmaxa)
-  sw_c=c_random_sweeps(na,numsweeps)
+  sw_c=c_random_sweeps1(na,numsweeps1)
   call c_assemble_upper(a_c,u_c(1:na,1:ubwa),v_c(1:ubwa,1:na),d_c(1:na),lbwa)
   wp_c => w_c(1:na); xp_c => x_c(1:na)
   call upper_to_ub(a_c,ub_c,lbwa, tol,error)
-  call sweeps_times_ub(sw_c, ub_c, bv_c, error)
+  call sweeps1_times_ub(sw_c, ub_c, bv_c, error)
   call convert_bv_to_ub(bv_c, ub_c, error)
   call ub_to_upper(ub_c,a_c,error)
   a0_c=a_c
-  sw_c%numsweeps=0
+  sw_c%numsweeps1=0
   call cpu_time(t0)
   call c_r1_update_ub_to_bv(ub_c, wp_c, xp_c, sw_c, bv_c, error)
   call cpu_time(t1)
@@ -205,12 +205,12 @@ program test_update
         a1_c(j,k)=a0_c(j,k)+w0_c(j)* conjg(x0_c(k))
      end do
   end do
-  call sweeps_times_general(sw_c,a1_c)
+  call sweeps1_times_general(sw_c,a1_c)
   call c_bv_to_upper(bv_c,a_c,error)  
   test_name = "Real Rank 1 Update (full lbw and ubw)"
   call c_output_result_upper(test_name,a_c,a1_c,bv_c%ubw,bv_c%ubw,t0,t1,tol2,error)
   deallocate(a_c, a0_c, a1_c)
   call deallocate_ub(ub_c); call deallocate_bv(bv_c)
-  call deallocate_sweeps(sw_c)
+  call deallocate_sweeps1(sw_c)
 
 end program test_update

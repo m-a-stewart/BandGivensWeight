@@ -9,9 +9,9 @@ $(OBJDIR)/types.o : $(OBJDIR)/band_types.o $(OBJDIR)/nested_types.o
 $(OBJDIR)/band_types.o : $(OBJDIR)/rotation.o $(OBJDIR)/utility.o $(OBJDIR)/shift.o
 $(OBJDIR)/nested_types.o : $(OBJDIR)/prec.o
 
-$(OBJDIR)/transforms.o : $(OBJDIR)/sweeps.o $(OBJDIR)/rotation.o $(OBJDIR)/shift.o
+$(OBJDIR)/transforms.o : $(OBJDIR)/sweeps1.o $(OBJDIR)/rotation.o $(OBJDIR)/shift.o
 $(OBJDIR)/rotation.o : $(OBJDIR)/prec.o
-$(OBJDIR)/sweeps.o : $(OBJDIR)/types.o $(OBJDIR)/misc.o $(OBJDIR)/shift.o $(OBJDIR)/conversion.o
+$(OBJDIR)/sweeps1.o : $(OBJDIR)/types.o $(OBJDIR)/misc.o $(OBJDIR)/shift.o $(OBJDIR)/conversion.o
 $(OBJDIR)/shift.o : $(OBJDIR)/prec.o
 
 $(OBJDIR)/orth.o : $(OBJDIR)/triangular.o $(OBJDIR)/gs.o $(OBJDIR)/nullvec.o
@@ -46,18 +46,20 @@ $(OBJDIR)/recompression_bv_to_ub.o : $(OBJDIR)/misc.o $(OBJDIR)/shift.o $(OBJDIR
 $(OBJDIR)/recompression_ub_to_bv.o : $(OBJDIR)/misc.o $(OBJDIR)/shift.o $(OBJDIR)/rotation.o $(OBJDIR)/types.o \
 	$(OBJDIR)/orth.o
 
-$(OBJDIR)/qr_iteration.o : $(OBJDIR)/misc.o $(OBJDIR)/recompression.o $(OBJDIR)/conversion.o $(OBJDIR)/sweeps.o \
+$(OBJDIR)/row_compression.o : $(OBJDIR)/misc.o $(OBJDIR)/sweeps1.o
+
+$(OBJDIR)/qr_iteration.o : $(OBJDIR)/misc.o $(OBJDIR)/recompression.o $(OBJDIR)/conversion.o $(OBJDIR)/sweeps1.o \
 	$(OBJDIR)/qr_factorization.o $(OBJDIR)/update.o $(OBJDIR)/substitution.o $(OBJDIR)/assemble.o
 
-$(OBJDIR)/qr_factorization.o : $(OBJDIR)/conversion.o $(OBJDIR)/sweeps.o
+$(OBJDIR)/qr_factorization.o : $(OBJDIR)/conversion.o $(OBJDIR)/sweeps1.o
 
-$(OBJDIR)/update.o : $(OBJDIR)/misc.o $(OBJDIR)/types.o $(OBJDIR)/shift.o $(OBJDIR)/sweeps.o \
+$(OBJDIR)/update.o : $(OBJDIR)/misc.o $(OBJDIR)/types.o $(OBJDIR)/shift.o $(OBJDIR)/sweeps1.o \
 	$(OBJDIR)/conversion.o
 
 $(OBJDIR)/substitution.o : $(OBJDIR)/transforms.o $(OBJDIR)/misc.o $(OBJDIR)/types.o
 
 $(OBJDIR)/nested.o : $(OBJDIR)/general.o $(OBJDIR)/assemble.o $(OBJDIR)/qr_iteration.o \
-	$(OBJDIR)/qr_factorization.o $(OBJDIR)/substitution.o $(OBJDIR)/update.o
+	$(OBJDIR)/qr_factorization.o $(OBJDIR)/substitution.o $(OBJDIR)/update.o $(OBJDIR)/row_compression.o
 
 $(OBJDIR)/%.o : %.f90
 	$(FC) $(CFLAGS) $(PROFCFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@
@@ -101,6 +103,10 @@ $(OBJDIR)/%.o : assemble/%.f90
 
 $(OBJDIR)/%.o : nested/%.f90
 	$(FC) $(CFLAGS) $(PROFCFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@
+
+$(OBJDIR)/%.o : row_compression/%.f90
+	$(FC) $(CFLAGS) $(PROFCFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@
+
 
 clean :
 	rm $(OBJDIR)/*.o $(OBJDIR)/*.mod $(TEST_EXECS)
