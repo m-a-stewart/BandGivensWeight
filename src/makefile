@@ -9,9 +9,10 @@ $(OBJDIR)/types.o : $(OBJDIR)/band_types.o $(OBJDIR)/nested_types.o
 $(OBJDIR)/band_types.o : $(OBJDIR)/rotation.o $(OBJDIR)/utility.o $(OBJDIR)/shift.o
 $(OBJDIR)/nested_types.o : $(OBJDIR)/prec.o
 
-$(OBJDIR)/transforms.o : $(OBJDIR)/sweeps1.o $(OBJDIR)/rotation.o $(OBJDIR)/shift.o
+$(OBJDIR)/transforms.o : $(OBJDIR)/sweeps1.o $(OBJDIR)/sweeps.o $(OBJDIR)/rotation.o $(OBJDIR)/shift.o
 $(OBJDIR)/rotation.o : $(OBJDIR)/prec.o
 $(OBJDIR)/sweeps1.o : $(OBJDIR)/types.o $(OBJDIR)/misc.o $(OBJDIR)/shift.o $(OBJDIR)/conversion.o
+$(OBJDIR)/sweeps.o : $(OBJDIR)/types.o $(OBJDIR)/misc.o $(OBJDIR)/shift.o $(OBJDIR)/conversion.o
 $(OBJDIR)/shift.o : $(OBJDIR)/prec.o
 
 $(OBJDIR)/orth.o : $(OBJDIR)/triangular.o $(OBJDIR)/gs.o $(OBJDIR)/nullvec.o
@@ -46,7 +47,7 @@ $(OBJDIR)/recompression_bv_to_ub.o : $(OBJDIR)/misc.o $(OBJDIR)/shift.o $(OBJDIR
 $(OBJDIR)/recompression_ub_to_bv.o : $(OBJDIR)/misc.o $(OBJDIR)/shift.o $(OBJDIR)/rotation.o $(OBJDIR)/types.o \
 	$(OBJDIR)/orth.o
 
-$(OBJDIR)/row_compression.o : $(OBJDIR)/misc.o $(OBJDIR)/sweeps1.o
+$(OBJDIR)/row_compression.o : $(OBJDIR)/misc.o $(OBJDIR)/sweeps.o
 
 $(OBJDIR)/qr_iteration.o : $(OBJDIR)/misc.o $(OBJDIR)/recompression.o $(OBJDIR)/conversion.o $(OBJDIR)/sweeps1.o \
 	$(OBJDIR)/qr_factorization.o $(OBJDIR)/update.o $(OBJDIR)/substitution.o $(OBJDIR)/assemble.o
