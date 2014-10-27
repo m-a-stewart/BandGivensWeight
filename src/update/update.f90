@@ -127,8 +127,8 @@ contains
 
     ! zero elements in u
     if (numsweeps1_sw >= 1) then
-       call right_shift(cs_sw(:,1:numsweeps1_sw+1))
-       call right_shift(ss_sw(:,1:numsweeps1_sw+1))
+       call shift2(cs_sw(:,1:numsweeps1_sw+1),0,1)
+       call shift2(ss_sw(:,1:numsweeps1_sw+1),0,1)
     end if
     numsweeps1_sw=numsweeps1_sw+1
     do j=n,2,-1
@@ -336,8 +336,8 @@ contains
 
     ! zero elements in u
     if (numsweeps1_sw >= 1) then
-       call right_shift(cs_sw(:,1:numsweeps1_sw+1))
-       call right_shift(ss_sw(:,1:numsweeps1_sw+1))
+       call shift2(cs_sw(:,1:numsweeps1_sw+1),0,1)
+       call shift2(ss_sw(:,1:numsweeps1_sw+1),0,1)
     end if
     numsweeps1_sw=numsweeps1_sw+1
     do j=n,2,-1

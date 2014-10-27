@@ -1,198 +1,94 @@
 module shift
   use prec
 
-  interface up_left_shift
-     module procedure d_up_left_shift, c_up_left_shift
-  end interface up_left_shift
-
-  interface down_right_shift
-     module procedure d_down_right_shift, c_down_right_shift
-  end interface down_right_shift
-
-  interface right_shift
-     module procedure d_right_shift, c_right_shift
-  end interface right_shift
-
-  interface down_shift
-     module procedure d_down_shift, c_down_shift
-  end interface down_shift
-
-  interface up_shift
-     module procedure d_up_shift, c_up_shift
-  end interface up_shift
-
-  interface left_shift
-     module procedure d_left_shift, c_left_shift
-  end interface left_shift
+  interface shift2
+     module procedure d_shift2, c_shift2
+  end interface shift2
 
 contains
 
-  subroutine d_up_left_shift(a)
+  subroutine d_shift2(a,dj,dk)
     real(kind=dp), dimension(:,:), intent(inout) :: a
+    integer(kind=int32), intent(in) :: dj, dk
     integer(kind=int32) :: m,n,j,k
+
     m=size(a,1)
     n=size(a,2)
-    do j=1,m-1
-       do k=1,n-1
-          a(j,k) = a(j+1,k+1)
+    if (dj >= 0 .and. dk >= 0) then
+       do j=m,dj+1,-1
+          do k=n,dk+1,-1
+             a(j,k)=a(j-dj,k-dk)
+          end do
        end do
-    end do
-    a(:,n)=0.0_dp
-    a(m,:)=0.0_dp
-  end subroutine d_up_left_shift
-
-  subroutine d_down_right_shift(a)
-    real(kind=dp), dimension(:,:), intent(inout) :: a
-    integer(kind=int32) :: m,n,j,k
-    m=size(a,1)
-    n=size(a,2)
-    do j=m,2,-1
-       do k=n,2,-1
-          a(j,k) = a(j-1,k-1)
+       a(1:dj,:)=0.0_dp
+       a(:,1:dk)=0.0_dp
+    else if (dj >=0 .and. dk < 0) then
+       do j=m,dj+1,-1
+          do k=1,n+dk
+             a(j,k)=a(j-dj,k-dk)
+          end do
        end do
-    end do
-    a(1,:)=0.0_dp
-    a(:,1)=0.0_dp
-  end subroutine d_down_right_shift
-
-
-  subroutine d_left_shift(a)
-    real(kind=dp), dimension(:,:), intent(inout) :: a
-    integer(kind=int32) :: m,n,j,k
-    m=size(a,1)
-    n=size(a,2)
-    do j=1,m
-       do k=1,n-1
-          a(j,k) = a(j,k+1)
+       a(1:dj,:)=0.0_dp
+       a(:,n+dk+1:n)=0.0_dp
+    else if (dj < 0 .and. dk >= 0) then
+       do j=1,m+dj
+          do k=n,dk+1,-1
+             a(j,k)=a(j-dj,k-dk)
+          end do
        end do
-    end do
-    a(:,n)=0.0_dp
-  end subroutine d_left_shift
-
-
-
-  subroutine d_right_shift(a)
-    real(kind=dp), dimension(:,:), intent(inout) :: a
-    integer(kind=int32) :: m,n,j,k
-    m=size(a,1)
-    n=size(a,2)
-    do j=1,m
-       do k=n,2,-1
-          a(j,k) = a(j,k-1)
+       a(m+dj+1:m,:)=0.0_dp
+       a(:,1:dk)=0.0_dp
+    else
+       do j=1,m+dj
+          do k=1,n+dk
+             a(j,k)=a(j-dj,k-dk)
+          end do
        end do
-    end do
-    a(:,1)=0.0_dp
-  end subroutine d_right_shift
+       a(m+dj+1:m,:)=0.0_dp
+       a(:,n+dk+1:n)=0.0_dp
+    end if
+  end subroutine d_shift2
 
-  subroutine d_down_shift(a)
-    real(kind=dp), dimension(:,:), intent(inout) :: a
-    integer(kind=int32) :: m,n,j,k
-    m=size(a,1)
-    n=size(a,2)
-    do j=m,2,-1
-       do k=1,n
-          a(j,k) = a(j-1,k)
-       end do
-    end do
-    a(1,:)=0.0_dp
-  end subroutine d_down_shift
-
-  subroutine d_up_shift(a)
-    real(kind=dp), dimension(:,:), intent(inout) :: a
-    integer(kind=int32) :: m,n,j,k
-    m=size(a,1)
-    n=size(a,2)
-    do j=1,m-1
-       do k=1,n
-          a(j,k) = a(j+1,k)
-       end do
-    end do
-    a(m,:)=0.0_dp
-  end subroutine d_up_shift
-
-
-  ! Complex
-
-  subroutine c_up_left_shift(a)
+  subroutine c_shift2(a,dj,dk)
     complex(kind=dp), dimension(:,:), intent(inout) :: a
+    integer(kind=int32), intent(in) :: dj, dk
     integer(kind=int32) :: m,n,j,k
+
     m=size(a,1)
     n=size(a,2)
-    do j=1,m-1
-       do k=1,n-1
-          a(j,k) = a(j+1,k+1)
+    if (dj >= 0 .and. dk >= 0) then
+       do j=m,dj+1,-1
+          do k=n,dk+1,-1
+             a(j,k)=a(j-dj,k-dk)
+          end do
        end do
-    end do
-    a(:,n)=(0.0_dp, 0.0_dp)
-    a(m,:)=(0.0_dp, 0.0_dp)
-  end subroutine c_up_left_shift
-
-  subroutine c_down_right_shift(a)
-    complex(kind=dp), dimension(:,:), intent(inout) :: a
-    integer(kind=int32) :: m,n,j,k
-    m=size(a,1)
-    n=size(a,2)
-    do j=m,2,-1
-       do k=n,2,-1
-          a(j,k) = a(j-1,k-1)
+       a(1:dj,:)=(0.0_dp,0.0_dp)
+       a(:,1:dk)=(0.0_dp,0.0_dp)
+    else if (dj >=0 .and. dk < 0) then
+       do j=m,dj+1,-1
+          do k=1,n+dk
+             a(j,k)=a(j-dj,k-dk)
+          end do
        end do
-    end do
-    a(1,:)=(0.0_dp,0.0_dp)
-    a(:,1)=(0.0_dp,0.0_dp)
-  end subroutine c_down_right_shift
-
-
-  subroutine c_left_shift(a)
-    complex(kind=dp), dimension(:,:), intent(inout) :: a
-    integer(kind=int32) :: m,n,j,k
-    m=size(a,1)
-    n=size(a,2)
-    do j=1,m
-       do k=1,n-1
-          a(j,k) = a(j,k+1)
+       a(1:dj,:)=(0.0_dp,0.0_dp)
+       a(:,n+dk+1:n)=(0.0_dp,0.0_dp)
+    else if (dj < 0 .and. dk >= 0) then
+       do j=1,m+dj
+          do k=n,dk+1,-1
+             a(j,k)=a(j-dj,k-dk)
+          end do
        end do
-    end do
-    a(:,n)=(0.0_dp, 0.0_dp)
-  end subroutine c_left_shift
-
-  subroutine c_right_shift(a)
-    complex(kind=dp), dimension(:,:), intent(inout) :: a
-    integer(kind=int32) :: m,n,j,k
-    m=size(a,1)
-    n=size(a,2)
-    do j=1,m
-       do k=n,2,-1
-          a(j,k) = a(j,k-1)
+       a(m+dj+1:m,:)=(0.0_dp,0.0_dp)
+       a(:,1:dk)=(0.0_dp,0.0_dp)
+    else
+       do j=1,m+dj
+          do k=1,n+dk
+             a(j,k)=a(j-dj,k-dk)
+          end do
        end do
-    end do
-    a(:,1)=(0.0_dp, 0.0_dp)
-  end subroutine c_right_shift
-
-  subroutine c_down_shift(a)
-    complex(kind=dp), dimension(:,:), intent(inout) :: a
-    integer(kind=int32) :: m,n,j,k
-    m=size(a,1)
-    n=size(a,2)
-    do j=m,2,-1
-       do k=1,n
-          a(j,k) = a(j-1,k)
-       end do
-    end do
-    a(1,:)=(0.0_dp, 0.0_dp)
-  end subroutine c_down_shift
-
-  subroutine c_up_shift(a)
-    complex(kind=dp), dimension(:,:), intent(inout) :: a
-    integer(kind=int32) :: m,n,j,k
-    m=size(a,1)
-    n=size(a,2)
-    do j=1,m-1
-       do k=1,n
-          a(j,k) = a(j+1,k)
-       end do
-    end do
-    a(m,:)=(0.0_dp, 0.0_dp)
-  end subroutine c_up_shift
-
+       a(m+dj+1:m,:)=(0.0_dp,0.0_dp)
+       a(:,n+dk+1:n)=(0.0_dp,0.0_dp)
+    end if
+  end subroutine c_shift2
 
 end module shift

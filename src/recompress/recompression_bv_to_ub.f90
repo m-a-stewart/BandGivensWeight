@@ -226,7 +226,7 @@ contains
           tmp=get_el_br(b_bv,lbw,roffs+j,coffs+1)
           call set_el_br(b_bv,lbw,roffs+j,coffs+1,tmp*q(1,1))
        end do
-       call up_left_shift(q)
+       call shift2(q,-1,-1)
        q(nq,nq)=1.0_dp
        !
        ! Apply Q to row k+1
@@ -306,7 +306,7 @@ contains
           tmp=get_el_br(b_bv,lbw,roffs+j,coffs+1)
           call set_el_br(b_bv,lbw,roffs+j,coffs+1,tmp*q(1,1))
        end do
-       call up_left_shift(q)
+       call shift2(q,-1,-1)
        if (nl==1) then 
           exit
        end if
@@ -501,7 +501,7 @@ contains
           tmp=get_el_br(b_bv,lbw,roffs+j,coffs+1)
           call set_el_br(b_bv,lbw,roffs+j,coffs+1,tmp*q(1,1))
        end do
-       call up_left_shift(q)
+       call shift2(q,-1,-1)
        q(nq,nq)=(1.0_dp,0.0_dp)
        !
        ! Apply Q to row k+1
@@ -581,7 +581,7 @@ contains
           tmp=get_el_br(b_bv,lbw,roffs+j,coffs+1)
           call set_el_br(b_bv,lbw,roffs+j,coffs+1,tmp*q(1,1))
        end do
-       call up_left_shift(q)
+       call shift2(q,-1,-1)
        if (nl==1) then 
           exit
        end if

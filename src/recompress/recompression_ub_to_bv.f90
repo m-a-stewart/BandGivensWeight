@@ -122,8 +122,7 @@ contains
 
 
     ! provide working space in an extra superdiagonal on top of b_ub
-    call down_shift(b_ub)
-    call down_shift(b_ub)
+    call shift2(b_ub,2,0)
     nl=1
     ml=1
     ! initialize q
@@ -230,7 +229,7 @@ contains
           tmp=get_el_bc(b_ub,ubw2,roffs+nl,coffs+k)
           call set_el_bc(b_ub,ubw2,roffs+nl,coffs+k,tmp*pq(mq,mq))
        end do
-       call down_right_shift(pq)
+       call shift2(pq,1,1)
        pq(1,1)=1.0_dp
        qoffs=qoffs-1
        ! Eliminate a diagonal.
@@ -316,7 +315,7 @@ contains
           rot%cosine=csu(k,n-j-1); rot%sine=ssu(k,n-j-1)
           call rotation_times_general(rot,pq,jsu(k,n-j-1),jsu(k,n-j-1)+1)
        end do
-       call down_right_shift(pq)
+       call shift2(pq,1,1)
     end do
     ubw_bv=maxval(ubws)
     if (ubw_bv > ubwmax_bv) then
@@ -397,8 +396,7 @@ contains
     end if
 
     ! provide working space in an extra superdiagonal on top of b_ub
-    call down_shift(b_ub)
-    call down_shift(b_ub)
+    call shift2(b_ub,2,0)
     nl=1
     ml=1
     ! initialize q
@@ -505,7 +503,7 @@ contains
           tmp=get_el_bc(b_ub,ubw2,roffs+nl,coffs+k)
           call set_el_bc(b_ub,ubw2,roffs+nl,coffs+k,tmp*pq(mq,mq))
        end do
-       call down_right_shift(pq)
+       call shift2(pq,1,1)
        pq(1,1)=(1.0_dp,0.0_dp)
        qoffs=qoffs-1
        ! Eliminate a diagonal.
@@ -591,7 +589,7 @@ contains
           rot%cosine=csu(k,n-j-1); rot%sine=ssu(k,n-j-1)
           call rotation_times_general(rot,pq,jsu(k,n-j-1),jsu(k,n-j-1)+1)
        end do
-       call down_right_shift(pq)
+       call shift2(pq,1,1)
     end do
     ubw_bv=maxval(ubws)
     if (ubw_bv > ubwmax_bv) then

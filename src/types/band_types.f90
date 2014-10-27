@@ -696,7 +696,7 @@ contains
        dubw_tmp = n-1 - ubw_bc - dubw
     end if
     do j=1,dubw+dubw_tmp
-       call down_shift(b_bc)
+       call shift2(b_bc,1,0)
     end do
     ubw_br=ubw_bc+dubw
     ubw_bc=ubw_bc+dubw+dubw_tmp
@@ -734,7 +734,7 @@ contains
        dubw_tmp = n-1 - ubw_bc - dubw
     end if
     do j=1,dubw+dubw_tmp
-       call down_shift(b_bc)
+       call shift2(b_bc,1,0)
     end do
     ubw_br=ubw_bc+dubw
     ubw_bc=ubw_bc+dubw+dubw_tmp
@@ -752,7 +752,7 @@ contains
     lbw_bc=lbw_bc - dlbw_tmp
     ubw_bc=ubw_bc-dubw_tmp
     do j=1,dubw_tmp
-       call up_shift(b_bc)
+       call shift2(b_bc,-1,0)
     end do
 
   end subroutine f_d_bw_contract_bc
@@ -768,7 +768,7 @@ contains
     lbw_bc=lbw_bc - dlbw_tmp
     ubw_bc=ubw_bc-dubw_tmp
     do j=1,dubw_tmp
-       call up_shift(b_bc)
+       call shift2(b_bc,-1,0)
     end do
 
   end subroutine f_c_bw_contract_bc
@@ -795,7 +795,7 @@ contains
     lbw_bc=lbw_br+dlbw
     lbw_br=lbw_br+dlbw+dlbw_tmp
     do j=1,dlbw+dlbw_tmp
-       call right_shift(b_br)
+       call shift2(b_br,0,1)
     end do
 
     ! add extra superdiagonals.
@@ -832,7 +832,7 @@ contains
     lbw_bc=lbw_br+dlbw
     lbw_br=lbw_br+dlbw+dlbw_tmp
     do j=1,dlbw+dlbw_tmp
-       call right_shift(b_br)
+       call shift2(b_br,0,1)
     end do
 
     ! add extra superdiagonals.
@@ -861,7 +861,7 @@ contains
     lbw_br=lbw_br - dlbw_tmp
     ubw_br=ubw_br - dubw_tmp
     do j=1,dlbw_tmp
-       call left_shift(b_br)
+       call shift2(b_br,0,-1)
     end do
 
   end subroutine f_d_bw_contract_br
@@ -877,7 +877,7 @@ contains
     lbw_br=lbw_br - dlbw_tmp
     ubw_br=ubw_br - dubw_tmp
     do j=1,dlbw_tmp
-       call left_shift(b_br)
+       call shift2(b_br,0,-1)
     end do
 
   end subroutine f_c_bw_contract_br

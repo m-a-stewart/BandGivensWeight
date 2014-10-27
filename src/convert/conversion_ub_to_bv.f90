@@ -86,7 +86,7 @@ contains
     lbw1=lbw
     if (ubw < n-1) then
        ubw1=ubw+1
-       call down_shift(b_ub)
+       call shift2(b_ub,1,0)
        full_ubw=.false.
     else
        ubw1=ubw
@@ -109,7 +109,7 @@ contains
     end do
     ! Store the results in b_bv
     if (.not. full_ubw) then
-       call up_shift(b_ub)
+       call shift2(b_ub,-1,0)
     end if
     call bc_to_br(b_ub, b_bv, lbw, ubw)
   end subroutine f_d_convert_ub_to_bv
@@ -170,7 +170,7 @@ contains
     ubw1=ubw+1; lbw1=lbw
     if (ubw < n-1) then
        ubw1=ubw+1
-       call down_shift(b_ub)
+       call shift2(b_ub,1,0)
        full_ubw=.false.
     else
        ubw1=ubw
@@ -192,7 +192,7 @@ contains
        end do
     end do
     if (.not. full_ubw) then
-       call up_shift(b_ub)
+       call shift2(b_ub,-1,0)
     end if
     call bc_to_br(b_ub, b_bv, lbw, ubw)
   end subroutine f_c_convert_ub_to_bv
