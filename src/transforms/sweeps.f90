@@ -8,7 +8,7 @@ module sweeps
 
   ! These types represent a linear transformation.
   ! Thus
-  ! Q = Q_1 Q_2 ... Q_{num}
+  ! Q = Q_{num} Q_{num-1} ... Q_{1}
   ! where
   ! Q_k = G_{k,numrots(k)} ... G_{k,1}
   ! is formed from rotations acting on adjacent rows.
@@ -99,7 +99,7 @@ contains
 
   type(d_sweeps) function d_new_sweeps(n,maxnum,maxord) result(sw)
     integer(kind=int32), intent(in) :: n, maxnum, maxord
-    sw%n=n; sw%maxnum=maxnum
+    sw%n=n; sw%maxnum=maxnum; sw%maxord=maxord
     allocate(sw%cs(maxord,maxnum), sw%ss(maxord,maxnum), sw%js(maxord,maxnum), sw%numrots(maxnum))
     sw%num=0
     sw%cs=1.0_dp; sw%ss=0.0_dp
@@ -107,7 +107,7 @@ contains
 
   type(c_sweeps) function c_new_sweeps(n,maxnum,maxord) result(sw)
     integer(kind=int32), intent(in) :: n, maxnum, maxord
-    sw%n=n; sw%maxnum=maxnum
+    sw%n=n; sw%maxnum=maxnum; sw%maxord=maxord
     allocate(sw%cs(maxord,maxnum), sw%ss(maxord,maxnum), sw%js(maxord,maxnum), sw%numrots(maxnum))
     sw%num=0
     sw%cs=1.0_dp; sw%ss=0.0_dp
@@ -129,7 +129,8 @@ contains
     type(d_rotation) :: rot
     integer(kind=int32) :: j, m, l,jj
     m=size(a,1)
-    do l=sw%num,1,-1
+!    do l=sw%num,1,-1
+    do l=1,sw%num
        do j=1,sw%numrots(l)
           jj=sw%js(j,l)
           rot%cosine=sw%cs(j,l); rot%sine=sw%ss(j,l)
@@ -144,7 +145,8 @@ contains
     type(c_rotation) :: rot
     integer(kind=int32) :: j, m, l,jj
     m=size(a,1)
-    do l=sw%num,1,-1
+!    do l=sw%num,1,-1
+    do l=1,sw%num
        do j=1,sw%numrots(l)
           jj=sw%js(j,l)
           rot%cosine=sw%cs(j,l); rot%sine=sw%ss(j,l)
@@ -158,7 +160,8 @@ contains
     real(kind=dp), dimension(:), intent(inout) :: a
     integer(kind=int32) :: j, l, jj
     real(kind=dp) :: tmp, c, s 
-    do l=sw%num,1,-1
+    ! do l=sw%num,1,-1
+    do l=1,sw%num
        do j=1,sw%numrots(l)
           jj=sw%js(j,l)
           c=sw%cs(j,l); s=sw%ss(j,l)
@@ -174,7 +177,8 @@ contains
     complex(kind=dp), dimension(:), intent(inout) :: a
     integer(kind=int32) :: j, l, jj
     complex(kind=dp) :: tmp, c, s 
-    do l=sw%num,1,-1
+    ! do l=sw%num,1,-1
+    do l=1,sw%num
        do j=1,sw%numrots(l)
           jj=sw%js(j,l)
           c=sw%cs(j,l); s=sw%ss(j,l)
@@ -190,7 +194,8 @@ contains
     real(kind=dp), dimension(:,:), intent(inout) :: a
     type(d_rotation) :: rot
     integer(kind=int32) :: j, l, jj
-    do l=1,sw%num
+    !    do l=1,sw%num
+    do l=sw%num,1,-1
        do j=sw%numrots(l),1,-1
           jj=sw%js(j,l)
           rot%cosine=sw%cs(j,l); rot%sine=sw%ss(j,l)
@@ -204,7 +209,8 @@ contains
     complex(kind=dp), dimension(:,:), intent(inout) :: a
     type(c_rotation) :: rot
     integer(kind=int32) :: j, l, jj
-    do l=1,sw%num
+    ! do l=1,sw%num
+    do l=sw%num,1,-1
        do j=sw%numrots(l),1,-1
           jj=sw%js(j,l)
           rot%cosine=sw%cs(j,l); rot%sine=sw%ss(j,l)
@@ -218,7 +224,8 @@ contains
     real(kind=dp), dimension(:), intent(inout) :: a
     integer(kind=int32) :: j, l, jj
     real(kind=dp) :: tmp, c, s 
-    do l=1,sw%num
+    ! do l=1,sw%num
+    do l=sw%num,1,-1
        do j=sw%numrots(l),1,-1
           jj=sw%js(j,l)
           c=sw%cs(j,l); s=sw%ss(j,l)
@@ -234,7 +241,8 @@ contains
     complex(kind=dp), dimension(:), intent(inout) :: a
     integer(kind=int32) :: j, l, jj
     complex(kind=dp) :: tmp, c, s 
-    do l=1,sw%num
+    ! do l=1,sw%num
+    do l=sw%num,1,-1
        do j=sw%numrots(l),1,-1
           jj=sw%js(j,l)
           c=sw%cs(j,l); s=sw%ss(j,l)
@@ -250,7 +258,8 @@ contains
     real(kind=dp), dimension(:,:), intent(inout) :: a
     type(d_rotation) :: rot
     integer(kind=int32) :: j, l, kk
-    do l=1,sw%num
+    ! do l=1,sw%num
+    do l=sw%num,1,-1
        do j=sw%numrots(l),1,-1
           kk=sw%js(j,l)
           rot%cosine=sw%cs(j,l); rot%sine=sw%ss(j,l)
@@ -264,7 +273,8 @@ contains
     complex(kind=dp), dimension(:,:), intent(inout) :: a
     type(c_rotation) :: rot
     integer(kind=int32) :: j, l, kk
-    do l=1,sw%num
+    ! do l=1,sw%num
+    do l=sw%num,1,-1
        do j=sw%numrots(l),1,-1
           kk=sw%js(j,l)
           rot%cosine=sw%cs(j,l); rot%sine=sw%ss(j,l)
@@ -278,7 +288,8 @@ contains
     real(kind=dp), dimension(:), intent(inout) :: a
     integer(kind=int32) :: j, l, kk
     real(kind=dp) :: c,s,tmp
-    do l=1,sw%num
+    ! do l=1,sw%num
+    do l=sw%num,1,-1
        do j=sw%numrots(l),1,-1
           kk=sw%js(j,l)
           c=sw%cs(j,l); s=sw%ss(j,l)
@@ -294,7 +305,8 @@ contains
     complex(kind=dp), dimension(:), intent(inout) :: a
     integer(kind=int32) :: j, l, kk
     complex(kind=dp) :: c,s,tmp
-    do l=1,sw%num
+    ! do l=1,sw%num
+    do l=sw%num,1,-1
        do j=sw%numrots(l),1,-1
           kk=sw%js(j,l)
           c=sw%cs(j,l); s=sw%ss(j,l)
@@ -310,7 +322,8 @@ contains
     real(kind=dp), dimension(:,:), intent(inout) :: a
     type(d_rotation) :: rot
     integer(kind=int32) :: j, l, kk
-    do l=sw%num,1,-1
+    ! do l=sw%num,1,-1
+    do l=1,sw%num
        do j=1,sw%numrots(l)
           rot%cosine=sw%cs(j,l); rot%sine=sw%ss(j,l)
           kk=sw%js(j,l)
@@ -324,7 +337,8 @@ contains
     complex(kind=dp), dimension(:,:), intent(inout) :: a
     type(c_rotation) :: rot
     integer(kind=int32) :: j, l, kk
-    do l=sw%num,1,-1
+    ! do l=sw%num,1,-1
+    do l=1,sw%num
        do j=1,sw%numrots(l)
           rot%cosine=sw%cs(j,l); rot%sine=sw%ss(j,l)
           kk=sw%js(j,l)
@@ -338,7 +352,8 @@ contains
     real(kind=dp), dimension(:), intent(inout) :: a
     integer(kind=int32) :: j, l, kk
     real(kind=dp) :: c,s,tmp
-    do l=sw%num,1,-1
+    ! do l=sw%num,1,-1
+    do l=1,sw%num
        do j=1,sw%numrots(l)
           c=sw%cs(j,l); s=sw%ss(j,l)
           kk=sw%js(j,l)
@@ -354,7 +369,8 @@ contains
     complex(kind=dp), dimension(:), intent(inout) :: a
     integer(kind=int32) :: j, l, kk
     complex(kind=dp) :: c,s,tmp
-    do l=sw%num,1,-1
+    ! do l=sw%num,1,-1
+    do l=1,sw%num
        do j=1,sw%numrots(l)
           c=sw%cs(j,l); s=sw%ss(j,l)
           kk=sw%js(j,l)

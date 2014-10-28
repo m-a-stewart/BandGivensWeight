@@ -47,7 +47,7 @@ $(OBJDIR)/recompression_bv_to_ub.o : $(OBJDIR)/misc.o $(OBJDIR)/shift.o $(OBJDIR
 $(OBJDIR)/recompression_ub_to_bv.o : $(OBJDIR)/misc.o $(OBJDIR)/shift.o $(OBJDIR)/rotation.o $(OBJDIR)/types.o \
 	$(OBJDIR)/orth.o
 
-$(OBJDIR)/row_compression.o : $(OBJDIR)/misc.o $(OBJDIR)/sweeps.o
+$(OBJDIR)/row_compression.o : $(OBJDIR)/misc.o $(OBJDIR)/sweeps.o 
 
 $(OBJDIR)/qr_iteration.o : $(OBJDIR)/misc.o $(OBJDIR)/recompression.o $(OBJDIR)/conversion.o $(OBJDIR)/sweeps1.o \
 	$(OBJDIR)/qr_factorization.o $(OBJDIR)/update.o $(OBJDIR)/substitution.o $(OBJDIR)/assemble.o

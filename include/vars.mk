@@ -37,6 +37,6 @@ OBJS =  $(MISCOBJS) $(TYPESOBJS) $(TRANSFORMSOBJS) $(ORTHOBJS) $(GENERALOBJS) \
 TEST_EXECS =  $(OBJDIR)/test_general $(OBJDIR)/test_general_bt $(OBJDIR)/test_general_wb \
 	$(OBJDIR)/test_general_ubt $(OBJDIR)/test_general_wbv \
 	$(OBJDIR)/test_convert_ub_and_bv $(OBJDIR)/test_convert_wb_and_bt \
-	$(OBJDIR)/test_convert_ubt_and_wbv $(OBJDIR)/test_recompress \
+	$(OBJDIR)/test_convert_ubt_and_wbv $(OBJDIR)/test_row_compress $(OBJDIR)/test_recompress \
 	$(OBJDIR)/test_qr_iteration $(OBJDIR)/test_qr_factorization $(OBJDIR)/test_solve \
 	$(OBJDIR)/test_sweeps1 $(OBJDIR)/test_update
