@@ -1,8 +1,18 @@
 module gs
-  use misc
+  use prec
+  use utility
+  use error_id
   implicit none
   real(kind=dp), parameter :: eta=1.414_dp
   integer(kind=int32), parameter :: orthmaxits=5
+
+  private
+
+  public :: extend_gs_rows, d_extend_gs_rows, c_extend_gs_rows, &
+       extend_gs_columns, d_extend_gs_columns, c_extend_gs_columns
+
+  public :: info_d_extend_gs_rows, info_c_extend_gs_rows, &
+       info_d_extend_gs_columns, info_c_extend_gs_columns
 
   interface extend_gs_rows
      module procedure d_extend_gs_rows, c_extend_gs_rows
@@ -14,20 +24,19 @@ module gs
 
   type(routine_info), parameter :: info_d_extend_gs_rows=routine_info(id_d_extend_gs_rows, &
        'd_extend_gs_rows', &
-       [ character(len=error_message_length) :: 'MGS Orthogonalization Error' ])
+       [ character(len=error_message_length) :: 'GS Orthogonalization Error' ])
 
   type(routine_info), parameter :: info_c_extend_gs_rows=routine_info(id_c_extend_gs_rows, &
        'c_extend_gs_rows', &
-       [ character(len=error_message_length) :: 'MGS Orthogonalization Error' ])
+       [ character(len=error_message_length) :: 'GS Orthogonalization Error' ])
 
   type(routine_info), parameter :: info_d_extend_gs_columns=routine_info(id_d_extend_gs_columns, &
        'd_extend_gs_columns', &
-       [ character(len=error_message_length) :: 'MGS Orthogonalization Error' ])
+       [ character(len=error_message_length) :: 'GS Orthogonalization Error' ])
 
   type(routine_info), parameter :: info_c_extend_gs_columns=routine_info(id_c_extend_gs_columns, &
        'c_extend_gs_columns', &
-       [ character(len=error_message_length) :: 'MGS Orthogonalization Error' ])
-
+       [ character(len=error_message_length) :: 'GS Orthogonalization Error' ])
 
 contains
 

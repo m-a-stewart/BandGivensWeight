@@ -1,10 +1,34 @@
 module sweeps
-  use misc
-  use types
-  use shift
-  use conversion
-
+  use prec
+  use band_types
+  use rotation
   implicit none
+
+  private
+
+  public :: d_sweeps, c_sweeps
+
+  public :: d_new_sweeps, c_new_sweeps
+
+  public :: get_maxnum, d_get_maxnum, c_get_maxnum
+
+  public :: get_maxord, d_get_maxord, c_get_maxord
+
+  public :: get_n, d_get_n_sweeps, c_get_n_sweeps
+
+  public :: deallocate_sweeps, d_deallocate_sweeps, c_deallocate_sweeps
+
+  public :: sweeps_times_general, d_sweeps_times_general, c_sweeps_times_general, &
+       d_v_sweeps_times_general, c_v_sweeps_times_general
+
+  public :: trp_sweeps_times_general, d_trp_sweeps_times_general, c_trp_sweeps_times_general, &
+       d_v_trp_sweeps_times_general, c_v_trp_sweeps_times_general
+
+  public :: general_times_sweeps, d_general_times_sweeps, c_general_times_sweeps, &
+       d_v_general_times_sweeps, c_v_general_times_sweeps
+
+  public :: general_times_trp_sweeps, d_general_times_trp_sweeps, c_general_times_trp_sweeps, &
+       d_v_general_times_trp_sweeps, c_v_general_times_trp_sweeps
 
   ! These types represent a linear transformation.
   ! Thus

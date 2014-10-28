@@ -1,10 +1,23 @@
 module general_bv
+  use prec
+  use error_id
+  use utility
   use orth
   use shift
   use rotation
-  use types
+  use nested_types
+  use band_types
   implicit none
-  integer(kind=int32), private, parameter :: nullmaxits=5
+  integer(kind=int32), parameter :: nullmaxits=5
+
+  private
+
+  public :: upper_to_bv, d_upper_to_bv, c_upper_to_bv, &
+       f_upper_to_bv, f_d_upper_to_bv, f_c_upper_to_bv, &
+       f_general_bv, f_d_general_bv, f_c_general_bv
+
+  public :: info_d_upper_to_bv, info_f_d_upper_to_bv, info_f_d_general_bv, &
+       info_c_upper_to_bv, info_f_c_upper_to_bv, info_f_c_general_bv
 
   interface upper_to_bv
      module procedure d_upper_to_bv, c_upper_to_bv

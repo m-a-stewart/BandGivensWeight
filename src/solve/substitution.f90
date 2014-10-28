@@ -1,8 +1,27 @@
 module substitution
-  use transforms
-  use misc
-  use types
+  use prec
+  use error_id
+  use rotation
+  use nested_types
+  use band_types
   implicit none
+
+  private
+
+  public :: back_substitution_ub, d_back_substitution_ub, c_back_substitution_ub, &
+          d_v_back_substitution_ub, c_v_back_substitution_ub, &
+          f_back_substitution_ub, f_d_back_substitution_ub, f_c_back_substitution_ub, &
+          f_d_v_back_substitution_ub, f_c_v_back_substitution_ub
+
+  public :: forward_substitution_bv, d_forward_substitution_bv, c_forward_substitution_bv, &
+          d_v_forward_substitution_bv, c_v_forward_substitution_bv, &
+          f_forward_substitution_bv, f_d_forward_substitution_bv, f_c_forward_substitution_bv, &
+          f_d_v_forward_substitution_bv, f_c_v_forward_substitution_bv
+
+  public :: info_d_back_substitution_ub, info_c_back_substitution_ub, &
+       info_d_v_back_substitution_ub, info_c_v_back_substitution_ub, &
+       info_d_forward_substitution_bv, info_c_forward_substitution_bv, &
+       info_d_v_forward_substitution_bv, info_c_v_forward_substitution_bv
 
   interface back_substitution_ub
      module procedure d_back_substitution_ub, c_back_substitution_ub, &

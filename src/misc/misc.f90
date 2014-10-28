@@ -1,4 +1,5 @@
 module misc
-use error_id
-use utility
+  use error_id
+  use utility
+  public
 end module misc

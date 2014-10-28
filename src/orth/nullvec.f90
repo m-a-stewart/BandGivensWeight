@@ -1,28 +1,38 @@
 module nullvec
-use triangular
-use misc
-implicit none
+  use triangular
+  use prec
+  use error_id
+  use utility
+  implicit none
 
-interface lower_left_nullvec
-   module procedure f_c_lower_left_nullvec, f_d_lower_left_nullvec
-end interface lower_left_nullvec
+  private
 
-interface lower_right_nullvec
-   module procedure f_c_lower_right_nullvec, f_d_lower_right_nullvec
-end interface lower_right_nullvec
+  public :: lower_left_nullvec, f_c_lower_left_nullvec, f_d_lower_left_nullvec, &
+       lower_right_nullvec, f_c_lower_right_nullvec, f_d_lower_right_nullvec
 
-type(routine_info), parameter :: info_d_lower_left_nullvec=routine_info(id_d_lower_left_nullvec, &
-     'd_lower_left_nullvec', &
-     [ character(len=error_message_length) :: 'Failure to find a null vector.' ])
-type(routine_info), parameter :: info_d_lower_right_nullvec=routine_info(id_d_lower_right_nullvec, &
-     'd_lower_right_nullvec', &
-     [ character(len=error_message_length) :: 'Failure to find a null vector.' ])
-type(routine_info), parameter :: info_c_lower_left_nullvec=routine_info(id_c_lower_left_nullvec, &
-     'c_lower_left_nullvec', &
-     [ character(len=error_message_length) :: 'Failure to find a null vector.' ])
-type(routine_info), parameter :: info_c_lower_right_nullvec=routine_info(id_c_lower_right_nullvec, &
-     'c_lower_right_nullvec', &
-     [ character(len=error_message_length) :: 'Failure to find a null vector.' ])
+  public :: info_d_lower_left_nullvec, info_d_lower_right_nullvec, info_c_lower_left_nullvec, &
+       info_c_lower_right_nullvec
+
+  interface lower_left_nullvec
+     module procedure f_c_lower_left_nullvec, f_d_lower_left_nullvec
+  end interface lower_left_nullvec
+
+  interface lower_right_nullvec
+     module procedure f_c_lower_right_nullvec, f_d_lower_right_nullvec
+  end interface lower_right_nullvec
+
+  type(routine_info), parameter :: info_d_lower_left_nullvec=routine_info(id_d_lower_left_nullvec, &
+       'd_lower_left_nullvec', &
+       [ character(len=error_message_length) :: 'Failure to find a null vector.' ])
+  type(routine_info), parameter :: info_d_lower_right_nullvec=routine_info(id_d_lower_right_nullvec, &
+       'd_lower_right_nullvec', &
+       [ character(len=error_message_length) :: 'Failure to find a null vector.' ])
+  type(routine_info), parameter :: info_c_lower_left_nullvec=routine_info(id_c_lower_left_nullvec, &
+       'c_lower_left_nullvec', &
+       [ character(len=error_message_length) :: 'Failure to find a null vector.' ])
+  type(routine_info), parameter :: info_c_lower_right_nullvec=routine_info(id_c_lower_right_nullvec, &
+       'c_lower_right_nullvec', &
+       [ character(len=error_message_length) :: 'Failure to find a null vector.' ])
 
 
 contains

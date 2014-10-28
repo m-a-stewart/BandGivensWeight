@@ -1,66 +1,113 @@
 include ../include/vars.mk
 all : $(OBJS)
 
+
+$(OBJDIR)/nested.o : $(OBJDIR)/general.o $(OBJDIR)/assemble.o $(OBJDIR)/qr_iteration.o \
+	$(OBJDIR)/qr_factorization.o $(OBJDIR)/substitution.o $(OBJDIR)/update.o \
+	$(OBJDIR)/row_compression.o $(OBJDIR)/recompression.o $(OBJDIR)/transforms.o \
+	$(OBJDIR)/update.o $(OBJDIR)/conversion.o $(OBJDIR)/types.o $(OBJDIR)/misc.o
+
+
 $(OBJDIR)/misc.o : $(OBJDIR)/error_id.o $(OBJDIR)/utility.o
 $(OBJDIR)/error_id.o : $(OBJDIR)/prec.o
 $(OBJDIR)/utility.o : $(OBJDIR)/prec.o
 
+
 $(OBJDIR)/types.o : $(OBJDIR)/band_types.o $(OBJDIR)/nested_types.o
-$(OBJDIR)/band_types.o : $(OBJDIR)/rotation.o $(OBJDIR)/utility.o $(OBJDIR)/shift.o
+$(OBJDIR)/band_types.o : $(OBJDIR)/rotation.o $(OBJDIR)/utility.o $(OBJDIR)/shift.o \
+	$(OBJDIR)/prec.o
 $(OBJDIR)/nested_types.o : $(OBJDIR)/prec.o
 
-$(OBJDIR)/transforms.o : $(OBJDIR)/sweeps1.o $(OBJDIR)/sweeps.o $(OBJDIR)/rotation.o $(OBJDIR)/shift.o
+
+$(OBJDIR)/transforms.o : $(OBJDIR)/sweeps1.o $(OBJDIR)/sweeps.o $(OBJDIR)/rotation.o \
+	$(OBJDIR)/shift.o
 $(OBJDIR)/rotation.o : $(OBJDIR)/prec.o
-$(OBJDIR)/sweeps1.o : $(OBJDIR)/types.o $(OBJDIR)/misc.o $(OBJDIR)/shift.o $(OBJDIR)/conversion.o
-$(OBJDIR)/sweeps.o : $(OBJDIR)/types.o $(OBJDIR)/misc.o $(OBJDIR)/shift.o $(OBJDIR)/conversion.o
+$(OBJDIR)/sweeps1.o : $(OBJDIR)/nested_types.o $(OBJDIR)/band_types.o $(OBJDIR)/prec.o \
+	$(OBJDIR)/error_id.o $(OBJDIR)/conversion_ub_to_bv.o $(OBJDIR)/conversion_bv_to_ub.o \
+	$(OBJDIR)/utility.o
+$(OBJDIR)/sweeps.o : $(OBJDIR)/band_types.o $(OBJDIR)/prec.o
 $(OBJDIR)/shift.o : $(OBJDIR)/prec.o
+
 
 $(OBJDIR)/orth.o : $(OBJDIR)/triangular.o $(OBJDIR)/gs.o $(OBJDIR)/nullvec.o
 $(OBJDIR)/triangular.o : $(OBJDIR)/prec.o
-$(OBJDIR)/nullvec.o : $(OBJDIR)/misc.o
-$(OBJDIR)/gs.o : $(OBJDIR)/misc.o
+$(OBJDIR)/nullvec.o : $(OBJDIR)/prec.o $(OBJDIR)/error_id.o $(OBJDIR)/utility.o \
+	$(OBJDIR)/triangular.o
+$(OBJDIR)/gs.o : $(OBJDIR)/utility.o $(OBJDIR)/prec.o $(OBJDIR)/error_id.o
 
-$(OBJDIR)/assemble.o : $(OBJDIR)/band_types.o $(OBJDIR)/nested_types.o $(OBJDIR)/misc.o
+
+$(OBJDIR)/assemble.o : $(OBJDIR)/prec.o $(OBJDIR)/error_id.o $(OBJDIR)/band_types.o \
+	$(OBJDIR)/nested_types.o $(OBJDIR)/rotation.o
+
 
 $(OBJDIR)/general.o : $(OBJDIR)/general_bv.o $(OBJDIR)/general_ub.o $(OBJDIR)/general_bt.o \
 	$(OBJDIR)/general_wb.o $(OBJDIR)/general_ubt.o $(OBJDIR)/general_wbv.o
-$(OBJDIR)/general_bv.o : $(OBJDIR)/orth.o $(OBJDIR)/shift.o $(OBJDIR)/rotation.o $(OBJDIR)/types.o
-$(OBJDIR)/general_ub.o : $(OBJDIR)/orth.o $(OBJDIR)/shift.o $(OBJDIR)/rotation.o $(OBJDIR)/types.o
-$(OBJDIR)/general_bt.o : $(OBJDIR)/orth.o $(OBJDIR)/shift.o $(OBJDIR)/rotation.o $(OBJDIR)/types.o
-$(OBJDIR)/general_wb.o : $(OBJDIR)/orth.o $(OBJDIR)/shift.o $(OBJDIR)/rotation.o $(OBJDIR)/types.o
-$(OBJDIR)/general_ubt.o : $(OBJDIR)/orth.o $(OBJDIR)/shift.o $(OBJDIR)/rotation.o $(OBJDIR)/types.o
-$(OBJDIR)/general_wbv.o : $(OBJDIR)/orth.o $(OBJDIR)/shift.o $(OBJDIR)/rotation.o $(OBJDIR)/types.o
+$(OBJDIR)/general_bv.o : $(OBJDIR)/orth.o $(OBJDIR)/shift.o $(OBJDIR)/rotation.o \
+	$(OBJDIR)/prec.o $(OBJDIR)/error_id.o $(OBJDIR)/utility.o \
+	$(OBJDIR)/nested_types.o $(OBJDIR)/band_types.o
+$(OBJDIR)/general_ub.o : $(OBJDIR)/orth.o $(OBJDIR)/shift.o $(OBJDIR)/rotation.o \
+	$(OBJDIR)/prec.o $(OBJDIR)/error_id.o $(OBJDIR)/utility.o \
+	$(OBJDIR)/nested_types.o $(OBJDIR)/band_types.o
+$(OBJDIR)/general_bt.o : $(OBJDIR)/prec.o $(OBJDIR)/error_id.o $(OBJDIR)/utility.o \
+	$(OBJDIR)/nested_types.o $(OBJDIR)/band_types.o $(OBJDIR)/general_ub.o
+$(OBJDIR)/general_wb.o : $(OBJDIR)/prec.o $(OBJDIR)/error_id.o $(OBJDIR)/utility.o \
+	$(OBJDIR)/nested_types.o $(OBJDIR)/band_types.o $(OBJDIR)/general_bv.o
+$(OBJDIR)/general_ubt.o : $(OBJDIR)/prec.o $(OBJDIR)/error_id.o $(OBJDIR)/utility.o \
+	$(OBJDIR)/nested_types.o $(OBJDIR)/band_types.o $(OBJDIR)/general_ub.o
+$(OBJDIR)/general_wbv.o : $(OBJDIR)/prec.o $(OBJDIR)/error_id.o $(OBJDIR)/utility.o \
+	$(OBJDIR)/nested_types.o $(OBJDIR)/band_types.o $(OBJDIR)/general_bv.o
+
 
 $(OBJDIR)/conversion.o : $(OBJDIR)/conversion_bv_to_ub.o $(OBJDIR)/conversion_ub_to_bv.o \
 	$(OBJDIR)/conversion_wb_to_bt.o $(OBJDIR)/conversion_bt_to_wb.o \
 	$(OBJDIR)/conversion_wbv_to_ubt.o $(OBJDIR)/conversion_ubt_to_wbv.o 
-$(OBJDIR)/conversion_bv_to_ub.o : $(OBJDIR)/misc.o $(OBJDIR)/shift.o $(OBJDIR)/rotation.o $(OBJDIR)/types.o
-$(OBJDIR)/conversion_ub_to_bv.o : $(OBJDIR)/misc.o $(OBJDIR)/shift.o $(OBJDIR)/rotation.o $(OBJDIR)/types.o
-$(OBJDIR)/conversion_wb_to_bt.o : $(OBJDIR)/misc.o $(OBJDIR)/shift.o $(OBJDIR)/rotation.o $(OBJDIR)/types.o
-$(OBJDIR)/conversion_bt_to_wb.o : $(OBJDIR)/misc.o $(OBJDIR)/shift.o $(OBJDIR)/rotation.o $(OBJDIR)/types.o
-$(OBJDIR)/conversion_wbv_to_ubt.o : $(OBJDIR)/misc.o $(OBJDIR)/shift.o $(OBJDIR)/rotation.o $(OBJDIR)/types.o
-$(OBJDIR)/conversion_ubt_to_wbv.o : $(OBJDIR)/misc.o $(OBJDIR)/shift.o $(OBJDIR)/rotation.o $(OBJDIR)/types.o
+$(OBJDIR)/conversion_bv_to_ub.o : $(OBJDIR)/prec.o $(OBJDIR)/error_id.o \
+	$(OBJDIR)/rotation.o $(OBJDIR)/nested_types.o $(OBJDIR)/band_types.o
+$(OBJDIR)/conversion_ub_to_bv.o : $(OBJDIR)/prec.o $(OBJDIR)/error_id.o $(OBJDIR)/shift.o \
+	$(OBJDIR)/rotation.o $(OBJDIR)/nested_types.o $(OBJDIR)/band_types.o
+$(OBJDIR)/conversion_wb_to_bt.o : $(OBJDIR)/prec.o $(OBJDIR)/error_id.o \
+	$(OBJDIR)/rotation.o $(OBJDIR)/nested_types.o $(OBJDIR)/band_types.o
+$(OBJDIR)/conversion_bt_to_wb.o : $(OBJDIR)/prec.o $(OBJDIR)/error_id.o $(OBJDIR)/shift.o \
+	$(OBJDIR)/rotation.o $(OBJDIR)/nested_types.o $(OBJDIR)/band_types.o
+$(OBJDIR)/conversion_wbv_to_ubt.o : $(OBJDIR)/prec.o $(OBJDIR)/error_id.o $(OBJDIR)/shift.o \
+	$(OBJDIR)/rotation.o $(OBJDIR)/nested_types.o $(OBJDIR)/band_types.o
+$(OBJDIR)/conversion_ubt_to_wbv.o : $(OBJDIR)/prec.o $(OBJDIR)/error_id.o $(OBJDIR)/shift.o \
+	$(OBJDIR)/rotation.o $(OBJDIR)/nested_types.o $(OBJDIR)/band_types.o
+
 
 $(OBJDIR)/recompression.o : $(OBJDIR)/recompression_bv_to_ub.o $(OBJDIR)/recompression_ub_to_bv.o
-$(OBJDIR)/recompression_bv_to_ub.o : $(OBJDIR)/misc.o $(OBJDIR)/shift.o $(OBJDIR)/rotation.o $(OBJDIR)/types.o \
-	$(OBJDIR)/orth.o
-$(OBJDIR)/recompression_ub_to_bv.o : $(OBJDIR)/misc.o $(OBJDIR)/shift.o $(OBJDIR)/rotation.o $(OBJDIR)/types.o \
-	$(OBJDIR)/orth.o
+$(OBJDIR)/recompression_bv_to_ub.o : $(OBJDIR)/prec.o $(OBJDIR)/error_id.o $(OBJDIR)/utility.o \
+	$(OBJDIR)/shift.o $(OBJDIR)/rotation.o $(OBJDIR)/nested_types.o \
+	$(OBJDIR)/band_types.o $(OBJDIR)/nullvec.o
+$(OBJDIR)/recompression_ub_to_bv.o : $(OBJDIR)/prec.o $(OBJDIR)/error_id.o $(OBJDIR)/utility.o \
+	$(OBJDIR)/shift.o $(OBJDIR)/rotation.o $(OBJDIR)/nested_types.o \
+	$(OBJDIR)/band_types.o $(OBJDIR)/nullvec.o
+
 
 $(OBJDIR)/row_compression.o : $(OBJDIR)/misc.o $(OBJDIR)/sweeps.o 
 
-$(OBJDIR)/qr_iteration.o : $(OBJDIR)/misc.o $(OBJDIR)/recompression.o $(OBJDIR)/conversion.o $(OBJDIR)/sweeps1.o \
-	$(OBJDIR)/qr_factorization.o $(OBJDIR)/update.o $(OBJDIR)/substitution.o $(OBJDIR)/assemble.o
 
-$(OBJDIR)/qr_factorization.o : $(OBJDIR)/conversion.o $(OBJDIR)/sweeps1.o
+$(OBJDIR)/qr_iteration.o : $(OBJDIR)/prec.o $(OBJDIR)/error_id.o $(OBJDIR)/rotation.o \
+	$(OBJDIR)/nested_types.o $(OBJDIR)/band_types.o $(OBJDIR)/recompression_ub_to_bv.o \
+	$(OBJDIR)/conversion_ub_to_bv.o $(OBJDIR)/conversion_bv_to_ub.o \
+	$(OBJDIR)/qr_factorization.o $(OBJDIR)/update.o $(OBJDIR)/substitution.o \
+	$(OBJDIR)/sweeps1.o
 
-$(OBJDIR)/update.o : $(OBJDIR)/misc.o $(OBJDIR)/types.o $(OBJDIR)/shift.o $(OBJDIR)/sweeps1.o \
-	$(OBJDIR)/conversion.o
 
-$(OBJDIR)/substitution.o : $(OBJDIR)/transforms.o $(OBJDIR)/misc.o $(OBJDIR)/types.o
+$(OBJDIR)/qr_factorization.o : $(OBJDIR)/prec.o $(OBJDIR)/error_id.o \
+	$(OBJDIR)/conversion_bv_to_ub.o $(OBJDIR)/conversion_ub_to_bv.o \
+	$(OBJDIR)/sweeps1.o $(OBJDIR)/rotation.o \
+	$(OBJDIR)/band_types.o $(OBJDIR)/nested_types.o
 
-$(OBJDIR)/nested.o : $(OBJDIR)/general.o $(OBJDIR)/assemble.o $(OBJDIR)/qr_iteration.o \
-	$(OBJDIR)/qr_factorization.o $(OBJDIR)/substitution.o $(OBJDIR)/update.o $(OBJDIR)/row_compression.o
+
+$(OBJDIR)/update.o : $(OBJDIR)/prec.o $(OBJDIR)/error_id.o $(OBJDIR)/nested_types.o \
+	$(OBJDIR)/band_types.o $(OBJDIR)/shift.o $(OBJDIR)/rotation.o $(OBJDIR)/sweeps1.o \
+	$(OBJDIR)/conversion_bv_to_ub.o $(OBJDIR)/conversion_ub_to_bv.o
+
+
+$(OBJDIR)/substitution.o : $(OBJDIR)/prec.o $(OBJDIR)/error_id.o $(OBJDIR)/nested_types.o \
+	$(OBJDIR)/band_types.o $(OBJDIR)/rotation.o
+
 
 $(OBJDIR)/%.o : %.f90
 	$(FC) $(CFLAGS) $(PROFCFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@

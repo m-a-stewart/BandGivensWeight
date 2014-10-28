@@ -1,6 +1,9 @@
 module shift
   use prec
 
+  private
+  public :: shift2, d_shift2, c_shift2
+
   interface shift2
      module procedure d_shift2, c_shift2
   end interface shift2

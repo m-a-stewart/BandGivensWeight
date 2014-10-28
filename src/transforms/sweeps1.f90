@@ -1,10 +1,56 @@
 module sweeps1
-  use misc
-  use types
-  use shift
-  use conversion
-
+  use prec
+  use utility
+  use nested_types
+  use band_types
+  use rotation
+  use error_id
+  use conversion_bv_to_ub
+  use conversion_ub_to_bv
   implicit none
+
+  private
+
+  public :: d_sweeps1, c_sweeps1
+  
+  public :: d_new_sweeps1, c_new_sweeps1
+
+  public :: d_random_sweeps1, c_random_sweeps1
+  
+  public :: deallocate_sweeps1, d_deallocate_sweeps1, c_deallocate_sweeps1
+
+  public :: get_maxsweeps1, d_get_maxsweeps1, c_get_maxsweeps1
+
+  public :: get_n, d_get_n_sweeps1, c_get_n_sweeps1
+
+  public :: sweeps1_times_general, d_sweeps1_times_general, c_sweeps1_times_general, &
+       d_v_sweeps1_times_general, c_v_sweeps1_times_general
+
+  public :: trp_sweeps1_times_general, d_trp_sweeps1_times_general, c_trp_sweeps1_times_general, &
+       d_v_trp_sweeps1_times_general, c_v_trp_sweeps1_times_general
+
+  public :: general_times_sweeps1, d_general_times_sweeps1, c_general_times_sweeps1, &
+       d_v_general_times_sweeps1, c_v_general_times_sweeps1
+  
+  public :: general_times_trp_sweeps1, d_general_times_trp_sweeps1, c_general_times_trp_sweeps1, &
+       d_v_general_times_trp_sweeps1, c_v_general_times_trp_sweeps1
+
+  public :: sweeps1_times_ub, d_sweeps1_times_ub, c_sweeps1_times_ub, &
+       f_sweeps1_times_ub, f_d_sweeps1_times_ub, f_c_sweeps1_times_ub
+
+  public :: bv_times_sweeps1, d_bv_times_sweeps1, c_bv_times_sweeps1, &
+       f_bv_times_sweeps1, f_d_bv_times_sweeps1, f_c_bv_times_sweeps1
+
+  public :: trp_sweeps1_times_bv, d_trp_sweeps1_times_bv, c_trp_sweeps1_times_bv, &
+       f_trp_sweeps1_times_bv, f_d_trp_sweeps1_times_bv, f_c_trp_sweeps1_times_bv
+
+  public :: ub_times_trp_sweeps1, d_ub_times_trp_sweeps1, c_ub_times_trp_sweeps1, &
+       f_ub_times_trp_sweeps1, f_d_ub_times_trp_sweeps1, f_c_ub_times_trp_sweeps1
+
+  public :: info_d_sweeps1_times_ub, info_c_sweeps1_times_ub, info_f_d_sweeps1_times_ub, &
+       info_f_c_sweeps1_times_ub, info_d_bv_times_sweeps1, info_f_d_bv_times_sweeps1, &
+       info_d_trp_sweeps1_times_bv, info_f_d_trp_sweeps1_times_bv, info_d_ub_times_trp_sweeps1, &
+       info_f_d_ub_times_trp_sweeps1
 
   !
   ! These types represent a linear transformation

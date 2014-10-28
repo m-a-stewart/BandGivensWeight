@@ -2,6 +2,16 @@ module triangular
   use prec
   implicit none
 
+  private
+  public :: lower_right_invert, f_c_lower_right_invert, f_d_lower_right_invert, &
+       lower_tr_right_invert, f_c_lower_tr_right_invert, f_d_lower_tr_right_invert, &
+       lower_left_invert, f_c_lower_left_invert, f_d_lower_left_invert, &
+       lower_tr_left_invert, f_c_lower_tr_left_invert, f_d_lower_tr_left_invert, &
+       upper_right_invert, f_c_upper_right_invert, f_d_upper_right_invert
+
+  public :: first_zero_diagonal, c_first_zero_diagonal, d_first_zero_diagonal, &
+       last_zero_diagonal, c_last_zero_diagonal, d_last_zero_diagonal
+
   interface lower_right_invert
      module procedure f_c_lower_right_invert, f_d_lower_right_invert
   end interface lower_right_invert

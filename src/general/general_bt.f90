@@ -1,11 +1,20 @@
 module general_bt
-  use orth
-  use shift
-  use rotation
-  use types
+  use prec
+  use error_id
+  use utility
+  use nested_types
+  use band_types
   use general_ub
-  use misc
   implicit none
+
+  private
+
+  public :: f_general_bt, f_d_general_bt, f_c_general_bt, &
+       f_lower_to_bt, f_d_lower_to_bt, f_c_lower_to_bt, &
+       lower_to_bt, d_lower_to_bt, c_lower_to_bt
+
+  public :: info_d_lower_to_bt, info_f_d_lower_to_bt, info_f_d_general_bt, &
+       info_c_lower_to_bt, info_f_c_lower_to_bt
 
   interface f_general_bt
      module procedure f_d_general_bt, f_c_general_bt

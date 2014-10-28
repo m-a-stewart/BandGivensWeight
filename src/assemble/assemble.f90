@@ -1,86 +1,108 @@
 module assemble
-use misc
-use band_types
-use nested_types
-implicit none
+  use prec
+  use error_id
+  use band_types
+  use nested_types
+  use rotation
+  implicit none
 
-interface ub_to_upper
-   module procedure d_ub_to_upper, c_ub_to_upper
-end interface ub_to_upper
+  private
 
-interface f_ub_to_upper
-   module procedure f_d_ub_to_upper, f_c_ub_to_upper
-end interface f_ub_to_upper
+  public :: ub_to_upper, d_ub_to_upper, c_ub_to_upper, &
+       f_ub_to_upper, f_d_ub_to_upper, f_c_ub_to_upper, &
+       bt_to_lower, d_bt_to_lower, c_bt_to_lower, &
+       f_bt_to_lower, f_d_bt_to_lower, f_c_bt_to_lower, &
+       ubt_to_general, d_ubt_to_general, c_ubt_to_general, &
+       f_ubt_to_general, f_d_ubt_to_general, f_c_ubt_to_general, &
+       bv_to_upper, d_bv_to_upper, c_bv_to_upper, &
+       f_bv_to_upper, f_d_bv_to_upper, f_c_bv_to_upper, &
+       wb_to_lower, d_wb_to_lower, c_wb_to_lower, &
+       f_wb_to_lower, f_d_wb_to_lower, f_c_wb_to_lower, &
+       wbv_to_general, d_wbv_to_general, c_wbv_to_general, &
+       f_wbv_to_general, f_d_wbv_to_general, f_c_wbv_to_general
 
-interface bt_to_lower
-   module procedure d_bt_to_lower, c_bt_to_lower
-end interface bt_to_lower
+  public :: info_d_ub_to_upper, info_c_ub_to_upper, info_d_bt_to_lower, info_c_bt_to_lower, &
+       info_d_ubt_to_general, info_c_ubt_to_general, info_d_bv_to_upper, &
+       info_c_bv_to_upper, info_d_wb_to_lower, info_c_wb_to_lower, info_d_wbv_to_general, &
+       info_c_wbv_to_general
 
-interface f_bt_to_lower
-   module procedure f_d_bt_to_lower, f_c_bt_to_lower
-end interface f_bt_to_lower
+  interface ub_to_upper
+     module procedure d_ub_to_upper, c_ub_to_upper
+  end interface ub_to_upper
 
-interface ubt_to_general
-   module procedure d_ubt_to_general, c_ubt_to_general
-end interface ubt_to_general
+  interface f_ub_to_upper
+     module procedure f_d_ub_to_upper, f_c_ub_to_upper
+  end interface f_ub_to_upper
 
-interface f_ubt_to_general
-   module procedure f_d_ubt_to_general, f_c_ubt_to_general
-end interface f_ubt_to_general
+  interface bt_to_lower
+     module procedure d_bt_to_lower, c_bt_to_lower
+  end interface bt_to_lower
 
-interface bv_to_upper
-   module procedure d_bv_to_upper, c_bv_to_upper
-end interface bv_to_upper
+  interface f_bt_to_lower
+     module procedure f_d_bt_to_lower, f_c_bt_to_lower
+  end interface f_bt_to_lower
 
-interface f_bv_to_upper
-   module procedure f_d_bv_to_upper, f_c_bv_to_upper
-end interface f_bv_to_upper
+  interface ubt_to_general
+     module procedure d_ubt_to_general, c_ubt_to_general
+  end interface ubt_to_general
 
-interface wb_to_lower
-   module procedure d_wb_to_lower, c_wb_to_lower
-end interface wb_to_lower
+  interface f_ubt_to_general
+     module procedure f_d_ubt_to_general, f_c_ubt_to_general
+  end interface f_ubt_to_general
 
-interface f_wb_to_lower
-   module procedure f_d_wb_to_lower, f_c_wb_to_lower
-end interface f_wb_to_lower
+  interface bv_to_upper
+     module procedure d_bv_to_upper, c_bv_to_upper
+  end interface bv_to_upper
 
-interface wbv_to_general
-   module procedure d_wbv_to_general, c_wbv_to_general
-end interface wbv_to_general
+  interface f_bv_to_upper
+     module procedure f_d_bv_to_upper, f_c_bv_to_upper
+  end interface f_bv_to_upper
 
-interface f_wbv_to_general
-   module procedure f_d_wbv_to_general, f_c_wbv_to_general
-end interface f_wbv_to_general
+  interface wb_to_lower
+     module procedure d_wb_to_lower, c_wb_to_lower
+  end interface wb_to_lower
 
-type(routine_info), parameter :: info_d_ub_to_upper=routine_info(id_d_ub_to_upper, 'd_ub_to_upper', &
-     [ character(len=error_message_length) :: 'Size error in A.' ] )
-type(routine_info), parameter :: info_c_ub_to_upper=routine_info(id_c_ub_to_upper, 'c_ub_to_upper', &
-     [ character(len=error_message_length) :: 'Size error in A.' ] )
+  interface f_wb_to_lower
+     module procedure f_d_wb_to_lower, f_c_wb_to_lower
+  end interface f_wb_to_lower
 
-type(routine_info), parameter :: info_d_bt_to_lower=routine_info(id_d_bt_to_lower, 'd_bt_to_lower', &
-     [ character(len=error_message_length) :: 'Size error in A.' ] )
-type(routine_info), parameter :: info_c_bt_to_lower=routine_info(id_c_bt_to_lower, 'c_bt_to_lower', &
-     [ character(len=error_message_length) :: 'Size error in A.' ] )
+  interface wbv_to_general
+     module procedure d_wbv_to_general, c_wbv_to_general
+  end interface wbv_to_general
 
-type(routine_info), parameter :: info_d_ubt_to_general=routine_info(id_d_ubt_to_general, 'd_ubt_to_general', &
-     [ character(len=error_message_length) :: 'Size error in A.' ] )
-type(routine_info), parameter :: info_c_ubt_to_general=routine_info(id_c_ubt_to_general, 'c_ubt_to_general', &
-     [ character(len=error_message_length) :: 'Size error in A.' ] )
+  interface f_wbv_to_general
+     module procedure f_d_wbv_to_general, f_c_wbv_to_general
+  end interface f_wbv_to_general
 
-type(routine_info), parameter :: info_d_bv_to_upper=routine_info(id_d_bv_to_upper, 'd_bv_to_upper', &
-     [ character(len=error_message_length) :: 'Size error in A.' ] )
-type(routine_info), parameter :: info_c_bv_to_upper=routine_info(id_c_bv_to_upper, 'c_bv_to_upper', &
-     [ character(len=error_message_length) :: 'Size error in A.' ] )
+  type(routine_info), parameter :: info_d_ub_to_upper=routine_info(id_d_ub_to_upper, 'd_ub_to_upper', &
+       [ character(len=error_message_length) :: 'Size error in A.' ] )
+  type(routine_info), parameter :: info_c_ub_to_upper=routine_info(id_c_ub_to_upper, 'c_ub_to_upper', &
+       [ character(len=error_message_length) :: 'Size error in A.' ] )
 
-type(routine_info), parameter :: info_d_wb_to_lower=routine_info(id_d_wb_to_lower, 'd_wb_to_lower', &
-     [ character(len=error_message_length) :: 'Size error in A.' ] )
-type(routine_info), parameter :: info_c_wb_to_lower=routine_info(id_c_wb_to_lower, 'c_wb_to_lower', &
-     [ character(len=error_message_length) :: 'Size error in A.' ] )
+  type(routine_info), parameter :: info_d_bt_to_lower=routine_info(id_d_bt_to_lower, 'd_bt_to_lower', &
+       [ character(len=error_message_length) :: 'Size error in A.' ] )
+  type(routine_info), parameter :: info_c_bt_to_lower=routine_info(id_c_bt_to_lower, 'c_bt_to_lower', &
+       [ character(len=error_message_length) :: 'Size error in A.' ] )
 
-type(routine_info), parameter :: info_d_wbv_to_general=routine_info(id_d_wbv_to_general, 'd_wbv_to_general', &
-     [ character(len=error_message_length) :: 'Size error in A.' ] )
-type(routine_info), parameter :: info_c_wbv_to_general=routine_info(id_c_wbv_to_general, 'c_wbv_to_general', &
-     [ character(len=error_message_length) :: 'Size error in A.' ] )
+  type(routine_info), parameter :: info_d_ubt_to_general=routine_info(id_d_ubt_to_general, 'd_ubt_to_general', &
+       [ character(len=error_message_length) :: 'Size error in A.' ] )
+  type(routine_info), parameter :: info_c_ubt_to_general=routine_info(id_c_ubt_to_general, 'c_ubt_to_general', &
+       [ character(len=error_message_length) :: 'Size error in A.' ] )
+
+  type(routine_info), parameter :: info_d_bv_to_upper=routine_info(id_d_bv_to_upper, 'd_bv_to_upper', &
+       [ character(len=error_message_length) :: 'Size error in A.' ] )
+  type(routine_info), parameter :: info_c_bv_to_upper=routine_info(id_c_bv_to_upper, 'c_bv_to_upper', &
+       [ character(len=error_message_length) :: 'Size error in A.' ] )
+
+  type(routine_info), parameter :: info_d_wb_to_lower=routine_info(id_d_wb_to_lower, 'd_wb_to_lower', &
+       [ character(len=error_message_length) :: 'Size error in A.' ] )
+  type(routine_info), parameter :: info_c_wb_to_lower=routine_info(id_c_wb_to_lower, 'c_wb_to_lower', &
+       [ character(len=error_message_length) :: 'Size error in A.' ] )
+
+  type(routine_info), parameter :: info_d_wbv_to_general=routine_info(id_d_wbv_to_general, 'd_wbv_to_general', &
+       [ character(len=error_message_length) :: 'Size error in A.' ] )
+  type(routine_info), parameter :: info_c_wbv_to_general=routine_info(id_c_wbv_to_general, 'c_wbv_to_general', &
+       [ character(len=error_message_length) :: 'Size error in A.' ] )
 
 contains
 
@@ -556,5 +578,5 @@ contains
        end do
     end do
   end subroutine f_c_wbv_to_general
-    
+
 end module assemble

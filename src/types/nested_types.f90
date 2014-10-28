@@ -2,6 +2,40 @@ module nested_types
   use prec
   implicit none
 
+  private
+
+  public :: d_ub, d_bt, d_ubt, c_ub, c_bt, c_ubt, &
+       d_bv, d_wb, d_wbv, c_bv, c_wb, c_wbv
+
+  public :: d_new_ub, d_new_bt, d_new_ubt, c_new_ub, c_new_bt, c_new_ubt, &
+       d_new_bv, d_new_wb, d_new_wbv, c_new_bv, c_new_wb, c_new_wbv
+
+  public :: deallocate_ub, d_deallocate_ub, c_deallocate_ub, &
+       deallocate_bt, d_deallocate_bt, c_deallocate_bt, &
+       deallocate_ubt, d_deallocate_ubt, c_deallocate_ubt, &
+       deallocate_bv, d_deallocate_bv, c_deallocate_bv, &
+       deallocate_wb, d_deallocate_wb, c_deallocate_wb, &
+       deallocate_wbv, d_deallocate_wbv, c_deallocate_wbv
+
+  public :: copy_ub, d_copy_ub, c_copy_ub, &
+       copy_bt, d_copy_bt, c_copy_bt, &
+       copy_ubt, d_copy_ubt, c_copy_ubt, &
+       copy_bv, d_copy_bv, c_copy_bv, &
+       copy_wb, d_copy_wb, c_copy_wb, &
+       copy_wbv, d_copy_wbv, c_copy_wbv
+
+  public :: get_n, d_ub_get_n, d_bv_get_n, c_ub_get_n, c_bv_get_n, &
+       d_ubt_get_n, d_wbv_get_n, c_ubt_get_n, c_wbv_get_n, &
+       d_bt_get_n, d_wb_get_n, c_bt_get_n, c_wb_get_n
+
+  public :: get_lbwmax, d_ub_get_lbwmax, d_bv_get_lbwmax, c_ub_get_lbwmax, c_bv_get_lbwmax, &
+       d_ubt_get_lbwmax, d_wbv_get_lbwmax, c_ubt_get_lbwmax, c_wbv_get_lbwmax, &
+       d_bt_get_lbwmax, d_wb_get_lbwmax, c_bt_get_lbwmax, c_wb_get_lbwmax
+
+  public :: get_ubwmax, d_ub_get_ubwmax, d_bv_get_ubwmax, c_ub_get_ubwmax, c_bv_get_ubwmax, &
+       d_ubt_get_ubwmax, d_wbv_get_ubwmax, c_ubt_get_ubwmax, c_wbv_get_ubwmax, &
+       d_bt_get_ubwmax, d_wb_get_ubwmax, c_bt_get_ubwmax, c_wb_get_ubwmax
+
   ! Stored by columns. (i.e. columns of A correspond to columns of B)
   type d_ub
      integer(kind=int32) :: lbw, ubw

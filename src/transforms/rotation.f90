@@ -2,6 +2,21 @@ module rotation
   use prec
   implicit none
 
+  private
+
+  public :: d_rotation, c_rotation
+
+  public :: lgivens, d_lgivens, c_lgivens, lgivens2, d_lgivens2, c_lgivens2, &
+       rgivens, d_rgivens, c_rgivens, rgivens2, d_rgivens2, c_rgivens2
+
+  public :: trp_rot, d_trp_rot, c_trp_rot
+
+  public :: rotation_times_general, d_rotation_times_general, c_rotation_times_general, &
+       d_rotation_times_general_v, c_rotation_times_general_v
+
+  public :: general_times_rotation, d_general_times_rotation, c_general_times_rotation, &
+       d_general_times_rotation_v, c_general_times_rotation_v
+
   type d_rotation
      real(kind=dp) :: cosine
      real(kind=dp) :: sine

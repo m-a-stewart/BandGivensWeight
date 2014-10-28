@@ -1,9 +1,18 @@
 module conversion_ubt_to_wbv
-  use misc
+  use prec
+  use error_id
   use shift
   use rotation
-  use types
+  use nested_types
+  use band_types
   implicit none
+
+  private
+
+  public :: convert_ubt_to_wbv, d_convert_ubt_to_wbv, c_convert_ubt_to_wbv, &
+       f_convert_ubt_to_wbv, f_d_convert_ubt_to_wbv, f_c_convert_ubt_to_wbv
+
+  public :: info_d_convert_ubt_to_wbv, info_c_convert_ubt_to_wbv
 
   interface convert_ubt_to_wbv
      module procedure d_convert_ubt_to_wbv, c_convert_ubt_to_wbv

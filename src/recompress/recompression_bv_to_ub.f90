@@ -1,12 +1,23 @@
 module recompression_bv_to_ub
-  use misc
+  use prec
+  use error_id
+  use utility
   use shift
   use rotation
-  use types
-  use orth
+  use nested_types
+  use band_types
+  use nullvec
   implicit none
 
-  integer(kind=int32), private, parameter :: nullmaxits=5
+  integer(kind=int32), parameter :: nullmaxits=5
+
+  private
+
+  public :: recompress_bv_to_ub, d_recompress_bv_to_ub, c_recompress_bv_to_ub, &
+       f_recompress_bv_to_ub, f_d_recompress_bv_to_ub, f_c_recompress_bv_to_ub
+
+  public :: info_d_recompress_bv_to_ub, info_f_d_recompress_bv_to_ub, &
+       info_c_recompress_bv_to_ub, info_f_c_recompress_bv_to_ub
 
   interface recompress_bv_to_ub
      module procedure d_recompress_bv_to_ub, c_recompress_bv_to_ub

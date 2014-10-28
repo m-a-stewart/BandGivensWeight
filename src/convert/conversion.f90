@@ -5,4 +5,5 @@ module conversion
   use conversion_wb_to_bt
   use conversion_ubt_to_wbv
   use conversion_wbv_to_ubt
+  public
 end module conversion

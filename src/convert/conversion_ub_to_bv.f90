@@ -1,9 +1,18 @@
 module conversion_ub_to_bv
-  use misc
+  use prec
+  use error_id
   use shift
   use rotation
-  use types
+  use nested_types
+  use band_types
   implicit none
+
+  private
+
+  public :: convert_ub_to_bv, d_convert_ub_to_bv, c_convert_ub_to_bv, &
+       f_convert_ub_to_bv, f_d_convert_ub_to_bv, f_c_convert_ub_to_bv
+
+  public :: info_d_convert_ub_to_bv, info_c_convert_ub_to_bv
 
   interface convert_ub_to_bv
      module procedure d_convert_ub_to_bv, c_convert_ub_to_bv

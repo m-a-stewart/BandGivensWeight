@@ -1,14 +1,24 @@
 module qr_iteration
-  use misc
-  use recompression
-  use conversion
+  use prec
+  use error_id
+  use rotation
+  use nested_types
+  use band_types
+  use recompression_ub_to_bv
+  use conversion_ub_to_bv
+  use conversion_bv_to_ub
   use qr_factorization
   use update
   use substitution
-  use assemble
   use sweeps1
 
   implicit none
+
+  private
+  public :: c_shift, ss_r1_qr, f_ss_r1_qr, f_r1_reorth, ss_qr_iteration, f_ss_qr_iteration, &
+       c_wilkinson_shift
+
+  public :: info_ss_r1_qr, info_ss_qr_iteration
 
   type c_shift
      logical :: flag

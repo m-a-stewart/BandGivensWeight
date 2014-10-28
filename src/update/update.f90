@@ -1,10 +1,25 @@
 module update
-  use misc
-  use types
+  use prec
+  use error_id
+  use nested_types
+  use band_types
   use shift
+  use rotation
   use sweeps1
-  use conversion
+  use conversion_bv_to_ub
+  use conversion_ub_to_bv
   implicit none
+
+  private
+
+  public :: r1_update_ub_to_bv, d_r1_update_ub_to_bv, c_r1_update_ub_to_bv, &
+       f_r1_update_ub_to_bv, f_d_r1_update_ub_to_bv, f_c_r1_update_ub_to_bv
+
+  public :: e1v_update_ub_to_bv, d_e1v_update_ub_to_bv, c_e1v_update_ub_to_bv, &
+       f_e1v_update_ub_to_bv, f_d_e1v_update_ub_to_bv, f_c_e1v_update_ub_to_bv       
+
+  public :: info_d_r1_update_ub_to_bv, info_c_r1_update_ub_to_bv, info_d_e1v_update_ub_to_bv, &
+       info_c_e1v_update_ub_to_bv
 
   interface r1_update_ub_to_bv
      module procedure d_r1_update_ub_to_bv, c_r1_update_ub_to_bv
@@ -13,6 +28,14 @@ module update
   interface f_r1_update_ub_to_bv
      module procedure f_d_r1_update_ub_to_bv, f_c_r1_update_ub_to_bv
   end interface f_r1_update_ub_to_bv
+
+  interface e1v_update_ub_to_bv
+     module procedure d_e1v_update_ub_to_bv, c_e1v_update_ub_to_bv
+  end interface e1v_update_ub_to_bv
+
+  interface f_e1v_update_ub_to_bv
+     module procedure f_d_e1v_update_ub_to_bv, f_c_e1v_update_ub_to_bv
+  end interface f_e1v_update_ub_to_bv
 
   type(routine_info), parameter :: info_d_r1_update_ub_to_bv=routine_info(id_d_r1_update_ub_to_bv, &
        'd_r1_update_ub_to_bv', &

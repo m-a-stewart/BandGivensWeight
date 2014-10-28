@@ -1,38 +1,55 @@
 module utility
-use prec
-implicit none
+  use prec
+  implicit none
 
-interface maxabs
-   module procedure c_maxabs, d_maxabs, c_maxabs_v, d_maxabs_v
-end interface maxabs
+  private
 
-interface norm2
-   module procedure c_norm2_v, d_norm2_v
-end interface norm2
+  public :: maxabs, c_maxabs, d_maxabs, c_maxabs_v, d_maxabs_v, &
+       norm2, c_norm2_v, d_norm2_v, &
+       normf, c_normf, d_normf
 
-interface normf
-   module procedure c_normf, d_normf
-end interface normf
+  public :: print_matrix, d_print_matrix, c_print_matrix, i_print_matrix
 
-interface print_matrix
-   module procedure d_print_matrix, c_print_matrix, i_print_matrix
-end interface print_matrix
+  public :: random_matrix, d_random_matrix, d_v_random_matrix, d_s_random_matrix, &
+       c_random_matrix, c_v_random_matrix, c_s_random_matrix
 
-interface random_matrix
-   module procedure d_random_matrix, d_v_random_matrix, d_s_random_matrix, &
-        c_random_matrix, c_v_random_matrix, c_s_random_matrix
-end interface random_matrix
+  public :: ip_transpose, d_ip_transpose, c_ip_transpose
 
-interface ip_transpose
-   module procedure d_ip_transpose, c_ip_transpose
-end interface ip_transpose
+  public :: includes_nan, d_includes_nan, d_v_includes_nan, c_includes_nan, c_v_includes_nan
 
-interface includes_nan
-   module procedure d_includes_nan, d_v_includes_nan, c_includes_nan, c_v_includes_nan
-end interface includes_nan
+  public :: c_delta, d_delta
 
-real(kind=dp), parameter :: d_random_shift=-1.0_dp, d_random_scale=2.0_dp
-complex(kind=dp), parameter :: c_random_shift=(-1.0_dp,-1.0_dp), c_random_scale=(2.0_dp,0.0_dp)
+  interface maxabs
+     module procedure c_maxabs, d_maxabs, c_maxabs_v, d_maxabs_v
+  end interface maxabs
+
+  interface norm2
+     module procedure c_norm2_v, d_norm2_v
+  end interface norm2
+
+  interface normf
+     module procedure c_normf, d_normf
+  end interface normf
+
+  interface print_matrix
+     module procedure d_print_matrix, c_print_matrix, i_print_matrix
+  end interface print_matrix
+
+  interface random_matrix
+     module procedure d_random_matrix, d_v_random_matrix, d_s_random_matrix, &
+          c_random_matrix, c_v_random_matrix, c_s_random_matrix
+  end interface random_matrix
+
+  interface ip_transpose
+     module procedure d_ip_transpose, c_ip_transpose
+  end interface ip_transpose
+
+  interface includes_nan
+     module procedure d_includes_nan, d_v_includes_nan, c_includes_nan, c_v_includes_nan
+  end interface includes_nan
+
+  real(kind=dp), parameter :: d_random_shift=-1.0_dp, d_random_scale=2.0_dp
+  complex(kind=dp), parameter :: c_random_shift=(-1.0_dp,-1.0_dp), c_random_scale=(2.0_dp,0.0_dp)
 
 contains
 
@@ -235,7 +252,7 @@ contains
     n=size(a,2)
     do j=1,m
        do k=1,n
-!          write(*,'(ES12.4, A, ES11.4,A)',advance='no') real(a(j,k)), ' +i*',aimag(a(j,k)), '   '
+          !          write(*,'(ES12.4, A, ES11.4,A)',advance='no') real(a(j,k)), ' +i*',aimag(a(j,k)), '   '
           write(*,'(A, ES12.4, A, ES11.4,A)',advance='no') '(', real(a(j,k)), ', ',aimag(a(j,k)), ' )    '
        end do
        write(*,*)

@@ -1,8 +1,17 @@
 module conversion_wb_to_bt
-  use misc
+  use prec
+  use error_id
   use rotation
-  use types
+  use nested_types
+  use band_types
   implicit none
+
+  private
+
+  public :: convert_wb_to_bt, d_convert_wb_to_bt, c_convert_wb_to_bt, &
+       f_convert_wb_to_bt, f_d_convert_wb_to_bt, f_c_convert_wb_to_bt
+
+  public :: info_d_convert_wb_to_bt, info_c_convert_wb_to_bt
 
   interface convert_wb_to_bt
      module procedure d_convert_wb_to_bt, c_convert_wb_to_bt

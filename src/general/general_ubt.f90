@@ -1,11 +1,20 @@
 module general_ubt
-  use orth
-  use shift
-  use rotation
-  use types
+  use prec
+  use error_id
+  use utility
+  use nested_types
+  use band_types
   use general_ub
-  use general_bt
   implicit none
+
+  private
+
+  public :: f_general_ubt, f_d_general_ubt, f_c_general_ubt, &
+       f_general_to_ubt, f_d_general_to_ubt, f_c_general_to_ubt, &
+       general_to_ubt, d_general_to_ubt, c_general_to_ubt
+
+  public :: info_d_general_to_ubt, info_f_d_general_to_ubt, info_c_general_to_ubt, &
+       info_f_c_general_to_ubt
 
   interface f_general_ubt
      module procedure f_d_general_ubt, f_c_general_ubt

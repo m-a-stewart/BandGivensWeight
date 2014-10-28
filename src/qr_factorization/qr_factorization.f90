@@ -1,8 +1,24 @@
 module qr_factorization
-  use conversion
+  use prec
+  use error_id
+  use conversion_ub_to_bv
+  use conversion_bv_to_ub
   use sweeps1
   use rotation
+  use band_types
+  use nested_types
   implicit none
+
+  private
+
+  public :: reduce_lbw_bv_to_ub, d_reduce_lbw_bv_to_ub, c_reduce_lbw_bv_to_ub, &
+       f_reduce_lbw_bv_to_ub, f_d_reduce_lbw_bv_to_ub, f_c_reduce_lbw_bv_to_ub
+
+  public qr_bv_to_ub, d_qr_bv_to_ub, c_qr_bv_to_ub, &
+       f_qr_bv_to_ub, f_d_qr_bv_to_ub, f_c_qr_bv_to_ub
+
+  public :: info_d_reduce_lbw_bv_to_ub, info_c_reduce_lbw_bv_to_ub, &
+       info_d_qr_bv_to_ub, info_c_qr_bv_to_ub
 
   interface reduce_lbw_bv_to_ub
      module procedure d_reduce_lbw_bv_to_ub, c_reduce_lbw_bv_to_ub

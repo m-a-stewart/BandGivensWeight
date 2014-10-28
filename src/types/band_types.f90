@@ -1,8 +1,42 @@
 module band_types
+  use prec
   use rotation
   use shift
   use utility
   implicit none
+
+  private
+
+  public :: get_el_bc, d_get_el_bc, c_get_el_bc, &
+       set_el_bc, d_set_el_bc, c_set_el_bc, &
+       get_el_br, d_get_el_br, c_get_el_br, &
+       set_el_br, d_set_el_br, c_set_el_br
+
+  public :: bc_to_general, d_bc_to_general, c_bc_to_general, &
+       br_to_general, d_br_to_general, c_br_to_general
+
+  public :: submatrix_bc, d_submatrix_bc, c_submatrix_bc, &
+       submatrix_br, d_submatrix_br, c_submatrix_br
+
+  public :: print_bc, d_print_bc, c_print_bc, &
+       print_br, d_print_br, c_print_br, &
+       print_abs_bc, d_print_abs_bc, c_print_abs_bc, &
+       print_abs_br, d_print_abs_br, c_print_abs_br
+
+  public :: rotation_times_tbc, d_rotation_times_tbc, c_rotation_times_tbc, &
+       tbc_times_rotation, d_tbc_times_rotation, c_tbc_times_rotation, &
+       tbr_times_rotation, d_tbr_times_rotation, c_tbr_times_rotation, &
+       rotation_times_tbr, d_rotation_times_tbr, c_rotation_times_tbr
+
+  public :: bc_to_br, d_bc_to_br, c_bc_to_br, &
+       br_to_bc, d_br_to_bc, c_br_to_bc, &
+       f_bw_expand_bc, f_d_bw_expand_bc, f_c_bw_expand_bc, &
+       f_bw_expand_br, f_d_bw_expand_br, f_c_bw_expand_br, &
+       f_bw_contract_bc, f_d_bw_contract_bc, f_c_bw_contract_bc, &
+       f_bw_contract_br, f_d_bw_contract_br, f_c_bw_contract_br
+
+  public :: extract_diagonals_bc, d_extract_diagonals_bc, c_extract_diagonals_bc, &
+       extract_diagonals_br, d_extract_diagonals_br, c_extract_diagonals_br
 
   interface get_el_bc
      module procedure d_get_el_bc, c_get_el_bc
@@ -102,6 +136,14 @@ module band_types
   interface f_bw_contract_br
      module procedure f_d_bw_contract_br, f_c_bw_contract_br
   end interface f_bw_contract_br
+
+  interface extract_diagonals_br
+     module procedure d_extract_diagonals_br, c_extract_diagonals_br 
+  end interface extract_diagonals_br
+
+  interface extract_diagonals_bc
+     module procedure d_extract_diagonals_bc, c_extract_diagonals_bc 
+  end interface extract_diagonals_bc
 
 contains
 

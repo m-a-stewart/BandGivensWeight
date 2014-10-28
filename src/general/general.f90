@@ -5,4 +5,5 @@ module general
   use general_wb
   use general_ubt
   use general_wbv
+  public
 end module general

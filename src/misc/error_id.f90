@@ -7,6 +7,8 @@ module error_id
   integer(kind=int32), parameter :: error_message_length=50
   integer(kind=int32), parameter :: max_routines=10
 
+  public
+
   type routine_info
      integer(kind=int32) :: routine_id
      character(len=routine_name_length) :: routine_name

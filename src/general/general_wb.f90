@@ -1,11 +1,19 @@
 module general_wb
-  use orth
-  use shift
-  use rotation
-  use types
+  use prec
+  use error_id
+  use utility
+  use nested_types
+  use band_types
   use general_bv
-  use misc
   implicit none
+
+  private
+  public :: f_general_wb, f_d_general_wb, f_c_general_wb, &
+       f_lower_to_wb, f_d_lower_to_wb, f_c_lower_to_wb, &
+       lower_to_wb, d_lower_to_wb, c_lower_to_wb
+
+  public :: info_d_lower_to_wb, info_f_d_lower_to_wb, info_f_d_general_wb, &
+       info_c_lower_to_wb, info_f_c_lower_to_wb, info_f_c_general_wb
 
   interface f_general_wb
      module procedure f_d_general_wb, f_c_general_wb
