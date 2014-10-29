@@ -1,9 +1,9 @@
-module assemble
-  use prec
-  use error_id
-  use band_types
-  use nested_types
-  use rotation
+module mod_assemble
+  use mod_prec
+  use mod_error_id
+  use mod_band_types
+  use mod_nested_types
+  use mod_rotation
   implicit none
 
   private
@@ -579,4 +579,4 @@ contains
     end do
   end subroutine f_c_wbv_to_general
 
-end module assemble
+end module mod_assemble

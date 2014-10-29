@@ -1,12 +1,12 @@
-module general_bv
-  use prec
-  use error_id
-  use utility
-  use orth
-  use shift
-  use rotation
-  use nested_types
-  use band_types
+module mod_general_bv
+  use mod_prec
+  use mod_error_id
+  use mod_utility
+  use mod_orth
+  use mod_shift
+  use mod_rotation
+  use mod_nested_types
+  use mod_band_types
   implicit none
   integer(kind=int32), parameter :: nullmaxits=5
 
@@ -828,4 +828,4 @@ contains
     end if
   end subroutine f_c_general_bv
 
-end module general_bv
+end module mod_general_bv

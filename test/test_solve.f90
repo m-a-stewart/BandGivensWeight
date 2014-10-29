@@ -1,6 +1,6 @@
 program test_solve
-  use nested
-  use test_data
+  use mod_nested
+  use mod_test_data
   implicit none
   real(kind=dp) :: t0, t1, scale
   integer(kind=int32) :: na, lbwa, ubwa, nc
@@ -59,7 +59,7 @@ program test_solve
   call qr_bv_to_ub(bv_d,ub_d,sw_d,error)
   call d_trp_sweeps1_times_general(sw_d,rhs_d)
   call cpu_time(t0)
-  call back_substitution_ub(ub_d,x_d,rhs_d,error)
+  call back_solve_ub(ub_d,x_d,rhs_d,error)
   call cpu_time(t1)
   rhs_d=matmul(a0_d,x_d)
   test_name = "Real Back Solver (n=100)"
@@ -84,7 +84,7 @@ program test_solve
   call qr_bv_to_ub(bv_d,ub_d,sw_d,error)
   call d_trp_sweeps1_times_general(sw_d,rhs_d)
   call cpu_time(t0)
-  call back_substitution_ub(ub_d,x_d,rhs_d,error)
+  call back_solve_ub(ub_d,x_d,rhs_d,error)
   call cpu_time(t1)
   rhs_d=matmul(a0_d,x_d)
   test_name = "Real Back Solver (n=1000)"
@@ -109,7 +109,7 @@ program test_solve
   call qr_bv_to_ub(bv_d,ub_d,sw_d,error)
   call d_v_trp_sweeps1_times_general(sw_d,rhs_v_d)
   call cpu_time(t0)
-  call back_substitution_ub(ub_d,x_v_d,rhs_v_d,error)
+  call back_solve_ub(ub_d,x_v_d,rhs_v_d,error)
   call cpu_time(t1)
   rhs_v_d=matmul(a0_d,x_v_d)
   test_name = "Real Back Solver, vector rhs (n=1000)"
@@ -139,7 +139,7 @@ program test_solve
   a0_d=a_d
   call upper_to_bv(a_d,bv_d,lbwa, tol,error)
   call cpu_time(t0)
-  call d_forward_substitution_bv(x_d,bv_d,rhs_d,error)
+  call d_forward_solve_bv(x_d,bv_d,rhs_d,error)
   call cpu_time(t1)
   rhs_d=matmul(x_d,a0_d)
   test_name = "Real Forward Solver (n=100)"
@@ -162,7 +162,7 @@ program test_solve
   a0_d=a_d
   call upper_to_bv(a_d,bv_d,lbwa, tol,error)
   call cpu_time(t0)
-  call d_forward_substitution_bv(x_d,bv_d,rhs_d,error)
+  call d_forward_solve_bv(x_d,bv_d,rhs_d,error)
   call cpu_time(t1)
   rhs_d=matmul(x_d,a0_d)
   test_name = "Real Forward Solver (n=1000)"
@@ -185,7 +185,7 @@ program test_solve
   a0_d=a_d
   call upper_to_bv(a_d,bv_d,lbwa, tol,error)
   call cpu_time(t0)
-  call forward_substitution_bv(x_v_d,bv_d,rhs_v_d,error)
+  call forward_solve_bv(x_v_d,bv_d,rhs_v_d,error)
   call cpu_time(t1)
   rhs_v_d=matmul(x_v_d,a0_d)
   test_name = "Real Forward Solver, Vector (n=1000)"
@@ -222,7 +222,7 @@ program test_solve
   call qr_bv_to_ub(bv_c,ub_c,sw_c,error)
   call c_trp_sweeps1_times_general(sw_c,rhs_c)
   call cpu_time(t0)
-  call back_substitution_ub(ub_c,x_c,rhs_c,error)
+  call back_solve_ub(ub_c,x_c,rhs_c,error)
   call cpu_time(t1)
   rhs_c=matmul(a0_c,x_c)
   test_name = "Complex Back Solver (n=100)"
@@ -248,7 +248,7 @@ program test_solve
   call cpu_time(t1)
   call c_trp_sweeps1_times_general(sw_c,rhs_c)
   call cpu_time(t0)
-  call back_substitution_ub(ub_c,x_c,rhs_c,error)
+  call back_solve_ub(ub_c,x_c,rhs_c,error)
   call cpu_time(t1)
   rhs_c=matmul(a0_c,x_c)
   test_name = "Complex Back Solver (n=1000)"
@@ -273,7 +273,7 @@ program test_solve
   call qr_bv_to_ub(bv_c,ub_c,sw_c,error)
   call c_v_trp_sweeps1_times_general(sw_c,rhs_v_c)
   call cpu_time(t0)
-  call back_substitution_ub(ub_c,x_v_c,rhs_v_c,error)
+  call back_solve_ub(ub_c,x_v_c,rhs_v_c,error)
   call cpu_time(t1)
   rhs_v_c=matmul(a0_c,x_v_c)
   test_name = "Complex Back Solver, vector (n=1000)"
@@ -303,7 +303,7 @@ program test_solve
   a0_c=a_c
   call upper_to_bv(a_c,bv_c,lbwa, tol,error)
   call cpu_time(t0)
-  call c_forward_substitution_bv(x_c,bv_c,rhs_c,error)
+  call c_forward_solve_bv(x_c,bv_c,rhs_c,error)
   call cpu_time(t1)
   rhs_c=matmul(x_c,a0_c)
   test_name = "Complex Forward Solver (n=100)"
@@ -326,7 +326,7 @@ program test_solve
   a0_c=a_c
   call upper_to_bv(a_c,bv_c,lbwa, tol,error)
   call cpu_time(t0)
-  call c_forward_substitution_bv(x_c,bv_c,rhs_c,error)
+  call c_forward_solve_bv(x_c,bv_c,rhs_c,error)
   call cpu_time(t1)
   rhs_c=matmul(x_c,a0_c)
   test_name = "Complex Forward Solver (n=1000)"
@@ -349,7 +349,7 @@ program test_solve
   a0_c=a_c
   call upper_to_bv(a_c,bv_c,lbwa, tol,error)
   call cpu_time(t0)
-  call forward_substitution_bv(x_v_c,bv_c,rhs_v_c,error)
+  call forward_solve_bv(x_v_c,bv_c,rhs_v_c,error)
   call cpu_time(t1)
   rhs_v_c=matmul(x_v_c,a0_c)
   test_name = "Complex Forward Solver, Vector (n=1000)"

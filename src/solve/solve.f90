@@ -1,101 +1,101 @@
-module substitution
-  use prec
-  use error_id
-  use rotation
-  use nested_types
-  use band_types
+module mod_solve
+  use mod_prec
+  use mod_error_id
+  use mod_rotation
+  use mod_nested_types
+  use mod_band_types
   implicit none
 
   private
 
-  public :: back_substitution_ub, d_back_substitution_ub, c_back_substitution_ub, &
-          d_v_back_substitution_ub, c_v_back_substitution_ub, &
-          f_back_substitution_ub, f_d_back_substitution_ub, f_c_back_substitution_ub, &
-          f_d_v_back_substitution_ub, f_c_v_back_substitution_ub
+  public :: back_solve_ub, d_back_solve_ub, c_back_solve_ub, &
+          d_v_back_solve_ub, c_v_back_solve_ub, &
+          f_back_solve_ub, f_d_back_solve_ub, f_c_back_solve_ub, &
+          f_d_v_back_solve_ub, f_c_v_back_solve_ub
 
-  public :: forward_substitution_bv, d_forward_substitution_bv, c_forward_substitution_bv, &
-          d_v_forward_substitution_bv, c_v_forward_substitution_bv, &
-          f_forward_substitution_bv, f_d_forward_substitution_bv, f_c_forward_substitution_bv, &
-          f_d_v_forward_substitution_bv, f_c_v_forward_substitution_bv
+  public :: forward_solve_bv, d_forward_solve_bv, c_forward_solve_bv, &
+          d_v_forward_solve_bv, c_v_forward_solve_bv, &
+          f_forward_solve_bv, f_d_forward_solve_bv, f_c_forward_solve_bv, &
+          f_d_v_forward_solve_bv, f_c_v_forward_solve_bv
 
-  public :: info_d_back_substitution_ub, info_c_back_substitution_ub, &
-       info_d_v_back_substitution_ub, info_c_v_back_substitution_ub, &
-       info_d_forward_substitution_bv, info_c_forward_substitution_bv, &
-       info_d_v_forward_substitution_bv, info_c_v_forward_substitution_bv
+  public :: info_d_back_solve_ub, info_c_back_solve_ub, &
+       info_d_v_back_solve_ub, info_c_v_back_solve_ub, &
+       info_d_forward_solve_bv, info_c_forward_solve_bv, &
+       info_d_v_forward_solve_bv, info_c_v_forward_solve_bv
 
-  interface back_substitution_ub
-     module procedure d_back_substitution_ub, c_back_substitution_ub, &
-          d_v_back_substitution_ub, c_v_back_substitution_ub
-  end interface back_substitution_ub
+  interface back_solve_ub
+     module procedure d_back_solve_ub, c_back_solve_ub, &
+          d_v_back_solve_ub, c_v_back_solve_ub
+  end interface back_solve_ub
 
-  interface f_back_substitution_ub
-     module procedure f_d_back_substitution_ub, f_c_back_substitution_ub, &
-          f_d_v_back_substitution_ub, f_c_v_back_substitution_ub
-  end interface f_back_substitution_ub
+  interface f_back_solve_ub
+     module procedure f_d_back_solve_ub, f_c_back_solve_ub, &
+          f_d_v_back_solve_ub, f_c_v_back_solve_ub
+  end interface f_back_solve_ub
 
-  interface forward_substitution_bv
-     module procedure d_forward_substitution_bv, c_forward_substitution_bv, &
-          d_v_forward_substitution_bv, c_v_forward_substitution_bv
-  end interface forward_substitution_bv
+  interface forward_solve_bv
+     module procedure d_forward_solve_bv, c_forward_solve_bv, &
+          d_v_forward_solve_bv, c_v_forward_solve_bv
+  end interface forward_solve_bv
 
-  interface f_forward_substitution_bv
-     module procedure f_d_forward_substitution_bv, f_c_forward_substitution_bv, &
-          f_d_v_forward_substitution_bv, f_c_v_forward_substitution_bv
-  end interface f_forward_substitution_bv
+  interface f_forward_solve_bv
+     module procedure f_d_forward_solve_bv, f_c_forward_solve_bv, &
+          f_d_v_forward_solve_bv, f_c_v_forward_solve_bv
+  end interface f_forward_solve_bv
 
 
-  type(routine_info), parameter :: info_d_back_substitution_ub= &
-       routine_info(id_d_back_substitution_ub, &
-       'd_back_substitution_ub', &
+  type(routine_info), parameter :: info_d_back_solve_ub= &
+       routine_info(id_d_back_solve_ub, &
+       'd_back_solve_ub', &
        [ character(len=error_message_length) :: 'ub%n /= size(c,1)', 'ub%lbw /= 0', 'n < 1', &
        'x is not the same size as c.' ])
 
-  type(routine_info), parameter :: info_c_back_substitution_ub= &
-       routine_info(id_c_back_substitution_ub, &
-       'd_back_substitution_ub', &
+  type(routine_info), parameter :: info_c_back_solve_ub= &
+       routine_info(id_c_back_solve_ub, &
+       'd_back_solve_ub', &
        [ character(len=error_message_length) :: 'ub%n /= size(c,1)', 'ub%lbw /= 0', 'n < 1', &
        'x is not the same size as c.' ])
 
-  type(routine_info), parameter :: info_d_v_back_substitution_ub= &
-       routine_info(id_d_v_back_substitution_ub, &
-       'd_v_back_substitution_ub', &
+  type(routine_info), parameter :: info_d_v_back_solve_ub= &
+       routine_info(id_d_v_back_solve_ub, &
+       'd_v_back_solve_ub', &
        [ character(len=error_message_length) :: 'ub%n /= size(c)', 'ub%lbw /= 0', 'n < 1', &
        'x is not the same size as c.' ])
 
-  type(routine_info), parameter :: info_c_v_back_substitution_ub= &
-       routine_info(id_c_v_back_substitution_ub, &
-       'd_back_substitution_ub', &
+  type(routine_info), parameter :: info_c_v_back_solve_ub= &
+       routine_info(id_c_v_back_solve_ub, &
+       'd_back_solve_ub', &
        [ character(len=error_message_length) :: 'ub%n /= size(c)', 'ub%lbw /= 0', 'n < 1', &
        'x is not the same size as c.' ])
 
 
-  type(routine_info), parameter :: info_d_forward_substitution_bv= &
-       routine_info(id_d_forward_substitution_bv, &
-       'd_forward_substitution_bv', &
+  type(routine_info), parameter :: info_d_forward_solve_bv= &
+       routine_info(id_d_forward_solve_bv, &
+       'd_forward_solve_bv', &
        [ character(len=error_message_length) :: 'bv%n /= size(c,2)', 'bv%lbw /= 0', 'n < 1', &
        'x is not the same size as c.' ])
 
-  type(routine_info), parameter :: info_c_forward_substitution_bv= &
-       routine_info(id_c_forward_substitution_bv, &
-       'd_forward_substitution_bv', &
+  type(routine_info), parameter :: info_c_forward_solve_bv= &
+       routine_info(id_c_forward_solve_bv, &
+       'd_forward_solve_bv', &
        [ character(len=error_message_length) :: 'bv%n /= size(c,2)', 'bv%lbw /= 0', 'n < 1', &
        'x is not the same size as c.' ])
 
-  type(routine_info), parameter :: info_d_v_forward_substitution_bv= &
-       routine_info(id_d_v_forward_substitution_bv, &
-       'd_v_forward_substitution_bv', &
+  type(routine_info), parameter :: info_d_v_forward_solve_bv= &
+       routine_info(id_d_v_forward_solve_bv, &
+       'd_v_forward_solve_bv', &
        [ character(len=error_message_length) :: 'bv%n /= size(c,2)', 'bv%lbw /= 0', 'n < 1', &
        'x is not the same size as c.' ])
 
-  type(routine_info), parameter :: info_c_v_forward_substitution_bv= &
-       routine_info(id_c_v_forward_substitution_bv, &
-       'd_forward_substitution_bv', &
+  type(routine_info), parameter :: info_c_v_forward_solve_bv= &
+       routine_info(id_c_v_forward_solve_bv, &
+       'd_forward_solve_bv', &
        [ character(len=error_message_length) :: 'bv%n /= size(c,1)', 'bv%lbw /= 0', 'n < 1', &
        'x is not the same size as c.' ])
 
 contains
 
-  ! Back substitution routines.
+  ! Back solve routines.
   ! ub should represent an upper triangular matrix.  Solve ub*x=c.
   ! c is overwritten.
 
@@ -105,7 +105,7 @@ contains
   ! 2: bv%lbw /= 0
   ! 3: n < 1
   ! 4: size(x,1) /= n or size(x,2) /= size(c,2)
-  subroutine d_back_substitution_ub(ub,x,c,error)
+  subroutine d_back_solve_ub(ub,x,c,error)
     type(d_ub) :: ub
     real(kind=dp), dimension(:,:), intent(inout) :: c
     real(kind=dp), dimension(:,:), intent(out) :: x
@@ -116,22 +116,22 @@ contains
     call clear_error(error)
     n=size(c,1)
     if (get_n(ub) /= n) then
-       call set_error(error,1,id_d_back_substitution_ub); return
+       call set_error(error,1,id_d_back_solve_ub); return
     end if
     if (ub%lbw /= 0) then
-       call set_error(error,2,id_d_back_substitution_ub); return
+       call set_error(error,2,id_d_back_solve_ub); return
     end if
     if (n < 1) then
-       call set_error(error, 3, id_d_back_substitution_ub); return
+       call set_error(error, 3, id_d_back_solve_ub); return
     end if
     if (size(x,1)/=n .or. size(x,2) /= size(c,2)) then
-       call set_error(error, 4, id_d_back_substitution_ub); return
+       call set_error(error, 4, id_d_back_solve_ub); return
     end if
-    call f_d_back_substitution_ub(ub%bc, n, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
+    call f_d_back_solve_ub(ub%bc, n, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
          ub%numrotsu, ub%jsu, ub%csu, ub%ssu, x, c, size(c,2), error)
-  end subroutine d_back_substitution_ub
+  end subroutine d_back_solve_ub
 
-  subroutine d_v_back_substitution_ub(ub,x,c,error)
+  subroutine d_v_back_solve_ub(ub,x,c,error)
     type(d_ub) :: ub
     real(kind=dp), dimension(:), intent(inout) :: c
     real(kind=dp), dimension(:), intent(out) :: x
@@ -142,23 +142,23 @@ contains
     call clear_error(error)
     n=size(c)
     if (get_n(ub) /= n) then
-       call set_error(error,1,id_d_v_back_substitution_ub); return
+       call set_error(error,1,id_d_v_back_solve_ub); return
     end if
     if (ub%lbw /= 0) then
-       call set_error(error,2,id_d_v_back_substitution_ub); return
+       call set_error(error,2,id_d_v_back_solve_ub); return
     end if
     if (n < 1) then
-       call set_error(error, 3, id_d_v_back_substitution_ub); return
+       call set_error(error, 3, id_d_v_back_solve_ub); return
     end if
     if (size(x)/=n) then
-       call set_error(error, 4, id_d_v_back_substitution_ub); return
+       call set_error(error, 4, id_d_v_back_solve_ub); return
     end if
-    call f_d_v_back_substitution_ub(ub%bc, n, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
+    call f_d_v_back_solve_ub(ub%bc, n, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
          ub%numrotsu, ub%jsu, ub%csu, ub%ssu, x, c, error)
-  end subroutine d_v_back_substitution_ub
+  end subroutine d_v_back_solve_ub
 
 
-  subroutine f_d_back_substitution_ub(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, &
+  subroutine f_d_back_solve_ub(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, &
        csu, ssu, x, c, nc, error)
     real(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(in) :: b_ub
     integer(kind=int32), dimension(n), intent(in) :: numrotsu
@@ -198,9 +198,9 @@ contains
        end do
        x(k,:)=c(k,:)/b_ub(ubw_ub+1,k)
     end do
-  end subroutine f_d_back_substitution_ub
+  end subroutine f_d_back_solve_ub
 
-  subroutine f_d_v_back_substitution_ub(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, &
+  subroutine f_d_v_back_solve_ub(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, &
        csu, ssu, x, c, error)
     real(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(in) :: b_ub
     integer(kind=int32), dimension(n), intent(in) :: numrotsu
@@ -238,11 +238,11 @@ contains
        end do
        x(k)=c(k)/b_ub(ubw_ub+1,k)
     end do
-  end subroutine f_d_v_back_substitution_ub
+  end subroutine f_d_v_back_solve_ub
 
 
 
-  subroutine c_back_substitution_ub(ub,x,c,error)
+  subroutine c_back_solve_ub(ub,x,c,error)
     type(c_ub) :: ub
     complex(kind=dp), dimension(:,:), intent(inout) :: c
     complex(kind=dp), dimension(:,:), intent(out) :: x
@@ -253,22 +253,22 @@ contains
     call clear_error(error)
     n=size(c,1)
     if (get_n(ub) /= n) then
-       call set_error(error,1,id_d_back_substitution_ub); return
+       call set_error(error,1,id_d_back_solve_ub); return
     end if
     if (ub%lbw /= 0) then
-       call set_error(error,2,id_d_back_substitution_ub); return
+       call set_error(error,2,id_d_back_solve_ub); return
     end if
     if (n < 1) then
-       call set_error(error, 3, id_d_back_substitution_ub); return
+       call set_error(error, 3, id_d_back_solve_ub); return
     end if
     if (size(x,1)/=n .or. size(x,2) /= size(c,2)) then
-       call set_error(error, 4, id_d_back_substitution_ub); return
+       call set_error(error, 4, id_d_back_solve_ub); return
     end if
-    call f_c_back_substitution_ub(ub%bc, n, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
+    call f_c_back_solve_ub(ub%bc, n, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
          ub%numrotsu, ub%jsu, ub%csu, ub%ssu, x, c, size(c,2), error)
-  end subroutine c_back_substitution_ub
+  end subroutine c_back_solve_ub
 
-  subroutine c_v_back_substitution_ub(ub,x,c,error)
+  subroutine c_v_back_solve_ub(ub,x,c,error)
     type(c_ub) :: ub
     complex(kind=dp), dimension(:), intent(inout) :: c
     complex(kind=dp), dimension(:), intent(out) :: x
@@ -279,23 +279,23 @@ contains
     call clear_error(error)
     n=size(c)
     if (get_n(ub) /= n) then
-       call set_error(error,1,id_d_v_back_substitution_ub); return
+       call set_error(error,1,id_d_v_back_solve_ub); return
     end if
     if (ub%lbw /= 0) then
-       call set_error(error,2,id_d_v_back_substitution_ub); return
+       call set_error(error,2,id_d_v_back_solve_ub); return
     end if
     if (n < 1) then
-       call set_error(error, 3, id_d_v_back_substitution_ub); return
+       call set_error(error, 3, id_d_v_back_solve_ub); return
     end if
     if (size(x)/=n) then
-       call set_error(error, 4, id_d_v_back_substitution_ub); return
+       call set_error(error, 4, id_d_v_back_solve_ub); return
     end if
-    call f_c_v_back_substitution_ub(ub%bc, n, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
+    call f_c_v_back_solve_ub(ub%bc, n, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
          ub%numrotsu, ub%jsu, ub%csu, ub%ssu, x, c, error)
-  end subroutine c_v_back_substitution_ub
+  end subroutine c_v_back_solve_ub
 
 
-  subroutine f_c_back_substitution_ub(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, &
+  subroutine f_c_back_solve_ub(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, &
        csu, ssu, x, c, nc, error)
     complex(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(in) :: b_ub
     integer(kind=int32), dimension(n), intent(in) :: numrotsu
@@ -335,9 +335,9 @@ contains
        end do
        x(k,:)=c(k,:)/b_ub(ubw_ub+1,k)
     end do
-  end subroutine f_c_back_substitution_ub
+  end subroutine f_c_back_solve_ub
 
-  subroutine f_c_v_back_substitution_ub(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, &
+  subroutine f_c_v_back_solve_ub(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, &
        csu, ssu, x, c, error)
     complex(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(in) :: b_ub
     integer(kind=int32), dimension(n), intent(in) :: numrotsu
@@ -375,10 +375,10 @@ contains
        end do
        x(k)=c(k)/b_ub(ubw_ub+1,k)
     end do
-  end subroutine f_c_v_back_substitution_ub
+  end subroutine f_c_v_back_solve_ub
 
 
-  ! Forward substitution:
+  ! Forward solve:
   ! bv should represent an upper triangular matrix.  Solve x*ub=c.
   ! c is overwritten.
 
@@ -388,7 +388,7 @@ contains
   ! 2: bv%lbw /= 0
   ! 3: n < 1
   ! 4: size(x,1) /= n or size(x,2) /= size(c,2)
-  subroutine d_forward_substitution_bv(x,bv,c,error)
+  subroutine d_forward_solve_bv(x,bv,c,error)
     type(d_bv) :: bv
     real(kind=dp), dimension(:,:), intent(inout) :: c
     real(kind=dp), dimension(:,:), intent(out) :: x
@@ -399,23 +399,23 @@ contains
     call clear_error(error)
     n=size(c,2)
     if (get_n(bv) /= n) then
-       call set_error(error,1,id_d_forward_substitution_bv); return
+       call set_error(error,1,id_d_forward_solve_bv); return
     end if
     if (bv%lbw /= 0) then
-       call set_error(error,2,id_d_forward_substitution_bv); return
+       call set_error(error,2,id_d_forward_solve_bv); return
     end if
     if (n < 1) then
-       call set_error(error, 3,id_d_forward_substitution_bv); return
+       call set_error(error, 3,id_d_forward_solve_bv); return
     end if
     if (size(x,2)/=n .or. size(x,1) /= size(c,1)) then
-       call set_error(error, 4,id_d_forward_substitution_bv); return
+       call set_error(error, 4,id_d_forward_solve_bv); return
     end if
-    call f_d_forward_substitution_bv(x, bv%br, n, bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
+    call f_d_forward_solve_bv(x, bv%br, n, bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
          bv%numrotsv, bv%ksv, bv%csv, bv%ssv, c, size(c,1), error)
 
-  end subroutine d_forward_substitution_bv
+  end subroutine d_forward_solve_bv
 
-  subroutine f_d_forward_substitution_bv(x, b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, &
+  subroutine f_d_forward_solve_bv(x, b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, &
        csv, ssv, c, mc, error)
     real(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(in) :: b_bv
     integer(kind=int32), dimension(n), intent(in) :: numrotsv
@@ -455,9 +455,9 @@ contains
        end do
        x(:,j)=c(:,j)/b_bv(j,lbw_bv+1)
     end do
-  end subroutine f_d_forward_substitution_bv
+  end subroutine f_d_forward_solve_bv
 
-  subroutine d_v_forward_substitution_bv(x,bv,c,error)
+  subroutine d_v_forward_solve_bv(x,bv,c,error)
     type(d_bv) :: bv
     real(kind=dp), dimension(:), intent(inout) :: c
     real(kind=dp), dimension(:), intent(out) :: x
@@ -468,22 +468,22 @@ contains
     call clear_error(error)
     n=size(c)
     if (get_n(bv) /= n) then
-       call set_error(error,1,id_d_forward_substitution_bv); return
+       call set_error(error,1,id_d_forward_solve_bv); return
     end if
     if (bv%lbw /= 0) then
-       call set_error(error,2,id_d_forward_substitution_bv); return
+       call set_error(error,2,id_d_forward_solve_bv); return
     end if
     if (n < 1) then
-       call set_error(error, 3,id_d_forward_substitution_bv); return
+       call set_error(error, 3,id_d_forward_solve_bv); return
     end if
     if (size(x)/=n) then
-       call set_error(error, 4,id_d_forward_substitution_bv); return
+       call set_error(error, 4,id_d_forward_solve_bv); return
     end if
-    call f_d_v_forward_substitution_bv(x, bv%br, n, bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
+    call f_d_v_forward_solve_bv(x, bv%br, n, bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
          bv%numrotsv, bv%ksv, bv%csv, bv%ssv, c, error)
-  end subroutine d_v_forward_substitution_bv
+  end subroutine d_v_forward_solve_bv
 
-  subroutine f_d_v_forward_substitution_bv(x, b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, &
+  subroutine f_d_v_forward_solve_bv(x, b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, &
        csv, ssv, c, error)
     real(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(in) :: b_bv
     integer(kind=int32), dimension(n), intent(in) :: numrotsv
@@ -521,11 +521,11 @@ contains
        end do
        x(j)=c(j)/b_bv(j,lbw_bv+1)
     end do
-  end subroutine f_d_v_forward_substitution_bv
+  end subroutine f_d_v_forward_solve_bv
 
   ! Complex forward
 
-  subroutine c_forward_substitution_bv(x,bv,c,error)
+  subroutine c_forward_solve_bv(x,bv,c,error)
     type(c_bv) :: bv
     complex(kind=dp), dimension(:,:), intent(inout) :: c
     complex(kind=dp), dimension(:,:), intent(out) :: x
@@ -535,22 +535,22 @@ contains
     n=size(c,2)
     call clear_error(error)
     if (get_n(bv) /= n) then
-       call set_error(error,1,id_c_forward_substitution_bv); return
+       call set_error(error,1,id_c_forward_solve_bv); return
     end if
     if (bv%lbw /= 0) then
-       call set_error(error,2,id_c_forward_substitution_bv); return
+       call set_error(error,2,id_c_forward_solve_bv); return
     end if
     if (n < 1) then
-       call set_error(error, 3,id_c_forward_substitution_bv); return
+       call set_error(error, 3,id_c_forward_solve_bv); return
     end if
     if (size(x,2)/=n .or. size(x,1) /= size(c,1)) then
-       call set_error(error, 4,id_c_forward_substitution_bv); return
+       call set_error(error, 4,id_c_forward_solve_bv); return
     end if
-    call f_c_forward_substitution_bv(x, bv%br, n, bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
+    call f_c_forward_solve_bv(x, bv%br, n, bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
          bv%numrotsv, bv%ksv, bv%csv, bv%ssv, c, size(c,1), error)
-  end subroutine c_forward_substitution_bv
+  end subroutine c_forward_solve_bv
 
-  subroutine f_c_forward_substitution_bv(x, b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, &
+  subroutine f_c_forward_solve_bv(x, b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, &
        csv, ssv, c, mc, error)
     complex(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(in) :: b_bv
     integer(kind=int32), dimension(n), intent(in) :: numrotsv
@@ -590,9 +590,9 @@ contains
        end do
        x(:,j)=c(:,j)/b_bv(j,lbw_bv+1)
     end do
-  end subroutine f_c_forward_substitution_bv
+  end subroutine f_c_forward_solve_bv
 
-  subroutine c_v_forward_substitution_bv(x,bv,c,error)
+  subroutine c_v_forward_solve_bv(x,bv,c,error)
     type(c_bv) :: bv
     complex(kind=dp), dimension(:), intent(inout) :: c
     complex(kind=dp), dimension(:), intent(out) :: x
@@ -602,22 +602,22 @@ contains
     n=size(c)
     call clear_error(error)
     if (get_n(bv) /= n) then
-       call set_error(error,1,id_c_forward_substitution_bv); return
+       call set_error(error,1,id_c_forward_solve_bv); return
     end if
     if (bv%lbw /= 0) then
-       call set_error(error,2,id_c_forward_substitution_bv); return
+       call set_error(error,2,id_c_forward_solve_bv); return
     end if
     if (n < 1) then
-       call set_error(error, 3,id_c_forward_substitution_bv); return
+       call set_error(error, 3,id_c_forward_solve_bv); return
     end if
     if (size(x)/=n) then
-       call set_error(error, 4,id_c_forward_substitution_bv); return
+       call set_error(error, 4,id_c_forward_solve_bv); return
     end if
-    call f_c_v_forward_substitution_bv(x, bv%br, n, bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
+    call f_c_v_forward_solve_bv(x, bv%br, n, bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
          bv%numrotsv, bv%ksv, bv%csv, bv%ssv, c, error)
-  end subroutine c_v_forward_substitution_bv
+  end subroutine c_v_forward_solve_bv
 
-  subroutine f_c_v_forward_substitution_bv(x, b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, &
+  subroutine f_c_v_forward_solve_bv(x, b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, &
        csv, ssv, c, error)
     complex(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(in) :: b_bv
     integer(kind=int32), dimension(n), intent(in) :: numrotsv
@@ -655,7 +655,7 @@ contains
        end do
        x(j)=c(j)/b_bv(j,lbw_bv+1)
     end do
-  end subroutine f_c_v_forward_substitution_bv
+  end subroutine f_c_v_forward_solve_bv
 
 
-end module substitution
+end module mod_solve

@@ -20,19 +20,19 @@ GENERALOBJS = $(OBJDIR)/general.o $(OBJDIR)/general_bv.o $(OBJDIR)/general_ub.o 
 	$(OBJDIR)/general_bt.o $(OBJDIR)/general_wb.o $(OBJDIR)/general_ubt.o \
 	$(OBJDIR)/general_wbv.o
 
-CONVERSIONOBJS = $(OBJDIR)/conversion.o $(OBJDIR)/conversion_ub_to_bv.o \
-	$(OBJDIR)/conversion_bv_to_ub.o $(OBJDIR)/conversion_wb_to_bt.o \
-	$(OBJDIR)/conversion_bt_to_wb.o $(OBJDIR)/conversion_wbv_to_ubt.o \
-	$(OBJDIR)/conversion_ubt_to_wbv.o 
+CONVERTOBJS = $(OBJDIR)/convert.o $(OBJDIR)/convert_ub_to_bv.o \
+	$(OBJDIR)/convert_bv_to_ub.o $(OBJDIR)/convert_wb_to_bt.o \
+	$(OBJDIR)/convert_bt_to_wb.o $(OBJDIR)/convert_wbv_to_ubt.o \
+	$(OBJDIR)/convert_ubt_to_wbv.o 
 
-RECOMPRESSIONOBJS = $(OBJDIR)/recompression.o $(OBJDIR)/recompression_ub_to_bv.o \
-	$(OBJDIR)/recompression_bv_to_ub.o
+RECOMPRESSOBJS = $(OBJDIR)/recompress.o $(OBJDIR)/recompress_ub_to_bv.o \
+	$(OBJDIR)/recompress_bv_to_ub.o
 
 
 OBJS =  $(MISCOBJS) $(TYPESOBJS) $(TRANSFORMSOBJS) $(ORTHOBJS) $(GENERALOBJS) \
-	$(CONVERSIONOBJS) $(OBJDIR)/assemble.o $(RECOMPRESSIONOBJS) \
-	$(OBJDIR)/qr_iteration.o $(OBJDIR)/qr_factorization.o $(OBJDIR)/substitution.o \
-	$(OBJDIR)/nested.o $(OBJDIR)/update.o $(OBJDIR)/row_compression.o
+	$(CONVERTOBJS) $(OBJDIR)/assemble.o $(RECOMPRESSOBJS) \
+	$(OBJDIR)/qr_iteration.o $(OBJDIR)/qr_factorization.o $(OBJDIR)/solve.o \
+	$(OBJDIR)/nested.o $(OBJDIR)/update.o $(OBJDIR)/row_compress.o
 
 TEST_EXECS =  $(OBJDIR)/test_general $(OBJDIR)/test_general_bt $(OBJDIR)/test_general_wb \
 	$(OBJDIR)/test_general_ubt $(OBJDIR)/test_general_wbv \

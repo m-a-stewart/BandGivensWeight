@@ -1,9 +1,9 @@
-module conversion_wb_to_bt
-  use prec
-  use error_id
-  use rotation
-  use nested_types
-  use band_types
+module mod_convert_wb_to_bt
+  use mod_prec
+  use mod_error_id
+  use mod_rotation
+  use mod_nested_types
+  use mod_band_types
   implicit none
 
   private
@@ -209,4 +209,4 @@ contains
   end subroutine f_c_convert_wb_to_bt
 
 
-end module conversion_wb_to_bt
+end module mod_convert_wb_to_bt

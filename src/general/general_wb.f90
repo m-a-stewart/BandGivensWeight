@@ -1,10 +1,10 @@
-module general_wb
-  use prec
-  use error_id
-  use utility
-  use nested_types
-  use band_types
-  use general_bv
+module mod_general_wb
+  use mod_prec
+  use mod_error_id
+  use mod_utility
+  use mod_nested_types
+  use mod_band_types
+  use mod_general_bv
   implicit none
 
   private
@@ -228,4 +228,4 @@ contains
   end subroutine c_lower_to_wb
 
 
-end module general_wb
+end module mod_general_wb

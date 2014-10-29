@@ -1,10 +1,10 @@
-module conversion_wbv_to_ubt
-  use prec
-  use error_id
-  use shift
-  use rotation
-  use nested_types
-  use band_types
+module mod_convert_wbv_to_ubt
+  use mod_prec
+  use mod_error_id
+  use mod_shift
+  use mod_rotation
+  use mod_nested_types
+  use mod_band_types
   implicit none
 
   private
@@ -297,4 +297,4 @@ contains
   end subroutine f_c_convert_wbv_to_ubt
 
 
-end module conversion_wbv_to_ubt
+end module mod_convert_wbv_to_ubt

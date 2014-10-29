@@ -1,6 +1,6 @@
 program test_convert_wb_and_bt
-  use nested
-  use test_data
+  use mod_nested
+  use mod_test_data
   implicit none
 
   !

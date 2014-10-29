@@ -1,5 +1,5 @@
-module triangular
-  use prec
+module mod_triangular
+  use mod_prec
   implicit none
 
   private
@@ -433,4 +433,4 @@ contains
     end do
   end function c_last_zero_diagonal
 
-end module triangular
+end module mod_triangular

@@ -1,7 +1,7 @@
-module sweeps
-  use prec
-  use band_types
-  use rotation
+module mod_sweeps
+  use mod_prec
+  use mod_band_types
+  use mod_rotation
   implicit none
 
   private
@@ -405,4 +405,4 @@ contains
     end do
   end subroutine c_v_general_times_trp_sweeps
 
-end module sweeps
+end module mod_sweeps

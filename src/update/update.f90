@@ -1,13 +1,13 @@
-module update
-  use prec
-  use error_id
-  use nested_types
-  use band_types
-  use shift
-  use rotation
-  use sweeps1
-  use conversion_bv_to_ub
-  use conversion_ub_to_bv
+module mod_update
+  use mod_prec
+  use mod_error_id
+  use mod_nested_types
+  use mod_band_types
+  use mod_shift
+  use mod_rotation
+  use mod_sweeps1
+  use mod_convert_bv_to_ub
+  use mod_convert_ub_to_bv
   implicit none
 
   private
@@ -489,4 +489,4 @@ contains
     v=conjg(v)
   end subroutine f_c_e1v_update_ub_to_bv
 
-End module update
+End module mod_update

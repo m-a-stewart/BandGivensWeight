@@ -1,12 +1,12 @@
-module sweeps1
-  use prec
-  use utility
-  use nested_types
-  use band_types
-  use rotation
-  use error_id
-  use conversion_bv_to_ub
-  use conversion_ub_to_bv
+module mod_sweeps1
+  use mod_prec
+  use mod_utility
+  use mod_nested_types
+  use mod_band_types
+  use mod_rotation
+  use mod_error_id
+  use mod_convert_bv_to_ub
+  use mod_convert_ub_to_bv
   implicit none
 
   private
@@ -1721,4 +1721,4 @@ contains
     end do
   end function c_random_sweeps1
 
-end module sweeps1
+end module mod_sweeps1

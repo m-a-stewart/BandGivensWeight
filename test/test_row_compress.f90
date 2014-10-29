@@ -1,6 +1,6 @@
 program test_row_compress
-  use nested
-  use test_data
+  use mod_nested
+  use mod_test_data
   implicit none
 
   ! Note: This does not cover large rank cases (e.g. ubw=n-1).  But the conversion

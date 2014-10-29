@@ -1,7 +1,7 @@
-module gs
-  use prec
-  use utility
-  use error_id
+module mod_gs
+  use mod_prec
+  use mod_utility
+  use mod_error_id
   implicit none
   real(kind=dp), parameter :: eta=1.414_dp
   integer(kind=int32), parameter :: orthmaxits=5
@@ -253,4 +253,4 @@ contains
   end subroutine c_extend_gs_columns
 
 
-end module gs
+end module mod_gs

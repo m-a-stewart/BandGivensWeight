@@ -1,6 +1,6 @@
 program test_general_wb
-  use nested
-  use test_data
+  use mod_nested
+  use mod_test_data
   implicit none
   real(kind=dp) :: t0, t1
   type(error_info) :: error

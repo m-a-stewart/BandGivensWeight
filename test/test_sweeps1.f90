@@ -1,6 +1,6 @@
 program test_sweeps1
-  use nested
-  use test_data
+  use mod_nested
+  use mod_test_data
   implicit none
   real(kind=dp) :: t0, t1
   integer(kind=int32) :: na, lbwa, ubwa, lbwmaxa, ubwmaxa, numsweeps1

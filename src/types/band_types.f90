@@ -1,8 +1,8 @@
-module band_types
-  use prec
-  use rotation
-  use shift
-  use utility
+module mod_band_types
+  use mod_prec
+  use mod_rotation
+  use mod_shift
+  use mod_utility
   implicit none
 
   private
@@ -1004,4 +1004,4 @@ subroutine c_extract_diagonals_br(a, n, b, lbw, ubw, lbwmax, ubwmax)
     end do
   end subroutine c_extract_diagonals_br
 
-end module band_types
+end module mod_band_types

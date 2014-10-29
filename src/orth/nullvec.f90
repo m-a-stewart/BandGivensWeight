@@ -1,8 +1,8 @@
-module nullvec
-  use triangular
-  use prec
-  use error_id
-  use utility
+module mod_nullvec
+  use mod_triangular
+  use mod_prec
+  use mod_error_id
+  use mod_utility
   implicit none
 
   private
@@ -319,4 +319,4 @@ contains
     end if
   end subroutine f_c_lower_right_nullvec
 
-end module nullvec
+end module mod_nullvec

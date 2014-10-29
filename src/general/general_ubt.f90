@@ -1,10 +1,10 @@
-module general_ubt
-  use prec
-  use error_id
-  use utility
-  use nested_types
-  use band_types
-  use general_ub
+module mod_general_ubt
+  use mod_prec
+  use mod_error_id
+  use mod_utility
+  use mod_nested_types
+  use mod_band_types
+  use mod_general_ub
   implicit none
 
   private
@@ -247,4 +247,4 @@ contains
   end subroutine c_general_to_ubt
 
 
-end module general_ubt
+end module mod_general_ubt

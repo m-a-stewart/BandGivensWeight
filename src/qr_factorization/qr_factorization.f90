@@ -1,12 +1,12 @@
-module qr_factorization
-  use prec
-  use error_id
-  use conversion_ub_to_bv
-  use conversion_bv_to_ub
-  use sweeps1
-  use rotation
-  use band_types
-  use nested_types
+module mod_qr_factorization
+  use mod_prec
+  use mod_error_id
+  use mod_convert_ub_to_bv
+  use mod_convert_bv_to_ub
+  use mod_sweeps1
+  use mod_rotation
+  use mod_band_types
+  use mod_nested_types
   implicit none
 
   private
@@ -445,5 +445,5 @@ contains
          b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, csu, ssu, cs(:,j), ss(:,j), error)
   end subroutine f_c_qr_bv_to_ub
 
-end module qr_factorization
+end module mod_qr_factorization
 

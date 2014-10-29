@@ -1,5 +1,5 @@
-module test_data
-  use misc
+module mod_test_data
+  use mod_misc
   implicit none
 
   character(len=40) :: test_name
@@ -296,4 +296,4 @@ contains
     end if
   end subroutine c_output_result_qr
 
-end module test_data
+end module mod_test_data

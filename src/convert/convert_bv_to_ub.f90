@@ -1,9 +1,9 @@
-module conversion_bv_to_ub
-  use prec
-  use error_id
-  use rotation
-  use nested_types
-  use band_types
+module mod_convert_bv_to_ub
+  use mod_prec
+  use mod_error_id
+  use mod_rotation
+  use mod_nested_types
+  use mod_band_types
   implicit none
 
   private
@@ -196,4 +196,4 @@ contains
     call br_to_bc(b_bv,b_ub,lbw,ubw)
   end subroutine f_c_convert_bv_to_ub
 
-end module conversion_bv_to_ub
+end module mod_convert_bv_to_ub

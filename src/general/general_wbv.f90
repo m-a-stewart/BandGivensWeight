@@ -1,10 +1,10 @@
-module general_wbv
-  use prec
-  use error_id
-  use utility
-  use nested_types
-  use band_types
-  use general_bv
+module mod_general_wbv
+  use mod_prec
+  use mod_error_id
+  use mod_utility
+  use mod_nested_types
+  use mod_band_types
+  use mod_general_bv
   implicit none
 
   private
@@ -247,4 +247,4 @@ contains
          wbv%numrotsv, wbv%ksv, wbv%csv, wbv%ssv, tol, error)
   end subroutine c_general_to_wbv
 
-end module general_wbv
+end module mod_general_wbv

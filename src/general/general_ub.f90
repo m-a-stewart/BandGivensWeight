@@ -1,12 +1,12 @@
-module general_ub
-  use prec
-  use utility
-  use error_id
-  use orth
-  use shift
-  use rotation
-  use nested_types
-  use band_types
+module mod_general_ub
+  use mod_prec
+  use mod_utility
+  use mod_error_id
+  use mod_orth
+  use mod_shift
+  use mod_rotation
+  use mod_nested_types
+  use mod_band_types
   implicit none
   integer(kind=int32), parameter :: nullmaxits=5
 
@@ -826,4 +826,4 @@ contains
     end if
   end subroutine f_c_general_ub
 
-end module general_ub
+end module mod_general_ub

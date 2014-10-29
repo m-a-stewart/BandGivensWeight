@@ -1,5 +1,5 @@
-module rotation
-  use prec
+module mod_rotation
+  use mod_prec
   implicit none
 
   private
@@ -334,4 +334,4 @@ contains
     tr%sine=-r%sine
   end function c_trp_rot
 
-end module rotation
+end module mod_rotation

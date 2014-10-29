@@ -1,6 +1,6 @@
 program test_qr_iteration
-  use nested
-  use test_data
+  use mod_nested
+  use mod_test_data
   implicit none
   real(kind=dp) :: t0, t1
   integer(kind=int32) :: j,k, na

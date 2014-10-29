@@ -1,5 +1,5 @@
-module error_id
-  use prec
+module mod_error_id
+  use mod_prec
   implicit none
 
   integer(kind=int32), parameter :: routine_name_length=30
@@ -170,24 +170,24 @@ module error_id
   integer(int32), parameter :: id_c_qr_bv_to_ub=206
   integer(int32), parameter :: id_f_c_qr_bv_to_ub=207
 
-  ! src/solve/back_substitution 210s and 220s
-  integer(int32), parameter :: id_d_back_substitution_ub=210
-  integer(int32), parameter :: id_f_d_back_substitution_ub=211
-  integer(int32), parameter :: id_c_back_substitution_ub=212
-  integer(int32), parameter :: id_f_c_back_substitution_ub=213
-  integer(int32), parameter :: id_d_v_back_substitution_ub=214
-  integer(int32), parameter :: id_f_d_v_back_substitution_ub=215
-  integer(int32), parameter :: id_c_v_back_substitution_ub=216
-  integer(int32), parameter :: id_f_c_v_back_substitution_ub=217
+  ! src/solve/back_solve 210s and 220s
+  integer(int32), parameter :: id_d_back_solve_ub=210
+  integer(int32), parameter :: id_f_d_back_solve_ub=211
+  integer(int32), parameter :: id_c_back_solve_ub=212
+  integer(int32), parameter :: id_f_c_back_solve_ub=213
+  integer(int32), parameter :: id_d_v_back_solve_ub=214
+  integer(int32), parameter :: id_f_d_v_back_solve_ub=215
+  integer(int32), parameter :: id_c_v_back_solve_ub=216
+  integer(int32), parameter :: id_f_c_v_back_solve_ub=217
 
-  integer(int32), parameter :: id_d_forward_substitution_bv=218
-  integer(int32), parameter :: id_f_d_forward_substitution_bv=219
-  integer(int32), parameter :: id_d_v_forward_substitution_bv=220
-  integer(int32), parameter :: id_f_d_v_forward_substitution_bv=221
-  integer(int32), parameter :: id_c_forward_substitution_bv=222
-  integer(int32), parameter :: id_f_c_forward_substitution_bv=223
-  integer(int32), parameter :: id_c_v_forward_substitution_bv=224
-  integer(int32), parameter :: id_f_c_v_forward_substitution_bv=225
+  integer(int32), parameter :: id_d_forward_solve_bv=218
+  integer(int32), parameter :: id_f_d_forward_solve_bv=219
+  integer(int32), parameter :: id_d_v_forward_solve_bv=220
+  integer(int32), parameter :: id_f_d_v_forward_solve_bv=221
+  integer(int32), parameter :: id_c_forward_solve_bv=222
+  integer(int32), parameter :: id_f_c_forward_solve_bv=223
+  integer(int32), parameter :: id_c_v_forward_solve_bv=224
+  integer(int32), parameter :: id_f_c_v_forward_solve_bv=225
 
   ! src/sweeps1 230s and 240s
   integer(int32), parameter :: id_d_sweeps1_times_ub=230
@@ -250,4 +250,4 @@ contains
 
   end subroutine clear_error
 
-end module error_id
+end module mod_error_id

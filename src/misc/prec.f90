@@ -1,4 +1,4 @@
-module prec
+module mod_prec
 
   integer, parameter :: dp = selected_real_kind(12)
   integer, parameter :: int32 = selected_int_kind(8)
@@ -6,4 +6,4 @@ module prec
 
   public
 
-end module prec
+end module mod_prec

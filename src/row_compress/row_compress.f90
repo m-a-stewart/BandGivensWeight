@@ -1,9 +1,9 @@
-module row_compression
-  use misc
-  use sweeps
-  use rotation
-  use types
-  use shift
+module mod_row_compress
+  use mod_misc
+  use mod_sweeps
+  use mod_rotation
+  use mod_types
+  use mod_shift
   implicit none
 
   interface row_compress
@@ -327,5 +327,5 @@ contains
     lbw_bv=lbw; ubw_bv=ubw
   end subroutine f_c_row_compress
 
-end module row_compression
+end module mod_row_compress
 

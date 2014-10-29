@@ -1,5 +1,5 @@
-module shift
-  use prec
+module mod_shift
+  use mod_prec
 
   private
   public :: shift2, d_shift2, c_shift2
@@ -94,4 +94,4 @@ contains
     end if
   end subroutine c_shift2
 
-end module shift
+end module mod_shift

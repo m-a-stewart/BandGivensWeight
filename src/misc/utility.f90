@@ -1,5 +1,5 @@
-module utility
-  use prec
+module mod_utility
+  use mod_prec
   implicit none
 
   private
@@ -426,4 +426,4 @@ contains
     end do
   end subroutine c_ip_transpose
 
-end module utility
+end module mod_utility

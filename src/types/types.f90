@@ -1,5 +1,5 @@
-module types
-  use band_types
-  use nested_types
+module mod_types
+  use mod_band_types
+  use mod_nested_types
   public
-end module types
+end module mod_types

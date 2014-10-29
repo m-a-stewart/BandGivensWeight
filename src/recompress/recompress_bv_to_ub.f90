@@ -1,12 +1,12 @@
-module recompression_bv_to_ub
-  use prec
-  use error_id
-  use utility
-  use shift
-  use rotation
-  use nested_types
-  use band_types
-  use nullvec
+module mod_recompress_bv_to_ub
+  use mod_prec
+  use mod_error_id
+  use mod_utility
+  use mod_shift
+  use mod_rotation
+  use mod_nested_types
+  use mod_band_types
+  use mod_nullvec
   implicit none
 
   integer(kind=int32), parameter :: nullmaxits=5
@@ -617,4 +617,4 @@ contains
   end subroutine f_c_recompress_bv_to_ub
 
 
-end module recompression_bv_to_ub
+end module mod_recompress_bv_to_ub

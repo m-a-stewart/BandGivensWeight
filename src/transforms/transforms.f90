@@ -1,6 +1,6 @@
-module transforms
-  use sweeps1
-  use sweeps
-  use shift
-  use rotation
-end module transforms
+module mod_transforms
+  use mod_sweeps1
+  use mod_sweeps
+  use mod_shift
+  use mod_rotation
+end module mod_transforms

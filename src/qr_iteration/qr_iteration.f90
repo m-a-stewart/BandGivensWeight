@@ -1,16 +1,16 @@
-module qr_iteration
-  use prec
-  use error_id
-  use rotation
-  use nested_types
-  use band_types
-  use recompression_ub_to_bv
-  use conversion_ub_to_bv
-  use conversion_bv_to_ub
-  use qr_factorization
-  use update
-  use substitution
-  use sweeps1
+module mod_qr_iteration
+  use mod_prec
+  use mod_error_id
+  use mod_rotation
+  use mod_nested_types
+  use mod_band_types
+  use mod_recompress_ub_to_bv
+  use mod_convert_ub_to_bv
+  use mod_convert_bv_to_ub
+  use mod_qr_factorization
+  use mod_update
+  use mod_solve
+  use mod_sweeps1
 
   implicit none
 
@@ -256,7 +256,7 @@ contains
     end do
     
     v_tmp=conjg(v)
-    call f_c_forward_substitution_bv(v, b_bv, n, lbw_bv, ubw_bv, &
+    call f_c_forward_solve_bv(v, b_bv, n, lbw_bv, ubw_bv, &
          lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, ssv, &
          v_tmp, 1, error)
     v=conjg(v)
@@ -505,4 +505,4 @@ contains
 
   end function c_wilkinson_shift
 
-end module qr_iteration
+end module mod_qr_iteration

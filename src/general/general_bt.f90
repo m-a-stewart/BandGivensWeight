@@ -1,10 +1,10 @@
-module general_bt
-  use prec
-  use error_id
-  use utility
-  use nested_types
-  use band_types
-  use general_ub
+module mod_general_bt
+  use mod_prec
+  use mod_error_id
+  use mod_utility
+  use mod_nested_types
+  use mod_band_types
+  use mod_general_ub
   implicit none
 
   private
@@ -225,4 +225,4 @@ contains
     bt%ubw=ubw
   end subroutine c_lower_to_bt
 
-end module general_bt
+end module mod_general_bt

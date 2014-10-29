@@ -1,6 +1,6 @@
-module orth
-  use triangular
-  use nullvec
-  use gs
+module mod_orth
+  use mod_triangular
+  use mod_nullvec
+  use mod_gs
   public
-end module orth
+end module mod_orth

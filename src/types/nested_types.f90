@@ -1,5 +1,5 @@
-module nested_types
-  use prec
+module mod_nested_types
+  use mod_prec
   implicit none
 
   private
@@ -941,4 +941,4 @@ contains
     n=wbv%ubwmax
   end function c_wbv_get_ubwmax
 
-end module nested_types
+end module mod_nested_types
