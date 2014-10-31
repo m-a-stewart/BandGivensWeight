@@ -29,8 +29,8 @@ program test_solve
   type(c_ub) :: ub_c
   type(d_bv) :: bv_d
   type(c_bv) :: bv_c
-  type(d_sweeps1) :: sw_d
-  type(c_sweeps1) :: sw_c
+  type(d_sweeps) :: sw_d
+  type(c_sweeps) :: sw_c
 
   call random_seed
   call random_matrix(u_d)
@@ -52,12 +52,12 @@ program test_solve
   rhs0_d=rhs_d
   ub_d=d_new_ub(na,lbwmax,ubwmax)
   bv_d=d_new_bv(na,lbwmax,ubwmax)
-  sw_d=d_new_sweeps1(na,lbwmax)
+  sw_d=d_new_sweeps(na,na,lbwmax)
   call d_assemble_upper(a_d,u_d(1:na,1:ubwa),v_d(1:ubwa,1:na),d_d(1:na)+shiftr,lbwa)
   a0_d=a_d
   call upper_to_bv(a_d,bv_d,lbwa, tol,error)
   call qr_bv_to_ub(bv_d,ub_d,sw_d,error)
-  call d_trp_sweeps1_times_general(sw_d,rhs_d)
+  call d_trp_sweeps_times_general(sw_d,rhs_d)
   call cpu_time(t0)
   call back_solve_ub(ub_d,x_d,rhs_d,error)
   call cpu_time(t1)
@@ -67,7 +67,7 @@ program test_solve
   call d_output_result_upper(test_name,rhs0_d/scale,rhs_d/scale,ub_d%ubw,ub_d%ubw,t0,t1,tol2,error)
   deallocate(a_d, a0_d, a1_d, rhs_d, rhs0_d, x_d)
   call deallocate_ub(ub_d); call deallocate_bv(bv_d)
-  call deallocate_sweeps1(sw_d)
+  call deallocate_sweeps(sw_d)
 
   na=1000; lbwa=3; ubwa=5; nc=3
   u_d=u0_d; v_d=v0_d; d_d=d0_d
@@ -77,12 +77,12 @@ program test_solve
   rhs0_d=rhs_d
   ub_d=d_new_ub(na,lbwmax,ubwmax)
   bv_d=d_new_bv(na,lbwmax,ubwmax)
-  sw_d=d_new_sweeps1(na,lbwmax)
+  sw_d=d_new_sweeps(na,na,lbwmax)
   call d_assemble_upper(a_d,u_d(1:na,1:ubwa),v_d(1:ubwa,1:na),d_d(1:na)+shiftr,lbwa)
   a0_d=a_d
   call upper_to_bv(a_d,bv_d,lbwa, tol,error)
   call qr_bv_to_ub(bv_d,ub_d,sw_d,error)
-  call d_trp_sweeps1_times_general(sw_d,rhs_d)
+  call d_trp_sweeps_times_general(sw_d,rhs_d)
   call cpu_time(t0)
   call back_solve_ub(ub_d,x_d,rhs_d,error)
   call cpu_time(t1)
@@ -92,7 +92,7 @@ program test_solve
   call d_output_result_upper(test_name,rhs0_d/scale,rhs_d/scale,ub_d%ubw,ub_d%ubw,t0,t1,tol2,error)
   deallocate(a_d, a0_d, a1_d, rhs_d, rhs0_d, x_d)
   call deallocate_ub(ub_d); call deallocate_bv(bv_d)
-  call deallocate_sweeps1(sw_d)
+  call deallocate_sweeps(sw_d)
 
   na=1000; lbwa=3; ubwa=5; nc=3
   u_d=u0_d; v_d=v0_d; d_d=d0_d
@@ -102,12 +102,12 @@ program test_solve
   rhs0_v_d=rhs_v_d
   ub_d=d_new_ub(na,lbwmax,ubwmax)
   bv_d=d_new_bv(na,lbwmax,ubwmax)
-  sw_d=d_new_sweeps1(na,lbwmax)
+  sw_d=d_new_sweeps(na,na,lbwmax)
   call d_assemble_upper(a_d,u_d(1:na,1:ubwa),v_d(1:ubwa,1:na),d_d(1:na)+shiftr,lbwa)
   a0_d=a_d
   call upper_to_bv(a_d,bv_d,lbwa, tol,error)
   call qr_bv_to_ub(bv_d,ub_d,sw_d,error)
-  call d_v_trp_sweeps1_times_general(sw_d,rhs_v_d)
+  call d_v_trp_sweeps_times_general(sw_d,rhs_v_d)
   call cpu_time(t0)
   call back_solve_ub(ub_d,x_v_d,rhs_v_d,error)
   call cpu_time(t1)
@@ -118,7 +118,7 @@ program test_solve
        ub_d%ubw,ub_d%ubw,t0,t1,tol2,error)
   deallocate(a_d, a0_d, a1_d, rhs_v_d, rhs0_v_d, x_v_d)
   call deallocate_ub(ub_d); call deallocate_bv(bv_d)
-  call deallocate_sweeps1(sw_d)
+  call deallocate_sweeps(sw_d)
 
   print *
   print *, "--------------------------------"
@@ -134,7 +134,7 @@ program test_solve
   rhs0_d=rhs_d
   ub_d=d_new_ub(na,lbwmax,ubwmax)
   bv_d=d_new_bv(na,lbwmax,ubwmax)
-  sw_d=d_new_sweeps1(na,lbwmax)
+  sw_d=d_new_sweeps(na,na,lbwmax)
   call d_assemble_upper(a_d,u_d(1:na,1:ubwa),v_d(1:ubwa,1:na),d_d(1:na)+shiftr,lbwa)
   a0_d=a_d
   call upper_to_bv(a_d,bv_d,lbwa, tol,error)
@@ -147,7 +147,7 @@ program test_solve
   call d_output_result_upper(test_name,rhs0_d/scale,rhs_d/scale,bv_d%ubw,bv_d%ubw,t0,t1,tol2,error)
   deallocate(a_d, a0_d, a1_d, rhs_d, rhs0_d, x_d)
   call deallocate_ub(ub_d); call deallocate_bv(bv_d)
-  call deallocate_sweeps1(sw_d)
+  call deallocate_sweeps(sw_d)
 
   na=1000; lbwa=0; ubwa=7; nc=3
   u_d=u0_d; v_d=v0_d; d_d=d0_d
@@ -157,7 +157,7 @@ program test_solve
   rhs0_d=rhs_d
   ub_d=d_new_ub(na,lbwmax,ubwmax)
   bv_d=d_new_bv(na,lbwmax,ubwmax)
-  sw_d=d_new_sweeps1(na,lbwmax)
+  sw_d=d_new_sweeps(na,na,lbwmax)
   call d_assemble_upper(a_d,u_d(1:na,1:ubwa),v_d(1:ubwa,1:na),d_d(1:na)+shiftr,lbwa)
   a0_d=a_d
   call upper_to_bv(a_d,bv_d,lbwa, tol,error)
@@ -170,7 +170,7 @@ program test_solve
   call d_output_result_upper(test_name,rhs0_d/scale,rhs_d/scale,bv_d%ubw,bv_d%ubw,t0,t1,tol2,error)
   deallocate(a_d, a0_d, a1_d, rhs_d, rhs0_d, x_d)
   call deallocate_ub(ub_d); call deallocate_bv(bv_d)
-  call deallocate_sweeps1(sw_d)
+  call deallocate_sweeps(sw_d)
 
   na=1000; lbwa=0; ubwa=7
   u_d=u0_d; v_d=v0_d; d_d=d0_d
@@ -180,7 +180,7 @@ program test_solve
   rhs0_v_d=rhs_v_d
   ub_d=d_new_ub(na,lbwmax,ubwmax)
   bv_d=d_new_bv(na,lbwmax,ubwmax)
-  sw_d=d_new_sweeps1(na,lbwmax)
+  sw_d=d_new_sweeps(na,na,lbwmax)
   call d_assemble_upper(a_d,u_d(1:na,1:ubwa),v_d(1:ubwa,1:na),d_d(1:na)+shiftr,lbwa)
   a0_d=a_d
   call upper_to_bv(a_d,bv_d,lbwa, tol,error)
@@ -194,7 +194,7 @@ program test_solve
        reshape(rhs_v_d/scale,[1,na]),bv_d%ubw,bv_d%ubw,t0,t1,tol2,error)
   deallocate(a_d, a0_d, a1_d, rhs_v_d, rhs0_v_d, x_v_d)
   call deallocate_ub(ub_d); call deallocate_bv(bv_d)
-  call deallocate_sweeps1(sw_d)
+  call deallocate_sweeps(sw_d)
 
 
   print *
@@ -215,12 +215,12 @@ program test_solve
   rhs0_c=rhs_c
   ub_c=c_new_ub(na,lbwmax,ubwmax)
   bv_c=c_new_bv(na,lbwmax,ubwmax)
-  sw_c=c_new_sweeps1(na,lbwmax)
+  sw_c=c_new_sweeps(na,na,lbwmax)
   call c_assemble_upper(a_c,u_c(1:na,1:ubwa),v_c(1:ubwa,1:na),d_c(1:na)+shiftc,lbwa)
   a0_c=a_c
   call upper_to_bv(a_c,bv_c,lbwa, tol,error)
   call qr_bv_to_ub(bv_c,ub_c,sw_c,error)
-  call c_trp_sweeps1_times_general(sw_c,rhs_c)
+  call c_trp_sweeps_times_general(sw_c,rhs_c)
   call cpu_time(t0)
   call back_solve_ub(ub_c,x_c,rhs_c,error)
   call cpu_time(t1)
@@ -230,7 +230,7 @@ program test_solve
   call c_output_result_upper(test_name,rhs0_c/scale,rhs_c/scale,ub_c%ubw,ub_c%ubw,t0,t1,tol2,error)
   deallocate(a_c, a0_c, a1_c, rhs_c, rhs0_c, x_c)
   call deallocate_ub(ub_c); call deallocate_bv(bv_c)
-  call deallocate_sweeps1(sw_c)
+  call deallocate_sweeps(sw_c)
 
   na=1000; lbwa=5; ubwa=5; nc=3
   u_c=u0_c; v_c=v0_c; d_c=d0_c
@@ -240,13 +240,13 @@ program test_solve
   rhs0_c=rhs_c
   ub_c=c_new_ub(na,lbwmax,ubwmax)
   bv_c=c_new_bv(na,lbwmax,ubwmax)
-  sw_c=c_new_sweeps1(na,lbwmax)
+  sw_c=c_new_sweeps(na,na,lbwmax)
   call c_assemble_upper(a_c,u_c(1:na,1:ubwa),v_c(1:ubwa,1:na),d_c(1:na)+shiftc,lbwa)
   a0_c=a_c
   call upper_to_bv(a_c,bv_c,lbwa, tol,error)
   call qr_bv_to_ub(bv_c,ub_c,sw_c,error)
   call cpu_time(t1)
-  call c_trp_sweeps1_times_general(sw_c,rhs_c)
+  call c_trp_sweeps_times_general(sw_c,rhs_c)
   call cpu_time(t0)
   call back_solve_ub(ub_c,x_c,rhs_c,error)
   call cpu_time(t1)
@@ -256,7 +256,7 @@ program test_solve
   call c_output_result_upper(test_name,rhs0_c/scale,rhs_c/scale,ub_c%ubw,ub_c%ubw,t0,t1,tol2,error)
   deallocate(a_c, a0_c, a1_c, rhs_c, rhs0_c, x_c)
   call deallocate_ub(ub_c); call deallocate_bv(bv_c)
-  call deallocate_sweeps1(sw_c)
+  call deallocate_sweeps(sw_c)
 
   na=1000; lbwa=3; ubwa=5; nc=3
   u_c=u0_c; v_c=v0_c; d_c=d0_c
@@ -266,12 +266,12 @@ program test_solve
   rhs0_v_c=rhs_v_c
   ub_c=c_new_ub(na,lbwmax,ubwmax)
   bv_c=c_new_bv(na,lbwmax,ubwmax)
-  sw_c=c_new_sweeps1(na,lbwmax)
+  sw_c=c_new_sweeps(na,na,lbwmax)
   call c_assemble_upper(a_c,u_c(1:na,1:ubwa),v_c(1:ubwa,1:na),d_c(1:na)+shiftc,lbwa)
   a0_c=a_c
   call upper_to_bv(a_c,bv_c,lbwa, tol,error)
   call qr_bv_to_ub(bv_c,ub_c,sw_c,error)
-  call c_v_trp_sweeps1_times_general(sw_c,rhs_v_c)
+  call c_v_trp_sweeps_times_general(sw_c,rhs_v_c)
   call cpu_time(t0)
   call back_solve_ub(ub_c,x_v_c,rhs_v_c,error)
   call cpu_time(t1)
@@ -282,7 +282,7 @@ program test_solve
        ub_c%ubw,ub_c%ubw,t0,t1,tol2,error)
   deallocate(a_c, a0_c, a1_c, rhs_v_c, rhs0_v_c, x_v_c)
   call deallocate_ub(ub_c); call deallocate_bv(bv_c)
-  call deallocate_sweeps1(sw_c)
+  call deallocate_sweeps(sw_c)
 
   print *
   print *, "--------------------------------"
@@ -298,7 +298,7 @@ program test_solve
   rhs0_c=rhs_c
   ub_c=c_new_ub(na,lbwmax,ubwmax)
   bv_c=c_new_bv(na,lbwmax,ubwmax)
-  sw_c=c_new_sweeps1(na,lbwmax)
+  sw_c=c_new_sweeps(na,na,lbwmax)
   call c_assemble_upper(a_c,u_c(1:na,1:ubwa),v_c(1:ubwa,1:na),d_c(1:na)+shiftc,lbwa)
   a0_c=a_c
   call upper_to_bv(a_c,bv_c,lbwa, tol,error)
@@ -311,7 +311,7 @@ program test_solve
   call c_output_result_upper(test_name,rhs0_c/scale,rhs_c/scale,bv_c%ubw,bv_c%ubw,t0,t1,tol2,error)
   deallocate(a_c, a0_c, a1_c, rhs_c, rhs0_c, x_c)
   call deallocate_ub(ub_c); call deallocate_bv(bv_c)
-  call deallocate_sweeps1(sw_c)
+  call deallocate_sweeps(sw_c)
 
   na=1000; lbwa=0; ubwa=7; nc=3
   u_c=u0_c; v_c=v0_c; d_c=d0_c
@@ -321,7 +321,7 @@ program test_solve
   rhs0_c=rhs_c
   ub_c=c_new_ub(na,lbwmax,ubwmax)
   bv_c=c_new_bv(na,lbwmax,ubwmax)
-  sw_c=c_new_sweeps1(na,lbwmax)
+  sw_c=c_new_sweeps(na,na,lbwmax)
   call c_assemble_upper(a_c,u_c(1:na,1:ubwa),v_c(1:ubwa,1:na),d_c(1:na)+shiftc,lbwa)
   a0_c=a_c
   call upper_to_bv(a_c,bv_c,lbwa, tol,error)
@@ -334,7 +334,7 @@ program test_solve
   call c_output_result_upper(test_name,rhs0_c/scale,rhs_c/scale,bv_c%ubw,bv_c%ubw,t0,t1,tol2,error)
   deallocate(a_c, a0_c, a1_c, rhs_c, rhs0_c, x_c)
   call deallocate_ub(ub_c); call deallocate_bv(bv_c)
-  call deallocate_sweeps1(sw_c)
+  call deallocate_sweeps(sw_c)
 
   na=1000; lbwa=0; ubwa=7
   u_c=u0_c; v_c=v0_c; d_c=d0_c
@@ -344,7 +344,7 @@ program test_solve
   rhs0_v_c=rhs_v_c
   ub_c=c_new_ub(na,lbwmax,ubwmax)
   bv_c=c_new_bv(na,lbwmax,ubwmax)
-  sw_c=c_new_sweeps1(na,lbwmax)
+  sw_c=c_new_sweeps(na,na,lbwmax)
   call c_assemble_upper(a_c,u_c(1:na,1:ubwa),v_c(1:ubwa,1:na),d_c(1:na)+shiftc,lbwa)
   a0_c=a_c
   call upper_to_bv(a_c,bv_c,lbwa, tol,error)
@@ -358,6 +358,6 @@ program test_solve
        reshape(rhs_v_c/scale,[1,na]),bv_c%ubw,bv_c%ubw,t0,t1,tol2,error)
   deallocate(a_c, a0_c, a1_c, rhs_v_c, rhs0_v_c, x_v_c)
   call deallocate_ub(ub_c); call deallocate_bv(bv_c)
-  call deallocate_sweeps1(sw_c)
+  call deallocate_sweeps(sw_c)
 
 end program test_solve

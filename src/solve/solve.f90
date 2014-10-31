@@ -379,7 +379,7 @@ contains
 
 
   ! Forward solve:
-  ! bv should represent an upper triangular matrix.  Solve x*ub=c.
+  ! bv should represent an upper triangular matrix.  Solve x^T*ub=c^T.
   ! c is overwritten.
 
   ! Errors

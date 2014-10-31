@@ -175,18 +175,18 @@ contains
           call rotation_times_general(trp_rot(rot), v, k,k+1)
        end do
 
-      if (ubw_ub > 3) then
+      ! if (ubw_ub > 3) then
 
-          call f_r1_reorth(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, &
-               numrotsu, jsu, csu, ssu, u, v, u_tmp, v_tmp, &
-               b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, ssv, &
-               cs_sw, ss_sw, shifts_i, error)
+      !     call f_r1_reorth(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, &
+      !          numrotsu, jsu, csu, ssu, u, v, u_tmp, v_tmp, &
+      !          b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, ssv, &
+      !          cs_sw, ss_sw, shifts_i, error)
 
-       else
+      !  else
           call f_c_convert_ub_to_bv(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, &
                jsu, csu, ssu, &
                b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, ssv, error)
-       end if
+       ! end if
 
     end do qr_loop
 
@@ -240,10 +240,11 @@ contains
     b_bv(1,lbw_bv+1)=b_bv(1,lbw_bv+1) - u_tmp(1)*conjg(v_tmp(1))
     b_bv(1,lbw_bv+2)=b_bv(1,lbw_bv+2) - u_tmp(1)*conjg(v_tmp(2))
 
-    call f_c_qr_bv_to_ub(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, &
-       ksv, csv, ssv, &
-       b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, csu, ssu, &
-       cs_sw(:,2:3), ss_sw(:,2:3), error)
+    ! TODO: update to new qr factorization and new sw
+    ! call f_c_qr_bv_to_ub(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, &
+    !    ksv, csv, ssv, &
+    !    b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, csu, ssu, &
+    !    cs_sw(:,2:3), ss_sw(:,2:3), error)
 
     call f_c_convert_ub_to_bv(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, &
          jsu, csu, ssu, &

@@ -161,14 +161,10 @@ module mod_error_id
   integer(int32), parameter :: id_f_ss_qr_iteration=193
 
   ! src/qr_factorization/qr_factorization 200s
-  integer(int32), parameter :: id_d_reduce_lbw_bv_to_ub=200
-  integer(int32), parameter :: id_f_d_reduce_lbw_bv_to_ub=201
-  integer(int32), parameter :: id_c_reduce_lbw_bv_to_ub=202
-  integer(int32), parameter :: id_f_c_reduce_lbw_bv_to_ub=203
-  integer(int32), parameter :: id_d_qr_bv_to_ub=204
-  integer(int32), parameter :: id_f_d_qr_bv_to_ub=205
-  integer(int32), parameter :: id_c_qr_bv_to_ub=206
-  integer(int32), parameter :: id_f_c_qr_bv_to_ub=207
+  integer(int32), parameter :: id_d_qr_bv_to_ub=200
+  integer(int32), parameter :: id_f_d_qr_bv_to_ub=201
+  integer(int32), parameter :: id_c_qr_bv_to_ub=202
+  integer(int32), parameter :: id_f_c_qr_bv_to_ub=203
 
   ! src/solve/back_solve 210s and 220s
   integer(int32), parameter :: id_d_back_solve_ub=210

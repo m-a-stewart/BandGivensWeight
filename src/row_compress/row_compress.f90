@@ -59,8 +59,8 @@ contains
          get_lbwmax(ubt) < min(ubt%lbw+1,n-1)) then
        call set_error(error, 4, id_d_row_compress); return
     end if
-    if (get_lbwmax(bv) < min(get_lbwmax(bv),n-1) .or. &
-         get_ubwmax(bv) < min(get_lbwmax(ubt)+get_ubwmax(ubt),n-1)) then
+    if (get_lbwmax(bv) < ubt%lbw .or. &
+         get_ubwmax(bv) < min(ubt%lbw+ubt%ubw,n-1)) then
        call set_error(error, 5, id_d_row_compress); return
     end if
     call f_d_row_compress(ubt%bc, get_n(ubt), ubt%lbw, ubt%ubw, get_lbwmax(ubt), &
@@ -208,9 +208,9 @@ contains
          get_lbwmax(ubt) < min(ubt%lbw+1,n-1)) then
        call set_error(error, 4, id_c_row_compress); return
     end if
-    if (get_lbwmax(bv) < min(get_lbwmax(bv),n-1) .or. &
-         get_ubwmax(bv) < min(get_lbwmax(ubt)+get_ubwmax(ubt),n-1)) then
-       call set_error(error, 5, id_c_row_compress); return
+    if (get_lbwmax(bv) < ubt%lbw .or. &
+         get_ubwmax(bv) < min(ubt%lbw+ubt%ubw,n-1)) then
+       call set_error(error, 5, id_d_row_compress); return
     end if
     call f_c_row_compress(ubt%bc, get_n(ubt), ubt%lbw, ubt%ubw, get_lbwmax(ubt), &
          get_ubwmax(ubt), ubt%numrotsu, ubt%jsu, ubt%csu, ubt%ssu, & 
