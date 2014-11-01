@@ -1,5 +1,6 @@
 FC = gfortran
 OBJDIR = ../mod
+BINDIR = ../bin
 PROFLFLAGS = -pg
 PROFCFLAGS = -pg
 LFLAGS = 
