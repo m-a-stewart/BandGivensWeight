@@ -59,7 +59,7 @@ contains
     if (get_maxord(sw) < bv%lbw) then
        call set_error(error, 2, id_d_qr_bv_to_ub); return
     end if
-    if (get_maxnum(sw) < n-1) then
+    if (get_maxind(sw) < n+lbw-1 .or. get_minind(sw) > lbw+1) then
        call set_error(error, 3, id_d_qr_bv_to_ub); return
     end if
     if (get_ubwmax(bv) < min(bv%lbw+bv%ubw+1,n-1) .or. &
@@ -72,14 +72,14 @@ contains
     call f_d_qr_bv_to_ub(bv%br, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), &
          get_ubwmax(bv), bv%numrotsv, bv%ksv, bv%csv, bv%ssv, & 
          ub%bc, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), ub%numrotsu, ub%jsu, ub%csu, ub%ssu, &
-         sw%num, get_maxnum(sw), get_maxord(sw), sw%numrots, sw%js, &
+         sw%left, sw%right, sw%inc, get_minind(sw), get_maxind(sw), get_maxord(sw), sw%numrots, sw%js, &
          sw%cs, sw%ss, error)
   end subroutine d_qr_bv_to_ub
 
   subroutine f_d_qr_bv_to_ub(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, &
        ksv, csv, ssv, &
        b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, csu, ssu, &
-       num, maxnum, maxord, numrotsq, jsq, csq, ssq, error)
+       leftq, rightq, incq, minind, maxind, maxord, numrotsq, jsq, csq, ssq, error)
     integer(kind=int32), intent(in) :: n, lbw_bv, ubw_bv, lbwmax_ub, ubwmax_ub, lbwmax_bv, ubwmax_bv
     real(kind=dp), dimension(n,lbwmax_bv+ubwmax_bv+1), intent(inout) :: b_bv
     integer(kind=int32), dimension(n), intent(inout) :: numrotsv
@@ -92,11 +92,11 @@ contains
     real(kind=dp), dimension(ubwmax_ub,n), intent(out) :: csu, ssu
     integer(kind=int32), intent(out) :: lbw_ub, ubw_ub
 
-    integer(kind=int32), intent(in) :: maxnum, maxord
-    real(kind=dp), dimension(maxord, maxnum), intent(out) :: csq, ssq
-    integer(kind=int32), dimension(maxnum), intent(out) :: numrotsq
-    integer(kind=int32), dimension(maxord,maxnum), intent(out) :: jsq
-    integer(kind=int32), intent(out) :: num
+    integer(kind=int32), intent(in) :: minind, maxind, maxord
+    real(kind=dp), dimension(maxord, minind:maxind), intent(out) :: csq, ssq
+    integer(kind=int32), dimension(minind:maxind), intent(out) :: numrotsq
+    integer(kind=int32), dimension(maxord,minind:maxind), intent(out) :: jsq
+    integer(kind=int32), intent(out) :: leftq, rightq, incq
     type(error_info), intent(out) :: error
 
     integer(kind=int32) :: j, k, lbw, ubw, lbw1, ubw1, k0, k1
@@ -106,14 +106,14 @@ contains
     if (n == 1) then
        b_ub(1,1)=b_bv(1,1);
        lbw_ub=0; ubw_ub=0; numrotsu=0; 
-       numrotsq=0; num=0
+       numrotsq=0; leftq=0; rightq=-1; incq=1
        return
     end if
 
     if (lbw_bv == 0) then
        call f_d_convert_bv_to_ub(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, &
             ksv, csv, ssv, b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, csu, ssu,error)
-       numrotsq=0; num=0
+       numrotsq=0; leftq=0; rightq=-1; incq=1
        return
     end if
 
@@ -131,7 +131,7 @@ contains
     numrotsu=0
     csu=0.0_dp; ssu=0.0_dp; jsu=0
     numrotsq=0
-    num=n-1
+    leftq=lbw_bv+1; rightq=n+lbw_bv-1; incq=1
     csq=0.0_dp; ssq=0.0_dp; jsq=0
     
     ! Apply V_1, ..., V_{lbw_bv-1}
@@ -151,12 +151,12 @@ contains
        ! Zero the subdiagonal elements in column k+1-lbw_bv using Q_{k+1}
        ! (rotation stored in csq(:,k+1-lbw_bv), etc.)
        k0=k+1-lbw_bv
-       numrotsq(n-k0)=lbw_bv
+       numrotsq(k+1)=lbw_bv
        do j=lbw_bv,1,-1
           rot=lgivens(get_el_br(b_bv, lbw1, k0+j-1, k0), &
                get_el_br(b_bv, lbw1, k0+j, k0))
-          jsq(j,n-k0)=k0+j-1
-          csq(j,n-k0)=rot%cosine; ssq(j,n-k0)=rot%sine
+          jsq(j,k+1)=k0+j-1
+          csq(j,k+1)=rot%cosine; ssq(j,k+1)=rot%sine
           call rotation_times_tbr(trp_rot(rot), b_bv, n, lbw1, ubw1, 0, 0, k0+j-1)
        end do
        ! Now eliminate the superdiagonal elements introduced by V_k^H
@@ -175,12 +175,12 @@ contains
     ! Only need to apply Q_{k+1} for the last steps
     do k=n-1, n+lbw_bv-2
        k0=k+1-lbw_bv
-       numrotsq(n-k0)=n-k0
+       numrotsq(k+1)=n-k0
        do j=n-k0,1,-1
           rot=lgivens(get_el_br(b_bv, lbw1, k0+j-1, k0), &
                get_el_br(b_bv, lbw1, k0+j, k0))
-          jsq(j,n-k0)=k0+j-1
-          csq(j,n-k0)=rot%cosine; ssq(j,n-k0)=rot%sine
+          jsq(j,k+1)=k0+j-1
+          csq(j,k+1)=rot%cosine; ssq(j,k+1)=rot%sine
           call rotation_times_tbr(trp_rot(rot), b_bv, n, lbw1, ubw1, 0, 0, k0+j-1)
        end do
     end do
@@ -213,7 +213,7 @@ contains
     if (get_maxord(sw) < bv%lbw) then
        call set_error(error, 2, id_c_qr_bv_to_ub); return
     end if
-    if (get_maxnum(sw) < n-1) then
+    if (get_maxind(sw)  < n+lbw-1 .or. get_minind(sw) > lbw+1) then
        call set_error(error, 3, id_c_qr_bv_to_ub); return
     end if
     if (get_ubwmax(bv) < min(bv%lbw+bv%ubw+1,n-1) .or. &
@@ -226,14 +226,14 @@ contains
     call f_c_qr_bv_to_ub(bv%br, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), &
          get_ubwmax(bv), bv%numrotsv, bv%ksv, bv%csv, bv%ssv, & 
          ub%bc, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), ub%numrotsu, ub%jsu, ub%csu, ub%ssu, &
-         sw%num, get_maxnum(sw), get_maxord(sw), sw%numrots, sw%js, &
+         sw%left, sw%right, sw%inc, get_minind(sw), get_maxind(sw), get_maxord(sw), sw%numrots, sw%js, &
          sw%cs, sw%ss, error)
   end subroutine c_qr_bv_to_ub
 
   subroutine f_c_qr_bv_to_ub(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, &
        ksv, csv, ssv, &
        b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, csu, ssu, &
-       num, maxnum, maxord, numrotsq, jsq, csq, ssq, error)
+       leftq, rightq, incq, minind, maxind, maxord, numrotsq, jsq, csq, ssq, error)
     integer(kind=int32), intent(in) :: n, lbw_bv, ubw_bv, lbwmax_ub, ubwmax_ub, lbwmax_bv, ubwmax_bv
     complex(kind=dp), dimension(n,lbwmax_bv+ubwmax_bv+1), intent(inout) :: b_bv
     integer(kind=int32), dimension(n), intent(inout) :: numrotsv
@@ -246,11 +246,11 @@ contains
     complex(kind=dp), dimension(ubwmax_ub,n), intent(out) :: csu, ssu
     integer(kind=int32), intent(out) :: lbw_ub, ubw_ub
 
-    integer(kind=int32), intent(in) :: maxnum, maxord
-    complex(kind=dp), dimension(maxord, maxnum), intent(out) :: csq, ssq
-    integer(kind=int32), dimension(maxnum), intent(out) :: numrotsq
-    integer(kind=int32), dimension(maxord,maxnum), intent(out) :: jsq
-    integer(kind=int32), intent(out) :: num
+    integer(kind=int32), intent(in) :: minind, maxind, maxord
+    complex(kind=dp), dimension(maxord, minind:maxind), intent(out) :: csq, ssq
+    integer(kind=int32), dimension(minind:maxind), intent(out) :: numrotsq
+    integer(kind=int32), dimension(maxord,minind:maxind), intent(out) :: jsq
+    integer(kind=int32), intent(out) :: leftq, rightq, incq
     type(error_info), intent(out) :: error
 
     integer(kind=int32) :: j, k, lbw, ubw, lbw1, ubw1, k0, k1
@@ -260,14 +260,14 @@ contains
     if (n == 1) then
        b_ub(1,1)=b_bv(1,1);
        lbw_ub=0; ubw_ub=0; numrotsu=0; 
-       numrotsq=0; num=0
+       numrotsq=0; leftq=0; rightq=-1; incq=1
        return
     end if
 
     if (lbw_bv == 0) then
        call f_c_convert_bv_to_ub(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, &
             ksv, csv, ssv, b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, csu, ssu,error)
-       numrotsq=0; num=0
+       numrotsq=0; leftq=0; rightq=-1; incq=1
        return
     end if
 
@@ -285,7 +285,7 @@ contains
     numrotsu=0
     csu=(0.0_dp, 0.0_dp); ssu=(0.0_dp, 0.0_dp); jsu=0
     numrotsq=0
-    num=n-1
+    leftq=lbw_bv+1; rightq=n+lbw_bv-1; incq=1
     csq=(0.0_dp, 0.0_dp); ssq=(0.0_dp, 0.0_dp); jsq=0
     
     ! Apply V_1, ..., V_{lbw_bv-1}
@@ -305,12 +305,12 @@ contains
        ! Zero the subdiagonal elements in column k+1-lbw_bv using Q_{k+1}
        ! (rotation stored in csq(:,k+1-lbw_bv), etc.)
        k0=k+1-lbw_bv
-       numrotsq(n-k0)=lbw_bv
+       numrotsq(k+1)=lbw_bv
        do j=lbw_bv,1,-1
           rot=lgivens(get_el_br(b_bv, lbw1, k0+j-1, k0), &
                get_el_br(b_bv, lbw1, k0+j, k0))
-          jsq(j,n-k0)=k0+j-1
-          csq(j,n-k0)=rot%cosine; ssq(j,n-k0)=rot%sine
+          jsq(j,k+1)=k0+j-1
+          csq(j,k+1)=rot%cosine; ssq(j,k+1)=rot%sine
           call rotation_times_tbr(trp_rot(rot), b_bv, n, lbw1, ubw1, 0, 0, k0+j-1)
        end do
        ! Now eliminate the superdiagonal elements introduced by V_k^H
@@ -329,12 +329,12 @@ contains
     ! Only need to apply Q_{k+1} for the last steps
     do k=n-1, n+lbw_bv-2
        k0=k+1-lbw_bv
-       numrotsq(n-k0)=n-k0
+       numrotsq(k+1)=n-k0
        do j=n-k0,1,-1
           rot=lgivens(get_el_br(b_bv, lbw1, k0+j-1, k0), &
                get_el_br(b_bv, lbw1, k0+j, k0))
-          jsq(j,n-k0)=k0+j-1
-          csq(j,n-k0)=rot%cosine; ssq(j,n-k0)=rot%sine
+          jsq(j,k+1)=k0+j-1
+          csq(j,k+1)=rot%cosine; ssq(j,k+1)=rot%sine
           call rotation_times_tbr(trp_rot(rot), b_bv, n, lbw1, ubw1, 0, 0, k0+j-1)
        end do
     end do

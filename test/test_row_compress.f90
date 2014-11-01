@@ -36,8 +36,8 @@ program test_row_compress
   ubt_c=c_new_ubt(n,lbwmax,ubwmax)
   bv_d=d_new_bv(n,lbwmax,lbwmax+ubwmax)
   bv_c=c_new_bv(n,lbwmax,lbwmax+ubwmax)
-  sw_d=d_new_sweeps(n,n-2,lbwmax)
-  sw_c=c_new_sweeps(n,n-2,lbwmax)
+  sw_d=d_new_sweeps(n,1,n-2,lbwmax)
+  sw_c=c_new_sweeps(n,1,n-2,lbwmax)
 
   ! real
   call random_seed
@@ -76,7 +76,7 @@ program test_row_compress
   na=1
   ubt_na_d=d_new_ubt(na,lbwmax,ubwmax)
   bv_na_d=d_new_bv(na,lbwmax,ubwmax)
-  sw_na_d=d_new_sweeps(na,na-2,lbwmax)
+  sw_na_d=d_new_sweeps(na,1,na-2,lbwmax)
   ul=ul0; vl=vl0
   uu=uu0; vu=vu0
   call d_assemble_general(a(1:na,1:na),ul(1:na,:),vl(:,1:na),uu(1:na,:),vu(:,1:na),&
@@ -98,7 +98,7 @@ program test_row_compress
   na=2
   ubt_na_d=d_new_ubt(na,lbwmax,ubwmax)
   bv_na_d=d_new_bv(na,lbwmax,ubwmax)
-  sw_na_d=d_new_sweeps(na,na-2,lbwmax)
+  sw_na_d=d_new_sweeps(na,1,na-2,lbwmax)
   ul=ul0; vl=vl0
   uu=uu0; vu=vu0
   call d_assemble_general(a(1:na,1:na),ul(1:na,:),vl(:,1:na),uu(1:na,:),vu(:,1:na),&
@@ -120,7 +120,7 @@ program test_row_compress
   na=3
   ubt_na_d=d_new_ubt(na,lbwmax,ubwmax)
   bv_na_d=d_new_bv(na,lbwmax,ubwmax)
-  sw_na_d=d_new_sweeps(na,na-2,lbwmax)
+  sw_na_d=d_new_sweeps(na,1,na-2,lbwmax)
   ul=ul0; vl=vl0
   uu=uu0; vu=vu0
   call d_assemble_general(a(1:na,1:na),ul(1:na,:),vl(:,1:na),uu(1:na,:),vu(:,1:na),&
@@ -143,7 +143,7 @@ program test_row_compress
   na=4
   ubt_na_d=d_new_ubt(na,lbwmax,ubwmax)
   bv_na_d=d_new_bv(na,lbwmax,ubwmax)
-  sw_na_d=d_new_sweeps(na,na-2,lbwmax)
+  sw_na_d=d_new_sweeps(na,1,na-2,lbwmax)
   ul=ul0; vl=vl0
   uu=uu0; vu=vu0
   call d_assemble_general(a(1:na,1:na),ul(1:na,:),vl(:,1:na),uu(1:na,:),vu(:,1:na),&
@@ -186,7 +186,7 @@ program test_row_compress
   na=1
   ubt_na_c=c_new_ubt(na,lbwmax,ubwmax)
   bv_na_c=c_new_bv(na,lbwmax,ubwmax)
-  sw_na_c=c_new_sweeps(na,na-2,lbwmax)
+  sw_na_c=c_new_sweeps(na,1,na-2,lbwmax)
   ul_c=ul0_c; vl_c=vl0_c
   uu_c=uu0_c; vu_c=vu0_c
   call c_assemble_general(a_c(1:na,1:na),ul_c(1:na,:),vl_c(:,1:na),uu_c(1:na,:),vu_c(:,1:na),&
@@ -208,7 +208,7 @@ program test_row_compress
   na=2
   ubt_na_c=c_new_ubt(na,lbwmax,ubwmax)
   bv_na_c=c_new_bv(na,lbwmax,ubwmax)
-  sw_na_c=c_new_sweeps(na,na-2,lbwmax)
+  sw_na_c=c_new_sweeps(na,1,na-2,lbwmax)
   ul_c=ul0_c; vl_c=vl0_c
   uu_c=uu0_c; vu_c=vu0_c
   call c_assemble_general(a_c(1:na,1:na),ul_c(1:na,:),vl_c(:,1:na),uu_c(1:na,:),vu_c(:,1:na),&
@@ -230,7 +230,7 @@ program test_row_compress
   na=3
   ubt_na_c=c_new_ubt(na,lbwmax,ubwmax)
   bv_na_c=c_new_bv(na,lbwmax,ubwmax)
-  sw_na_c=c_new_sweeps(na,na-2,lbwmax)
+  sw_na_c=c_new_sweeps(na,1,na-2,lbwmax)
   ul_c=ul0_c; vl_c=vl0_c
   uu_c=uu0_c; vu_c=vu0_c
   call c_assemble_general(a_c(1:na,1:na),ul_c(1:na,:),vl_c(:,1:na),uu_c(1:na,:),vu_c(:,1:na),&
@@ -252,7 +252,7 @@ program test_row_compress
   na=4
   ubt_na_c=c_new_ubt(na,lbwmax,ubwmax)
   bv_na_c=c_new_bv(na,lbwmax,ubwmax)
-  sw_na_c=c_new_sweeps(na,na-2,lbwmax)
+  sw_na_c=c_new_sweeps(na,1,na-2,lbwmax)
   ul_c=ul0_c; vl_c=vl0_c
   uu_c=uu0_c; vu_c=vu0_c
   call c_assemble_general(a_c(1:na,1:na),ul_c(1:na,:),vl_c(:,1:na),uu_c(1:na,:),vu_c(:,1:na),&

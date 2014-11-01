@@ -88,7 +88,7 @@ $(OBJDIR)/test_update : $(OBJDIR)/test_update.o $(OBJS) $(OBJDIR)/test_data.o
 	$(OBJDIR)/test_data.o -o $(OBJDIR)/test_update
 
 
-$(OBJDIR)/test_data.o : test_data.f90 $(OBJDIR)/prec.o $(OBJS)
+$(OBJDIR)/test_data.o : test_data.f90 $(OBJDIR)/error_id.o $(OBJDIR)/utility.o
 $(OBJDIR)/test_general.o : test_general.f90 $(OBJDIR)/prec.o $(OBJDIR)/test_data.o $(OBJS)
 $(OBJDIR)/test_general_bt.o : test_general_bt.f90 $(OBJDIR)/prec.o $(OBJDIR)/test_data.o $(OBJS)
 $(OBJDIR)/test_general_wb.o : test_general_wb.f90 $(OBJDIR)/prec.o $(OBJDIR)/test_data.o $(OBJS)

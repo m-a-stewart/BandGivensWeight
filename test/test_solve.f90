@@ -52,7 +52,7 @@ program test_solve
   rhs0_d=rhs_d
   ub_d=d_new_ub(na,lbwmax,ubwmax)
   bv_d=d_new_bv(na,lbwmax,ubwmax)
-  sw_d=d_new_sweeps(na,na,lbwmax)
+  sw_d=d_new_sweeps(na,lbwa+1,na+lbwa-1,lbwmax)
   call d_assemble_upper(a_d,u_d(1:na,1:ubwa),v_d(1:ubwa,1:na),d_d(1:na)+shiftr,lbwa)
   a0_d=a_d
   call upper_to_bv(a_d,bv_d,lbwa, tol,error)
@@ -77,7 +77,7 @@ program test_solve
   rhs0_d=rhs_d
   ub_d=d_new_ub(na,lbwmax,ubwmax)
   bv_d=d_new_bv(na,lbwmax,ubwmax)
-  sw_d=d_new_sweeps(na,na,lbwmax)
+  sw_d=d_new_sweeps(na,lbwa+1,na+lbwa-1,lbwmax)
   call d_assemble_upper(a_d,u_d(1:na,1:ubwa),v_d(1:ubwa,1:na),d_d(1:na)+shiftr,lbwa)
   a0_d=a_d
   call upper_to_bv(a_d,bv_d,lbwa, tol,error)
@@ -102,7 +102,7 @@ program test_solve
   rhs0_v_d=rhs_v_d
   ub_d=d_new_ub(na,lbwmax,ubwmax)
   bv_d=d_new_bv(na,lbwmax,ubwmax)
-  sw_d=d_new_sweeps(na,na,lbwmax)
+  sw_d=d_new_sweeps(na,lbwa+1,na+lbwa-1,lbwmax)
   call d_assemble_upper(a_d,u_d(1:na,1:ubwa),v_d(1:ubwa,1:na),d_d(1:na)+shiftr,lbwa)
   a0_d=a_d
   call upper_to_bv(a_d,bv_d,lbwa, tol,error)
@@ -134,7 +134,7 @@ program test_solve
   rhs0_d=rhs_d
   ub_d=d_new_ub(na,lbwmax,ubwmax)
   bv_d=d_new_bv(na,lbwmax,ubwmax)
-  sw_d=d_new_sweeps(na,na,lbwmax)
+  sw_d=d_new_sweeps(na,lbwa+1,na+lbwa-1,lbwmax)
   call d_assemble_upper(a_d,u_d(1:na,1:ubwa),v_d(1:ubwa,1:na),d_d(1:na)+shiftr,lbwa)
   a0_d=a_d
   call upper_to_bv(a_d,bv_d,lbwa, tol,error)
@@ -157,7 +157,7 @@ program test_solve
   rhs0_d=rhs_d
   ub_d=d_new_ub(na,lbwmax,ubwmax)
   bv_d=d_new_bv(na,lbwmax,ubwmax)
-  sw_d=d_new_sweeps(na,na,lbwmax)
+  sw_d=d_new_sweeps(na,lbwa+1,na+lbwa-1,lbwmax)
   call d_assemble_upper(a_d,u_d(1:na,1:ubwa),v_d(1:ubwa,1:na),d_d(1:na)+shiftr,lbwa)
   a0_d=a_d
   call upper_to_bv(a_d,bv_d,lbwa, tol,error)
@@ -180,7 +180,7 @@ program test_solve
   rhs0_v_d=rhs_v_d
   ub_d=d_new_ub(na,lbwmax,ubwmax)
   bv_d=d_new_bv(na,lbwmax,ubwmax)
-  sw_d=d_new_sweeps(na,na,lbwmax)
+  sw_d=d_new_sweeps(na,lbwa+1,na+lbwa-1,lbwmax)
   call d_assemble_upper(a_d,u_d(1:na,1:ubwa),v_d(1:ubwa,1:na),d_d(1:na)+shiftr,lbwa)
   a0_d=a_d
   call upper_to_bv(a_d,bv_d,lbwa, tol,error)
@@ -215,7 +215,7 @@ program test_solve
   rhs0_c=rhs_c
   ub_c=c_new_ub(na,lbwmax,ubwmax)
   bv_c=c_new_bv(na,lbwmax,ubwmax)
-  sw_c=c_new_sweeps(na,na,lbwmax)
+  sw_c=c_new_sweeps(na,lbwa+1,na+lbwa-1,lbwmax)
   call c_assemble_upper(a_c,u_c(1:na,1:ubwa),v_c(1:ubwa,1:na),d_c(1:na)+shiftc,lbwa)
   a0_c=a_c
   call upper_to_bv(a_c,bv_c,lbwa, tol,error)
@@ -240,7 +240,7 @@ program test_solve
   rhs0_c=rhs_c
   ub_c=c_new_ub(na,lbwmax,ubwmax)
   bv_c=c_new_bv(na,lbwmax,ubwmax)
-  sw_c=c_new_sweeps(na,na,lbwmax)
+  sw_c=c_new_sweeps(na,lbwa+1,na+lbwa-1,lbwmax)
   call c_assemble_upper(a_c,u_c(1:na,1:ubwa),v_c(1:ubwa,1:na),d_c(1:na)+shiftc,lbwa)
   a0_c=a_c
   call upper_to_bv(a_c,bv_c,lbwa, tol,error)
@@ -266,7 +266,7 @@ program test_solve
   rhs0_v_c=rhs_v_c
   ub_c=c_new_ub(na,lbwmax,ubwmax)
   bv_c=c_new_bv(na,lbwmax,ubwmax)
-  sw_c=c_new_sweeps(na,na,lbwmax)
+  sw_c=c_new_sweeps(na,lbwa+1,na+lbwa-1,lbwmax)
   call c_assemble_upper(a_c,u_c(1:na,1:ubwa),v_c(1:ubwa,1:na),d_c(1:na)+shiftc,lbwa)
   a0_c=a_c
   call upper_to_bv(a_c,bv_c,lbwa, tol,error)
@@ -298,7 +298,7 @@ program test_solve
   rhs0_c=rhs_c
   ub_c=c_new_ub(na,lbwmax,ubwmax)
   bv_c=c_new_bv(na,lbwmax,ubwmax)
-  sw_c=c_new_sweeps(na,na,lbwmax)
+  sw_c=c_new_sweeps(na,lbwa+1,na+lbwa-1,lbwmax)
   call c_assemble_upper(a_c,u_c(1:na,1:ubwa),v_c(1:ubwa,1:na),d_c(1:na)+shiftc,lbwa)
   a0_c=a_c
   call upper_to_bv(a_c,bv_c,lbwa, tol,error)
@@ -321,7 +321,7 @@ program test_solve
   rhs0_c=rhs_c
   ub_c=c_new_ub(na,lbwmax,ubwmax)
   bv_c=c_new_bv(na,lbwmax,ubwmax)
-  sw_c=c_new_sweeps(na,na,lbwmax)
+  sw_c=c_new_sweeps(na,lbwa+1,na+lbwa-1,lbwmax)
   call c_assemble_upper(a_c,u_c(1:na,1:ubwa),v_c(1:ubwa,1:na),d_c(1:na)+shiftc,lbwa)
   a0_c=a_c
   call upper_to_bv(a_c,bv_c,lbwa, tol,error)
@@ -344,7 +344,7 @@ program test_solve
   rhs0_v_c=rhs_v_c
   ub_c=c_new_ub(na,lbwmax,ubwmax)
   bv_c=c_new_bv(na,lbwmax,ubwmax)
-  sw_c=c_new_sweeps(na,na,lbwmax)
+  sw_c=c_new_sweeps(na,lbwa+1,na+lbwa-1,lbwmax)
   call c_assemble_upper(a_c,u_c(1:na,1:ubwa),v_c(1:ubwa,1:na),d_c(1:na)+shiftc,lbwa)
   a0_c=a_c
   call upper_to_bv(a_c,bv_c,lbwa, tol,error)

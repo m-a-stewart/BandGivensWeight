@@ -96,7 +96,7 @@ $(OBJDIR)/qr_iteration.o : $(OBJDIR)/prec.o $(OBJDIR)/error_id.o $(OBJDIR)/rotat
 
 $(OBJDIR)/qr_factorization.o : $(OBJDIR)/prec.o $(OBJDIR)/error_id.o \
 	$(OBJDIR)/convert_bv_to_ub.o $(OBJDIR)/convert_ub_to_bv.o \
-	$(OBJDIR)/sweeps1.o $(OBJDIR)/rotation.o \
+	$(OBJDIR)/sweeps.o $(OBJDIR)/rotation.o \
 	$(OBJDIR)/band_types.o $(OBJDIR)/nested_types.o
 
 

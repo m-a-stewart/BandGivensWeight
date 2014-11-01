@@ -1,5 +1,6 @@
 module mod_test_data
-  use mod_misc
+  use mod_error_id
+  use mod_utility
   implicit none
 
   character(len=40) :: test_name

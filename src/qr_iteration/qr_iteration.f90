@@ -107,7 +107,7 @@ contains
     integer(kind=int32) :: k, numshifts
     complex(kind=dp) :: subd, sigma
     type(c_rotation) :: rot
-    complex(kind=dp), dimension(n) :: u_tmp, v_tmp
+!    complex(kind=dp), dimension(n) :: u_tmp, v_tmp
 
     call clear_error(error)
 

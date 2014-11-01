@@ -52,7 +52,7 @@ contains
     if (get_maxord(sw) < ubt%lbw) then
        call set_error(error, 2, id_d_row_compress); return
     end if
-    if (get_maxnum(sw) < n-2) then
+    if (get_maxind(sw) < n-2 .or. get_minind(sw) > 1) then
        call set_error(error, 3, id_d_row_compress); return
     end if
     if (get_ubwmax(ubt) < min(ubt%lbw+ubt%ubw+1,n-1) .or. &
@@ -67,14 +67,14 @@ contains
          get_ubwmax(ubt), ubt%numrotsu, ubt%jsu, ubt%csu, ubt%ssu, & 
          ubt%numrotst, ubt%kst, ubt%cst, ubt%sst, & 
          bv%br, bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), bv%numrotsv, bv%ksv, bv%csv, bv%ssv, &
-         sw%num, get_maxnum(sw), get_maxord(sw), sw%numrots, sw%js, &
+         sw%left, sw%right, sw%inc, get_minind(sw), get_maxind(sw), get_maxord(sw), sw%numrots, sw%js, &
          sw%cs, sw%ss, error)
   end subroutine d_row_compress
 
   subroutine f_d_row_compress(b_ubt, n, lbw_ubt, ubw_ubt, lbwmax_ubt, ubwmax_ubt, numrotsu, &
        jsu, csu, ssu, numrotst, kst, cst, sst, &
        b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, ssv, &
-       num, maxnum, maxord, numrotsq, jsq, csq, ssq, error)
+       leftq, rightq, incq, minind, maxind, maxord, numrotsq, jsq, csq, ssq, error)
     integer(kind=int32), intent(in) :: n, lbw_ubt, ubw_ubt, lbwmax_ubt, ubwmax_ubt, lbwmax_bv, ubwmax_bv
     real(kind=dp), dimension(lbwmax_ubt+ubwmax_ubt+1,n), intent(inout) :: b_ubt
     integer(kind=int32), dimension(n), intent(in) :: numrotsu, numrotst
@@ -89,11 +89,11 @@ contains
     real(kind=dp), dimension(n,ubwmax_bv), intent(out) :: csv, ssv
     integer(kind=int32), intent(out) :: lbw_bv, ubw_bv
     
-    integer(kind=int32), intent(in) :: maxnum, maxord
-    real(kind=dp), dimension(maxord,maxnum) :: csq, ssq
-    integer(kind=int32), dimension(maxnum), intent(out) :: numrotsq
-    integer(kind=int32), dimension(maxord,maxnum), intent(out) :: jsq
-    integer(kind=int32), intent(out) :: num
+    integer(kind=int32), intent(in) :: minind, maxind, maxord
+    real(kind=dp), dimension(maxord,minind:maxind) :: csq, ssq
+    integer(kind=int32), dimension(minind:maxind), intent(out) :: numrotsq
+    integer(kind=int32), dimension(maxord,minind:maxind), intent(out) :: jsq
+    integer(kind=int32), intent(out) :: leftq, rightq, incq
     type(error_info), intent(out) :: error
     integer(kind=int32) :: j, k, j0, j1, k0, k1, lbw, ubw, lbw1, ubw1
     logical :: full_ubw, full_lbw
@@ -103,7 +103,7 @@ contains
     if (n == 1) then
        b_bv(1,1)=b_ubt(1,1);
        lbw_bv=0; ubw_bv=0; numrotsv=0; 
-       numrotsq=0; num=0
+       numrotsq=0; leftq=0; rightq=-1; incq=1
        return
     end if
 
@@ -131,7 +131,8 @@ contains
     numrotsv=0
     csv=0.0_dp; ssv=0.0_dp; ksv=0
     numrotsq=0
-    num=n-2
+    leftq=n-2; rightq=1; incq=-1
+
     csq=0.0_dp; ssq=0.0_dp; jsq=0
     
     do k=n-1,2,-1
@@ -201,7 +202,7 @@ contains
     if (get_maxord(sw) < ubt%lbw) then
        call set_error(error, 2, id_c_row_compress); return
     end if
-    if (get_maxnum(sw) < n-2) then
+    if (get_maxind(sw) < n-2 .or. get_minind(sw) > 1) then
        call set_error(error, 3, id_c_row_compress); return
     end if
     if (get_ubwmax(ubt) < min(ubt%lbw+ubt%ubw+1,n-1) .or. &
@@ -216,14 +217,14 @@ contains
          get_ubwmax(ubt), ubt%numrotsu, ubt%jsu, ubt%csu, ubt%ssu, & 
          ubt%numrotst, ubt%kst, ubt%cst, ubt%sst, & 
          bv%br, bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), bv%numrotsv, bv%ksv, bv%csv, bv%ssv, &
-         sw%num, get_maxnum(sw), get_maxord(sw), sw%numrots, sw%js, &
+         sw%left, sw%right, sw%inc, get_minind(sw), get_maxind(sw), get_maxord(sw), sw%numrots, sw%js, &
          sw%cs, sw%ss, error)
   end subroutine c_row_compress
 
   subroutine f_c_row_compress(b_ubt, n, lbw_ubt, ubw_ubt, lbwmax_ubt, ubwmax_ubt, numrotsu, &
        jsu, csu, ssu, numrotst, kst, cst, sst, &
        b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, ssv, &
-       num, maxnum, maxord, numrotsq, jsq, csq, ssq, error)
+       leftq, rightq, incq, minind, maxind, maxord, numrotsq, jsq, csq, ssq, error)
     integer(kind=int32), intent(in) :: n, lbw_ubt, ubw_ubt, lbwmax_ubt, ubwmax_ubt, lbwmax_bv, ubwmax_bv
     complex(kind=dp), dimension(lbwmax_ubt+ubwmax_ubt+1,n), intent(inout) :: b_ubt
     integer(kind=int32), dimension(n), intent(in) :: numrotsu, numrotst
@@ -238,11 +239,11 @@ contains
     complex(kind=dp), dimension(n,ubwmax_bv), intent(out) :: csv, ssv
     integer(kind=int32), intent(out) :: lbw_bv, ubw_bv
     
-    integer(kind=int32), intent(in) :: maxnum, maxord
-    complex(kind=dp), dimension(maxord,maxnum) :: csq, ssq
-    integer(kind=int32), dimension(maxnum), intent(out) :: numrotsq
-    integer(kind=int32), dimension(maxord,maxnum), intent(out) :: jsq
-    integer(kind=int32), intent(out) :: num
+    integer(kind=int32), intent(in) :: minind, maxind, maxord
+    complex(kind=dp), dimension(maxord,minind:maxind) :: csq, ssq
+    integer(kind=int32), dimension(minind:maxind), intent(out) :: numrotsq
+    integer(kind=int32), dimension(maxord,minind:maxind), intent(out) :: jsq
+    integer(kind=int32), intent(out) :: leftq, rightq, incq
     type(error_info), intent(out) :: error
     integer(kind=int32) :: j, k, j0, j1, k0, k1, lbw, ubw, lbw1, ubw1
     logical :: full_ubw, full_lbw
@@ -252,7 +253,7 @@ contains
     if (n == 1) then
        b_bv(1,1)=b_ubt(1,1);
        lbw_bv=0; ubw_bv=0; numrotsv=0; 
-       numrotsq=0; num=0
+       numrotsq=0; leftq=0; rightq=-1; incq=1;
        return
     end if
 
@@ -280,7 +281,7 @@ contains
     numrotsv=0
     csv=(0.0_dp, 0.0_dp); ssv=(0.0_dp, 0.0_dp); ksv=0
     numrotsq=0
-    num=n-2
+    leftq=n-2; rightq=1; incq=-1
     csq=(0.0_dp, 0.0_dp); ssq=(0.0_dp, 0.0_dp); jsq=0
     
     do k=n-1,2,-1
