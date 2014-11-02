@@ -43,9 +43,14 @@ module mod_sweeps
   ! is formed from rotations G_{j,k} with cosine and sine cs(j,k) and ss(j,k)
   ! acting on adjacent rows js(j,k) and js(j,k)+1.
 
+  ! The fields ord and type are used to specifically describe
+  ! structure of leading and trailing sweeps.  type takes on values
+  ! 'L', 'T', or 'N'.
+
   type d_sweeps
      integer(kind=int32), private :: minind, maxind, n, maxord
-     integer(kind=int32) :: left, right, inc
+     integer(kind=int32) :: left, right, inc, ord
+     character :: type
      real(kind=dp), allocatable, dimension(:,:) :: cs, ss
      integer(kind=int32), allocatable, dimension(:) :: numrots
      integer(kind=int32), allocatable, dimension(:,:) :: js
@@ -53,7 +58,8 @@ module mod_sweeps
 
   type c_sweeps
      integer(kind=int32), private :: minind, maxind, n, maxord
-     integer(kind=int32) :: left, right, inc
+     integer(kind=int32) :: left, right, inc, ord
+     character :: type
      complex(kind=dp), allocatable, dimension(:,:) :: cs, ss
      integer(kind=int32), allocatable, dimension(:) :: numrots
      integer(kind=int32), allocatable, dimension(:,:) :: js
@@ -146,7 +152,8 @@ contains
     sw%n=n; sw%maxind=maxind; sw%minind=minind; sw%maxord=maxord
     allocate(sw%cs(maxord,minind:maxind), sw%ss(maxord,minind:maxind), &
          sw%js(maxord,minind:maxind), sw%numrots(minind:maxind))
-    sw%left=0; sw%right=-1; sw%inc=1
+    sw%left=0; sw%right=-1; sw%inc=1; sw%ord=-1
+    sw%type='N'
     sw%cs=0.0_dp; sw%ss=0.0_dp
   end function d_new_sweeps
 
@@ -155,7 +162,8 @@ contains
     sw%n=n; sw%maxind=maxind; sw%minind=minind; sw%maxord=maxord
     allocate(sw%cs(maxord,minind:maxind), sw%ss(maxord,minind:maxind), &
          sw%js(maxord,minind:maxind), sw%numrots(minind:maxind))
-    sw%left=0; sw%right=-1; sw%inc=1
+    sw%left=0; sw%right=-1; sw%inc=1; sw%ord=-1
+    sw%type='N'
     sw%cs=(0.0_dp,0.0_dp); sw%ss=(0.0_dp,0.0_dp)
   end function c_new_sweeps
 
