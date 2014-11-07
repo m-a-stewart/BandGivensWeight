@@ -206,18 +206,22 @@ contains
     integer(kind=int32), intent(in) :: n, lbw, ubw, lbwmax_wbv, ubwmax_wbv, lbwmax_ubt, ubwmax_ubt
     integer(kind=int32), dimension(n), intent(in) :: numrotsw
     integer(kind=int32), dimension(lbwmax_wbv,n), intent(in) :: jsw
-    complex(kind=dp), dimension(lbwmax_wbv,n), intent(in) :: csw, ssw
+    real(kind=dp), dimension(lbwmax_wbv,n), intent(in) :: csw
+    complex(kind=dp), dimension(lbwmax_wbv,n), intent(in) :: ssw
     integer(kind=int32), dimension(n), intent(in) :: numrotsv
     integer(kind=int32), dimension(n,ubwmax_wbv), intent(in) :: ksv
-    complex(kind=dp), dimension(n,ubwmax_wbv), intent(in) :: csv, ssv
+    real(kind=dp), dimension(n,ubwmax_wbv), intent(in) :: csv
+    complex(kind=dp), dimension(n,ubwmax_wbv), intent(in) :: ssv
 
     complex(kind=dp), dimension(lbwmax_ubt+ubwmax_ubt+1,n), intent(out) :: b_ubt
     integer(kind=int32), dimension(n), intent(out) :: numrotsu
     integer(kind=int32), dimension(ubwmax_ubt,n), intent(out) :: jsu
-    complex(kind=dp), dimension(ubwmax_ubt,n), intent(out) :: csu, ssu
+    real(kind=dp), dimension(ubwmax_ubt,n), intent(out) :: csu
+    complex(kind=dp), dimension(ubwmax_ubt,n), intent(out) :: ssu
     integer(kind=int32), dimension(n), intent(out) :: numrotst
     integer(kind=int32), dimension(n,lbwmax_ubt), intent(out) :: kst
-    complex(kind=dp), dimension(n,lbwmax_ubt), intent(out) :: cst, sst
+    real(kind=dp), dimension(n,lbwmax_ubt), intent(out) :: cst
+    complex(kind=dp), dimension(n,lbwmax_ubt), intent(out) :: sst
     integer(kind=int32), intent(out) :: lbw_ubt, ubw_ubt
     type(error_info), intent(out) :: error
 
@@ -227,10 +231,10 @@ contains
 
     call clear_error(error)
     b_ubt(1:lbw+ubw+1,:)=(0.0_dp,0.0_dp); numrotsu=0
-    ssu(1:ubw,:)=(0.0_dp,0.0_dp); csu(1:ubw,:)=(0.0_dp,0.0_dp)
+    ssu(1:ubw,:)=(0.0_dp,0.0_dp); csu(1:ubw,:)=0.0_dp
     jsu(1:ubw,:)=0
     numrotst=0
-    sst(:,1:lbw)=(0.0_dp,0.0_dp); cst(:,1:lbw)=(0.0_dp,0.0_dp)
+    sst(:,1:lbw)=(0.0_dp,0.0_dp); cst(:,1:lbw)=0.0_dp
     kst(:,1:lbw)=0
     lbw_ubt=lbw; ubw_ubt=ubw
     if (n == 1) then

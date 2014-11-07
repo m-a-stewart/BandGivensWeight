@@ -69,7 +69,8 @@ module mod_sweeps1
   type c_sweeps1
      integer(kind=int32), private :: maxsweeps1, n
      integer(kind=int32) :: numsweeps1
-     complex(kind=dp), allocatable, dimension(:,:) :: cs, ss
+     real(kind=dp), allocatable, dimension(:,:) :: cs
+     complex(kind=dp), allocatable, dimension(:,:) :: ss
   end type c_sweeps1
 
   interface deallocate_sweeps1
@@ -229,7 +230,7 @@ contains
     sw%n=n; sw%maxsweeps1=maxsweeps1
     allocate(sw%cs(n-1,maxsweeps1), sw%ss(n-1,maxsweeps1))
     sw%numsweeps1=0
-    sw%cs=(1.0_dp,0.0_dp); sw%ss=(0.0_dp,0.0_dp)
+    sw%cs=1.0_dp; sw%ss=(0.0_dp,0.0_dp)
   end function c_new_sweeps1
 
   subroutine d_deallocate_sweeps1(sw)
@@ -675,18 +676,21 @@ contains
        b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, csu, ssu, &
        b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, ssv, error)
 
-    complex(kind=dp), dimension(n-1), intent(in) :: cs_sw, ss_sw
+    real(kind=dp), dimension(n-1), intent(in) :: cs_sw
+    complex(kind=dp), dimension(n-1), intent(in) :: ss_sw
     integer(kind=int32), intent(in) :: n
 
     complex(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(inout) :: b_ub
     integer(kind=int32), dimension(n), intent(inout) :: numrotsu
     integer(kind=int32), dimension(ubwmax_ub,n), intent(inout) :: jsu
-    complex(kind=dp), dimension(ubwmax_ub,n), intent(inout) :: csu, ssu
+    real(kind=dp), dimension(ubwmax_ub,n), intent(inout) :: csu
+    complex(kind=dp), dimension(ubwmax_ub,n), intent(inout) :: ssu
 
     complex(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(out) :: b_bv
     integer(kind=int32), dimension(n), intent(out) :: numrotsv
     integer(kind=int32), dimension(n,ubwmax_bv), intent(out) :: ksv
-    complex(kind=dp), dimension(n,ubwmax_bv), intent(out) :: csv, ssv
+    real(kind=dp), dimension(n,ubwmax_bv), intent(out) :: csv
+    complex(kind=dp), dimension(n,ubwmax_bv), intent(out) :: ssv
 
     integer(kind=int32), intent(in) :: lbwmax_ub, ubwmax_ub
     integer(kind=int32), intent(inout) :: lbw_ub, ubw_ub
@@ -714,7 +718,7 @@ contains
     b_bv(:,1:lbw_bv+ubw_bv+1)=(0.0_dp,0.0_dp)
     numrotsv=0
     ssv(:,1:ubw_bv)=(0.0_dp,0.0_dp)
-    csv(:,1:ubw_bv)=(0.0_dp,0.0_dp)
+    csv(:,1:ubw_bv)=0.0_dp
     ksv(:,1:ubw_bv)=0
 
     do k=1,n-1
@@ -747,18 +751,21 @@ contains
        b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, csu, ssu, &
        b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, ssv, error)
 
-    complex(kind=dp), dimension(n-1,maxsweeps1_sw), intent(in) :: cs_sw, ss_sw
+    real(kind=dp), dimension(n-1,maxsweeps1_sw), intent(in) :: cs_sw
+    complex(kind=dp), dimension(n-1,maxsweeps1_sw), intent(in) :: ss_sw
     integer(kind=int32), intent(in) :: numsweeps1_sw, maxsweeps1_sw, n
 
     complex(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(inout) :: b_ub
     integer(kind=int32), dimension(n), intent(inout) :: numrotsu
     integer(kind=int32), dimension(ubwmax_ub,n), intent(inout) :: jsu
-    complex(kind=dp), dimension(ubwmax_ub,n), intent(inout) :: csu, ssu
+    real(kind=dp), dimension(ubwmax_ub,n), intent(inout) :: csu
+    complex(kind=dp), dimension(ubwmax_ub,n), intent(inout) :: ssu
 
     complex(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(out) :: b_bv
     integer(kind=int32), dimension(n), intent(out) :: numrotsv
     integer(kind=int32), dimension(n,ubwmax_bv), intent(out) :: ksv
-    complex(kind=dp), dimension(n,ubwmax_bv), intent(out) :: csv, ssv
+    real(kind=dp), dimension(n,ubwmax_bv), intent(out) :: csv
+    complex(kind=dp), dimension(n,ubwmax_bv), intent(out) :: ssv
 
     integer(kind=int32), intent(in) :: lbwmax_ub, ubwmax_ub
     integer(kind=int32), intent(inout) :: lbw_ub, ubw_ub
@@ -981,18 +988,21 @@ contains
        cs_sw, ss_sw, numsweeps1_sw, maxsweeps1_sw, &
        b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, csu, ssu, error)
 
-    complex(kind=dp), dimension(n-1), intent(in) :: cs_sw, ss_sw
+    real(kind=dp), dimension(n-1), intent(in) :: cs_sw
+    complex(kind=dp), dimension(n-1), intent(in) :: ss_sw
     integer(kind=int32), intent(in) :: numsweeps1_sw, maxsweeps1_sw, n
 
     complex(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(inout) :: b_bv
     integer(kind=int32), dimension(n), intent(inout) :: numrotsv
     integer(kind=int32), dimension(n,ubwmax_bv), intent(inout) :: ksv
-    complex(kind=dp), dimension(n,ubwmax_bv), intent(inout) :: csv, ssv
+    real(kind=dp), dimension(n,ubwmax_bv), intent(inout) :: csv
+    complex(kind=dp), dimension(n,ubwmax_bv), intent(inout) :: ssv
 
     complex(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(out) :: b_ub
     integer(kind=int32), dimension(n), intent(out) :: numrotsu
     integer(kind=int32), dimension(ubwmax_ub,n), intent(out) :: jsu
-    complex(kind=dp), dimension(ubwmax_ub,n), intent(out) :: csu, ssu
+    real(kind=dp), dimension(ubwmax_ub,n), intent(out) :: csu
+    complex(kind=dp), dimension(ubwmax_ub,n), intent(out) :: ssu
 
     integer(kind=int32), intent(in) :: lbwmax_ub, ubwmax_ub
     integer(kind=int32), intent(inout) :: lbw_ub, ubw_ub
@@ -1017,7 +1027,7 @@ contains
 
     b_ub(1:lbw_ub+ubw_ub+1,:)=(0.0_dp,0.0_dp)
     numrotsu=0
-    ssu(1:ubw_ub,:)=(0.0_dp,0.0_dp); csu(1:ubw_ub,:)=(0.0_dp,0.0_dp)
+    ssu(1:ubw_ub,:)=(0.0_dp,0.0_dp); csu(1:ubw_ub,:)=0.0_dp
     jsu(1:ubw_ub,:)=0
     
     do k=1,n-1
@@ -1051,18 +1061,21 @@ contains
        cs_sw, ss_sw, numsweeps1_sw, maxsweeps1_sw, &
        b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, csu, ssu, error)
 
-    complex(kind=dp), dimension(n-1,maxsweeps1_sw), intent(in) :: cs_sw, ss_sw
+    real(kind=dp), dimension(n-1,maxsweeps1_sw), intent(in) :: cs_sw
+    complex(kind=dp), dimension(n-1,maxsweeps1_sw), intent(in) :: ss_sw
     integer(kind=int32), intent(in) :: numsweeps1_sw, maxsweeps1_sw, n
 
     complex(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(inout) :: b_bv
     integer(kind=int32), dimension(n), intent(inout) :: numrotsv
     integer(kind=int32), dimension(n,ubwmax_bv), intent(inout) :: ksv
-    complex(kind=dp), dimension(n,ubwmax_bv), intent(inout) :: csv, ssv
+    real(kind=dp), dimension(n,ubwmax_bv), intent(inout) :: csv
+    complex(kind=dp), dimension(n,ubwmax_bv), intent(inout) :: ssv
 
     complex(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(out) :: b_ub
     integer(kind=int32), dimension(n), intent(out) :: numrotsu
     integer(kind=int32), dimension(ubwmax_ub,n), intent(out) :: jsu
-    complex(kind=dp), dimension(ubwmax_ub,n), intent(out) :: csu, ssu
+    real(kind=dp), dimension(ubwmax_ub,n), intent(out) :: csu
+    complex(kind=dp), dimension(ubwmax_ub,n), intent(out) :: ssu
 
     integer(kind=int32), intent(in) :: lbwmax_ub, ubwmax_ub
     integer(kind=int32), intent(inout) :: lbw_ub, ubw_ub
@@ -1274,18 +1287,21 @@ contains
        b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, ssv, &
        b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, csu, ssu, error)
 
-    complex(kind=dp), dimension(n-1), intent(in) :: cs_sw, ss_sw
+    real(kind=dp), dimension(n-1), intent(in) :: cs_sw
+    complex(kind=dp), dimension(n-1), intent(in) :: ss_sw
     integer(kind=int32), intent(in) :: numsweeps1_sw, maxsweeps1_sw, n
 
     complex(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(inout) :: b_bv
     integer(kind=int32), dimension(n), intent(inout) :: numrotsv
     integer(kind=int32), dimension(n,ubwmax_bv), intent(inout) :: ksv
-    complex(kind=dp), dimension(n,ubwmax_bv), intent(inout) :: csv, ssv
+    real(kind=dp), dimension(n,ubwmax_bv), intent(inout) :: csv
+    complex(kind=dp), dimension(n,ubwmax_bv), intent(inout) :: ssv
 
     complex(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(out) :: b_ub
     integer(kind=int32), dimension(n), intent(out) :: numrotsu
     integer(kind=int32), dimension(ubwmax_ub,n), intent(out) :: jsu
-    complex(kind=dp), dimension(ubwmax_ub,n), intent(out) :: csu, ssu
+    real(kind=dp), dimension(ubwmax_ub,n), intent(out) :: csu
+    complex(kind=dp), dimension(ubwmax_ub,n), intent(out) :: ssu
 
     integer(kind=int32), intent(in) :: lbwmax_ub, ubwmax_ub
     integer(kind=int32), intent(inout) :: lbw_ub, ubw_ub
@@ -1311,7 +1327,7 @@ contains
 
     b_ub(1:lbw_ub+ubw_ub+1,:)=(0.0_dp,0.0_dp)
     numrotsu=0
-    ssu(1:ubw_ub,:)=(0.0_dp,0.0_dp); csu(1:ubw_ub,:)=(0.0_dp,0.0_dp)
+    ssu(1:ubw_ub,:)=(0.0_dp,0.0_dp); csu(1:ubw_ub,:)=0.0_dp
     jsu(1:ubw_ub,:)=0
 
     do k=1,n-1
@@ -1347,18 +1363,21 @@ contains
        b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, ssv, &
        b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, csu, ssu, error)
 
-    complex(kind=dp), dimension(n-1,maxsweeps1_sw), intent(in) :: cs_sw, ss_sw
+    real(kind=dp), dimension(n-1,maxsweeps1_sw), intent(in) :: cs_sw
+    complex(kind=dp), dimension(n-1,maxsweeps1_sw), intent(in) :: ss_sw
     integer(kind=int32), intent(in) :: numsweeps1_sw, maxsweeps1_sw, n
 
     complex(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(inout) :: b_bv
     integer(kind=int32), dimension(n), intent(inout) :: numrotsv
     integer(kind=int32), dimension(n,ubwmax_bv), intent(inout) :: ksv
-    complex(kind=dp), dimension(n,ubwmax_bv), intent(inout) :: csv, ssv
+    real(kind=dp), dimension(n,ubwmax_bv), intent(inout) :: csv
+    complex(kind=dp), dimension(n,ubwmax_bv), intent(inout) :: ssv
 
     complex(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(out) :: b_ub
     integer(kind=int32), dimension(n), intent(out) :: numrotsu
     integer(kind=int32), dimension(ubwmax_ub,n), intent(out) :: jsu
-    complex(kind=dp), dimension(ubwmax_ub,n), intent(out) :: csu, ssu
+    real(kind=dp), dimension(ubwmax_ub,n), intent(out) :: csu
+    complex(kind=dp), dimension(ubwmax_ub,n), intent(out) :: ssu
 
     integer(kind=int32), intent(in) :: lbwmax_ub, ubwmax_ub
     integer(kind=int32), intent(inout) :: lbw_ub, ubw_ub
@@ -1571,18 +1590,21 @@ contains
        cs_sw, ss_sw, numsweeps1_sw, maxsweeps1_sw, &
        b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, ssv, &
        error)
-    complex(kind=dp), dimension(n-1), intent(in) :: cs_sw, ss_sw
+    real(kind=dp), dimension(n-1), intent(in) :: cs_sw
+    complex(kind=dp), dimension(n-1), intent(in) :: ss_sw
     integer(kind=int32), intent(in) :: numsweeps1_sw, maxsweeps1_sw, n
 
     complex(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(inout) :: b_bv
     integer(kind=int32), dimension(n), intent(inout) :: numrotsv
     integer(kind=int32), dimension(n,ubwmax_bv), intent(inout) :: ksv
-    complex(kind=dp), dimension(n,ubwmax_bv), intent(inout) :: csv, ssv
+    real(kind=dp), dimension(n,ubwmax_bv), intent(inout) :: csv
+    complex(kind=dp), dimension(n,ubwmax_bv), intent(inout) :: ssv
 
     complex(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(out) :: b_ub
     integer(kind=int32), dimension(n), intent(out) :: numrotsu
     integer(kind=int32), dimension(ubwmax_ub,n), intent(out) :: jsu
-    complex(kind=dp), dimension(ubwmax_ub,n), intent(out) :: csu, ssu
+    real(kind=dp), dimension(ubwmax_ub,n), intent(out) :: csu
+    complex(kind=dp), dimension(ubwmax_ub,n), intent(out) :: ssu
 
     integer(kind=int32), intent(in) :: lbwmax_ub, ubwmax_ub
     integer(kind=int32), intent(inout) :: lbw_ub, ubw_ub
@@ -1611,7 +1633,7 @@ contains
     b_bv(:,1:lbw_bv+ubw_bv+1)=(0.0_dp,0.0_dp)
     numrotsv=0
     ssv(:,1:ubw_bv)=(0.0_dp,0.0_dp)
-    csv(:,1:ubw_bv)=(0.0_dp,0.0_dp)
+    csv(:,1:ubw_bv)=0.0_dp
     ksv(:,1:ubw_bv)=0
 
     do k=1,n-1
@@ -1645,18 +1667,21 @@ contains
        cs_sw, ss_sw, numsweeps1_sw, maxsweeps1_sw, &
        b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, ssv, &
        error)
-    complex(kind=dp), dimension(n-1,maxsweeps1_sw), intent(in) :: cs_sw, ss_sw
+    real(kind=dp), dimension(n-1,maxsweeps1_sw), intent(in) :: cs_sw
+    complex(kind=dp), dimension(n-1,maxsweeps1_sw), intent(in) :: ss_sw
     integer(kind=int32), intent(in) :: numsweeps1_sw, maxsweeps1_sw, n
 
     complex(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(inout) :: b_bv
     integer(kind=int32), dimension(n), intent(inout) :: numrotsv
     integer(kind=int32), dimension(n,ubwmax_bv), intent(inout) :: ksv
-    complex(kind=dp), dimension(n,ubwmax_bv), intent(inout) :: csv, ssv
+    real(kind=dp), dimension(n,ubwmax_bv), intent(inout) :: csv
+    complex(kind=dp), dimension(n,ubwmax_bv), intent(inout) :: ssv
 
     complex(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(out) :: b_ub
     integer(kind=int32), dimension(n), intent(out) :: numrotsu
     integer(kind=int32), dimension(ubwmax_ub,n), intent(out) :: jsu
-    complex(kind=dp), dimension(ubwmax_ub,n), intent(out) :: csu, ssu
+    real(kind=dp), dimension(ubwmax_ub,n), intent(out) :: csu
+    complex(kind=dp), dimension(ubwmax_ub,n), intent(out) :: ssu
 
     integer(kind=int32), intent(in) :: lbwmax_ub, ubwmax_ub
     integer(kind=int32), intent(inout) :: lbw_ub, ubw_ub
@@ -1713,7 +1738,7 @@ contains
     do j=1,n-1
        do k=1,l
           cr=real(sw%cs(j,k),kind=dp)
-          sw%cs(j,k)=cmplx(cr,0.0_dp)
+          sw%cs(j,k)=cr
           nrm=sqrt(abs(sw%cs(j,k))**2+abs(sw%ss(j,k))**2)
           sw%cs(j,k)=sw%cs(j,k)/nrm
           sw%ss(j,k)=sw%ss(j,k)/nrm

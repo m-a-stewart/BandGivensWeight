@@ -206,18 +206,22 @@ contains
     integer(kind=int32), intent(in) :: n, lbw, ubw, lbwmax_ubt, ubwmax_ubt, lbwmax_wbv, ubwmax_wbv
     integer(kind=int32), dimension(n), intent(in) :: numrotsu
     integer(kind=int32), dimension(ubwmax_ubt,n), intent(in) :: jsu
-    complex(kind=dp), dimension(ubwmax_ubt,n), intent(in) :: csu, ssu
+    real(kind=dp), dimension(ubwmax_ubt,n), intent(in) :: csu
+    complex(kind=dp), dimension(ubwmax_ubt,n), intent(in) :: ssu
     integer(kind=int32), dimension(n), intent(in) :: numrotst
     integer(kind=int32), dimension(n,lbwmax_ubt), intent(in) :: kst
-    complex(kind=dp), dimension(n,lbwmax_ubt), intent(in) :: cst, sst
+    real(kind=dp), dimension(n,lbwmax_ubt), intent(in) :: cst
+    complex(kind=dp), dimension(n,lbwmax_ubt), intent(in) :: sst
 
     complex(kind=dp), dimension(n,lbwmax_wbv+ubwmax_wbv+1), intent(out) :: b_wbv
     integer(kind=int32), dimension(n), intent(out) :: numrotsw
     integer(kind=int32), dimension(lbwmax_wbv,n), intent(out) :: jsw
-    complex(kind=dp), dimension(lbwmax_wbv,n), intent(out) :: csw, ssw
+    real(kind=dp), dimension(lbwmax_wbv,n), intent(out) :: csw
+    complex(kind=dp), dimension(lbwmax_wbv,n), intent(out) :: ssw
     integer(kind=int32), dimension(n), intent(out) :: numrotsv
     integer(kind=int32), dimension(n,ubwmax_wbv), intent(out) :: ksv
-    complex(kind=dp), dimension(n,ubwmax_wbv), intent(out) :: csv, ssv
+    real(kind=dp), dimension(n,ubwmax_wbv), intent(out) :: csv
+    complex(kind=dp), dimension(n,ubwmax_wbv), intent(out) :: ssv
     integer(kind=int32), intent(out) :: lbw_wbv, ubw_wbv
     type(error_info), intent(out) :: error
 
@@ -227,10 +231,10 @@ contains
 
     call clear_error(error)
     b_wbv(:,1:lbw+ubw+1)=(0.0_dp, 0.0_dp); numrotsv=0
-    ssv(:,1:ubw)=(0.0_dp, 0.0_dp); csv(:,1:ubw)=(0.0_dp, 0.0_dp)
+    ssv(:,1:ubw)=(0.0_dp, 0.0_dp); csv(:,1:ubw)=0.0_dp
     ksv(:,1:ubw)=0
     numrotsw=0
-    ssw(1:lbw,:)=(0.0_dp, 0.0_dp); csw(1:lbw,:)=(0.0_dp, 0.0_dp)
+    ssw(1:lbw,:)=(0.0_dp, 0.0_dp); csw(1:lbw,:)=0.0_dp
     jsw(1:lbw,:)=0
     lbw_wbv=lbw; ubw_wbv=ubw
     if (n == 1) then

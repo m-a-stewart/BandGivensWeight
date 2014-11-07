@@ -143,7 +143,8 @@ contains
   subroutine f_c_general_wb(a, n, lbws, lbwmax, numrotsw, jsw, csw, ssw, tol, error)
     complex(kind=dp), target, dimension(n,n), intent(inout) :: a
     integer(kind=int32), dimension(lbwmax,n), intent(out) :: jsw
-    complex(kind=dp), dimension(lbwmax,n), intent(out) :: csw, ssw
+    real(kind=dp), dimension(lbwmax,n), intent(out) :: csw
+    complex(kind=dp), dimension(lbwmax,n), intent(out) :: ssw
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), dimension(n), intent(out) :: numrotsw
     integer(kind=int32), dimension(n), intent(out) :: lbws
@@ -151,7 +152,8 @@ contains
     integer(kind=int32), intent(in) :: n, lbwmax
     !
     integer(kind=int32), dimension(n,lbwmax) :: ksv
-    complex(kind=dp), dimension(n,lbwmax) :: csv, ssv
+    real(kind=dp), dimension(n,lbwmax) :: csv
+    complex(kind=dp), dimension(n,lbwmax) :: ssv
 
     call ip_transpose(a)
     call f_c_general_bv(a,n,lbws,lbwmax,numrotsw,ksv,csv,ssv,tol,error)
@@ -170,7 +172,8 @@ contains
        numrotsw, jsw, csw, ssw, tol, error)
     complex(kind=dp), target, dimension(n,n), intent(inout) :: a
     integer(kind=int32), dimension(lbwmax,n), intent(out) :: jsw
-    complex(kind=dp), dimension(lbwmax,n), intent(out) :: csw, ssw
+    real(kind=dp), dimension(lbwmax,n), intent(out) :: csw
+    complex(kind=dp), dimension(lbwmax,n), intent(out) :: ssw
     complex(kind=dp), dimension(ubwmax+lbwmax+1,n), intent(out) :: b
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), dimension(n), intent(out) :: numrotsw
@@ -184,7 +187,7 @@ contains
 
     if (n == 1) then
        numrotsw=0;
-       ssw=(0.0_dp, 0.0_dp); csw=(0.0_dp, 0.0_dp); jsw=0
+       ssw=(0.0_dp, 0.0_dp); csw=0.0_dp; jsw=0
        lbw=0
        b(1,1)=a(1,1)
        return

@@ -153,9 +153,11 @@ contains
        numrotst, kst, cst, sst, tol, error)
     complex(kind=dp), target, dimension(n,n), intent(inout) :: a
     integer(kind=int32), dimension(n,lbwmax), intent(out) :: kst
-    complex(kind=dp), dimension(n,lbwmax), intent(out) :: cst, sst
+    real(kind=dp), dimension(n,lbwmax), intent(out) :: cst
+    complex(kind=dp), dimension(n,lbwmax), intent(out) :: sst
     integer(kind=int32), dimension(ubwmax,n), intent(out) :: jsu
-    complex(kind=dp), dimension(ubwmax,n), intent(out) :: csu, ssu
+    real(kind=dp), dimension(ubwmax,n), intent(out) :: csu
+    complex(kind=dp), dimension(ubwmax,n), intent(out) :: ssu
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), dimension(n), intent(out) :: numrotst, numrotsu
     integer(kind=int32), dimension(n), intent(out) :: lbws, ubws
@@ -163,7 +165,8 @@ contains
     integer(kind=int32), intent(in) :: n, lbwmax, ubwmax
     !
     integer(kind=int32), dimension(lbwmax,n) :: jsu0
-    complex(kind=dp), dimension(lbwmax,n) :: csu0, ssu0
+    real(kind=dp), dimension(lbwmax,n) :: csu0
+    complex(kind=dp), dimension(lbwmax,n) :: ssu0
 
     call f_c_general_ub(a,n,ubws,ubwmax,numrotsu,jsu,csu,ssu,tol,error)
     call ip_transpose(a)
@@ -185,9 +188,11 @@ contains
        numrotst, kst, cst, sst, tol, error)
     complex(kind=dp), target, dimension(n,n), intent(inout) :: a
     integer(kind=int32), dimension(n,lbwmax), intent(out) :: kst
-    complex(kind=dp), dimension(n,lbwmax), intent(out) :: cst, sst
+    real(kind=dp), dimension(n,lbwmax), intent(out) :: cst
+    complex(kind=dp), dimension(n,lbwmax), intent(out) :: sst
     integer(kind=int32), dimension(ubwmax,n), intent(out) :: jsu
-    complex(kind=dp), dimension(ubwmax,n), intent(out) :: csu, ssu
+    real(kind=dp), dimension(ubwmax,n), intent(out) :: csu
+    complex(kind=dp), dimension(ubwmax,n), intent(out) :: ssu
     complex(kind=dp), dimension(ubwmax+lbwmax+1,n), intent(out) :: bc
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), dimension(n), intent(out) :: numrotst, numrotsu
@@ -201,10 +206,10 @@ contains
 
     if (n == 1) then
        numrotst=0;
-       sst=0.0_dp; cst=0.0_dp; kst=0
+       sst=(0.0_dp,0.0_dp); cst=0.0_dp; kst=0
        lbw=0
        numrotsu=0;
-       ssu=0.0_dp; csu=0.0_dp; kst=0
+       ssu=(0.0_dp,0.0_dp); csu=0.0_dp; kst=0
        ubw=0
        bc(1,1)=a(1,1)
        return

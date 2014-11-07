@@ -73,7 +73,8 @@ module mod_nested_types
      complex(kind=dp), dimension(:,:), allocatable :: bc
      integer(kind=int32), dimension(:), allocatable :: numrotsu
      integer(kind=int32), dimension(:,:), allocatable :: jsu
-     complex(kind=dp), dimension(:,:), allocatable :: csu, ssu
+     complex(kind=dp), dimension(:,:), allocatable :: ssu
+     real(kind=dp), dimension(:,:), allocatable :: csu
   end type c_ub
 
   ! Stored by rows.
@@ -83,7 +84,8 @@ module mod_nested_types
      complex(kind=dp), dimension(:,:), allocatable :: br
      integer(kind=int32), dimension(:), allocatable :: numrotst
      integer(kind=int32), dimension(:,:), allocatable :: kst
-     complex(kind=dp), dimension(:,:), allocatable :: cst, sst
+     complex(kind=dp), dimension(:,:), allocatable :: sst
+     real(kind=dp), dimension(:,:), allocatable :: cst
   end type c_bt
 
   ! Stored by columns.
@@ -93,7 +95,8 @@ module mod_nested_types
      complex(kind=dp), dimension(:,:), allocatable :: bc
      integer(kind=int32), dimension(:), allocatable :: numrotsu, numrotst
      integer(kind=int32), dimension(:,:), allocatable :: jsu, kst
-     complex(kind=dp), dimension(:,:), allocatable :: csu, ssu, cst, sst
+     complex(kind=dp), dimension(:,:), allocatable :: ssu, sst
+     real(kind=dp), dimension(:,:), allocatable :: csu, cst
   end type c_ubt
 
   ! Stored by rows.
@@ -133,7 +136,8 @@ module mod_nested_types
      complex(kind=dp), dimension(:,:), allocatable :: br
      integer(kind=int32), dimension(:), allocatable :: numrotsv
      integer(kind=int32), dimension(:,:), allocatable :: ksv
-     complex(kind=dp), dimension(:,:), allocatable :: csv, ssv
+     complex(kind=dp), dimension(:,:), allocatable :: ssv
+     real(kind=dp), dimension(:,:), allocatable :: csv
   end type c_bv
 
   ! Stored by columns.
@@ -143,7 +147,8 @@ module mod_nested_types
      complex(kind=dp), dimension(:,:), allocatable :: bc
      integer(kind=int32), dimension(:), allocatable :: numrotsw
      integer(kind=int32), dimension(:,:), allocatable :: jsw
-     complex(kind=dp), dimension(:,:), allocatable :: csw,ssw
+     complex(kind=dp), dimension(:,:), allocatable :: ssw
+     real(kind=dp), dimension(:,:), allocatable :: csw
   end type c_wb
 
   ! Stored by rows.
@@ -153,7 +158,8 @@ module mod_nested_types
      complex(kind=dp), dimension(:,:), allocatable :: br
      integer(kind=int32), dimension(:), allocatable :: numrotsv, numrotsw
      integer(kind=int32), dimension(:,:), allocatable :: ksv, jsw
-     complex(kind=dp), dimension(:,:), allocatable :: csv, ssv, csw,ssw
+     complex(kind=dp), dimension(:,:), allocatable :: ssv, ssw
+     real(kind=dp), dimension(:,:), allocatable :: csv, csw
   end type c_wbv
 
   interface deallocate_ub
@@ -248,7 +254,7 @@ contains
     ub%ubw=0; ub%lbw=0
     allocate(ub%bc(lbwmax+ubwmax+1,n), ub%csu(ubwmax,n), ub%ssu(ubwmax,n), &
          ub%jsu(ubwmax,n), ub%numrotsu(n))
-    ub%bc=(0.0_dp,0.0_dp); ub%csu=(0.0_dp,0.0_dp); ub%ssu=(0.0_dp,0.0_dp)
+    ub%bc=(0.0_dp,0.0_dp); ub%csu=0.0_dp; ub%ssu=(0.0_dp,0.0_dp)
     ub%jsu=0; ub%numrotsu=0
   end function c_new_ub
 
@@ -286,7 +292,7 @@ contains
     allocate(bt%br(n,lbwmax+ubwmax+1), bt%cst(n,lbwmax), bt%sst(n,lbwmax), &
          bt%kst(n,lbwmax), bt%numrotst(n))
     bt%br=(0.0_dp,0.0_dp)
-    bt%cst=(0.0_dp,0.0_dp); bt%sst=(0.0_dp,0.0_dp)
+    bt%cst=0.0_dp; bt%sst=(0.0_dp,0.0_dp)
     bt%kst=0; bt%numrotst=0
   end function c_new_bt
 
@@ -330,9 +336,9 @@ contains
          ubt%jsu(ubwmax,n), ubt%numrotsu(n), ubt%cst(n,lbwmax), ubt%sst(n,lbwmax), &
          ubt%kst(n,lbwmax), ubt%numrotst(n))
     ubt%bc=(0.0_dp,0.0_dp)
-    ubt%csu=(0.0_dp,0.0_dp); ubt%ssu=(0.0_dp,0.0_dp)
+    ubt%csu=0.0_dp; ubt%ssu=(0.0_dp,0.0_dp)
     ubt%jsu=0; ubt%numrotsu=0
-    ubt%cst=(0.0_dp,0.0_dp); ubt%sst=(0.0_dp,0.0_dp)
+    ubt%cst=0.0_dp; ubt%sst=(0.0_dp,0.0_dp)
     ubt%kst=0; ubt%numrotst=0
   end function c_new_ubt
 
@@ -369,7 +375,7 @@ contains
     bv%ubw=0; bv%lbw=0
     allocate(bv%br(n,lbwmax+ubwmax+1), bv%csv(n,ubwmax), bv%ssv(n,ubwmax), &
          bv%ksv(n,ubwmax), bv%numrotsv(n))
-    bv%br=(0.0_dp, 0.0_dp); bv%csv=(0.0_dp, 0.0_dp); bv%ssv=(0.0_dp, 0.0_dp)
+    bv%br=(0.0_dp, 0.0_dp); bv%csv=0.0_dp; bv%ssv=(0.0_dp, 0.0_dp)
     bv%ksv=0; bv%numrotsv=0
   end function c_new_bv
 
@@ -405,7 +411,7 @@ contains
     wb%ubw=0; wb%lbw=0
     allocate(wb%bc(lbwmax+ubwmax+1,n), wb%csw(lbwmax,n), &
          wb%ssw(lbwmax,n), wb%jsw(lbwmax,n), wb%numrotsw(n))
-    wb%bc=(0.0_dp,0.0_dp); wb%csw=(0.0_dp,0.0_dp); wb%ssw=(0.0_dp,0.0_dp)
+    wb%bc=(0.0_dp,0.0_dp); wb%csw=0.0_dp; wb%ssw=(0.0_dp,0.0_dp)
     wb%jsw=0; wb%numrotsw=0
   end function c_new_wb
 
@@ -446,9 +452,9 @@ contains
     allocate(wbv%br(n,lbwmax+ubwmax+1), wbv%csv(n,ubwmax), wbv%ssv(n,ubwmax), &
          wbv%ksv(n,ubwmax), wbv%numrotsv(n), &
          wbv%csw(lbwmax,n), wbv%ssw(lbwmax,n), wbv%jsw(lbwmax,n), wbv%numrotsw(n))
-    wbv%br=(0.0_dp,0.0_dp); wbv%csv=(0.0_dp,0.0_dp); wbv%ssv=(0.0_dp,0.0_dp)
+    wbv%br=(0.0_dp,0.0_dp); wbv%csv=0.0_dp; wbv%ssv=(0.0_dp,0.0_dp)
     wbv%ksv=0; wbv%numrotsv=0
-    wbv%csw=(0.0_dp,0.0_dp); wbv%ssw=(0.0_dp,0.0_dp)
+    wbv%csw=0.0_dp; wbv%ssw=(0.0_dp,0.0_dp)
     wbv%jsw=0; wbv%numrotsw=0
   end function c_new_wbv
 

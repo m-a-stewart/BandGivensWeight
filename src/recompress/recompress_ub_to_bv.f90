@@ -369,13 +369,15 @@ contains
     integer(kind=int32), intent(in) :: n, lbw, ubw, lbwmax_ub, ubwmax_ub, lbwmax_bv, ubwmax_bv, dr
     integer(kind=int32), dimension(n), intent(in) :: numrotsu
     integer(kind=int32), dimension(ubwmax_ub,n), intent(in) :: jsu
-    complex(kind=dp), dimension(ubwmax_ub,n), intent(in) :: csu, ssu
+    real(kind=dp), dimension(ubwmax_ub,n), intent(in) :: csu
+    complex(kind=dp), dimension(ubwmax_ub,n), intent(in) :: ssu
     real(kind=dp), intent(in) :: tol, told
 
     complex(kind=dp), dimension(n,lbwmax_bv+ubwmax_bv+1), intent(out) :: b_bv
     integer(kind=int32), dimension(n), intent(out) :: numrotsv
     integer(kind=int32), dimension(n,ubwmax_bv), intent(out) :: ksv
-    complex(kind=dp), dimension(n,ubwmax_bv), intent(out) :: csv, ssv
+    real(kind=dp), dimension(n,ubwmax_bv), intent(out) :: csv
+    complex(kind=dp), dimension(n,ubwmax_bv), intent(out) :: ssv
     integer(kind=int32), intent(out) :: lbw_bv, ubw_bv
     type(error_info), intent(out) :: error
 
@@ -393,7 +395,7 @@ contains
     call clear_error(error)
     b_bv(:,1:lbw+ubw+1)=(0.0_dp, 0.0_dp)
     numrotsv=0
-    ssv(:,1:ubw)=(0.0_dp, 0.0_dp); csv(:,1:ubw)=(0.0_dp, 0.0_dp)
+    ssv(:,1:ubw)=(0.0_dp, 0.0_dp); csv(:,1:ubw)=0.0_dp
     ksv(:,1:ubw)=0
     ubw2=ubw+2
     nrma = maxabs(b_ub)*sqrt(real(n))

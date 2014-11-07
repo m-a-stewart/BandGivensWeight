@@ -475,7 +475,8 @@ contains
        numrotsv, ksv, csv, ssv, tol, error)
     complex(kind=dp), target, dimension(n,n), intent(inout) :: a
     integer(kind=int32), dimension(n,ubwmax), intent(out) :: ksv
-    complex(kind=dp), dimension(n,ubwmax), intent(out) :: csv, ssv
+    real(kind=dp), dimension(n,ubwmax), intent(out) :: csv
+    complex(kind=dp), dimension(n,ubwmax), intent(out) :: ssv
     complex(kind=dp), dimension(n,lbwmax+ubwmax+1), intent(out) :: b
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), dimension(n), intent(out) :: numrotsv
@@ -490,7 +491,7 @@ contains
 
     if (n == 1) then
        numrotsv=0
-       ssv=(0.0_dp,0.0_dp); csv=(0.0_dp,0.0_dp); ksv=0
+       ssv=(0.0_dp,0.0_dp); csv=0.0_dp; ksv=0
        ubw=0
        b(1,1)=a(1,1)
        return
@@ -510,7 +511,8 @@ contains
        numrotsv, ksv, csv, ssv, tol, error)
     complex(kind=dp), target, dimension(n,n), intent(inout) :: a
     integer(kind=int32), dimension(n,ubwmax), intent(out) :: ksv
-    complex(kind=dp), dimension(n,ubwmax), intent(out) :: csv, ssv
+    real(kind=dp), dimension(n,ubwmax), intent(out) :: csv
+    complex(kind=dp), dimension(n,ubwmax), intent(out) :: ssv
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), dimension(n), intent(out) :: ubws
     integer(kind=int32), dimension(n), intent(out) :: numrotsv
@@ -525,7 +527,7 @@ contains
     type(c_rotation) :: rot
     !
     q=(0.0_dp, 0.0_dp); numrotsv=0;
-    ssv=(0.0_dp, 0.0_dp); csv=(0.0_dp,0.0_dp); ksv=0
+    ssv=(0.0_dp, 0.0_dp); csv=0.0_dp; ksv=0
     ubws=0
     call clear_error(error)
     nrma = maxabs(a)*sqrt(real(n))

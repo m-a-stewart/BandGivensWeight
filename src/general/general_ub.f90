@@ -470,12 +470,12 @@ contains
     ub%lbw=lbw
   end subroutine c_upper_to_ub
 
-
   subroutine f_c_upper_to_ub(a, n, b, lbw, ubw, lbwmax, ubwmax, &
        numrotsu, jsu, csu, ssu, tol, error)
     complex(kind=dp), target, dimension(n,n), intent(inout) :: a
     integer(kind=int32), dimension(ubwmax,n), intent(out) :: jsu
-    complex(kind=dp), dimension(ubwmax,n), intent(out) :: csu, ssu
+    real(kind=dp), dimension(ubwmax,n), intent(out) :: csu
+    complex(kind=dp), dimension(ubwmax,n), intent(out) :: ssu
     complex(kind=dp), dimension(lbwmax+ubwmax+1,n), intent(out) :: b
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), dimension(n), intent(out) :: numrotsu
@@ -489,7 +489,7 @@ contains
     !
     if (n == 1) then
        numrotsu=0;
-       ssu=(0.0_dp, 0.0_dp); csu=(0.0_dp, 0.0_dp); jsu=0
+       ssu=(0.0_dp, 0.0_dp); csu=0.0_dp; jsu=0
        ubw=0
        b(1,1)=a(1,1)
        return
@@ -508,7 +508,8 @@ contains
   subroutine f_c_general_ub(a, n, ubws, ubwmax, numrotsu, jsu, csu, ssu, tol, error)
     complex(kind=dp), target, dimension(n,n), intent(inout) :: a
     integer(kind=int32), dimension(ubwmax,n), intent(out) :: jsu
-    complex(kind=dp), dimension(ubwmax,n), intent(out) :: csu, ssu
+    real(kind=dp), dimension(ubwmax,n), intent(out) :: csu
+    complex(kind=dp), dimension(ubwmax,n), intent(out) :: ssu
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), dimension(n), intent(out) :: numrotsu
     integer(kind=int32), dimension(n), intent(out) :: ubws
@@ -524,7 +525,7 @@ contains
 
     call clear_error(error)
     q=(0.0_dp, 0.0_dp); numrotsu=0;
-    ssu=(0.0_dp, 0.0_dp); csu=(0.0_dp, 0.0_dp); jsu=0
+    ssu=(0.0_dp, 0.0_dp); csu=0.0_dp; jsu=0
     ubws=0
     nrma = maxabs(a)*sqrt(real(n))
 

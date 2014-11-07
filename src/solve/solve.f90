@@ -300,7 +300,8 @@ contains
     complex(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(in) :: b_ub
     integer(kind=int32), dimension(n), intent(in) :: numrotsu
     integer(kind=int32), dimension(ubwmax_ub,n), intent(in) :: jsu
-    complex(kind=dp), dimension(ubwmax_ub,n), intent(in) :: csu, ssu
+    real(kind=dp), dimension(ubwmax_ub,n), intent(in) :: csu
+    complex(kind=dp), dimension(ubwmax_ub,n), intent(in) :: ssu
     integer(kind=int32), intent(in) :: n, lbwmax_ub, ubwmax_ub, lbw_ub, ubw_ub, nc
     complex(kind=dp), dimension(n,nc), intent(inout) :: c
     complex(kind=dp), dimension(n,nc), intent(out) :: x
@@ -342,7 +343,8 @@ contains
     complex(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(in) :: b_ub
     integer(kind=int32), dimension(n), intent(in) :: numrotsu
     integer(kind=int32), dimension(ubwmax_ub,n), intent(in) :: jsu
-    complex(kind=dp), dimension(ubwmax_ub,n), intent(in) :: csu, ssu
+    real(kind=dp), dimension(ubwmax_ub,n), intent(in) :: csu
+    complex(kind=dp), dimension(ubwmax_ub,n), intent(in) :: ssu
     integer(kind=int32), intent(in) :: n, lbwmax_ub, ubwmax_ub, lbw_ub, ubw_ub
     complex(kind=dp), dimension(n), intent(inout) :: c
     complex(kind=dp), dimension(n), intent(out) :: x
@@ -555,7 +557,8 @@ contains
     complex(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(in) :: b_bv
     integer(kind=int32), dimension(n), intent(in) :: numrotsv
     integer(kind=int32), dimension(n,ubwmax_bv), intent(in) :: ksv
-    complex(kind=dp), dimension(n,ubwmax_bv), intent(in) :: csv, ssv
+    real(kind=dp), dimension(n,ubwmax_bv), intent(in) :: csv
+    complex(kind=dp), dimension(n,ubwmax_bv), intent(in) :: ssv
     integer(kind=int32), intent(in) :: n, lbwmax_bv, ubwmax_bv, lbw_bv, ubw_bv, mc
     complex(kind=dp), dimension(mc,n), intent(inout) :: c
     complex(kind=dp), dimension(mc,n), intent(out) :: x
@@ -622,7 +625,8 @@ contains
     complex(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(in) :: b_bv
     integer(kind=int32), dimension(n), intent(in) :: numrotsv
     integer(kind=int32), dimension(n,ubwmax_bv), intent(in) :: ksv
-    complex(kind=dp), dimension(n,ubwmax_bv), intent(in) :: csv, ssv
+    real(kind=dp), dimension(n,ubwmax_bv), intent(in) :: csv
+    complex(kind=dp), dimension(n,ubwmax_bv), intent(in) :: ssv
     integer(kind=int32), intent(in) :: n, lbwmax_bv, ubwmax_bv, lbw_bv, ubw_bv
     complex(kind=dp), dimension(n), intent(inout) :: c
     complex(kind=dp), dimension(n), intent(out) :: x

@@ -159,7 +159,8 @@ contains
   subroutine f_c_ub_to_upper(bc, n, lbw, ubw, lbwmax, ubwmax, numrotsu, jsu, csu, ssu, a)
     complex(kind=dp), target, dimension(n,n), intent(out) :: a
     integer(kind=int32), dimension(ubwmax,n), intent(in) :: jsu
-    complex(kind=dp), dimension(ubwmax,n), intent(in) :: csu, ssu
+    real(kind=dp), dimension(ubwmax,n), intent(in) :: csu
+    complex(kind=dp), dimension(ubwmax,n), intent(in) :: ssu
     complex(kind=dp), dimension(lbwmax+ubwmax+1,n), intent(in) :: bc
     integer(kind=int32), dimension(n), intent(in) :: numrotsu
     integer(kind=int32), intent(in) :: ubw, lbw, n, lbwmax, ubwmax
@@ -234,7 +235,8 @@ contains
   subroutine f_c_bt_to_lower(br, n, lbw, ubw, lbwmax, ubwmax, numrotst, kst, cst, sst, a)
     complex(kind=dp), target, dimension(n,n), intent(out) :: a
     integer(kind=int32), dimension(n,lbwmax), intent(in) :: kst
-    complex(kind=dp), dimension(n,lbwmax), intent(in) :: cst, sst
+    real(kind=dp), dimension(n,lbwmax), intent(in) :: cst
+    complex(kind=dp), dimension(n,lbwmax), intent(in) :: sst
     complex(kind=dp), dimension(n,lbwmax+ubwmax+1), intent(in) :: br
     integer(kind=int32), dimension(n), intent(in) :: numrotst
     integer(kind=int32), intent(in) :: ubw, lbw, n, lbwmax, ubwmax
@@ -321,9 +323,11 @@ contains
        numrotst, kst, cst, sst, a)
     complex(kind=dp), target, dimension(n,n), intent(out) :: a
     integer(kind=int32), dimension(ubwmax,n), intent(in) :: jsu
-    complex(kind=dp), dimension(ubwmax,n), intent(in) :: csu, ssu
+    real(kind=dp), dimension(ubwmax,n), intent(in) :: csu
+    complex(kind=dp), dimension(ubwmax,n), intent(in) :: ssu
     integer(kind=int32), dimension(n,lbwmax), intent(in) :: kst
-    complex(kind=dp), dimension(n,lbwmax), intent(in) :: cst, sst
+    real(kind=dp), dimension(n,lbwmax), intent(in) :: cst
+    complex(kind=dp), dimension(n,lbwmax), intent(in) :: sst
     complex(kind=dp), dimension(lbwmax+ubwmax+1,n), intent(in) :: bc
     integer(kind=int32), dimension(n), intent(in) :: numrotsu, numrotst
     integer(kind=int32), intent(in) :: ubw, lbw, n, lbwmax, ubwmax
@@ -398,7 +402,8 @@ contains
   subroutine f_c_bv_to_upper(br, n, lbw, ubw, lbwmax, ubwmax, numrotsv, ksv, csv, ssv, a)
     complex(kind=dp), target, dimension(n,n), intent(out) :: a
     integer(kind=int32), dimension(n,ubwmax), intent(in) :: ksv
-    complex(kind=dp), dimension(n, ubwmax), intent(in) :: csv, ssv
+    real(kind=dp), dimension(n, ubwmax), intent(in) :: csv
+    complex(kind=dp), dimension(n, ubwmax), intent(in) :: ssv
     complex(kind=dp), dimension(n,lbwmax+ubwmax+1), intent(in) :: br
     integer(kind=int32), dimension(n), intent(in) :: numrotsv
     integer(kind=int32), intent(in) :: ubw, lbw, n, lbwmax, ubwmax
@@ -467,7 +472,8 @@ contains
   subroutine f_c_wb_to_lower(bc, n, lbw, ubw, lbwmax, ubwmax, numrotsw, jsw, csw, ssw, a)
     complex(kind=dp), target, dimension(n,n), intent(out) :: a
     integer(kind=int32), dimension(lbwmax,n), intent(in) :: jsw
-    complex(kind=dp), dimension(lbwmax,n), intent(in) :: csw, ssw
+    real(kind=dp), dimension(lbwmax,n), intent(in) :: csw
+    complex(kind=dp), dimension(lbwmax,n), intent(in) :: ssw
     complex(kind=dp), dimension(lbwmax+ubwmax+1,n), intent(in) :: bc
     integer(kind=int32), dimension(n), intent(in) :: numrotsw
     integer(kind=int32), intent(in) :: ubw, lbw, n, lbwmax, ubwmax
@@ -550,9 +556,11 @@ contains
        numrotsv, ksv, csv, ssv, a)
     complex(kind=dp), target, dimension(n,n), intent(out) :: a
     integer(kind=int32), dimension(lbwmax,n), intent(in) :: jsw
-    complex(kind=dp), dimension(lbwmax,n), intent(in) :: csw, ssw
+    real(kind=dp), dimension(lbwmax,n), intent(in) :: csw
+    complex(kind=dp), dimension(lbwmax,n), intent(in) :: ssw
     integer(kind=int32), dimension(n,ubwmax), intent(in) :: ksv
-    complex(kind=dp), dimension(n,ubwmax), intent(in) :: csv, ssv
+    real(kind=dp), dimension(n,ubwmax), intent(in) :: csv
+    complex(kind=dp), dimension(n,ubwmax), intent(in) :: ssv
     complex(kind=dp), dimension(n,ubwmax+lbwmax+1), intent(in) :: br
     integer(kind=int32), dimension(n), intent(in) :: numrotsw, numrotsv
     integer(kind=int32), intent(in) :: ubw, lbw, n, lbwmax, ubwmax

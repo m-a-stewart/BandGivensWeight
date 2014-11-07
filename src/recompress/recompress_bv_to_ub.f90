@@ -373,12 +373,14 @@ contains
     complex(kind=dp), dimension(n,lbwmax_bv+ubwmax_bv+1), intent(inout) :: b_bv
     integer(kind=int32), dimension(n), intent(in) :: numrotsv
     integer(kind=int32), dimension(n,ubwmax_bv), intent(in) :: ksv
-    complex(kind=dp), dimension(n,ubwmax_bv), intent(in) :: csv, ssv
+    real(kind=dp), dimension(n,ubwmax_bv), intent(in) :: csv
+    complex(kind=dp), dimension(n,ubwmax_bv), intent(in) :: ssv
 
     complex(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(out) :: b_ub
     integer(kind=int32), dimension(n), intent(out) :: numrotsu
     integer(kind=int32), dimension(ubwmax_ub,n), intent(out) :: jsu
-    complex(kind=dp), dimension(ubwmax_ub,n), intent(out) :: csu, ssu
+    real(kind=dp), dimension(ubwmax_ub,n), intent(out) :: csu
+    complex(kind=dp), dimension(ubwmax_ub,n), intent(out) :: ssu
 
     real(kind=dp), intent(in) :: tol, told
     integer(kind=int32), intent(out) :: lbw_ub, ubw_ub
@@ -396,7 +398,7 @@ contains
     call clear_error(error)
     b_ub(1:lbw+ubw+1,:)=(0.0_dp,0.0_dp)
     numrotsu=0
-    ssu(1:ubw,:)=(0.0_dp,0.0_dp); csu(1:ubw,:)=(0.0_dp,0.0_dp)
+    ssu(1:ubw,:)=(0.0_dp,0.0_dp); csu(1:ubw,:)=0.0_dp
     jsu(1:ubw,:)=0
     ubw2=ubw+2
     nrma = maxabs(b_bv)*sqrt(real(n))

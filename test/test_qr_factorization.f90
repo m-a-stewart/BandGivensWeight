@@ -17,9 +17,7 @@ program test_qr_factorization
   complex(kind=dp), dimension(nmax) :: d_c, d0_c
 
   real(kind=dp), dimension(:,:), allocatable :: a_d, a0_d, a1_d, q_d
-  real(kind=dp), dimension(:), allocatable :: cs_d, ss_d
   complex(kind=dp), dimension(:,:), allocatable :: a_c, a0_c, a1_c, q_c
-  complex(kind=dp), dimension(:), allocatable :: cs_c, ss_c
 
   type(d_ub) :: ub_d
   type(c_ub) :: ub_c

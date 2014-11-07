@@ -476,7 +476,8 @@ contains
     type(c_rotation), intent(in) :: r
     integer(kind=int32), intent(in) :: j,n, ubw,lbw, l, p
     !
-    complex(kind=dp) :: c, s, tmp
+    complex(kind=dp) :: s, tmp
+    real(kind=dp) :: c
     integer(kind=int32) :: k, k0, k1, d
     c=r%cosine; s=r%sine
     ! first and last columns operated on, given by the
@@ -521,7 +522,8 @@ contains
     type(c_rotation), intent(in) :: r
     integer(kind=int32), intent(in) :: k,n, ubw,lbw, l, p
     !
-    complex(kind=dp) :: c, s, tmp
+    complex(kind=dp) :: s, tmp
+    real(kind=dp) :: c
     integer(kind=int32) :: d, j0, j1, j
     c=r%cosine; s=r%sine
     ! first and last rows operated on are given by the intersection
@@ -567,7 +569,8 @@ contains
     type(c_rotation), intent(in) :: r
     integer(kind=int32), intent(in) :: k,m, ubw,lbw, l, p
     !
-    complex(kind=dp) :: c, s, tmp
+    complex(kind=dp) :: s, tmp
+    real(kind=dp) :: c
     integer(kind=int32) :: j, j0, j1, d
     c=r%cosine; s=r%sine
     ! first and last rows operated on are given by
@@ -611,7 +614,8 @@ contains
     type(c_rotation), intent(in) :: r
     integer(kind=int32), intent(in) :: j,m, ubw,lbw, l,p
     !
-    complex(kind=dp) :: c, s, tmp
+    complex(kind=dp) :: s, tmp
+    real(kind=dp) :: c
     integer(kind=int32) :: d, k0,k1,k
     c=r%cosine; s=r%sine
     ! first and last columns operated on, given by the

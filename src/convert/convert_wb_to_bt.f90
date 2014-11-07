@@ -158,13 +158,15 @@ contains
     integer(kind=int32), intent(in) :: n, lbw, ubw, lbwmax_bt, ubwmax_bt, lbwmax_wb, ubwmax_wb
     integer(kind=int32), dimension(n), intent(in) :: numrotsw
     integer(kind=int32), dimension(lbwmax_wb,n), intent(in) :: jsw
-    complex(kind=dp), dimension(lbwmax_wb,n), intent(in) :: csw, ssw
+    real(kind=dp), dimension(lbwmax_wb,n), intent(in) :: csw
+    complex(kind=dp), dimension(lbwmax_wb,n), intent(in) :: ssw
 
     complex(kind=dp), dimension(n,lbwmax_bt+ubwmax_bt+1), intent(out) :: b_bt
     integer(kind=int32), dimension(n), intent(out) :: numrotst
     integer(kind=int32), dimension(n,lbwmax_bt), intent(out) :: kst
     integer(kind=int32), intent(out) :: lbw_bt, ubw_bt
-    complex(kind=dp), dimension(n,lbwmax_bt), intent(out) :: cst, sst
+    real(kind=dp), dimension(n,lbwmax_bt), intent(out) :: cst
+    complex(kind=dp), dimension(n,lbwmax_bt), intent(out) :: sst
     type(error_info), intent(out) :: error
 
     integer(kind=int32) :: j, k, ubw1, lbw1, k0, k1
@@ -172,7 +174,7 @@ contains
 
     call clear_error(error)
     b_bt(:,1:lbw+ubw+1)=(0.0_dp,0.0_dp); numrotst=0
-    sst(:,1:lbw)=(0.0_dp,0.0_dp); cst(:,1:lbw)=(0.0_dp,0.0_dp)
+    sst(:,1:lbw)=(0.0_dp,0.0_dp); cst(:,1:lbw)=0.0_dp
     kst(:,1:lbw)=0
     lbw_bt=lbw; ubw_bt=ubw
     if (n == 1) then

@@ -141,7 +141,8 @@ contains
   subroutine f_c_general_bt(a, n, lbws, lbwmax, numrotst, kst, cst, sst, tol, error)
     complex(kind=dp), target, dimension(n,n), intent(inout) :: a
     integer(kind=int32), dimension(n,lbwmax), intent(out) :: kst
-    complex(kind=dp), dimension(n,lbwmax), intent(out) :: cst, sst
+    real(kind=dp), dimension(n,lbwmax), intent(out) :: cst
+    complex(kind=dp), dimension(n,lbwmax), intent(out) :: sst
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), dimension(n), intent(out) :: numrotst
     integer(kind=int32), dimension(n), intent(out) :: lbws
@@ -149,7 +150,8 @@ contains
     integer(kind=int32), intent(in) :: n, lbwmax
     !
     integer(kind=int32), dimension(lbwmax,n) :: jsu
-    complex(kind=dp), dimension(lbwmax,n) :: csu, ssu
+    real(kind=dp), dimension(lbwmax,n) :: csu
+    complex(kind=dp), dimension(lbwmax,n) :: ssu
 
     call ip_transpose(a)
     call f_c_general_ub(a,n,lbws,lbwmax,numrotst,jsu,csu,ssu,tol,error)
@@ -168,7 +170,8 @@ contains
        numrotst, kst, cst, sst, tol, error)
     complex(kind=dp), target, dimension(n,n), intent(inout) :: a
     integer(kind=int32), dimension(n,lbwmax), intent(out) :: kst
-    complex(kind=dp), dimension(n,lbwmax), intent(out) :: cst, sst
+    real(kind=dp), dimension(n,lbwmax), intent(out) :: cst
+    complex(kind=dp), dimension(n,lbwmax), intent(out) :: sst
     complex(kind=dp), dimension(n,ubwmax+lbwmax+1), intent(out) :: b
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), dimension(n), intent(out) :: numrotst
@@ -182,7 +185,7 @@ contains
 
     if (n == 1) then
        numrotst=0;
-       sst=0.0_dp; cst=0.0_dp; kst=0
+       sst=(0.0_dp,0.0_dp); cst=0.0_dp; kst=0
        lbw=0
        b(1,1)=a(1,1)
        return

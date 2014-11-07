@@ -49,7 +49,8 @@ contains
     type(error_info), intent(out) :: error
 
     complex(kind=dp), dimension(:), allocatable :: shifts_c
-    complex(kind=dp), dimension(:,:), allocatable :: cs_sw, ss_sw, b_bv_tmp
+    real(kind=dp), dimension(:,:), allocatable :: cs_sw
+    complex(kind=dp), dimension(:,:), allocatable :: ss_sw, b_bv_tmp
     integer(kind=int32), dimension(:), allocatable :: shifts_i
     integer(kind=int32) :: n
     type(c_ub) :: ub
@@ -88,14 +89,17 @@ contains
     complex(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(inout) :: b_bv
     integer(kind=int32), dimension(n), intent(inout) :: numrotsv
     integer(kind=int32), dimension(n,ubwmax_bv), intent(inout) :: ksv
-    complex(kind=dp), dimension(n,ubwmax_bv), intent(inout) :: csv, ssv
+    real(kind=dp), dimension(n,ubwmax_bv), intent(inout) :: csv
+    complex(kind=dp), dimension(n,ubwmax_bv), intent(inout) :: ssv
 
     complex(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(out) :: b_ub
     integer(kind=int32), dimension(n), intent(out) :: numrotsu
     integer(kind=int32), dimension(ubwmax_ub,n), intent(out) :: jsu
-    complex(kind=dp), dimension(ubwmax_ub,n), intent(out) :: csu, ssu
+    real(kind=dp), dimension(ubwmax_ub,n), intent(out) :: csu
+    complex(kind=dp), dimension(ubwmax_ub,n), intent(out) :: ssu
 
-    complex(kind=dp), dimension(n,4) :: cs_sw, ss_sw
+    real(kind=dp), dimension(n,4) :: cs_sw
+    complex(kind=dp), dimension(n,4) :: ss_sw
     complex(kind=dp), dimension(n) :: shifts_c
     integer(kind=int32), dimension(n) :: shifts_i
 
@@ -205,14 +209,17 @@ contains
     complex(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(out) :: b_bv
     integer(kind=int32), dimension(n), intent(out) :: numrotsv
     integer(kind=int32), dimension(n,ubwmax_bv), intent(out) :: ksv
-    complex(kind=dp), dimension(n,ubwmax_bv), intent(out) :: csv, ssv
+    real(kind=dp), dimension(n,ubwmax_bv), intent(out) :: csv
+    complex(kind=dp), dimension(n,ubwmax_bv), intent(out) :: ssv
 
     complex(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(inout) :: b_ub
     integer(kind=int32), dimension(n), intent(inout) :: numrotsu
     integer(kind=int32), dimension(ubwmax_ub, n), intent(inout) :: jsu
-    complex(kind=dp), dimension(ubwmax_ub, n), intent(inout) :: csu, ssu
+    real(kind=dp), dimension(ubwmax_ub, n), intent(inout) :: csu
+    complex(kind=dp), dimension(ubwmax_ub, n), intent(inout) :: ssu
 
-    complex(kind=dp), dimension(n,4) :: cs_sw, ss_sw
+    real(kind=dp), dimension(n,4) :: cs_sw
+    complex(kind=dp), dimension(n,4) :: ss_sw
     complex(kind=dp), dimension(n), intent(inout) :: u, v, u_tmp, v_tmp
     integer(kind=int32), dimension(n), intent(out) :: zeros_i
 
@@ -374,15 +381,18 @@ contains
     complex(kind=dp), dimension(n,lbwmax_bv+ubwmax_bv+1), intent(inout) :: b_bv
     integer(kind=int32), dimension(n), intent(in) :: numrotsv
     integer(kind=int32), dimension(n,ubwmax_bv), intent(in) :: ksv
-    complex(kind=dp), dimension(n,ubwmax_bv), intent(in) :: csv, ssv
+    real(kind=dp), dimension(n,ubwmax_bv), intent(in) :: csv
+    complex(kind=dp), dimension(n,ubwmax_bv), intent(in) :: ssv
     integer(kind=int32), intent(inout) :: lbw_bv, ubw_bv
 
     complex(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(out) :: b_ub
     integer(kind=int32), intent(out) :: lbw_ub, ubw_ub
     integer(kind=int32), dimension(n), intent(out) :: numrotsu
     integer(kind=int32), dimension(ubwmax_ub,n), intent(out) :: jsu
-    complex(kind=dp), dimension(ubwmax_ub,n), intent(out) :: csu, ssu
-    complex(kind=dp), dimension(n), intent(out) :: cs_q, ss_q
+    real(kind=dp), dimension(ubwmax_ub,n), intent(out) :: csu
+    complex(kind=dp), dimension(ubwmax_ub,n), intent(out) :: ssu
+    real(kind=dp), dimension(n), intent(out) :: cs_q
+    complex(kind=dp), dimension(n), intent(out) :: ss_q
 
     integer(kind=int32), dimension(n) :: shifts_i
     complex(kind=dp), dimension(n) :: shifts_c
@@ -407,11 +417,11 @@ contains
 
     numrotsu=0
     ssu(1:ubw_ub,:)=(0.0_dp, 0.0_dp)
-    csu(1:ubw_ub,:)=(0.0_dp, 0.0_dp)
+    csu(1:ubw_ub,:)=0.0_dp
     jsu(1:ubw_ub,:)=0
     b_ub(1:lbw_ub+ubw_ub+1,:)=(0.0_dp, 0.0_dp)
 
-    cs_q=(1.0_dp,0.0_dp)
+    cs_q=1.0_dp
     ss_q=(0.0_dp,0.0_dp)
 
     do k=1,n-1
@@ -474,7 +484,8 @@ contains
     complex(kind=dp), dimension(n,lbwmax_bv+ubwmax_bv+1), intent(inout) :: b_bv
     integer(kind=int32), dimension(n), intent(in) :: numrotsv
     integer(kind=int32), dimension(n,ubwmax_bv), intent(in) :: ksv
-    complex(kind=dp), dimension(n,ubwmax_bv), intent(in) :: csv, ssv
+    real(kind=dp), dimension(n,ubwmax_bv), intent(in) :: csv
+    complex(kind=dp), dimension(n,ubwmax_bv), intent(in) :: ssv
 
     integer(kind=int32) :: j, k
     type(c_rotation) :: rot

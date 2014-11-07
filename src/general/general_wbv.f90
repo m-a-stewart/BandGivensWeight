@@ -84,9 +84,11 @@ contains
        numrotsv, ksv, csv, ssv, tol, error)
     complex(kind=dp), target, dimension(n,n), intent(inout) :: a
     integer(kind=int32), dimension(lbwmax,n), intent(out) :: jsw
-    complex(kind=dp), dimension(lbwmax,n), intent(out) :: csw, ssw
+    real(kind=dp), dimension(lbwmax,n), intent(out) :: csw
+    complex(kind=dp), dimension(lbwmax,n), intent(out) :: ssw
     integer(kind=int32), dimension(n,ubwmax), intent(out) :: ksv
-    complex(kind=dp), dimension(n,ubwmax), intent(out) :: csv, ssv
+    real(kind=dp), dimension(n,ubwmax), intent(out) :: csv
+    complex(kind=dp), dimension(n,ubwmax), intent(out) :: ssv
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), dimension(n), intent(out) :: numrotsw, numrotsv
     integer(kind=int32), dimension(n), intent(out) :: lbws, ubws
@@ -94,7 +96,8 @@ contains
     integer(kind=int32), intent(in) :: n, lbwmax, ubwmax
     !
     integer(kind=int32), dimension(n,lbwmax) :: ksv0
-    complex(kind=dp), dimension(n,lbwmax) :: csv0, ssv0
+    real(kind=dp), dimension(n,lbwmax) :: csv0
+    complex(kind=dp), dimension(n,lbwmax) :: ssv0
 
     call f_c_general_bv(a,n,ubws,ubwmax,numrotsv,ksv,csv,ssv,tol,error)
     call ip_transpose(a)
@@ -167,9 +170,11 @@ contains
     complex(kind=dp), target, dimension(n,n), intent(inout) :: a
     complex(kind=dp), dimension(n,ubwmax+lbwmax+1), intent(out) :: br
     integer(kind=int32), dimension(lbwmax,n), intent(out) :: jsw
-    complex(kind=dp), dimension(lbwmax,n), intent(out) :: csw, ssw
+    real(kind=dp), dimension(lbwmax,n), intent(out) :: csw
+    complex(kind=dp), dimension(lbwmax,n), intent(out) :: ssw
     integer(kind=int32), dimension(n,ubwmax), intent(out) :: ksv
-    complex(kind=dp), dimension(n,ubwmax), intent(out) :: csv, ssv
+    real(kind=dp), dimension(n,ubwmax), intent(out) :: csv
+    complex(kind=dp), dimension(n,ubwmax), intent(out) :: ssv
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), dimension(n), intent(out) :: numrotsw, numrotsv
     integer(kind=int32), intent(out) :: lbw, ubw
@@ -182,10 +187,10 @@ contains
 
     if (n == 1) then
        numrotsw=0;
-       ssw=0.0_dp; csw=0.0_dp; jsw=0
+       ssw=(0.0_dp,0.0_dp); csw=0.0_dp; jsw=0
        lbw=0
        numrotsv=0;
-       ssv=0.0_dp; csv=0.0_dp; ksv=0
+       ssv=(0.0_dp,0.0_dp); csv=0.0_dp; ksv=0
        ubw=0
        br(1,1)=a(1,1)
        return

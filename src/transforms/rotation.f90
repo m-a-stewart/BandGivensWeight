@@ -23,7 +23,7 @@ module mod_rotation
   end type d_rotation
 
   type c_rotation
-     complex(kind=dp) :: cosine
+     real(kind=dp) :: cosine
      complex(kind=dp) :: sine
   end type c_rotation
 
@@ -82,10 +82,10 @@ contains
     xabs=abs(x)
     z=max(xabs, abs(y))
     if (z == 0.0_dp) then
-       r%cosine=(1.0_dp,0.0_dp)
+       r%cosine=1.0_dp
        r%sine=(0.0_dp, 0.0_dp)
     else if (xabs == 0.0_dp) then
-       r%cosine=(0.0_dp,0.0_dp)
+       r%cosine=0.0_dp
        r%sine=(1.0_dp,0.0_dp)
     else
        w=z*sqrt(abs(x/z)**2+abs(y/z)**2)
@@ -116,10 +116,10 @@ contains
     yabs=abs(y)
     z=max(yabs, abs(x))
     if (z == 0.0_dp) then
-       r%cosine=(1.0_dp,0.0_dp)
+       r%cosine=1.0_dp
        r%sine=(0.0_dp,0.0_dp)
     else if (yabs == 0.0_dp) then
-       r%cosine=(0.0_dp,0.0_dp)
+       r%cosine=0.0_dp
        r%sine=(1.0_dp,0.0_dp)
     else
        w=z*sqrt(abs(x/z)**2+abs(y/z)**2)
@@ -151,10 +151,10 @@ contains
     xabs=abs(x)
     z=max(xabs, abs(y))
     if (z == 0.0_dp) then
-       r%cosine=(1.0_dp,0.0_dp)
+       r%cosine=1.0_dp
        r%sine=(0.0_dp,0.0_dp)
     else if (xabs == 0.0_dp) then
-       r%cosine=(0.0_dp,0.0_dp)
+       r%cosine=0.0_dp
        r%sine=(1.0_dp,0.0_dp)
     else
        w=z*sqrt(abs(x/z)**2+abs(y/z)**2)
@@ -185,10 +185,10 @@ contains
     yabs=abs(y)
     z=max(yabs, abs(x))
     if (z == 0.0_dp) then
-       r%cosine=(1.0_dp,0.0_dp)
+       r%cosine=1.0_dp
        r%sine=(0.0_dp,0.0_dp)
     else if (yabs == 0.0_dp) then
-       r%cosine=(0.0_dp,0.0_dp)
+       r%cosine=0.0_dp
        r%sine=(1.0_dp,0.0_dp)
     else
        w=z*sqrt(abs(x/z)**2+abs(y/z)**2)
@@ -235,7 +235,8 @@ contains
     integer(kind=int32), intent(in) :: j1, j2
     !
     integer(kind=int32) :: n, k
-    complex(kind=dp) :: c, s, tmp
+    complex(kind=dp) :: s, tmp
+    real(kind=dp) :: c
     c=r%cosine
     s=r%sine
     n=size(a,2)
@@ -251,7 +252,8 @@ contains
     type(c_rotation), intent(in) :: r
     integer(kind=int32), intent(in) :: j1, j2
     !
-    complex(kind=dp) :: c, s, tmp
+    complex(kind=dp) :: s, tmp
+    real(kind=dp) :: c
     c=r%cosine
     s=r%sine
     tmp=a(j1)
@@ -298,7 +300,8 @@ contains
     integer(kind=int32), intent(in) :: k1, k2
     !
     integer(kind=int32) :: m, j
-    complex(kind=dp) :: c, s, tmp
+    complex(kind=dp) :: s, tmp
+    real(kind=dp) :: c
     c=r%cosine
     s=r%sine
     m=size(a,1)
@@ -314,7 +317,8 @@ contains
     type(c_rotation), intent(in) :: r
     integer(kind=int32), intent(in) :: k1, k2
     !
-    complex(kind=dp) :: c, s, tmp
+    complex(kind=dp) :: s, tmp
+    real(kind=dp) :: c
     c=r%cosine
     s=r%sine
     tmp=a(k1)

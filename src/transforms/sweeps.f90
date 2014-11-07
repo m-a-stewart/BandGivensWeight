@@ -45,12 +45,11 @@ module mod_sweeps
 
   ! The fields ord and type are used to specifically describe
   ! structure of leading and trailing sweeps.  type takes on values
-  ! 'L', 'T', or 'N'.
+  ! -1=nothing, 0=leading, 1=trailing
 
   type d_sweeps
      integer(kind=int32), private :: minind, maxind, n, maxord
-     integer(kind=int32) :: left, right, inc, ord
-     character :: type
+     integer(kind=int32) :: left, right, inc, ord, type
      real(kind=dp), allocatable, dimension(:,:) :: cs, ss
      integer(kind=int32), allocatable, dimension(:) :: numrots
      integer(kind=int32), allocatable, dimension(:,:) :: js
@@ -58,9 +57,9 @@ module mod_sweeps
 
   type c_sweeps
      integer(kind=int32), private :: minind, maxind, n, maxord
-     integer(kind=int32) :: left, right, inc, ord
-     character :: type
-     complex(kind=dp), allocatable, dimension(:,:) :: cs, ss
+     integer(kind=int32) :: left, right, inc, ord, type
+     real(kind=dp), allocatable, dimension(:,:) :: cs
+     complex(kind=dp), allocatable, dimension(:,:) :: ss
      integer(kind=int32), allocatable, dimension(:) :: numrots
      integer(kind=int32), allocatable, dimension(:,:) :: js
   end type c_sweeps
@@ -153,7 +152,7 @@ contains
     allocate(sw%cs(maxord,minind:maxind), sw%ss(maxord,minind:maxind), &
          sw%js(maxord,minind:maxind), sw%numrots(minind:maxind))
     sw%left=0; sw%right=-1; sw%inc=1; sw%ord=-1
-    sw%type='N'
+    sw%type=-1
     sw%cs=0.0_dp; sw%ss=0.0_dp
   end function d_new_sweeps
 
@@ -163,8 +162,8 @@ contains
     allocate(sw%cs(maxord,minind:maxind), sw%ss(maxord,minind:maxind), &
          sw%js(maxord,minind:maxind), sw%numrots(minind:maxind))
     sw%left=0; sw%right=-1; sw%inc=1; sw%ord=-1
-    sw%type='N'
-    sw%cs=(0.0_dp,0.0_dp); sw%ss=(0.0_dp,0.0_dp)
+    sw%type=-1
+    sw%cs=0.0_dp; sw%ss=(0.0_dp,0.0_dp)
   end function c_new_sweeps
 
   subroutine d_deallocate_sweeps(sw)
@@ -227,7 +226,9 @@ contains
     type(c_sweeps) :: sw
     complex(kind=dp), dimension(:), intent(inout) :: a
     integer(kind=int32) :: j, l, jj
-    complex(kind=dp) :: tmp, c, s 
+    real(kind=dp) :: c
+    complex(kind=dp) :: tmp, s 
+
     do l=sw%right,sw%left,-sw%inc
        do j=1,sw%numrots(l)
           jj=sw%js(j,l)
@@ -287,7 +288,8 @@ contains
     type(c_sweeps) :: sw
     complex(kind=dp), dimension(:), intent(inout) :: a
     integer(kind=int32) :: j, l, jj
-    complex(kind=dp) :: tmp, c, s 
+    real(kind=dp) :: c
+    complex(kind=dp) :: tmp, s
     do l=sw%left,sw%right,sw%inc
        do j=sw%numrots(l),1,-1
           jj=sw%js(j,l)
@@ -347,7 +349,8 @@ contains
     type(c_sweeps) :: sw
     complex(kind=dp), dimension(:), intent(inout) :: a
     integer(kind=int32) :: j, l, kk
-    complex(kind=dp) :: c,s,tmp
+    complex(kind=dp) :: c
+    complex(kind=dp) :: s,tmp
     do l=sw%left,sw%right,sw%inc
        do j=sw%numrots(l),1,-1
           kk=sw%js(j,l)
@@ -407,7 +410,8 @@ contains
     type(c_sweeps) :: sw
     complex(kind=dp), dimension(:), intent(inout) :: a
     integer(kind=int32) :: j, l, kk
-    complex(kind=dp) :: c,s,tmp
+    real(kind=dp) :: c
+    complex(kind=dp) :: s,tmp
     do l=sw%right,sw%left,-sw%inc
        do j=1,sw%numrots(l)
           c=sw%cs(j,l); s=sw%ss(j,l)

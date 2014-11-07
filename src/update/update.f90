@@ -325,16 +325,19 @@ contains
     complex(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(inout) :: b_ub
     integer(kind=int32), dimension(n), intent(out) :: numrotsu
     integer(kind=int32), dimension(ubwmax_ub,n), intent(inout) :: jsu
-    complex(kind=dp), dimension(ubwmax_ub,n), intent(inout) :: csu, ssu
+    real(kind=dp), dimension(ubwmax_ub,n), intent(inout) :: csu
+    complex(kind=dp), dimension(ubwmax_ub,n), intent(inout) :: ssu
 
-    complex(kind=dp), dimension(n,maxsweeps1_sw), intent(out) :: cs_sw, ss_sw
+    real(kind=dp), dimension(n,maxsweeps1_sw), intent(out) :: cs_sw
+    complex(kind=dp), dimension(n,maxsweeps1_sw), intent(out) :: ss_sw
     integer(kind=int32), intent(inout) :: numsweeps1_sw
     integer(kind=int32), intent(in) :: maxsweeps1_sw, n
 
     complex(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(out) :: b_bv
     integer(kind=int32), dimension(n), intent(out) :: numrotsv
     integer(kind=int32), dimension(n,ubwmax_bv), intent(out) :: ksv
-    complex(kind=dp), dimension(n,ubwmax_bv), intent(out) :: csv, ssv
+    real(kind=dp), dimension(n,ubwmax_bv), intent(out) :: csv
+    complex(kind=dp), dimension(n,ubwmax_bv), intent(out) :: ssv
 
     integer(kind=int32), intent(in) :: lbwmax_ub, ubwmax_ub
     integer(kind=int32), intent(inout) :: lbw_ub, ubw_ub
@@ -354,7 +357,7 @@ contains
     end if
 
     b_bv(:,1:lbw_ub+ubw_ub+4)=(0.0_dp,0.0_dp); numrotsv=0
-    ssv(:,1:ubw_ub+3)=(0.0_dp,0.0_dp); csv(:,1:ubw_ub+3)=(0.0_dp,0.0_dp)
+    ssv(:,1:ubw_ub+3)=(0.0_dp,0.0_dp); csv(:,1:ubw_ub+3)=0.0_dp
     ksv(:,1:ubw_ub+3)=0
 
     ! zero elements in u
@@ -422,14 +425,16 @@ contains
     complex(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(inout) :: b_ub
     integer(kind=int32), dimension(n), intent(out) :: numrotsu
     integer(kind=int32), dimension(ubwmax_ub,n), intent(inout) :: jsu
-    complex(kind=dp), dimension(ubwmax_ub,n), intent(inout) :: csu, ssu
+    real(kind=dp), dimension(ubwmax_ub,n), intent(inout) :: csu
+    complex(kind=dp), dimension(ubwmax_ub,n), intent(inout) :: ssu
 
     integer(kind=int32), intent(in) :: n
 
     complex(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(out) :: b_bv
     integer(kind=int32), dimension(n), intent(out) :: numrotsv
     integer(kind=int32), dimension(n,ubwmax_bv), intent(out) :: ksv
-    complex(kind=dp), dimension(n,ubwmax_bv), intent(out) :: csv, ssv
+    real(kind=dp), dimension(n,ubwmax_bv), intent(out) :: csv
+    complex(kind=dp), dimension(n,ubwmax_bv), intent(out) :: ssv
 
     integer(kind=int32), intent(in) :: lbwmax_ub, ubwmax_ub
     integer(kind=int32), intent(inout) :: lbw_ub, ubw_ub
@@ -454,9 +459,9 @@ contains
     call f_bw_expand_bc(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, &
          dlbw, dlbw_tmp, dubw, dubw_tmp, lbw_bv, ubw_bv)
 
-    b_bv(:,1:lbw_bv+ubw_bv+1)=0.0_dp
+    b_bv(:,1:lbw_bv+ubw_bv+1)=(0.0_dp, 0.0_dp)
     numrotsv=0
-    ssv(:,1:ubw_bv)=0.0_dp; csv(:,1:ubw_bv)=0.0_dp
+    ssv(:,1:ubw_bv)=(0.0_dp,0.0_dp); csv(:,1:ubw_bv)=0.0_dp
     ksv(:,1:ubw_bv)=0
 
     ! Now compute a bv decomposition in which transformations are applied to v^T.

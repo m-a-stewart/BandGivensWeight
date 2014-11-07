@@ -238,16 +238,19 @@ contains
     complex(kind=dp), dimension(n,lbwmax_bv+ubwmax_bv+1), intent(inout) :: b_bv
     integer(kind=int32), dimension(n), intent(inout) :: numrotsv
     integer(kind=int32), dimension(n,ubwmax_bv), intent(inout) :: ksv
-    complex(kind=dp), dimension(n,ubwmax_bv), intent(inout) :: csv, ssv
+    real(kind=dp), dimension(n,ubwmax_bv), intent(inout) :: csv
+    complex(kind=dp), dimension(n,ubwmax_bv), intent(inout) :: ssv
 
     complex(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(out) :: b_ub
     integer(kind=int32), dimension(n), intent(out) :: numrotsu
     integer(kind=int32), dimension(ubwmax_ub,n), intent(out) :: jsu
-    complex(kind=dp), dimension(ubwmax_ub,n), intent(out) :: csu, ssu
+    real(kind=dp), dimension(ubwmax_ub,n), intent(out) :: csu
+    complex(kind=dp), dimension(ubwmax_ub,n), intent(out) :: ssu
     integer(kind=int32), intent(out) :: lbw_ub, ubw_ub
 
     integer(kind=int32), intent(in) :: minind, maxind, maxord
-    complex(kind=dp), dimension(maxord, minind:maxind), intent(out) :: csq, ssq
+    real(kind=dp), dimension(maxord, minind:maxind), intent(out) :: csq
+    complex(kind=dp), dimension(maxord, minind:maxind), intent(out) :: ssq
     integer(kind=int32), dimension(minind:maxind), intent(out) :: numrotsq
     integer(kind=int32), dimension(maxord,minind:maxind), intent(out) :: jsq
     integer(kind=int32), intent(out) :: leftq, rightq, incq
@@ -283,10 +286,10 @@ contains
     end if
 
     numrotsu=0
-    csu=(0.0_dp, 0.0_dp); ssu=(0.0_dp, 0.0_dp); jsu=0
+    csu=0.0_dp; ssu=(0.0_dp, 0.0_dp); jsu=0
     numrotsq=0
     leftq=lbw_bv+1; rightq=n+lbw_bv-1; incq=1
-    csq=(0.0_dp, 0.0_dp); ssq=(0.0_dp, 0.0_dp); jsq=0
+    csq=0.0_dp; ssq=(0.0_dp, 0.0_dp); jsq=0
     
     ! Apply V_1, ..., V_{lbw_bv-1}
     do k=1,lbw_bv-1
