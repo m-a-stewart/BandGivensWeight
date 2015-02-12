@@ -1,4 +1,4 @@
-module mod_nested_types
+module mod_orth_band_types
   use mod_prec
   implicit none
 
@@ -947,4 +947,4 @@ contains
     n=wbv%ubwmax
   end function c_wbv_get_ubwmax
 
-end module mod_nested_types
+end module mod_orth_band_types

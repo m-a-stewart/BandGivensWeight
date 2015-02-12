@@ -5,7 +5,7 @@ module mod_general_ub
   use mod_orth
   use mod_shift
   use mod_rotation
-  use mod_nested_types
+  use mod_orth_band_types
   use mod_band_types
   implicit none
   integer(kind=int32), parameter :: nullmaxits=5

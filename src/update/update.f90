@@ -1,7 +1,7 @@
 module mod_update
   use mod_prec
   use mod_error_id
-  use mod_nested_types
+  use mod_orth_band_types
   use mod_band_types
   use mod_shift
   use mod_rotation

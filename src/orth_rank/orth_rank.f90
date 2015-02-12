@@ -1,4 +1,4 @@
-module mod_nested
+module mod_orth_rank
   use mod_misc
   use mod_general
   use mod_assemble
@@ -11,4 +11,4 @@ module mod_nested
   use mod_types
   use mod_transforms
   use mod_update
-end module mod_nested
+end module mod_orth_rank

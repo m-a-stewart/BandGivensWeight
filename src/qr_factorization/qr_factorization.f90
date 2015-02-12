@@ -5,7 +5,7 @@ module mod_qr_factorization
   use mod_sweeps
   use mod_rotation
   use mod_band_types
-  use mod_nested_types
+  use mod_orth_band_types
   implicit none
 
   private

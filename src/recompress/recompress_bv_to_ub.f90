@@ -4,7 +4,7 @@ module mod_recompress_bv_to_ub
   use mod_utility
   use mod_shift
   use mod_rotation
-  use mod_nested_types
+  use mod_orth_band_types
   use mod_band_types
   use mod_nullvec
   implicit none

@@ -1,5 +1,5 @@
 program test_row_compress
-  use mod_nested
+  use mod_orth_rank
   use mod_test_data
   implicit none
 

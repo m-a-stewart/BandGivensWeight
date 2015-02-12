@@ -10,7 +10,7 @@ CFLAGS = -fbounds-check -mcmodel=medium -Waliasing -Wampersand -Wconversion -Wsu
 
 MISCOBJS = $(OBJDIR)/misc.o $(OBJDIR)/prec.o $(OBJDIR)/utility.o $(OBJDIR)/error_id.o
 
-TYPESOBJS = $(OBJDIR)/types.o $(OBJDIR)/band_types.o $(OBJDIR)/nested_types.o
+TYPESOBJS = $(OBJDIR)/types.o $(OBJDIR)/band_types.o $(OBJDIR)/orth_band_types.o
 
 TRANSFORMSOBJS = $(OBJDIR)/transforms.o $(OBJDIR)/rotation.o $(OBJDIR)/shift.o \
 	$(OBJDIR)/sweeps1.o $(OBJDIR)/sweeps.o
@@ -33,7 +33,7 @@ RECOMPRESSOBJS = $(OBJDIR)/recompress.o $(OBJDIR)/recompress_ub_to_bv.o \
 OBJS =  $(MISCOBJS) $(TYPESOBJS) $(TRANSFORMSOBJS) $(ORTHOBJS) $(GENERALOBJS) \
 	$(CONVERTOBJS) $(OBJDIR)/assemble.o $(RECOMPRESSOBJS) \
 	$(OBJDIR)/qr_iteration.o $(OBJDIR)/qr_factorization.o $(OBJDIR)/solve.o \
-	$(OBJDIR)/nested.o $(OBJDIR)/update.o $(OBJDIR)/row_compress.o
+	$(OBJDIR)/orth_rank.o $(OBJDIR)/update.o $(OBJDIR)/row_compress.o
 
 TEST_EXECS =  $(OBJDIR)/test_general $(OBJDIR)/test_general_bt $(OBJDIR)/test_general_wb \
 	$(OBJDIR)/test_general_ubt $(OBJDIR)/test_general_wbv \

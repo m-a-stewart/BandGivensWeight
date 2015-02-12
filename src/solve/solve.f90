@@ -2,7 +2,7 @@ module mod_solve
   use mod_prec
   use mod_error_id
   use mod_rotation
-  use mod_nested_types
+  use mod_orth_band_types
   use mod_band_types
   implicit none
 

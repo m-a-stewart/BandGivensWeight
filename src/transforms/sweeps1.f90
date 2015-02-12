@@ -1,7 +1,7 @@
 module mod_sweeps1
   use mod_prec
   use mod_utility
-  use mod_nested_types
+  use mod_orth_band_types
   use mod_band_types
   use mod_rotation
   use mod_error_id

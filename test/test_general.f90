@@ -1,5 +1,5 @@
 program test_general
-  use mod_nested
+  use mod_orth_rank
   use mod_test_data
   implicit none
   real(kind=dp) :: t0, t1
