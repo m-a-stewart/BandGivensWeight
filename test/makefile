@@ -12,16 +12,13 @@ run_all : all
 	$(BINDIR)/test_row_compress
 	$(BINDIR)/test_recompress
 	$(BINDIR)/test_qr_factorization
-	$(BINDIR)/test_qr_iteration
 	$(BINDIR)/test_solve
-	$(BINDIR)/test_update
 
 all : ORTH_RANK $(BINDIR)/test_recompress $(BINDIR)/test_general $(BINDIR)/test_general_bt \
 		$(BINDIR)/test_general_wb $(BINDIR)/test_general_ubt $(BINDIR)/test_general_wbv \
 		$(BINDIR)/test_convert_ub_and_bv $(BINDIR)/test_convert_wb_and_bt  \
 		$(BINDIR)/test_convert_ubt_and_wbv $(BINDIR)/test_row_compress \
-		$(BINDIR)/test_qr_iteration $(BINDIR)/test_qr_factorization $(BINDIR)/test_solve \
-		$(BINDIR)/test_update
+		$(BINDIR)/test_qr_factorization $(BINDIR)/test_solve
 
 ORTH_RANK :
 	cd ../src; make

@@ -29,15 +29,14 @@ CONVERTOBJS = $(OBJDIR)/convert.o $(OBJDIR)/convert_ub_to_bv.o \
 RECOMPRESSOBJS = $(OBJDIR)/recompress.o $(OBJDIR)/recompress_ub_to_bv.o \
 	$(OBJDIR)/recompress_bv_to_ub.o
 
-
 OBJS =  $(MISCOBJS) $(TYPESOBJS) $(TRANSFORMSOBJS) $(ORTHOBJS) $(GENERALOBJS) \
 	$(CONVERTOBJS) $(OBJDIR)/assemble.o $(RECOMPRESSOBJS) \
-	$(OBJDIR)/qr_iteration.o $(OBJDIR)/qr_factorization.o $(OBJDIR)/solve.o \
-	$(OBJDIR)/orth_rank.o $(OBJDIR)/update.o $(OBJDIR)/row_compress.o
+	$(OBJDIR)/qr_factorization.o $(OBJDIR)/solve.o \
+	$(OBJDIR)/orth_rank.o $(OBJDIR)/row_compress.o
 
 TEST_EXECS =  $(OBJDIR)/test_general $(OBJDIR)/test_general_bt $(OBJDIR)/test_general_wb \
 	$(OBJDIR)/test_general_ubt $(OBJDIR)/test_general_wbv \
 	$(OBJDIR)/test_convert_ub_and_bv $(OBJDIR)/test_convert_wb_and_bt \
 	$(OBJDIR)/test_convert_ubt_and_wbv $(OBJDIR)/test_row_compress $(OBJDIR)/test_recompress \
-	$(OBJDIR)/test_qr_iteration $(OBJDIR)/test_qr_factorization $(OBJDIR)/test_solve \
-	$(OBJDIR)/test_sweeps1 $(OBJDIR)/test_update
+	$(OBJDIR)/test_qr_factorization $(OBJDIR)/test_solve \
+	$(OBJDIR)/test_sweeps1

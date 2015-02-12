@@ -154,12 +154,6 @@ module mod_error_id
   integer(int32), parameter :: id_d_lower_right_nullvec=182
   integer(int32), parameter :: id_c_lower_right_nullvec=183
 
-  ! src/qr_iteration/qr_iteration 190s
-  integer(int32), parameter :: id_ss_r1_qr=190
-  integer(int32), parameter :: id_f_ss_r1_qr=191
-  integer(int32), parameter :: id_ss_qr_iteration=192
-  integer(int32), parameter :: id_f_ss_qr_iteration=193
-
   ! src/qr_factorization/qr_factorization 200s
   integer(int32), parameter :: id_d_qr_bv_to_ub=200
   integer(int32), parameter :: id_f_d_qr_bv_to_ub=201
@@ -202,16 +196,6 @@ module mod_error_id
   integer(int32), parameter :: id_f_d_ub_times_trp_sweeps1=243
   integer(int32), parameter :: id_c_ub_times_trp_sweeps1=244
   integer(int32), parameter :: id_f_c_ub_times_trp_sweeps1=245
-
-  ! src/update 250s
-  integer(int32), parameter :: id_d_r1_update_ub_to_bv=250
-  integer(int32), parameter :: id_f_d_r1_update_ub_to_bv=251
-  integer(int32), parameter :: id_c_r1_update_ub_to_bv=252
-  integer(int32), parameter :: id_f_c_r1_update_ub_to_bv=253
-  integer(int32), parameter :: id_d_e1v_update_ub_to_bv=254
-  integer(int32), parameter :: id_f_d_e1v_update_ub_to_bv=255
-  integer(int32), parameter :: id_c_e1v_update_ub_to_bv=256
-  integer(int32), parameter :: id_f_c_e1v_update_ub_to_bv=257
 
   ! src/row_compression 260s
   integer(int32), parameter :: id_d_row_compress=260

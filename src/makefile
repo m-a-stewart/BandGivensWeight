@@ -1,10 +1,10 @@
 include ../include/vars.mk
 all : $(OBJS)
 
-$(OBJDIR)/orth_rank.o : $(OBJDIR)/general.o $(OBJDIR)/assemble.o $(OBJDIR)/qr_iteration.o \
-	$(OBJDIR)/qr_factorization.o $(OBJDIR)/solve.o $(OBJDIR)/update.o \
+$(OBJDIR)/orth_rank.o : $(OBJDIR)/general.o $(OBJDIR)/assemble.o \
+	$(OBJDIR)/qr_factorization.o $(OBJDIR)/solve.o \
 	$(OBJDIR)/row_compress.o $(OBJDIR)/recompress.o $(OBJDIR)/transforms.o \
-	$(OBJDIR)/update.o $(OBJDIR)/convert.o $(OBJDIR)/types.o $(OBJDIR)/misc.o
+	$(OBJDIR)/convert.o $(OBJDIR)/types.o $(OBJDIR)/misc.o
 
 
 $(OBJDIR)/misc.o : $(OBJDIR)/error_id.o $(OBJDIR)/utility.o
@@ -84,24 +84,10 @@ $(OBJDIR)/recompress_ub_to_bv.o : $(OBJDIR)/prec.o $(OBJDIR)/error_id.o $(OBJDIR
 
 $(OBJDIR)/row_compress.o : $(OBJDIR)/misc.o $(OBJDIR)/sweeps.o 
 
-
-$(OBJDIR)/qr_iteration.o : $(OBJDIR)/prec.o $(OBJDIR)/error_id.o $(OBJDIR)/rotation.o \
-	$(OBJDIR)/orth_band_types.o $(OBJDIR)/band_types.o $(OBJDIR)/recompress_ub_to_bv.o \
-	$(OBJDIR)/convert_ub_to_bv.o $(OBJDIR)/convert_bv_to_ub.o \
-	$(OBJDIR)/qr_factorization.o $(OBJDIR)/update.o $(OBJDIR)/solve.o \
-	$(OBJDIR)/sweeps1.o
-
-
 $(OBJDIR)/qr_factorization.o : $(OBJDIR)/prec.o $(OBJDIR)/error_id.o \
 	$(OBJDIR)/convert_bv_to_ub.o $(OBJDIR)/convert_ub_to_bv.o \
 	$(OBJDIR)/sweeps.o $(OBJDIR)/rotation.o \
 	$(OBJDIR)/band_types.o $(OBJDIR)/orth_band_types.o
-
-
-$(OBJDIR)/update.o : $(OBJDIR)/prec.o $(OBJDIR)/error_id.o $(OBJDIR)/orth_band_types.o \
-	$(OBJDIR)/band_types.o $(OBJDIR)/shift.o $(OBJDIR)/rotation.o $(OBJDIR)/sweeps1.o \
-	$(OBJDIR)/convert_bv_to_ub.o $(OBJDIR)/convert_ub_to_bv.o
-
 
 $(OBJDIR)/solve.o : $(OBJDIR)/prec.o $(OBJDIR)/error_id.o $(OBJDIR)/orth_band_types.o \
 	$(OBJDIR)/band_types.o $(OBJDIR)/rotation.o
@@ -130,18 +116,11 @@ $(OBJDIR)/%.o : convert/%.f90
 $(OBJDIR)/%.o : recompress/%.f90
 	$(FC) $(CFLAGS) $(PROFCFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@
 
-$(OBJDIR)/%.o : qr_iteration/%.f90
-	$(FC) $(CFLAGS) $(PROFCFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@
-
 $(OBJDIR)/%.o : qr_factorization/%.f90
 	$(FC) $(CFLAGS) $(PROFCFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@
 
 $(OBJDIR)/%.o : solve/%.f90
 	$(FC) $(CFLAGS) $(PROFCFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@
-
-$(OBJDIR)/%.o : update/%.f90
-	$(FC) $(CFLAGS) $(PROFCFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@
-
 
 $(OBJDIR)/%.o : assemble/%.f90
 	$(FC) $(CFLAGS) $(PROFCFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@
