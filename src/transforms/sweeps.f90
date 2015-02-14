@@ -2,6 +2,7 @@ module mod_sweeps
   use mod_prec
   use mod_band_types
   use mod_rotation
+  use mod_utility
   implicit none
 
   private
@@ -9,6 +10,8 @@ module mod_sweeps
   public :: d_sweeps, c_sweeps
 
   public :: d_new_sweeps, c_new_sweeps
+
+  public :: d_random_full_sweeps, c_random_full_sweeps
 
   public :: get_maxind, d_get_maxind, c_get_maxind, &
        get_minind, d_get_minind, c_get_minind
@@ -22,13 +25,15 @@ module mod_sweeps
   public :: sweeps_times_general, d_sweeps_times_general, c_sweeps_times_general, &
        d_v_sweeps_times_general, c_v_sweeps_times_general
 
-  public :: trp_sweeps_times_general, d_trp_sweeps_times_general, c_trp_sweeps_times_general, &
+  public :: trp_sweeps_times_general, d_trp_sweeps_times_general, &
+       c_trp_sweeps_times_general, &
        d_v_trp_sweeps_times_general, c_v_trp_sweeps_times_general
 
   public :: general_times_sweeps, d_general_times_sweeps, c_general_times_sweeps, &
        d_v_general_times_sweeps, c_v_general_times_sweeps
 
-  public :: general_times_trp_sweeps, d_general_times_trp_sweeps, c_general_times_trp_sweeps, &
+  public :: general_times_trp_sweeps, d_general_times_trp_sweeps, &
+       c_general_times_trp_sweeps, &
        d_v_general_times_trp_sweeps, c_v_general_times_trp_sweeps
 
   ! These types represent a sequence of sweeps of plane rotations.
@@ -43,9 +48,15 @@ module mod_sweeps
   ! is formed from rotations G_{j,k} with cosine and sine cs(j,k) and ss(j,k)
   ! acting on adjacent rows js(j,k) and js(j,k)+1.
 
+  ! The range left..right can be increasing or decreasing, depending on inc.
+  ! cs, ss, and js have bounds (maxord,minind:maxind).  So both left and
+  ! right need to be in the interval [minind,maxind].
+
   ! The fields ord and type are used to specifically describe
-  ! structure of leading and trailing sweeps.  type takes on values
-  ! -1=nothing, 0=leading, 1=trailing
+  ! structure of leading and trailing sweeps.  type takes on values;
+  ! -1=nothing, 0=leading, 1=trailing.  ord=-1 indicates the order is not specified.
+
+  ! It is expected that: cs(maxord,minind:maxind)
 
   type d_sweeps
      integer(kind=int32), private :: minind, maxind, n, maxord
@@ -175,6 +186,52 @@ contains
     type(c_sweeps), intent(inout) :: sw
     deallocate(sw%cs, sw%ss, sw%js, sw%numrots)
   end subroutine c_deallocate_sweeps
+
+  type(d_sweeps) function d_random_full_sweeps(n,l) result(sw)
+    integer(kind=int32) :: n, l, j, k
+    real(kind=dp) :: nrm
+    sw=d_new_sweeps(n, 1, l, n-1)
+    sw%left=1
+    sw%right=l
+    sw%numrots=n-1
+    do j=1,n-1
+       sw%js(j,:)=j
+    end do
+    call random_matrix(sw%cs)
+    call random_matrix(sw%ss)
+    do j=1,n-1
+       do k=1,l
+          nrm=sqrt(sw%cs(j,k)**2+sw%ss(j,k)**2)
+          sw%cs(j,k)=sw%cs(j,k)/nrm
+          sw%ss(j,k)=sw%ss(j,k)/nrm
+       end do
+    end do
+  end function d_random_full_sweeps
+
+  type(c_sweeps) function c_random_full_sweeps(n,l) result(sw)
+    integer(kind=int32) :: n, l, j, k
+    real(kind=dp) :: nrm, cr
+    sw=c_new_sweeps(n, 1, l, n-1)
+    sw%left=1
+    sw%right=l
+    sw%numrots=n-1
+    do j=1,n-1
+       sw%js(j,:)=j
+    end do
+    call random_matrix(sw%cs)
+    call random_matrix(sw%ss)
+    do j=1,n-1
+       do k=1,l
+          cr=real(sw%cs(j,k),kind=dp)
+          sw%cs(j,k)=cr
+          nrm=sqrt(abs(sw%cs(j,k))**2+abs(sw%ss(j,k))**2)
+          sw%cs(j,k)=sw%cs(j,k)/nrm
+          sw%ss(j,k)=sw%ss(j,k)/nrm
+       end do
+    end do
+  end function c_random_full_sweeps
+
+  ! Multiply routines
 
   subroutine d_sweeps_times_general(sw,a)
     type(d_sweeps) :: sw

@@ -4,9 +4,7 @@ program test_convert_ub_and_bv
   implicit none
 
   !
-  ! Note: This does not cover large rank cases (e.g. ubw=n-1).  But the conversion
-  ! routines are tested for these cases by test_sweeps1.f90, since sweeps1.f90 uses
-  ! the conversion routines.
+  ! Note: This does not cover large rank cases (e.g. ubw=n-1).
   !
 
   real(kind=dp) :: t0, t1

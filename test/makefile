@@ -10,11 +10,10 @@ run_all : all
 	$(BINDIR)/test_convert_wb_and_bt
 	$(BINDIR)/test_convert_ubt_and_wbv
 	$(BINDIR)/test_row_compress
-	$(BINDIR)/test_recompress
 	$(BINDIR)/test_qr_factorization
 	$(BINDIR)/test_solve
 
-all : ORTH_RANK $(BINDIR)/test_recompress $(BINDIR)/test_general $(BINDIR)/test_general_bt \
+all : ORTH_RANK $(BINDIR)/test_general $(BINDIR)/test_general_bt \
 		$(BINDIR)/test_general_wb $(BINDIR)/test_general_ubt $(BINDIR)/test_general_wbv \
 		$(BINDIR)/test_convert_ub_and_bv $(BINDIR)/test_convert_wb_and_bt  \
 		$(BINDIR)/test_convert_ubt_and_wbv $(BINDIR)/test_row_compress \
@@ -41,6 +40,6 @@ $(OBJDIR)/%.o : %.f90 $(OBJDIR)/test_data.o
 clean :
 	rm $(OBJDIR)/*.o $(OBJDIR)/*.mod $(BINDIR)/*
 
-prof : test_recompress
+prof : test_general
 	gprof -c -q --no-time='__general_ub_MOD_f_d_upper_to_ub' \
-		-no-time='__assemble_MOD_d_bv_to_upper' test_recompress | less
+		-no-time='__assemble_MOD_d_bv_to_upper' test_general | less

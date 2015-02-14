@@ -30,7 +30,8 @@ module mod_qr_factorization
 
   type(routine_info), parameter :: info_c_qr_bv_to_ub=routine_info(id_c_qr_bv_to_ub, &
        'c_qr_bv_to_ub', &
-       [ character(len=error_message_length) :: 'ub%n /= bv%n', 'bv%lbw <= 0', 'dim. of cs or ss /= n' ])
+       [ character(len=error_message_length) :: 'ub%n /= bv%n', 'bv%lbw <= 0', &
+       'dim. of cs or ss /= n' ])
 
 contains
 
@@ -71,8 +72,10 @@ contains
     end if
     call f_d_qr_bv_to_ub(bv%br, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), &
          get_ubwmax(bv), bv%numrotsv, bv%ksv, bv%csv, bv%ssv, & 
-         ub%bc, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), ub%numrotsu, ub%jsu, ub%csu, ub%ssu, &
-         sw%left, sw%right, sw%inc, get_minind(sw), get_maxind(sw), get_maxord(sw), sw%numrots, sw%js, &
+         ub%bc, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), ub%numrotsu, ub%jsu, &
+         ub%csu, ub%ssu, &
+         sw%left, sw%right, sw%inc, get_minind(sw), get_maxind(sw), get_maxord(sw), &
+         sw%numrots, sw%js, &
          sw%cs, sw%ss, error)
   end subroutine d_qr_bv_to_ub
 
@@ -80,7 +83,8 @@ contains
        ksv, csv, ssv, &
        b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, csu, ssu, &
        leftq, rightq, incq, minind, maxind, maxord, numrotsq, jsq, csq, ssq, error)
-    integer(kind=int32), intent(in) :: n, lbw_bv, ubw_bv, lbwmax_ub, ubwmax_ub, lbwmax_bv, ubwmax_bv
+    integer(kind=int32), intent(in) :: n, lbw_bv, ubw_bv, lbwmax_ub, ubwmax_ub, &
+         lbwmax_bv, ubwmax_bv
     real(kind=dp), dimension(n,lbwmax_bv+ubwmax_bv+1), intent(inout) :: b_bv
     integer(kind=int32), dimension(n), intent(inout) :: numrotsv
     integer(kind=int32), dimension(n,ubwmax_bv), intent(inout) :: ksv
@@ -111,8 +115,9 @@ contains
     end if
 
     if (lbw_bv == 0) then
-       call f_d_convert_bv_to_ub(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, &
-            ksv, csv, ssv, b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, csu, ssu,error)
+       call f_d_convert_bv_to_ub(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, &
+            numrotsv, ksv, csv, ssv, b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, &
+            numrotsu, jsu, csu, ssu,error)
        numrotsq=0; leftq=0; rightq=-1; incq=1
        return
     end if
@@ -225,8 +230,9 @@ contains
     end if
     call f_c_qr_bv_to_ub(bv%br, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), &
          get_ubwmax(bv), bv%numrotsv, bv%ksv, bv%csv, bv%ssv, & 
-         ub%bc, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), ub%numrotsu, ub%jsu, ub%csu, ub%ssu, &
-         sw%left, sw%right, sw%inc, get_minind(sw), get_maxind(sw), get_maxord(sw), sw%numrots, sw%js, &
+         ub%bc, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), ub%numrotsu, &
+         ub%jsu, ub%csu, ub%ssu, sw%left, sw%right, sw%inc, get_minind(sw), &
+         get_maxind(sw), get_maxord(sw), sw%numrots, sw%js, &
          sw%cs, sw%ss, error)
   end subroutine c_qr_bv_to_ub
 
@@ -234,7 +240,8 @@ contains
        ksv, csv, ssv, &
        b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, csu, ssu, &
        leftq, rightq, incq, minind, maxind, maxord, numrotsq, jsq, csq, ssq, error)
-    integer(kind=int32), intent(in) :: n, lbw_bv, ubw_bv, lbwmax_ub, ubwmax_ub, lbwmax_bv, ubwmax_bv
+    integer(kind=int32), intent(in) :: n, lbw_bv, ubw_bv, lbwmax_ub, ubwmax_ub, &
+         lbwmax_bv, ubwmax_bv
     complex(kind=dp), dimension(n,lbwmax_bv+ubwmax_bv+1), intent(inout) :: b_bv
     integer(kind=int32), dimension(n), intent(inout) :: numrotsv
     integer(kind=int32), dimension(n,ubwmax_bv), intent(inout) :: ksv
@@ -268,8 +275,9 @@ contains
     end if
 
     if (lbw_bv == 0) then
-       call f_c_convert_bv_to_ub(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, &
-            ksv, csv, ssv, b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, csu, ssu,error)
+       call f_c_convert_bv_to_ub(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, &
+            numrotsv, ksv, csv, ssv, b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, &
+            numrotsu, jsu, csu, ssu,error)
        numrotsq=0; leftq=0; rightq=-1; incq=1
        return
     end if

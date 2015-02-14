@@ -3,9 +3,7 @@ program test_row_compress
   use mod_test_data
   implicit none
 
-  ! Note: This does not cover large rank cases (e.g. ubw=n-1).  But the conversion
-  ! routines are tested for these cases by test_sweeps1.f90, since sweeps1.f90 uses
-  ! the conversion routines.
+  ! Note: This does not cover large rank cases (e.g. ubw=n-1).
 
   real(kind=dp) :: t0, t1
   integer(kind=int32) :: na

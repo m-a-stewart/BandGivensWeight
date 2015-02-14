@@ -46,18 +46,6 @@ module mod_error_id
   integer(int32), parameter :: id_c_wbv_to_general=022
   integer(int32), parameter :: id_f_c_wbv_to_general=023
 
-  ! src/recompress/recompression_bv_to_ub, 030s
-  integer(int32), parameter :: id_d_recompress_bv_to_ub=030
-  integer(int32), parameter :: id_f_d_recompress_bv_to_ub=031
-  integer(int32), parameter :: id_c_recompress_bv_to_ub=032
-  integer(int32), parameter :: id_f_c_recompress_bv_to_ub=033
-
-  ! src/recompress/recompression_ub_to_bv, 040s
-  integer(int32), parameter :: id_d_recompress_ub_to_bv=040
-  integer(int32), parameter :: id_f_d_recompress_ub_to_bv=041
-  integer(int32), parameter :: id_c_recompress_ub_to_bv=042
-  integer(int32), parameter :: id_f_c_recompress_ub_to_bv=043
-
   ! src/convert/conversion_bv_to_ub, 050s
   integer(int32), parameter :: id_d_convert_bv_to_ub=050
   integer(int32), parameter :: id_f_d_convert_bv_to_ub=051
@@ -178,24 +166,6 @@ module mod_error_id
   integer(int32), parameter :: id_f_c_forward_solve_bv=223
   integer(int32), parameter :: id_c_v_forward_solve_bv=224
   integer(int32), parameter :: id_f_c_v_forward_solve_bv=225
-
-  ! src/sweeps1 230s and 240s
-  integer(int32), parameter :: id_d_sweeps1_times_ub=230
-  integer(int32), parameter :: id_f_d_sweeps1_times_ub=231
-  integer(int32), parameter :: id_c_sweeps1_times_ub=232
-  integer(int32), parameter :: id_f_c_sweeps1_times_ub=233
-  integer(int32), parameter :: id_d_bv_times_sweeps1=234
-  integer(int32), parameter :: id_f_d_bv_times_sweeps1=235
-  integer(int32), parameter :: id_c_bv_times_sweeps1=236
-  integer(int32), parameter :: id_f_c_bv_times_sweeps1=237
-  integer(int32), parameter :: id_d_trp_sweeps1_times_bv=238
-  integer(int32), parameter :: id_f_d_trp_sweeps1_times_bv=239
-  integer(int32), parameter :: id_c_trp_sweeps1_times_bv=240
-  integer(int32), parameter :: id_f_c_trp_sweeps1_times_bv=241
-  integer(int32), parameter :: id_d_ub_times_trp_sweeps1=242
-  integer(int32), parameter :: id_f_d_ub_times_trp_sweeps1=243
-  integer(int32), parameter :: id_c_ub_times_trp_sweeps1=244
-  integer(int32), parameter :: id_f_c_ub_times_trp_sweeps1=245
 
   ! src/row_compression 260s
   integer(int32), parameter :: id_d_row_compress=260

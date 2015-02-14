@@ -3,7 +3,7 @@ all : $(OBJS)
 
 $(OBJDIR)/orth_rank.o : $(OBJDIR)/general.o $(OBJDIR)/assemble.o \
 	$(OBJDIR)/qr_factorization.o $(OBJDIR)/solve.o \
-	$(OBJDIR)/row_compress.o $(OBJDIR)/recompress.o $(OBJDIR)/transforms.o \
+	$(OBJDIR)/row_compress.o $(OBJDIR)/transforms.o \
 	$(OBJDIR)/convert.o $(OBJDIR)/types.o $(OBJDIR)/misc.o
 
 
@@ -18,13 +18,9 @@ $(OBJDIR)/band_types.o : $(OBJDIR)/rotation.o $(OBJDIR)/utility.o $(OBJDIR)/shif
 $(OBJDIR)/orth_band_types.o : $(OBJDIR)/prec.o
 
 
-$(OBJDIR)/transforms.o : $(OBJDIR)/sweeps1.o $(OBJDIR)/sweeps.o $(OBJDIR)/rotation.o \
-	$(OBJDIR)/shift.o
+$(OBJDIR)/transforms.o : $(OBJDIR)/sweeps.o $(OBJDIR)/rotation.o $(OBJDIR)/shift.o
 $(OBJDIR)/rotation.o : $(OBJDIR)/prec.o
-$(OBJDIR)/sweeps1.o : $(OBJDIR)/orth_band_types.o $(OBJDIR)/band_types.o $(OBJDIR)/prec.o \
-	$(OBJDIR)/error_id.o $(OBJDIR)/convert_ub_to_bv.o $(OBJDIR)/convert_bv_to_ub.o \
-	$(OBJDIR)/utility.o
-$(OBJDIR)/sweeps.o : $(OBJDIR)/band_types.o $(OBJDIR)/prec.o
+$(OBJDIR)/sweeps.o : $(OBJDIR)/band_types.o $(OBJDIR)/prec.o $(OBJDIR)/utility.o
 $(OBJDIR)/shift.o : $(OBJDIR)/prec.o
 
 
@@ -74,14 +70,6 @@ $(OBJDIR)/convert_ubt_to_wbv.o : $(OBJDIR)/prec.o $(OBJDIR)/error_id.o $(OBJDIR)
 	$(OBJDIR)/rotation.o $(OBJDIR)/orth_band_types.o $(OBJDIR)/band_types.o
 
 
-$(OBJDIR)/recompress.o : $(OBJDIR)/recompress_bv_to_ub.o $(OBJDIR)/recompress_ub_to_bv.o
-$(OBJDIR)/recompress_bv_to_ub.o : $(OBJDIR)/prec.o $(OBJDIR)/error_id.o $(OBJDIR)/utility.o \
-	$(OBJDIR)/shift.o $(OBJDIR)/rotation.o $(OBJDIR)/orth_band_types.o \
-	$(OBJDIR)/band_types.o $(OBJDIR)/nullvec.o
-$(OBJDIR)/recompress_ub_to_bv.o : $(OBJDIR)/prec.o $(OBJDIR)/error_id.o $(OBJDIR)/utility.o \
-	$(OBJDIR)/shift.o $(OBJDIR)/rotation.o $(OBJDIR)/orth_band_types.o \
-	$(OBJDIR)/band_types.o $(OBJDIR)/nullvec.o
-
 $(OBJDIR)/row_compress.o : $(OBJDIR)/misc.o $(OBJDIR)/sweeps.o 
 
 $(OBJDIR)/qr_factorization.o : $(OBJDIR)/prec.o $(OBJDIR)/error_id.o \
@@ -111,9 +99,6 @@ $(OBJDIR)/%.o : types/%.f90
 	$(FC) $(CFLAGS) $(PROFCFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@
 
 $(OBJDIR)/%.o : convert/%.f90
-	$(FC) $(CFLAGS) $(PROFCFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@
-
-$(OBJDIR)/%.o : recompress/%.f90
 	$(FC) $(CFLAGS) $(PROFCFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@
 
 $(OBJDIR)/%.o : qr_factorization/%.f90

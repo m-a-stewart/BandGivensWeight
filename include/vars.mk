@@ -13,7 +13,7 @@ MISCOBJS = $(OBJDIR)/misc.o $(OBJDIR)/prec.o $(OBJDIR)/utility.o $(OBJDIR)/error
 TYPESOBJS = $(OBJDIR)/types.o $(OBJDIR)/band_types.o $(OBJDIR)/orth_band_types.o
 
 TRANSFORMSOBJS = $(OBJDIR)/transforms.o $(OBJDIR)/rotation.o $(OBJDIR)/shift.o \
-	$(OBJDIR)/sweeps1.o $(OBJDIR)/sweeps.o
+	$(OBJDIR)/sweeps.o
 
 ORTHOBJS = $(OBJDIR)/triangular.o $(OBJDIR)/nullvec.o $(OBJDIR)/gs.o
 
@@ -26,17 +26,13 @@ CONVERTOBJS = $(OBJDIR)/convert.o $(OBJDIR)/convert_ub_to_bv.o \
 	$(OBJDIR)/convert_bt_to_wb.o $(OBJDIR)/convert_wbv_to_ubt.o \
 	$(OBJDIR)/convert_ubt_to_wbv.o 
 
-RECOMPRESSOBJS = $(OBJDIR)/recompress.o $(OBJDIR)/recompress_ub_to_bv.o \
-	$(OBJDIR)/recompress_bv_to_ub.o
-
 OBJS =  $(MISCOBJS) $(TYPESOBJS) $(TRANSFORMSOBJS) $(ORTHOBJS) $(GENERALOBJS) \
-	$(CONVERTOBJS) $(OBJDIR)/assemble.o $(RECOMPRESSOBJS) \
+	$(CONVERTOBJS) $(OBJDIR)/assemble.o \
 	$(OBJDIR)/qr_factorization.o $(OBJDIR)/solve.o \
 	$(OBJDIR)/orth_rank.o $(OBJDIR)/row_compress.o
 
 TEST_EXECS =  $(OBJDIR)/test_general $(OBJDIR)/test_general_bt $(OBJDIR)/test_general_wb \
 	$(OBJDIR)/test_general_ubt $(OBJDIR)/test_general_wbv \
 	$(OBJDIR)/test_convert_ub_and_bv $(OBJDIR)/test_convert_wb_and_bt \
-	$(OBJDIR)/test_convert_ubt_and_wbv $(OBJDIR)/test_row_compress $(OBJDIR)/test_recompress \
-	$(OBJDIR)/test_qr_factorization $(OBJDIR)/test_solve \
-	$(OBJDIR)/test_sweeps1
+	$(OBJDIR)/test_convert_ubt_and_wbv $(OBJDIR)/test_row_compress \
+	$(OBJDIR)/test_qr_factorization $(OBJDIR)/test_solve
