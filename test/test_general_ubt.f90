@@ -19,8 +19,8 @@ program test_general_ubt
   complex(kind=dp), dimension(rmaxl,n) :: vl_c, vl0_c
   complex(kind=dp), dimension(rmaxu,n) :: vu_c, vu0_c
   complex(kind=dp), dimension(n) :: d_c
-  type(d_ubt) :: ubt_d
-  type(c_ubt) :: ubt_c
+  type(d_ubt), allocatable :: ubt_d
+  type(c_ubt), allocatable :: ubt_c
   ubt_d=d_new_ubt(n,lbwmax,ubwmax)
   ubt_c=c_new_ubt(n,lbwmax,ubwmax)
 

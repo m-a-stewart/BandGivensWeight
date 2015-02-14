@@ -19,8 +19,8 @@ program test_general_wbv
   complex(kind=dp), dimension(rmaxl,n) :: vl_c, vl0_c
   complex(kind=dp), dimension(rmaxu,n) :: vu_c, vu0_c
   complex(kind=dp), dimension(n) :: d_c
-  type(d_wbv) :: wbv_d
-  type(c_wbv) :: wbv_c
+  type(d_wbv), allocatable :: wbv_d
+  type(c_wbv), allocatable :: wbv_c
   wbv_d=d_new_wbv(n,lbwmax,ubwmax)
   wbv_c=c_new_wbv(n,lbwmax,ubwmax)
 

@@ -15,10 +15,10 @@ program test_general
   complex(kind=dp), dimension(n,rmax) :: u_c, u0_c
   complex(kind=dp), dimension(rmax,n) :: v_c, v0_c
   complex(kind=dp), dimension(n) :: dc
-  type(d_ub) :: ub_d
-  type(c_ub) :: ub_c
-  type(d_bv) :: bv_d
-  type(c_bv) :: bv_c
+  type(d_ub), allocatable :: ub_d
+  type(c_ub), allocatable :: ub_c
+  type(d_bv), allocatable :: bv_d
+  type(c_bv), allocatable :: bv_c
   ub_d=d_new_ub(n,lbwmax,ubwmax)
   ub_c=c_new_ub(n,lbwmax,ubwmax)
   bv_d=d_new_bv(n,lbwmax,ubwmax)

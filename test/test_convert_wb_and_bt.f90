@@ -22,10 +22,10 @@ program test_convert_wb_and_bt
   complex(kind=dp), dimension(rmax,n) :: v_c, v0_c
   complex(kind=dp), dimension(n) :: d_c, d0_c
 
-  type(d_wb) :: wb_d, wb_na_d
-  type(c_wb) :: wb_c, wb_na_c
-  type(d_bt) :: bt_d, bt_na_d
-  type(c_bt) :: bt_c, bt_na_c
+  type(d_wb), allocatable :: wb_d, wb_na_d
+  type(c_wb), allocatable :: wb_c, wb_na_c
+  type(d_bt), allocatable :: bt_d, bt_na_d
+  type(c_bt), allocatable :: bt_c, bt_na_c
   wb_d=d_new_wb(n,lbwmax,ubwmax)
   wb_c=c_new_wb(n,lbwmax,ubwmax)
   bt_d=d_new_bt(n,lbwmax,ubwmax)
@@ -68,8 +68,7 @@ program test_convert_wb_and_bt
   call bt_to_lower(bt_na_d,a1(1:na,1:na),error)
   test_name = "Real WB to BT (n=1);"
   call d_output_result_lower(test_name,a0(1:na,1:na),a1(1:na,1:na),0,bt_na_d%lbw,t0,t1,tol2,error)
-  call d_deallocate_wb(wb_na_d)
-  call d_deallocate_bt(bt_na_d)
+  deallocate(wb_na_d,bt_na_d)
   !
   na=2
   ubwa=min(na-1,ubw)
@@ -85,8 +84,7 @@ program test_convert_wb_and_bt
   call bt_to_lower(bt_na_d,a1(1:na,1:na),error)
   test_name = "Real WB to BT (n=2);"
   call d_output_result_lower(test_name,a0(1:na,1:na),a1(1:na,1:na),1,bt_na_d%lbw,t0,t1,tol2,error)
-  call d_deallocate_wb(wb_na_d)
-  call d_deallocate_bt(bt_na_d)
+  deallocate(wb_na_d,bt_na_d)
   !
   na=3
   ubwa=min(na-1,ubw)
@@ -102,8 +100,7 @@ program test_convert_wb_and_bt
   call bt_to_lower(bt_na_d,a1(1:na,1:na),error)
   test_name = "Real WB to BT (n=3);"
   call d_output_result_lower(test_name,a0(1:na,1:na),a1(1:na,1:na),1,bt_na_d%lbw,t0,t1,tol2,error)
-  call d_deallocate_wb(wb_na_d)
-  call d_deallocate_bt(bt_na_d)
+  deallocate(wb_na_d,bt_na_d)
   !
   na=4
   ubwa=min(na-1,ubw)
@@ -119,8 +116,7 @@ program test_convert_wb_and_bt
   call bt_to_lower(bt_na_d,a1(1:na,1:na),error)
   test_name = "Real WB to BT (n=4);"
   call d_output_result_lower(test_name,a0(1:na,1:na),a1(1:na,1:na),2,bt_na_d%lbw,t0,t1,tol2,error)
-  call d_deallocate_wb(wb_na_d)
-  call d_deallocate_bt(bt_na_d)
+  deallocate(wb_na_d,bt_na_d)
   
   ! bt to wb
   u=u0; v=v0; d=d0
@@ -148,8 +144,7 @@ program test_convert_wb_and_bt
   call wb_to_lower(wb_na_d,a1(1:na,1:na),error)
   test_name = "Real BT to WB (n=1);"
   call d_output_result_lower(test_name,a0(1:na,1:na),a1(1:na,1:na),0,wb_na_d%lbw,t0,t1,tol2,error)
-  call d_deallocate_wb(wb_na_d)
-  call d_deallocate_bt(bt_na_d)
+  deallocate(wb_na_d,bt_na_d)
 
   na=2
   ubwa=min(na-1,ubw)
@@ -165,8 +160,7 @@ program test_convert_wb_and_bt
   call wb_to_lower(wb_na_d,a1(1:na,1:na),error)
   test_name = "Real BT to WB (n=2);"
   call d_output_result_lower(test_name,a0(1:na,1:na),a1(1:na,1:na),1,wb_na_d%lbw,t0,t1,tol2,error)
-  call d_deallocate_wb(wb_na_d)
-  call d_deallocate_bt(bt_na_d)
+  deallocate(wb_na_d,bt_na_d)
 
   na=3
   ubwa=min(na-1,ubw)
@@ -182,8 +176,7 @@ program test_convert_wb_and_bt
   call wb_to_lower(wb_na_d,a1(1:na,1:na),error)
   test_name = "Real BT to WB (n=3);"
   call d_output_result_lower(test_name,a0(1:na,1:na),a1(1:na,1:na),1,wb_na_d%lbw,t0,t1,tol2,error)
-  call d_deallocate_wb(wb_na_d)
-  call d_deallocate_bt(bt_na_d)
+  deallocate(wb_na_d,bt_na_d)
 
   na=4
   ubwa=min(na-1,ubw)
@@ -199,8 +192,7 @@ program test_convert_wb_and_bt
   call wb_to_lower(wb_na_d,a1(1:na,1:na),error)
   test_name = "Real BT to WB (n=4);"
   call d_output_result_lower(test_name,a0(1:na,1:na),a1(1:na,1:na),2,wb_na_d%lbw,t0,t1,tol2,error)
-  call d_deallocate_wb(wb_na_d)
-  call d_deallocate_bt(bt_na_d)
+  deallocate(wb_na_d,bt_na_d)
 
   print *
   print *, "--------------------------------"
@@ -236,8 +228,7 @@ program test_convert_wb_and_bt
   call bt_to_lower(bt_na_c,a1_c(1:na,1:na),error)
   test_name = "Complex WB to BT (n=1);"
   call c_output_result_lower(test_name,a0_c(1:na,1:na),a1_c(1:na,1:na),0,bt_na_c%lbw,t0,t1,tol2,error)
-  call c_deallocate_wb(wb_na_c)
-  call c_deallocate_bt(bt_na_c)
+  deallocate(wb_na_c,bt_na_c)
 
   na=2
   ubwa=min(na-1,ubw)
@@ -253,8 +244,7 @@ program test_convert_wb_and_bt
   call bt_to_lower(bt_na_c,a1_c(1:na,1:na),error)
   test_name = "Complex WB to BT (n=2);"
   call c_output_result_lower(test_name,a0_c(1:na,1:na),a1_c(1:na,1:na),1,bt_na_c%lbw,t0,t1,tol2,error)
-  call c_deallocate_wb(wb_na_c)
-  call c_deallocate_bt(bt_na_c)
+  deallocate(wb_na_c,bt_na_c)
 
   na=3
   ubwa=min(na-1,ubw)
@@ -270,8 +260,7 @@ program test_convert_wb_and_bt
   call bt_to_lower(bt_na_c,a1_c(1:na,1:na),error)
   test_name = "Complex WB to BT (n=3);"
   call c_output_result_lower(test_name,a0_c(1:na,1:na),a1_c(1:na,1:na),1,bt_na_c%lbw,t0,t1,tol2,error)
-  call c_deallocate_wb(wb_na_c)
-  call c_deallocate_bt(bt_na_c)
+  deallocate(wb_na_c,bt_na_c)
 
   na=4
   ubwa=min(na-1,ubw)
@@ -287,8 +276,7 @@ program test_convert_wb_and_bt
   call bt_to_lower(bt_na_c,a1_c(1:na,1:na),error)
   test_name = "Complex WB to BT (n=4);"
   call c_output_result_lower(test_name,a0_c(1:na,1:na),a1_c(1:na,1:na),2,bt_na_c%lbw,t0,t1,tol2,error)
-  call c_deallocate_wb(wb_na_c)
-  call c_deallocate_bt(bt_na_c)
+  deallocate(wb_na_c,bt_na_c)
 
   ! BT to WB
 
@@ -318,8 +306,7 @@ program test_convert_wb_and_bt
   call wb_to_lower(wb_na_c,a1_c(1:na,1:na),error)
   test_name = "Complex BT to WB (n=1);"
   call c_output_result_lower(test_name,a0_c(1:na,1:na),a1_c(1:na,1:na),0,wb_na_c%lbw,t0,t1,tol2,error)
-  call c_deallocate_wb(wb_na_c)
-  call c_deallocate_bt(bt_na_c)
+  deallocate(wb_na_c,bt_na_c)
 
   na=2
   ubwa=min(na-1,ubw)
@@ -335,8 +322,7 @@ program test_convert_wb_and_bt
   call wb_to_lower(wb_na_c,a1_c(1:na,1:na),error)
   test_name = "Complex BT to WB (n=2);"
   call c_output_result_lower(test_name,a0_c(1:na,1:na),a1_c(1:na,1:na),1,wb_na_c%lbw,t0,t1,tol2,error)
-  call c_deallocate_wb(wb_na_c)
-  call c_deallocate_bt(bt_na_c)
+  deallocate(wb_na_c,bt_na_c)
 
   na=3
   ubwa=min(na-1,ubw)
@@ -352,8 +338,7 @@ program test_convert_wb_and_bt
   call wb_to_lower(wb_na_c,a1_c(1:na,1:na),error)
   test_name = "Complex BT to WB (n=3);"
   call c_output_result_lower(test_name,a0_c(1:na,1:na),a1_c(1:na,1:na),1,wb_na_c%lbw,t0,t1,tol2,error)
-  call c_deallocate_wb(wb_na_c)
-  call c_deallocate_bt(bt_na_c)
+  deallocate(wb_na_c,bt_na_c)
 
   na=4
   ubwa=min(na-1,ubw)
@@ -369,7 +354,6 @@ program test_convert_wb_and_bt
   call wb_to_lower(wb_na_c,a1_c(1:na,1:na),error)
   test_name = "Complex BT to WB (n=4);"
   call c_output_result_lower(test_name,a0_c(1:na,1:na),a1_c(1:na,1:na),2,wb_na_c%lbw,t0,t1,tol2,error)
-  call c_deallocate_wb(wb_na_c)
-  call c_deallocate_bt(bt_na_c)
+  deallocate(wb_na_c,bt_na_c)
 
 end program test_convert_wb_and_bt

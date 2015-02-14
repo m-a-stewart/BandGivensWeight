@@ -19,12 +19,12 @@ program test_qr_factorization
   real(kind=dp), dimension(:,:), allocatable :: a_d, a0_d, a1_d, q_d
   complex(kind=dp), dimension(:,:), allocatable :: a_c, a0_c, a1_c, q_c
 
-  type(d_ub) :: ub_d
-  type(c_ub) :: ub_c
-  type(d_bv) :: bv_d
-  type(c_bv) :: bv_c
-  type(d_sweeps) :: sw_d, rsw_d
-  type(c_sweeps) :: sw_c, rsw_c
+  type(d_ub), allocatable :: ub_d
+  type(c_ub), allocatable :: ub_c
+  type(d_bv), allocatable :: bv_d
+  type(c_bv), allocatable :: bv_c
+  type(d_sweeps), allocatable :: sw_d, rsw_d
+  type(c_sweeps), allocatable :: sw_c, rsw_c
 
   call random_seed
   call random_matrix(u_d)
@@ -57,9 +57,7 @@ program test_qr_factorization
   call sweeps_times_general(sw_d,a1_d)
   test_name = "Real QR Factorization"
   call d_output_result_lower_upper(test_name,a0_d,a1_d,0,ub_d%lbw,ubwa+lbwa,ub_d%ubw,t0,t1,tol2,error)
-  deallocate(a_d, a0_d, a1_d, q_d)
-  call deallocate_ub(ub_d); call deallocate_bv(bv_d)
-  call deallocate_sweeps(sw_d)
+  deallocate(a_d, a0_d, a1_d, q_d, ub_d, bv_d, sw_d)
   
   !
   print *
@@ -91,8 +89,6 @@ program test_qr_factorization
   call sweeps_times_general(sw_c,a1_c)
   test_name = "Complex QR Factorization"
   call c_output_result_lower_upper(test_name,a0_c,a1_c,0,ub_c%lbw,ubwa+lbwa,ub_c%ubw,t0,t1,tol2,error)
-  deallocate(a_c, a0_c, a1_c, q_c)
-  call deallocate_ub(ub_c); call deallocate_bv(bv_c)
-  call deallocate_sweeps(sw_c)
+  deallocate(a_c, a0_c, a1_c, q_c, ub_c, bv_c, sw_c)
 
 end program test_qr_factorization

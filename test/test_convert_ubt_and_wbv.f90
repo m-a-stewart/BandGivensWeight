@@ -26,10 +26,10 @@ program test_convert_ubt_and_wbv
   complex(kind=dp), dimension(rmaxu,n) :: vu_c, vu0_c
   complex(kind=dp), dimension(n) :: d_c
 
-  type(d_ubt) :: ubt_d, ubt_na_d
-  type(c_ubt) :: ubt_c, ubt_na_c
-  type(d_wbv) :: wbv_d, wbv_na_d
-  type(c_wbv) :: wbv_c, wbv_na_c
+  type(d_ubt), allocatable :: ubt_d, ubt_na_d
+  type(c_ubt), allocatable :: ubt_c, ubt_na_c
+  type(d_wbv), allocatable :: wbv_d, wbv_na_d
+  type(c_wbv), allocatable :: wbv_c, wbv_na_c
   ubt_d=d_new_ubt(n,lbwmax,ubwmax)
   ubt_c=c_new_ubt(n,lbwmax,ubwmax)
   wbv_d=d_new_wbv(n,lbwmax,ubwmax)
@@ -83,8 +83,7 @@ program test_convert_ubt_and_wbv
   test_name = "Real UBT to WBV (n=1);"
   call d_output_result_lower_upper(test_name,a0(1:na,1:na),a1(1:na,1:na),0,wbv_na_d%lbw,0, &
        wbv_na_d%ubw,t0,t1,tol2,error)
-  call d_deallocate_ubt(ubt_na_d)
-  call d_deallocate_wbv(wbv_na_d)
+  deallocate(ubt_na_d,wbv_na_d)
 
   na=2
   ubt_na_d=d_new_ubt(na,lbwmax,ubwmax)
@@ -101,8 +100,7 @@ program test_convert_ubt_and_wbv
   test_name = "Real UBT to WBV (n=2);"
   call d_output_result_lower_upper(test_name,a0(1:na,1:na),a1(1:na,1:na),1,wbv_na_d%lbw,1, &
        wbv_na_d%ubw,t0,t1,tol2,error)
-  call d_deallocate_ubt(ubt_na_d)
-  call d_deallocate_wbv(wbv_na_d)
+  deallocate(ubt_na_d,wbv_na_d)
 
   na=3
   ubt_na_d=d_new_ubt(na,lbwmax,ubwmax)
@@ -119,8 +117,7 @@ program test_convert_ubt_and_wbv
   test_name = "Real UBT to WBV (n=3);"
   call d_output_result_lower_upper(test_name,a0(1:na,1:na),a1(1:na,1:na),1,wbv_na_d%lbw,1, &
        wbv_na_d%ubw,t0,t1,tol2,error)
-  call d_deallocate_ubt(ubt_na_d)
-  call d_deallocate_wbv(wbv_na_d)
+  deallocate(ubt_na_d,wbv_na_d)
 
   na=4
   ubt_na_d=d_new_ubt(na,lbwmax,ubwmax)
@@ -137,8 +134,7 @@ program test_convert_ubt_and_wbv
   test_name = "Real UBT to WBV (n=2);"
   call d_output_result_lower_upper(test_name,a0(1:na,1:na),a1(1:na,1:na),2,wbv_na_d%lbw,2, &
        wbv_na_d%ubw,t0,t1,tol2,error)
-  call d_deallocate_ubt(ubt_na_d)
-  call d_deallocate_wbv(wbv_na_d)
+  deallocate(ubt_na_d,wbv_na_d)
 
   ! wbv to ubt
   ul=ul0; vl=vl0
@@ -169,8 +165,7 @@ program test_convert_ubt_and_wbv
   test_name = "Real WBV to UBT (n=1);"
   call d_output_result_lower_upper(test_name,a0(1:na,1:na),a1(1:na,1:na),0,ubt_na_d%lbw,0, &
        ubt_na_d%ubw,t0,t1,tol2,error)
-  call d_deallocate_ubt(ubt_na_d)
-  call d_deallocate_wbv(wbv_na_d)
+  deallocate(ubt_na_d,wbv_na_d)
 
   na=2
   ubt_na_d=d_new_ubt(na,lbwmax,ubwmax)
@@ -187,8 +182,7 @@ program test_convert_ubt_and_wbv
   test_name = "Real WBV to UBT (n=2);"
   call d_output_result_lower_upper(test_name,a0(1:na,1:na),a1(1:na,1:na),1,ubt_na_d%lbw,1, &
        ubt_na_d%ubw,t0,t1,tol2,error)
-  call d_deallocate_ubt(ubt_na_d)
-  call d_deallocate_wbv(wbv_na_d)
+  deallocate(ubt_na_d,wbv_na_d)
 
   na=3
   ubt_na_d=d_new_ubt(na,lbwmax,ubwmax)
@@ -205,8 +199,7 @@ program test_convert_ubt_and_wbv
   test_name = "Real WBV to UBT (n=3);"
   call d_output_result_lower_upper(test_name,a0(1:na,1:na),a1(1:na,1:na),1,ubt_na_d%lbw,1, &
        ubt_na_d%ubw,t0,t1,tol2,error)
-  call d_deallocate_ubt(ubt_na_d)
-  call d_deallocate_wbv(wbv_na_d)
+  deallocate(ubt_na_d,wbv_na_d)
 
   na=4
   ubt_na_d=d_new_ubt(na,lbwmax,ubwmax)
@@ -223,8 +216,7 @@ program test_convert_ubt_and_wbv
   test_name = "Real WBV to UBT (n=4);"
   call d_output_result_lower_upper(test_name,a0(1:na,1:na),a1(1:na,1:na),2,ubt_na_d%lbw,2, &
        ubt_na_d%ubw,t0,t1,tol2,error)
-  call d_deallocate_ubt(ubt_na_d)
-  call d_deallocate_wbv(wbv_na_d)
+  deallocate(ubt_na_d,wbv_na_d)
 
   print *
   print *, "--------------------------------"
@@ -259,8 +251,7 @@ program test_convert_ubt_and_wbv
   test_name = "Complex UBT to WBV (n=1);"
   call c_output_result_lower_upper(test_name,a0_c(1:na,1:na),a1_c(1:na,1:na),0,wbv_na_c%lbw,0, &
        wbv_na_c%ubw,t0,t1,tol2,error)
-  call c_deallocate_ubt(ubt_na_c)
-  call c_deallocate_wbv(wbv_na_c)
+  deallocate(ubt_na_c,wbv_na_c)
 
   na=2
   ubt_na_c=c_new_ubt(na,lbwmax,ubwmax)
@@ -278,8 +269,7 @@ program test_convert_ubt_and_wbv
   test_name = "Complex UBT to WBV (n=2);"
   call c_output_result_lower_upper(test_name,a0_c(1:na,1:na),a1_c(1:na,1:na),1,wbv_na_c%lbw,1, &
        wbv_na_c%ubw,t0,t1,tol2,error)
-  call c_deallocate_ubt(ubt_na_c)
-  call c_deallocate_wbv(wbv_na_c)
+  deallocate(ubt_na_c,wbv_na_c)
 
   na=3
   ubt_na_c=c_new_ubt(na,lbwmax,ubwmax)
@@ -297,8 +287,7 @@ program test_convert_ubt_and_wbv
   test_name = "Complex UBT to WBV (n=3);"
   call c_output_result_lower_upper(test_name,a0_c(1:na,1:na),a1_c(1:na,1:na),1,wbv_na_c%lbw,1, &
        wbv_na_c%ubw,t0,t1,tol2,error)
-  call c_deallocate_ubt(ubt_na_c)
-  call c_deallocate_wbv(wbv_na_c)
+  deallocate(ubt_na_c,wbv_na_c)
 
   na=4
   ubt_na_c=c_new_ubt(na,lbwmax,ubwmax)
@@ -316,8 +305,7 @@ program test_convert_ubt_and_wbv
   test_name = "Complex UBT to WBV (n=4);"
   call c_output_result_lower_upper(test_name,a0_c(1:na,1:na),a1_c(1:na,1:na),2,wbv_na_c%lbw,2, &
        wbv_na_c%ubw,t0,t1,tol2,error)
-  call c_deallocate_ubt(ubt_na_c)
-  call c_deallocate_wbv(wbv_na_c)
+  deallocate(ubt_na_c,wbv_na_c)
 
   ! wbv to ubt
   ul_c=ul0_c; vl_c=vl0_c
@@ -348,8 +336,7 @@ program test_convert_ubt_and_wbv
   test_name = "Complex WBV to UBT (n=1);"
   call c_output_result_lower_upper(test_name,a0_c(1:na,1:na),a1_c(1:na,1:na),0,ubt_na_c%lbw,0, &
        ubt_na_c%ubw,t0,t1,tol2,error)
-  call c_deallocate_ubt(ubt_na_c)
-  call c_deallocate_wbv(wbv_na_c)
+  deallocate(ubt_na_c,wbv_na_c)
 
   na=2
   ubt_na_c=c_new_ubt(na,lbwmax,ubwmax)
@@ -366,8 +353,7 @@ program test_convert_ubt_and_wbv
   test_name = "Complex WBV to UBT (n=2);"
   call c_output_result_lower_upper(test_name,a0_c(1:na,1:na),a1_c(1:na,1:na),1,ubt_na_c%lbw,1, &
        ubt_na_c%ubw,t0,t1,tol2,error)
-  call c_deallocate_ubt(ubt_na_c)
-  call c_deallocate_wbv(wbv_na_c)
+  deallocate(ubt_na_c,wbv_na_c)
 
   na=3
   ubt_na_c=c_new_ubt(na,lbwmax,ubwmax)
@@ -384,8 +370,7 @@ program test_convert_ubt_and_wbv
   test_name = "Complex WBV to UBT (n=3);"
   call c_output_result_lower_upper(test_name,a0_c(1:na,1:na),a1_c(1:na,1:na),1,ubt_na_c%lbw,1, &
        ubt_na_c%ubw,t0,t1,tol2,error)
-  call c_deallocate_ubt(ubt_na_c)
-  call c_deallocate_wbv(wbv_na_c)
+  deallocate(ubt_na_c,wbv_na_c)
 
   na=4
   ubt_na_c=c_new_ubt(na,lbwmax,ubwmax)
@@ -402,7 +387,6 @@ program test_convert_ubt_and_wbv
   test_name = "Complex WBV to UBT (n=4);"
   call c_output_result_lower_upper(test_name,a0_c(1:na,1:na),a1_c(1:na,1:na),2,ubt_na_c%lbw,2, &
        ubt_na_c%ubw,t0,t1,tol2,error)
-  call c_deallocate_ubt(ubt_na_c)
-  call c_deallocate_wbv(wbv_na_c)
+  deallocate(ubt_na_c,wbv_na_c)
 
 end program test_convert_ubt_and_wbv

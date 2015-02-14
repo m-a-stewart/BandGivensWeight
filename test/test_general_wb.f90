@@ -15,8 +15,8 @@ program test_general_wb
   complex(kind=dp), dimension(n,rmax) :: u_c, u0_c
   complex(kind=dp), dimension(rmax,n) :: v_c, v0_c
   complex(kind=dp), dimension(n) :: d_c
-  type(d_wb) :: wb_d
-  type(c_wb) :: wb_c
+  type(d_wb), allocatable :: wb_d
+  type(c_wb), allocatable :: wb_c
   wb_d=d_new_wb(n,lbwmax,ubwmax)
   wb_c=c_new_wb(n,lbwmax,ubwmax)
 

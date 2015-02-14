@@ -24,12 +24,12 @@ program test_row_compress
   complex(kind=dp), dimension(rmaxu,n) :: vu_c, vu0_c
   complex(kind=dp), dimension(n) :: d_c
 
-  type(d_ubt) :: ubt_d, ubt_na_d
-  type(c_ubt) :: ubt_c, ubt_na_c
-  type(d_bv) :: bv_d, bv_na_d
-  type(c_bv) :: bv_c, bv_na_c
-  type(d_sweeps) :: sw_d, sw_na_d
-  type(c_sweeps) :: sw_c, sw_na_c
+  type(d_ubt), allocatable :: ubt_d, ubt_na_d
+  type(c_ubt), allocatable :: ubt_c, ubt_na_c
+  type(d_bv), allocatable :: bv_d, bv_na_d
+  type(c_bv), allocatable :: bv_c, bv_na_c
+  type(d_sweeps), allocatable :: sw_d, sw_na_d
+  type(c_sweeps), allocatable :: sw_c, sw_na_c
   ubt_d=d_new_ubt(n,lbwmax,ubwmax)
   ubt_c=c_new_ubt(n,lbwmax,ubwmax)
   bv_d=d_new_bv(n,lbwmax,lbwmax+ubwmax)
@@ -89,9 +89,7 @@ program test_row_compress
   test_name = "Complex Row Compression (n=1);"
   call d_output_result_lower_upper(test_name,a0(1:na,1:na),a1(1:na,1:na),0,bv_na_d%lbw,0, &
        bv_na_d%ubw,t0,t1,tol2,error)
-  call d_deallocate_ubt(ubt_na_d)
-  call d_deallocate_bv(bv_na_d)
-  call d_deallocate_sweeps(sw_na_d)
+  deallocate(ubt_na_d, bv_na_d, sw_na_d)
 
   na=2
   ubt_na_d=d_new_ubt(na,lbwmax,ubwmax)
@@ -111,9 +109,7 @@ program test_row_compress
   test_name = "Complex Row Compression (n=2);"
   call d_output_result_lower_upper(test_name,a0(1:na,1:na),a1(1:na,1:na),1,bv_na_d%lbw,1, &
        bv_na_d%ubw,t0,t1,tol2,error)
-  call d_deallocate_ubt(ubt_na_d)
-  call d_deallocate_bv(bv_na_d)
-  call d_deallocate_sweeps(sw_na_d)
+  deallocate(ubt_na_d, bv_na_d, sw_na_d)
 
   na=3
   ubt_na_d=d_new_ubt(na,lbwmax,ubwmax)
@@ -133,10 +129,7 @@ program test_row_compress
   test_name = "Real Row Compression (n=3);"
   call d_output_result_lower_upper(test_name,a0(1:na,1:na),a1(1:na,1:na),1,bv_na_d%lbw,2, &
        bv_na_d%ubw,t0,t1,tol2,error)
-
-  call d_deallocate_ubt(ubt_na_d)
-  call d_deallocate_bv(bv_na_d)
-  call d_deallocate_sweeps(sw_na_d)
+  deallocate(ubt_na_d, bv_na_d, sw_na_d)
 
   na=4
   ubt_na_d=d_new_ubt(na,lbwmax,ubwmax)
@@ -156,12 +149,7 @@ program test_row_compress
   test_name = "Real Row Compression (n=4);"
   call d_output_result_lower_upper(test_name,a0(1:na,1:na),a1(1:na,1:na),2,bv_na_d%lbw,3, &
        bv_na_d%ubw,t0,t1,tol2,error)
-
-  call d_deallocate_ubt(ubt_na_d)
-  call d_deallocate_bv(bv_na_d)
-  call d_deallocate_sweeps(sw_na_d)
-
-  
+  deallocate(ubt_na_d, bv_na_d, sw_na_d)
 
   print *
   print *, "--------------------------------"
@@ -199,9 +187,7 @@ program test_row_compress
   test_name = "Complex Row Compression (n=1);"
   call c_output_result_lower_upper(test_name,a0_c(1:na,1:na),a1_c(1:na,1:na),0,bv_na_c%lbw,0, &
        bv_na_c%ubw,t0,t1,tol2,error)
-  call c_deallocate_ubt(ubt_na_c)
-  call c_deallocate_bv(bv_na_c)
-  call c_deallocate_sweeps(sw_na_c)
+  deallocate(ubt_na_c, bv_na_c, sw_na_c)
 
   na=2
   ubt_na_c=c_new_ubt(na,lbwmax,ubwmax)
@@ -221,9 +207,7 @@ program test_row_compress
   test_name = "Complex Row Compression (n=2);"
   call c_output_result_lower_upper(test_name,a0_c(1:na,1:na),a1_c(1:na,1:na),1,bv_na_c%lbw,1, &
        bv_na_c%ubw,t0,t1,tol2,error)
-  call c_deallocate_ubt(ubt_na_c)
-  call c_deallocate_bv(bv_na_c)
-  call c_deallocate_sweeps(sw_na_c)
+  deallocate(ubt_na_c, bv_na_c, sw_na_c)
 
   na=3
   ubt_na_c=c_new_ubt(na,lbwmax,ubwmax)
@@ -243,9 +227,7 @@ program test_row_compress
   test_name = "Complex Row Compression (n=2);"
   call c_output_result_lower_upper(test_name,a0_c(1:na,1:na),a1_c(1:na,1:na),1,bv_na_c%lbw,2, &
        bv_na_c%ubw,t0,t1,tol2,error)
-  call c_deallocate_ubt(ubt_na_c)
-  call c_deallocate_bv(bv_na_c)
-  call c_deallocate_sweeps(sw_na_c)
+  deallocate(ubt_na_c, bv_na_c, sw_na_c)
 
   na=4
   ubt_na_c=c_new_ubt(na,lbwmax,ubwmax)
@@ -265,10 +247,6 @@ program test_row_compress
   test_name = "Complex Row Compression (n=4);"
   call c_output_result_lower_upper(test_name,a0_c(1:na,1:na),a1_c(1:na,1:na),2,bv_na_c%lbw,3, &
        bv_na_c%ubw,t0,t1,tol2,error)
-  call c_deallocate_ubt(ubt_na_c)
-  call c_deallocate_bv(bv_na_c)
-  call c_deallocate_sweeps(sw_na_c)
-
-
+  deallocate(ubt_na_c, bv_na_c, sw_na_c)
 
 end program test_row_compress

@@ -22,10 +22,10 @@ program test_convert_ub_and_bv
   complex(kind=dp), dimension(rmax,n) :: v_c, v0_c
   complex(kind=dp), dimension(n) :: d_c, d0_c
 
-  type(d_ub) :: ub_d, ub_na_d
-  type(c_ub) :: ub_c, ub_na_c
-  type(d_bv) :: bv_d, bv_na_d
-  type(c_bv) :: bv_c, bv_na_c
+  type(d_ub), allocatable :: ub_d, ub_na_d
+  type(c_ub), allocatable :: ub_c, ub_na_c
+  type(d_bv), allocatable :: bv_d, bv_na_d
+  type(c_bv), allocatable :: bv_c, bv_na_c
   ub_d=d_new_ub(n,lbwmax,ubwmax)
   ub_c=c_new_ub(n,lbwmax,ubwmax)
   bv_d=d_new_bv(n,lbwmax,ubwmax)
@@ -68,8 +68,7 @@ program test_convert_ub_and_bv
   call bv_to_upper(bv_na_d,a1(1:na,1:na),error)
   test_name = "Real UB to BV (n=1);"
   call d_output_result_upper(test_name,a0(1:na,1:na),a1(1:na,1:na),0,bv_na_d%ubw,t0,t1,tol2,error)
-  call d_deallocate_ub(ub_na_d)
-  call d_deallocate_bv(bv_na_d)
+  deallocate(ub_na_d, bv_na_d)
   !
   na=2
   lbwa=min(na-1,lbw)
@@ -85,8 +84,7 @@ program test_convert_ub_and_bv
   call bv_to_upper(bv_na_d,a1(1:na,1:na),error)
   test_name = "Real UB to BV (n=2);"
   call d_output_result_upper(test_name,a0(1:na,1:na),a1(1:na,1:na),1,bv_na_d%ubw,t0,t1,tol2,error)
-  call d_deallocate_ub(ub_na_d)
-  call d_deallocate_bv(bv_na_d)
+  deallocate(ub_na_d, bv_na_d)
   !
   na=3
   lbwa=min(na-1,lbw)
@@ -102,8 +100,7 @@ program test_convert_ub_and_bv
   call bv_to_upper(bv_na_d,a1(1:na,1:na),error)
   test_name = "Real UB to BV (n=3);"
   call d_output_result_upper(test_name,a0(1:na,1:na),a1(1:na,1:na),1,bv_na_d%ubw,t0,t1,tol2,error)
-  call d_deallocate_ub(ub_na_d)
-  call d_deallocate_bv(bv_na_d)
+  deallocate(ub_na_d, bv_na_d)
   !
   na=4
   lbwa=min(na-1,lbw)
@@ -119,9 +116,7 @@ program test_convert_ub_and_bv
   call bv_to_upper(bv_na_d,a1(1:na,1:na),error)
   test_name = "Real UB to BV (n=4);"
   call d_output_result_upper(test_name,a0(1:na,1:na),a1(1:na,1:na),2,bv_na_d%ubw,t0,t1,tol2,error)
-  call d_deallocate_ub(ub_na_d)
-  call d_deallocate_bv(bv_na_d)
-
+  deallocate(ub_na_d, bv_na_d)
   ! bv to ub
   u=u0; v=v0; d=d0
   call d_assemble_upper(a,u,v,d,lbw)
@@ -148,8 +143,7 @@ program test_convert_ub_and_bv
   call ub_to_upper(ub_na_d,a1(1:na,1:na),error)
   test_name = "Real BV to UB (n=1);"
   call d_output_result_upper(test_name,a0(1:na,1:na),a1(1:na,1:na),0,ub_na_d%ubw,t0,t1,tol2,error)
-  call d_deallocate_ub(ub_na_d)
-  call d_deallocate_bv(bv_na_d)
+  deallocate(ub_na_d, bv_na_d)
   !
   na=2
   lbwa=min(na-1,lbw)
@@ -165,8 +159,7 @@ program test_convert_ub_and_bv
   call ub_to_upper(ub_na_d,a1(1:na,1:na),error)
   test_name = "Real BV to UB (n=2);"
   call d_output_result_upper(test_name,a0(1:na,1:na),a1(1:na,1:na),1,ub_na_d%ubw,t0,t1,tol2,error)
-  call d_deallocate_ub(ub_na_d)
-  call d_deallocate_bv(bv_na_d)
+  deallocate(ub_na_d, bv_na_d)
   !
   na=3
   lbwa=min(na-1,lbw)
@@ -182,8 +175,7 @@ program test_convert_ub_and_bv
   call ub_to_upper(ub_na_d,a1(1:na,1:na),error)
   test_name = "Real BV to UB (n=3);"
   call d_output_result_upper(test_name,a0(1:na,1:na),a1(1:na,1:na),1,ub_na_d%ubw,t0,t1,tol2,error)
-  call d_deallocate_ub(ub_na_d)
-  call d_deallocate_bv(bv_na_d)
+  deallocate(ub_na_d, bv_na_d)
   !
   na=4
   lbwa=min(na-1,lbw)
@@ -199,9 +191,7 @@ program test_convert_ub_and_bv
   call ub_to_upper(ub_na_d,a1(1:na,1:na),error)
   test_name = "Real BV to UB (n=4);"
   call d_output_result_upper(test_name,a0(1:na,1:na),a1(1:na,1:na),2,ub_na_d%ubw,t0,t1,tol2,error)
-  call d_deallocate_ub(ub_na_d)
-  call d_deallocate_bv(bv_na_d)
-
+  deallocate(ub_na_d, bv_na_d)
   print *
   print *, "--------------------------------"
   print *
@@ -235,8 +225,7 @@ program test_convert_ub_and_bv
   call bv_to_upper(bv_na_c,a1_c(1:na,1:na),error)
   test_name = "Complex UB to BV (n=1);"
   call c_output_result_upper(test_name,a0_c(1:na,1:na),a1_c(1:na,1:na),0,bv_na_c%ubw,t0,t1,tol2,error)
-  call c_deallocate_ub(ub_na_c)
-  call c_deallocate_bv(bv_na_c)
+  deallocate(ub_na_c, bv_na_c)
   !
   na=2
   lbwa=min(na-1,lbw)
@@ -252,8 +241,7 @@ program test_convert_ub_and_bv
   call bv_to_upper(bv_na_c,a1_c(1:na,1:na),error)
   test_name = "Complex UB to BV (n=2);"
   call c_output_result_upper(test_name,a0_c(1:na,1:na),a1_c(1:na,1:na),1,bv_na_c%ubw,t0,t1,tol2,error)
-  call c_deallocate_ub(ub_na_c)
-  call c_deallocate_bv(bv_na_c)
+  deallocate(ub_na_c, bv_na_c)
   !
   na=3
   lbwa=min(na-1,lbw)
@@ -269,8 +257,7 @@ program test_convert_ub_and_bv
   call bv_to_upper(bv_na_c,a1_c(1:na,1:na),error)
   test_name = "Complex UB to BV (n=3);"
   call c_output_result_upper(test_name,a0_c(1:na,1:na),a1_c(1:na,1:na),1,bv_na_c%ubw,t0,t1,tol2,error)
-  call c_deallocate_ub(ub_na_c)
-  call c_deallocate_bv(bv_na_c)
+  deallocate(ub_na_c,bv_na_c)
   !
   na=4
   lbwa=min(na-1,lbw)
@@ -286,8 +273,7 @@ program test_convert_ub_and_bv
   call bv_to_upper(bv_na_c,a1_c(1:na,1:na),error)
   test_name = "Complex UB to BV (n=4);"
   call c_output_result_upper(test_name,a0_c(1:na,1:na),a1_c(1:na,1:na),2,bv_na_c%ubw,t0,t1,tol2,error)
-  call c_deallocate_ub(ub_na_c)
-  call c_deallocate_bv(bv_na_c)
+  deallocate(ub_na_c, bv_na_c)
   ! bv to ub
   u_c=u0_c; v_c=v0_c; d_c=d0_c
   call c_assemble_upper(a_c, u_c, v_c, d_c, lbw)
@@ -314,8 +300,7 @@ program test_convert_ub_and_bv
   call ub_to_upper(ub_na_c,a1_c(1:na,1:na),error)
   test_name = "Complex BV to UB (n=1);"
   call c_output_result_upper(test_name,a0_c(1:na,1:na),a1_c(1:na,1:na),0,ub_na_c%ubw,t0,t1,tol2,error)
-  call c_deallocate_ub(ub_na_c)
-  call c_deallocate_bv(bv_na_c)
+  deallocate(ub_na_c, bv_na_c)
   !
   na=2
   lbwa=min(na-1,lbw)
@@ -331,8 +316,7 @@ program test_convert_ub_and_bv
   call ub_to_upper(ub_na_c,a1_c(1:na,1:na),error)
   test_name = "Complex BV to UB (n=2);"
   call c_output_result_upper(test_name,a0_c(1:na,1:na),a1_c(1:na,1:na),1,ub_na_c%ubw,t0,t1,tol2,error)
-  call c_deallocate_ub(ub_na_c)
-  call c_deallocate_bv(bv_na_c)
+  deallocate(ub_na_c, bv_na_c)
   !
   na=3
   lbwa=min(na-1,lbw)
@@ -348,8 +332,7 @@ program test_convert_ub_and_bv
   call ub_to_upper(ub_na_c,a1_c(1:na,1:na),error)
   test_name = "Complex BV to UB (n=3);"
   call c_output_result_upper(test_name,a0_c(1:na,1:na),a1_c(1:na,1:na),1,ub_na_c%ubw,t0,t1,tol2,error)
-  call c_deallocate_ub(ub_na_c)
-  call c_deallocate_bv(bv_na_c)
+  deallocate(ub_na_c, bv_na_c)
   !
   na=4
   lbwa=min(na-1,lbw)
@@ -365,8 +348,7 @@ program test_convert_ub_and_bv
   call ub_to_upper(ub_na_c,a1_c(1:na,1:na),error)
   test_name = "Complex BV to UB (n=4);"
   call c_output_result_upper(test_name,a0_c(1:na,1:na),a1_c(1:na,1:na),2,ub_na_c%ubw,t0,t1,tol2,error)
-  call c_deallocate_ub(ub_na_c)
-  call c_deallocate_bv(bv_na_c)
+  deallocate(ub_na_c, bv_na_c)
   print *
 
 end program test_convert_ub_and_bv

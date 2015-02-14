@@ -15,8 +15,8 @@ program test_general_bt
   complex(kind=dp), dimension(n,rmax) :: u_c, u0_c
   complex(kind=dp), dimension(rmax,n) :: v_c, v0_c
   complex(kind=dp), dimension(n) :: d_c
-  type(d_bt) :: bt_d
-  type(c_bt) :: bt_c
+  type(d_bt), allocatable :: bt_d
+  type(c_bt), allocatable :: bt_c
   bt_d=d_new_bt(n,lbwmax,ubwmax)
   bt_c=c_new_bt(n,lbwmax,ubwmax)
 
