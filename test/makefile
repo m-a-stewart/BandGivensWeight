@@ -13,14 +13,17 @@ run_all : all
 	$(BINDIR)/test_qr_factorization
 	$(BINDIR)/test_solve
 
-all : ORTH_RANK $(BINDIR)/test_general $(BINDIR)/test_general_bt \
-		$(BINDIR)/test_general_wb $(BINDIR)/test_general_ubt $(BINDIR)/test_general_wbv \
-		$(BINDIR)/test_convert_ub_and_bv $(BINDIR)/test_convert_wb_and_bt  \
-		$(BINDIR)/test_convert_ubt_and_wbv $(BINDIR)/test_row_compress \
-		$(BINDIR)/test_qr_factorization $(BINDIR)/test_solve
+all : $(BINDIR)/test_general $(BINDIR)/test_general_bt \
+	$(BINDIR)/test_general_wb $(BINDIR)/test_general_ubt $(BINDIR)/test_general_wbv \
+	$(BINDIR)/test_convert_ub_and_bv $(BINDIR)/test_convert_wb_and_bt  \
+	$(BINDIR)/test_convert_ubt_and_wbv $(BINDIR)/test_row_compress \
+	$(BINDIR)/test_qr_factorization $(BINDIR)/test_solve
 
-ORTH_RANK :
-	cd ../src; make
+orth_rank : force_look
+	cd ../src; $(MAKE)
+
+force_look :
+	true
 
 run_row_compress : ORTH_RANK $(BINDIR)/test_row_compress
 	$(BINDIR)/test_row_compress
@@ -28,7 +31,7 @@ run_row_compress : ORTH_RANK $(BINDIR)/test_row_compress
 run_qr_factorization : ORTH_RANK $(BINDIR)/test_qr_factorization
 	$(BINDIR)/test_qr_factorization
 
-$(BINDIR)/% : $(OBJDIR)/%.o $(OBJDIR)/test_data.o
+$(BINDIR)/% : $(OBJDIR)/%.o $(OBJDIR)/test_data.o orth_rank
 	$(FC) $(LFLAGS) $(PROFLFLAGS) $(OBJDIR)/$< $(OBJS) \
 	$(OBJDIR)/test_data.o -o $@
 

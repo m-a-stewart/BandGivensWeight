@@ -12,8 +12,6 @@ module mod_convert_ubt_to_wbv
   public :: convert_ubt_to_wbv, d_convert_ubt_to_wbv, c_convert_ubt_to_wbv, &
        f_convert_ubt_to_wbv, f_d_convert_ubt_to_wbv, f_c_convert_ubt_to_wbv
 
-  public :: info_d_convert_ubt_to_wbv, info_c_convert_ubt_to_wbv
-
   interface convert_ubt_to_wbv
      module procedure d_convert_ubt_to_wbv, c_convert_ubt_to_wbv
   end interface convert_ubt_to_wbv
@@ -21,16 +19,6 @@ module mod_convert_ubt_to_wbv
   interface f_convert_ubt_to_wbv
      module procedure f_d_convert_ubt_to_wbv, f_c_convert_ubt_to_wbv
   end interface f_convert_ubt_to_wbv
-
-  type(routine_info), parameter :: info_d_convert_ubt_to_wbv=routine_info(id_d_convert_ubt_to_wbv, &
-       'd_convert_ubt_to_wbv', &
-       [ character(len=error_message_length) :: 'n<1', 'Insufficient storage in ubt', &
-       'Insufficient storage in wbv.', 'ubt%n /= wbv%n' ] )
-
-  type(routine_info), parameter :: info_c_convert_ubt_to_wbv=routine_info(id_c_convert_ubt_to_wbv, &
-       'c_convert_ubt_to_wbv', &
-       [ character(len=error_message_length) :: 'Insufficient storage in ubt', &
-       'Insufficient storage in wbv.', 'ubt%n /= wbv%n' ] )
 
 contains
 
@@ -64,13 +52,13 @@ contains
          ubt%numrotst, ubt%kst, ubt%cst, ubt%sst, &
          wbv%br, wbv%lbw, wbv%ubw, get_lbwmax(wbv), get_ubwmax(wbv), &
          wbv%numrotsw, wbv%jsw, wbv%csw, wbv%ssw, &
-         wbv%numrotsv, wbv%ksv, wbv%csv, wbv%ssv, error)
+         wbv%numrotsv, wbv%ksv, wbv%csv, wbv%ssv)
   end subroutine d_convert_ubt_to_wbv
 
   subroutine f_d_convert_ubt_to_wbv(b_ubt, n, lbw, ubw, lbwmax_ubt, ubwmax_ubt, numrotsu, &
        jsu, csu, ssu, numrotst, kst, cst, sst, &
        b_wbv, lbw_wbv, ubw_wbv, lbwmax_wbv, ubwmax_wbv, &
-       numrotsw, jsw, csw, ssw, numrotsv, ksv, csv, ssv, error)
+       numrotsw, jsw, csw, ssw, numrotsv, ksv, csv, ssv)
     real(kind=dp), dimension(lbwmax_ubt+ubwmax_ubt+1,n), intent(inout) :: b_ubt
     integer(kind=int32), intent(in) :: n, lbw, ubw, lbwmax_ubt, ubwmax_ubt, lbwmax_wbv, ubwmax_wbv
     integer(kind=int32), dimension(n), intent(in) :: numrotsu
@@ -88,13 +76,11 @@ contains
     integer(kind=int32), dimension(n,ubwmax_wbv), intent(out) :: ksv
     real(kind=dp), dimension(n,ubwmax_wbv), intent(out) :: csv, ssv
     integer(kind=int32), intent(out) :: lbw_wbv, ubw_wbv
-    type(error_info), intent(out) :: error
 
     integer(kind=int32) :: j, k, k0, k1, ubw1, lbw1, j0, j1
     type(d_rotation) :: rot
     logical :: full_ubw
 
-    call clear_error(error)
     b_wbv(:,1:lbw+ubw+1)=0.0_dp; numrotsv=0
     ssv(:,1:ubw)=0.0_dp; csv(:,1:ubw)=0.0_dp
     ksv(:,1:ubw)=0
@@ -195,13 +181,13 @@ contains
          ubt%numrotst, ubt%kst, ubt%cst, ubt%sst, &
          wbv%br, wbv%lbw, wbv%ubw, get_lbwmax(wbv), get_ubwmax(wbv), &
          wbv%numrotsw, wbv%jsw, wbv%csw, wbv%ssw, &
-         wbv%numrotsv, wbv%ksv, wbv%csv, wbv%ssv, error)
+         wbv%numrotsv, wbv%ksv, wbv%csv, wbv%ssv)
   end subroutine c_convert_ubt_to_wbv
 
   subroutine f_c_convert_ubt_to_wbv(b_ubt, n, lbw, ubw, lbwmax_ubt, ubwmax_ubt, numrotsu, &
        jsu, csu, ssu, numrotst, kst, cst, sst, &
        b_wbv, lbw_wbv, ubw_wbv, lbwmax_wbv, ubwmax_wbv, &
-       numrotsw, jsw, csw, ssw, numrotsv, ksv, csv, ssv, error)
+       numrotsw, jsw, csw, ssw, numrotsv, ksv, csv, ssv)
     complex(kind=dp), dimension(lbwmax_ubt+ubwmax_ubt+1,n), intent(inout) :: b_ubt
     integer(kind=int32), intent(in) :: n, lbw, ubw, lbwmax_ubt, ubwmax_ubt, lbwmax_wbv, ubwmax_wbv
     integer(kind=int32), dimension(n), intent(in) :: numrotsu
@@ -223,13 +209,11 @@ contains
     real(kind=dp), dimension(n,ubwmax_wbv), intent(out) :: csv
     complex(kind=dp), dimension(n,ubwmax_wbv), intent(out) :: ssv
     integer(kind=int32), intent(out) :: lbw_wbv, ubw_wbv
-    type(error_info), intent(out) :: error
 
     integer(kind=int32) :: j, k, k0, k1, ubw1, lbw1, j0, j1
     type(c_rotation) :: rot
     logical :: full_ubw
 
-    call clear_error(error)
     b_wbv(:,1:lbw+ubw+1)=(0.0_dp, 0.0_dp); numrotsv=0
     ssv(:,1:ubw)=(0.0_dp, 0.0_dp); csv(:,1:ubw)=0.0_dp
     ksv(:,1:ubw)=0

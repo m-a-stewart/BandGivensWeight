@@ -14,20 +14,7 @@ module mod_row_compress
      module procedure f_d_row_compress, f_c_row_compress
   end interface f_row_compress
 
-  type(routine_info), parameter :: info_d_row_compress=routine_info(id_d_row_compress, &
-       'd_row_compress', &
-       [ character(len=error_message_length) :: 'ub%n /= bv%n or sw%n /= ub%n', &
-       'Not enough stroage for each sweeps', 'Not enough storage for number of sweeps', &
-       'Insufficient storage in ubt.', 'Insufficient storage in bv.'])
-
-  type(routine_info), parameter :: info_c_row_compress=routine_info(id_c_row_compress, &
-       'c_row_compress', &
-       [ character(len=error_message_length) :: 'ub%n /= bv%n or sw%n /= ub%n', &
-       'Not enough stroage for each sweeps', 'Not enough storage for number of sweeps', &
-       'Insufficient storage in ubt.', 'Insufficient storage in bv.'])
-
 contains
-
 
   ! Errors
   ! 0: no error
@@ -66,16 +53,17 @@ contains
     call f_d_row_compress(ubt%bc, get_n(ubt), ubt%lbw, ubt%ubw, get_lbwmax(ubt), &
          get_ubwmax(ubt), ubt%numrotsu, ubt%jsu, ubt%csu, ubt%ssu, & 
          ubt%numrotst, ubt%kst, ubt%cst, ubt%sst, & 
-         bv%br, bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), bv%numrotsv, bv%ksv, bv%csv, bv%ssv, &
-         sw%left, sw%right, sw%inc, get_minind(sw), get_maxind(sw), get_maxord(sw), sw%numrots, sw%js, &
-         sw%cs, sw%ss, error)
+         bv%br, bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), bv%numrotsv, bv%ksv, &
+         bv%csv, bv%ssv, sw%left, sw%right, sw%inc, get_minind(sw), get_maxind(sw), &
+         get_maxord(sw), sw%numrots, sw%js, sw%cs, sw%ss)
   end subroutine d_row_compress
 
   subroutine f_d_row_compress(b_ubt, n, lbw_ubt, ubw_ubt, lbwmax_ubt, ubwmax_ubt, numrotsu, &
        jsu, csu, ssu, numrotst, kst, cst, sst, &
        b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, ssv, &
-       leftq, rightq, incq, minind, maxind, maxord, numrotsq, jsq, csq, ssq, error)
-    integer(kind=int32), intent(in) :: n, lbw_ubt, ubw_ubt, lbwmax_ubt, ubwmax_ubt, lbwmax_bv, ubwmax_bv
+       leftq, rightq, incq, minind, maxind, maxord, numrotsq, jsq, csq, ssq)
+    integer(kind=int32), intent(in) :: n, lbw_ubt, ubw_ubt, lbwmax_ubt, ubwmax_ubt, &
+         lbwmax_bv, ubwmax_bv
     real(kind=dp), dimension(lbwmax_ubt+ubwmax_ubt+1,n), intent(inout) :: b_ubt
     integer(kind=int32), dimension(n), intent(in) :: numrotsu, numrotst
     integer(kind=int32), dimension(ubwmax_ubt,n), intent(in) :: jsu
@@ -94,12 +82,10 @@ contains
     integer(kind=int32), dimension(minind:maxind), intent(out) :: numrotsq
     integer(kind=int32), dimension(maxord,minind:maxind), intent(out) :: jsq
     integer(kind=int32), intent(out) :: leftq, rightq, incq
-    type(error_info), intent(out) :: error
     integer(kind=int32) :: j, k, j0, j1, k0, k1, lbw, ubw, lbw1, ubw1
     logical :: full_ubw, full_lbw
     type(d_rotation) :: rot
 
-    call clear_error(error)
     if (n == 1) then
        b_bv(1,1)=b_ubt(1,1);
        lbw_bv=0; ubw_bv=0; numrotsv=0; 
@@ -216,16 +202,17 @@ contains
     call f_c_row_compress(ubt%bc, get_n(ubt), ubt%lbw, ubt%ubw, get_lbwmax(ubt), &
          get_ubwmax(ubt), ubt%numrotsu, ubt%jsu, ubt%csu, ubt%ssu, & 
          ubt%numrotst, ubt%kst, ubt%cst, ubt%sst, & 
-         bv%br, bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), bv%numrotsv, bv%ksv, bv%csv, bv%ssv, &
-         sw%left, sw%right, sw%inc, get_minind(sw), get_maxind(sw), get_maxord(sw), sw%numrots, sw%js, &
-         sw%cs, sw%ss, error)
+         bv%br, bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), bv%numrotsv, bv%ksv, &
+         bv%csv, bv%ssv, sw%left, sw%right, sw%inc, get_minind(sw), get_maxind(sw), &
+         get_maxord(sw), sw%numrots, sw%js, sw%cs, sw%ss)
   end subroutine c_row_compress
 
   subroutine f_c_row_compress(b_ubt, n, lbw_ubt, ubw_ubt, lbwmax_ubt, ubwmax_ubt, numrotsu, &
        jsu, csu, ssu, numrotst, kst, cst, sst, &
        b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, ssv, &
-       leftq, rightq, incq, minind, maxind, maxord, numrotsq, jsq, csq, ssq, error)
-    integer(kind=int32), intent(in) :: n, lbw_ubt, ubw_ubt, lbwmax_ubt, ubwmax_ubt, lbwmax_bv, ubwmax_bv
+       leftq, rightq, incq, minind, maxind, maxord, numrotsq, jsq, csq, ssq)
+    integer(kind=int32), intent(in) :: n, lbw_ubt, ubw_ubt, lbwmax_ubt, ubwmax_ubt, &
+         lbwmax_bv, ubwmax_bv
     complex(kind=dp), dimension(lbwmax_ubt+ubwmax_ubt+1,n), intent(inout) :: b_ubt
     integer(kind=int32), dimension(n), intent(in) :: numrotsu, numrotst
     integer(kind=int32), dimension(ubwmax_ubt,n), intent(in) :: jsu
@@ -248,12 +235,10 @@ contains
     integer(kind=int32), dimension(minind:maxind), intent(out) :: numrotsq
     integer(kind=int32), dimension(maxord,minind:maxind), intent(out) :: jsq
     integer(kind=int32), intent(out) :: leftq, rightq, incq
-    type(error_info), intent(out) :: error
     integer(kind=int32) :: j, k, j0, j1, k0, k1, lbw, ubw, lbw1, ubw1
     logical :: full_ubw, full_lbw
     type(c_rotation) :: rot
 
-    call clear_error(error)
     if (n == 1) then
        b_bv(1,1)=b_ubt(1,1);
        lbw_bv=0; ubw_bv=0; numrotsv=0; 

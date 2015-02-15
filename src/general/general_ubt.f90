@@ -13,9 +13,6 @@ module mod_general_ubt
        f_general_to_ubt, f_d_general_to_ubt, f_c_general_to_ubt, &
        general_to_ubt, d_general_to_ubt, c_general_to_ubt
 
-  public :: info_d_general_to_ubt, info_f_d_general_to_ubt, info_c_general_to_ubt, &
-       info_f_c_general_to_ubt
-
   interface f_general_ubt
      module procedure f_d_general_ubt, f_c_general_ubt
   end interface f_general_ubt
@@ -27,26 +24,6 @@ module mod_general_ubt
   interface general_to_ubt
      module procedure d_general_to_ubt, c_general_to_ubt
   end interface general_to_ubt
-
-  type(routine_info), parameter :: info_d_general_to_ubt=routine_info(id_d_general_to_ubt, &
-       'd_general_to_ubt', &
-       [ character(len=error_message_length) :: 'n<1', &
-       'Size of a and ubt not the same.' ] )
-
-  type(routine_info), parameter :: info_f_d_general_to_ubt=routine_info(id_f_d_general_to_ubt, &
-       'f_d_general_to_ubt', &
-       [ character(len=error_message_length) :: 'Insufficient lower bandwidth in ubt', &
-       'Insufficient upper bandwidth in ubt' ])
-
-  type(routine_info), parameter :: info_c_general_to_ubt=routine_info(id_c_general_to_ubt, &
-       'c_general_to_ubt', &
-       [ character(len=error_message_length) :: 'n<1', &
-       'Size of a and ubt not the same.' ] )
-
-  type(routine_info), parameter :: info_f_c_general_to_ubt=routine_info(id_f_c_general_to_ubt, &
-       'f_c_general_to_ubt', &
-       [ character(len=error_message_length) :: 'Insufficient lower bandwidth in ubt', &
-       'Insufficient upper bandwidth in ubt' ])
 
 contains
 
@@ -67,9 +44,18 @@ contains
     integer(kind=int32), dimension(lbwmax,n) :: jsu0
     real(kind=dp), dimension(lbwmax,n) :: csu0, ssu0
 
+    call clear_error(error)
     call f_d_general_ub(a,n,ubws,ubwmax,numrotsu,jsu,csu,ssu,tol,error)
+    if (error%code > 0) then
+       call add_id(error,id_f_d_general_ubt); return
+    end if
+
     call ip_transpose(a)
     call f_d_general_ub(a,n,lbws,lbwmax,numrotst,jsu0,csu0,ssu0,tol,error)
+    if (error%code > 0) then
+       call add_id(error,id_f_d_general_ubt); return
+    end if
+
     call ip_transpose(a)
     
     kst=transpose(jsu0)
@@ -116,6 +102,10 @@ contains
          numrotsu, jsu, csu, ssu, &
          numrotst, kst, cst, sst, tol, error)
 
+    if (error%code > 0) then
+       call add_id(error,id_f_d_general_to_ubt); return
+    end if
+
     lbw=maxval(lbws)
     ubw=maxval(ubws)
     if (lbw > lbwmax) then
@@ -134,18 +124,42 @@ contains
   subroutine d_general_to_ubt(a,ubt,tol,error)
     real(kind=dp), target, dimension(:,:), intent(inout) :: a
     type(d_ubt), intent(inout) :: ubt
-    type(error_info), intent(out) :: error
+    type(error_info), intent(out), optional :: error
+    type(error_info) :: error1
+
     real(kind=dp), intent(in) :: tol
-    call clear_error(error)
-    if (size(a,1) < 1) then
-       call set_error(error, 1, id_d_general_to_ubt); return
+
+    if (present(error)) then
+       call clear_error(error)
+       if (size(a,1) < 1) then
+          call set_error(error, 1, id_d_general_to_ubt); return
+       end if
+       if (get_n(ubt) /= size(a,1) .or. get_n(ubt) /= size(a,2)) then
+          call set_error(error, 2, id_d_general_to_ubt); return
+       end if
+       call f_d_general_to_ubt(a,get_n(ubt),ubt%bc, ubt%lbw, ubt%ubw, get_lbwmax(ubt), &
+            get_ubwmax(ubt), ubt%numrotsu, ubt%jsu, ubt%csu, ubt%ssu, &
+            ubt%numrotst, ubt%kst, ubt%cst, ubt%sst, tol, error)
+       if (error%code > 0) then
+          call add_id(error,id_d_general_to_ubt); return
+       end if
+
+    else
+       call clear_error(error1)
+       if (size(a,1) < 1) then
+          stop info_d_general_to_ubt%error_messages(1)
+       end if
+       if (get_n(ubt) /= size(a,1) .or. get_n(ubt) /= size(a,2)) then
+          stop info_d_general_to_ubt%error_messages(2)
+       end if
+       call f_d_general_to_ubt(a,get_n(ubt),ubt%bc, ubt%lbw, ubt%ubw, get_lbwmax(ubt), &
+            get_ubwmax(ubt), ubt%numrotsu, ubt%jsu, ubt%csu, ubt%ssu, &
+            ubt%numrotst, ubt%kst, ubt%cst, ubt%sst, tol, error1)
+       if (error1%code > 0) then
+          stop info_f_d_general_to_ubt%error_messages(error1%code)
+       end if
     end if
-    if (get_n(ubt) /= size(a,1) .or. get_n(ubt) /= size(a,2)) then
-       call set_error(error, 2, id_d_general_to_ubt); return
-    end if
-    call f_d_general_to_ubt(a,get_n(ubt),ubt%bc, ubt%lbw, ubt%ubw, get_lbwmax(ubt), &
-         get_ubwmax(ubt), ubt%numrotsu, ubt%jsu, ubt%csu, ubt%ssu, &
-         ubt%numrotst, ubt%kst, ubt%cst, ubt%sst, tol, error)
+       
   end subroutine d_general_to_ubt
 
   subroutine f_c_general_ubt(a, n, lbws, ubws, lbwmax, ubwmax, &
@@ -168,9 +182,17 @@ contains
     real(kind=dp), dimension(lbwmax,n) :: csu0
     complex(kind=dp), dimension(lbwmax,n) :: ssu0
 
+    call clear_error(error)
     call f_c_general_ub(a,n,ubws,ubwmax,numrotsu,jsu,csu,ssu,tol,error)
+    if (error%code > 0) then
+       call add_id(error,id_f_c_general_ubt); return
+    end if
+
     call ip_transpose(a)
     call f_c_general_ub(a,n,lbws,lbwmax,numrotst,jsu0,csu0,ssu0,tol,error)
+    if (error%code > 0) then
+       call add_id(error,id_f_c_general_ubt); return
+    end if
     call ip_transpose(a)
     
     kst=transpose(jsu0)
@@ -218,6 +240,9 @@ contains
     call f_c_general_ubt(a, n, lbws, ubws, lbwmax, ubwmax, &
          numrotsu, jsu, csu, ssu, &
          numrotst, kst, cst, sst, tol, error)
+    if (error%code > 0) then
+       call add_id(error,id_f_c_general_to_ubt); return
+    end if
 
     lbw=maxval(lbws)
     ubw=maxval(ubws)
@@ -249,6 +274,10 @@ contains
     call f_c_general_to_ubt(a,get_n(ubt),ubt%bc, ubt%lbw, ubt%ubw, get_lbwmax(ubt), &
          get_ubwmax(ubt), ubt%numrotsu, ubt%jsu, ubt%csu, ubt%ssu, &
          ubt%numrotst, ubt%kst, ubt%cst, ubt%sst, tol, error)
+    if (error%code > 0) then
+       call add_id(error,id_c_general_to_ubt); return
+    end if
+
   end subroutine c_general_to_ubt
 
 

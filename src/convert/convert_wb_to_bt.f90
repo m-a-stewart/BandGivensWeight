@@ -11,8 +11,6 @@ module mod_convert_wb_to_bt
   public :: convert_wb_to_bt, d_convert_wb_to_bt, c_convert_wb_to_bt, &
        f_convert_wb_to_bt, f_d_convert_wb_to_bt, f_c_convert_wb_to_bt
 
-  public :: info_d_convert_wb_to_bt, info_c_convert_wb_to_bt
-
   interface convert_wb_to_bt
      module procedure d_convert_wb_to_bt, c_convert_wb_to_bt
   end interface convert_wb_to_bt
@@ -20,16 +18,6 @@ module mod_convert_wb_to_bt
   interface f_convert_wb_to_bt
      module procedure f_d_convert_wb_to_bt, f_c_convert_wb_to_bt
   end interface f_convert_wb_to_bt
-
-  type(routine_info), parameter :: info_d_convert_wb_to_bt=routine_info(id_d_convert_wb_to_bt, &
-       'd_convert_wb_to_bt', &
-       [ character(len=error_message_length) :: 'n<1', 'Insufficient storage in wb.', &
-       'Insufficient Storage in bt.', 'bt%n /= wb%n' ] )
-
-  type(routine_info), parameter :: info_c_convert_wb_to_bt=routine_info(id_c_convert_wb_to_bt, &
-       'c_convert_wb_to_bt', &
-       [ character(len=error_message_length) :: 'n<1', 'Insufficient storage in wb.', &
-       'Insufficient Storage in bt.', 'bt%n /= wb%n' ] )
 
 contains
 
@@ -60,12 +48,12 @@ contains
 
     call f_d_convert_wb_to_bt(wb%bc, get_n(wb), wb%lbw, wb%ubw, get_lbwmax(wb), &
          get_ubwmax(wb), wb%numrotsw, wb%jsw, wb%csw, wb%ssw, bt%br,  bt%lbw, bt%ubw, get_lbwmax(bt), &
-         get_ubwmax(bt), bt%numrotst, bt%kst, bt%cst, bt%sst, error)
+         get_ubwmax(bt), bt%numrotst, bt%kst, bt%cst, bt%sst)
   end subroutine d_convert_wb_to_bt
 
   subroutine f_d_convert_wb_to_bt(b_wb, n, lbw, ubw, lbwmax_wb, ubwmax_wb, &
        numrotsw, jsw, csw, ssw, b_bt, lbw_bt, ubw_bt, lbwmax_bt, ubwmax_bt, numrotst, kst, &
-       cst, sst, error)
+       cst, sst)
     real(kind=dp), dimension(lbwmax_wb+ubwmax_wb+1,n), intent(inout) :: b_wb
     integer(kind=int32), intent(in) :: n, lbw, ubw, lbwmax_bt, ubwmax_bt, lbwmax_wb, ubwmax_wb
     integer(kind=int32), dimension(n), intent(in) :: numrotsw
@@ -77,12 +65,10 @@ contains
     integer(kind=int32), dimension(n,lbwmax_bt), intent(out) :: kst
     integer(kind=int32), intent(out) :: lbw_bt, ubw_bt
     real(kind=dp), dimension(n,lbwmax_bt), intent(out) :: cst, sst
-    type(error_info), intent(out) :: error
 
     integer(kind=int32) :: j, k, ubw1, lbw1, k0, k1
     type(d_rotation) :: rot
 
-    call clear_error(error)
     b_bt(:,1:lbw+ubw+1)=0.0_dp; numrotst=0
     sst(:,1:lbw)=0.0_dp; cst(:,1:lbw)=0.0_dp
     kst(:,1:lbw)=0
@@ -148,12 +134,12 @@ contains
 
     call f_c_convert_wb_to_bt(wb%bc, get_n(wb), wb%lbw, wb%ubw, get_lbwmax(wb), &
          get_ubwmax(wb), wb%numrotsw, wb%jsw, wb%csw, wb%ssw, bt%br,  bt%lbw, bt%ubw, get_lbwmax(bt), &
-         get_ubwmax(bt), bt%numrotst, bt%kst, bt%cst, bt%sst, error)
+         get_ubwmax(bt), bt%numrotst, bt%kst, bt%cst, bt%sst)
   end subroutine c_convert_wb_to_bt
 
   subroutine f_c_convert_wb_to_bt(b_wb, n, lbw, ubw, lbwmax_wb, ubwmax_wb, &
        numrotsw, jsw, csw, ssw, b_bt, lbw_bt, ubw_bt, lbwmax_bt, ubwmax_bt, numrotst, kst, &
-       cst, sst, error)
+       cst, sst)
     complex(kind=dp), dimension(lbwmax_wb+ubwmax_wb+1,n), intent(inout) :: b_wb
     integer(kind=int32), intent(in) :: n, lbw, ubw, lbwmax_bt, ubwmax_bt, lbwmax_wb, ubwmax_wb
     integer(kind=int32), dimension(n), intent(in) :: numrotsw
@@ -167,12 +153,10 @@ contains
     integer(kind=int32), intent(out) :: lbw_bt, ubw_bt
     real(kind=dp), dimension(n,lbwmax_bt), intent(out) :: cst
     complex(kind=dp), dimension(n,lbwmax_bt), intent(out) :: sst
-    type(error_info), intent(out) :: error
 
     integer(kind=int32) :: j, k, ubw1, lbw1, k0, k1
     type(c_rotation) :: rot
 
-    call clear_error(error)
     b_bt(:,1:lbw+ubw+1)=(0.0_dp,0.0_dp); numrotst=0
     sst(:,1:lbw)=(0.0_dp,0.0_dp); cst(:,1:lbw)=0.0_dp
     kst(:,1:lbw)=0

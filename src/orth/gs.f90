@@ -11,9 +11,6 @@ module mod_gs
   public :: extend_gs_rows, d_extend_gs_rows, c_extend_gs_rows, &
        extend_gs_columns, d_extend_gs_columns, c_extend_gs_columns
 
-  public :: info_d_extend_gs_rows, info_c_extend_gs_rows, &
-       info_d_extend_gs_columns, info_c_extend_gs_columns
-
   interface extend_gs_rows
      module procedure d_extend_gs_rows, c_extend_gs_rows
   end interface extend_gs_rows
@@ -21,22 +18,6 @@ module mod_gs
   interface extend_gs_columns
      module procedure d_extend_gs_columns, c_extend_gs_columns
   end interface extend_gs_columns
-
-  type(routine_info), parameter :: info_d_extend_gs_rows=routine_info(id_d_extend_gs_rows, &
-       'd_extend_gs_rows', &
-       [ character(len=error_message_length) :: 'GS Orthogonalization Error' ])
-
-  type(routine_info), parameter :: info_c_extend_gs_rows=routine_info(id_c_extend_gs_rows, &
-       'c_extend_gs_rows', &
-       [ character(len=error_message_length) :: 'GS Orthogonalization Error' ])
-
-  type(routine_info), parameter :: info_d_extend_gs_columns=routine_info(id_d_extend_gs_columns, &
-       'd_extend_gs_columns', &
-       [ character(len=error_message_length) :: 'GS Orthogonalization Error' ])
-
-  type(routine_info), parameter :: info_c_extend_gs_columns=routine_info(id_c_extend_gs_columns, &
-       'c_extend_gs_columns', &
-       [ character(len=error_message_length) :: 'GS Orthogonalization Error' ])
 
 contains
 

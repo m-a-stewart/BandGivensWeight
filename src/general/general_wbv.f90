@@ -13,9 +13,6 @@ module mod_general_wbv
        f_general_to_wbv, f_d_general_to_wbv, f_c_general_to_wbv, &
        general_to_wbv, d_general_to_wbv, c_general_to_wbv
   
-  public :: info_d_general_to_wbv, info_f_d_general_to_wbv, info_c_general_to_wbv, &
-       info_f_c_general_to_wbv
-
   interface f_general_wbv
      module procedure f_d_general_wbv, f_c_general_wbv
   end interface f_general_wbv
@@ -27,26 +24,6 @@ module mod_general_wbv
   interface general_to_wbv
      module procedure d_general_to_wbv, c_general_to_wbv
   end interface general_to_wbv
-
-  type(routine_info), parameter :: info_d_general_to_wbv=routine_info(id_d_general_to_wbv, &
-       'd_general_to_wbv', &
-       [ character(len=error_message_length) :: 'n<1', &
-       'Size of a and wbv not the same.' ] )
-
-  type(routine_info), parameter :: info_f_d_general_to_wbv=routine_info(id_f_d_general_to_wbv, &
-       'f_d_general_to_wbv', &
-       [ character(len=error_message_length) :: 'Insufficient lower bandwidth in wbv', &
-       'Insufficient upper bandwidth in wbv' ])
-
-  type(routine_info), parameter :: info_c_general_to_wbv=routine_info(id_c_general_to_wbv, &
-       'c_general_to_wbv', &
-       [ character(len=error_message_length) :: 'n<1', &
-       'Size of a and wbv not the same.' ] )
-
-  type(routine_info), parameter :: info_f_c_general_to_wbv=routine_info(id_f_c_general_to_wbv, &
-       'f_c_general_to_wbv', &
-       [ character(len=error_message_length) :: 'Insufficient lower bandwidth in wbv', &
-       'Insufficient upper bandwidth in wbv' ])
 
 contains
 
@@ -66,11 +43,17 @@ contains
     !
     integer(kind=int32), dimension(n,lbwmax) :: ksv0
     real(kind=dp), dimension(n,lbwmax) :: csv0, ssv0
-    
-
+    call clear_error(error)
     call f_d_general_bv(a,n,ubws,ubwmax,numrotsv,ksv,csv,ssv,tol,error)
+    if (error%code > 0) then
+       call add_id(error,id_f_d_general_wbv); return
+    end if
+
     call ip_transpose(a)
     call f_d_general_bv(a,n,lbws,lbwmax,numrotsw,ksv0,csv0,ssv0,tol,error)
+    if (error%code > 0) then
+       call add_id(error,id_f_d_general_wbv); return
+    end if
     call ip_transpose(a)
     
     jsw=transpose(ksv0)
@@ -99,9 +82,19 @@ contains
     real(kind=dp), dimension(n,lbwmax) :: csv0
     complex(kind=dp), dimension(n,lbwmax) :: ssv0
 
+    call clear_error(error)
+
     call f_c_general_bv(a,n,ubws,ubwmax,numrotsv,ksv,csv,ssv,tol,error)
+    if (error%code > 0) then
+       call add_id(error,id_f_c_general_wbv); return
+    end if
+
     call ip_transpose(a)
     call f_c_general_bv(a,n,lbws,lbwmax,numrotsw,ksv0,csv0,ssv0,tol,error)
+    if (error%code > 0) then
+       call add_id(error,id_f_c_general_wbv); return
+    end if
+
     call ip_transpose(a)
     
     jsw=transpose(ksv0)
@@ -147,6 +140,10 @@ contains
     call f_d_general_wbv(a, n, lbws, ubws, lbwmax, ubwmax, &
          numrotsw, jsw, csw, ssw, &
          numrotsv, ksv, csv, ssv, tol, error)
+
+    if (error%code > 0) then
+       call add_id(error,id_f_d_general_to_wbv); return
+    end if
 
     lbw=maxval(lbws)
     ubw=maxval(ubws)
@@ -200,6 +197,10 @@ contains
          numrotsw, jsw, csw, ssw, &
          numrotsv, ksv, csv, ssv, tol, error)
 
+    if (error%code > 0) then
+       call add_id(error,id_f_c_general_to_wbv); return
+    end if
+
     lbw=maxval(lbws)
     ubw=maxval(ubws)
     if (lbw > lbwmax) then
@@ -230,6 +231,10 @@ contains
     call f_d_general_to_wbv(a,get_n(wbv),wbv%br, wbv%lbw, wbv%ubw, get_lbwmax(wbv), &
          get_ubwmax(wbv), wbv%numrotsw, wbv%jsw, wbv%csw, wbv%ssw, &
          wbv%numrotsv, wbv%ksv, wbv%csv, wbv%ssv, tol, error)
+    if (error%code > 0) then
+       call add_id(error,id_d_general_to_wbv); return
+    end if
+
   end subroutine d_general_to_wbv
 
   ! Errors:
@@ -250,6 +255,10 @@ contains
     call f_c_general_to_wbv(a,get_n(wbv),wbv%br, wbv%lbw, wbv%ubw, get_lbwmax(wbv), &
          get_ubwmax(wbv), wbv%numrotsw, wbv%jsw, wbv%csw, wbv%ssw, &
          wbv%numrotsv, wbv%ksv, wbv%csv, wbv%ssv, tol, error)
+    if (error%code > 0) then
+       call add_id(error,id_f_c_general_to_wbv); return
+    end if
+
   end subroutine c_general_to_wbv
 
 end module mod_general_wbv

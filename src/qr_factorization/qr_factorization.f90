@@ -13,8 +13,6 @@ module mod_qr_factorization
   public qr_bv_to_ub, d_qr_bv_to_ub, c_qr_bv_to_ub, &
        f_qr_bv_to_ub, f_d_qr_bv_to_ub, f_c_qr_bv_to_ub
 
-  public :: info_d_qr_bv_to_ub, info_c_qr_bv_to_ub
-
   interface qr_bv_to_ub
      module procedure d_qr_bv_to_ub, c_qr_bv_to_ub
   end interface qr_bv_to_ub
@@ -23,18 +21,7 @@ module mod_qr_factorization
      module procedure f_d_qr_bv_to_ub, f_c_qr_bv_to_ub
   end interface f_qr_bv_to_ub
 
-  type(routine_info), parameter :: info_d_qr_bv_to_ub=routine_info(id_d_qr_bv_to_ub, &
-       'd_qr_bv_to_ub', &
-       [ character(len=error_message_length) :: 'ub%n /= bv%n or sw%n /= ub%n', &
-       'Not enough stroage for sweeps' ])
-
-  type(routine_info), parameter :: info_c_qr_bv_to_ub=routine_info(id_c_qr_bv_to_ub, &
-       'c_qr_bv_to_ub', &
-       [ character(len=error_message_length) :: 'ub%n /= bv%n', 'bv%lbw <= 0', &
-       'dim. of cs or ss /= n' ])
-
 contains
-
 
   ! Errors
   ! 0: no error
@@ -76,13 +63,18 @@ contains
          ub%csu, ub%ssu, &
          sw%left, sw%right, sw%inc, get_minind(sw), get_maxind(sw), get_maxord(sw), &
          sw%numrots, sw%js, &
-         sw%cs, sw%ss, error)
+         sw%cs, sw%ss)
+
+    if (error%code > 0) then
+       call add_id(error,id_d_qr_bv_to_ub); return
+    end if
+
   end subroutine d_qr_bv_to_ub
 
   subroutine f_d_qr_bv_to_ub(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, &
        ksv, csv, ssv, &
        b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, csu, ssu, &
-       leftq, rightq, incq, minind, maxind, maxord, numrotsq, jsq, csq, ssq, error)
+       leftq, rightq, incq, minind, maxind, maxord, numrotsq, jsq, csq, ssq)
     integer(kind=int32), intent(in) :: n, lbw_bv, ubw_bv, lbwmax_ub, ubwmax_ub, &
          lbwmax_bv, ubwmax_bv
     real(kind=dp), dimension(n,lbwmax_bv+ubwmax_bv+1), intent(inout) :: b_bv
@@ -101,12 +93,10 @@ contains
     integer(kind=int32), dimension(minind:maxind), intent(out) :: numrotsq
     integer(kind=int32), dimension(maxord,minind:maxind), intent(out) :: jsq
     integer(kind=int32), intent(out) :: leftq, rightq, incq
-    type(error_info), intent(out) :: error
 
     integer(kind=int32) :: j, k, lbw, ubw, lbw1, ubw1, k0, k1
     type(d_rotation) :: rot
 
-    call clear_error(error)
     if (n == 1) then
        b_ub(1,1)=b_bv(1,1);
        lbw_ub=0; ubw_ub=0; numrotsu=0; 
@@ -117,7 +107,7 @@ contains
     if (lbw_bv == 0) then
        call f_d_convert_bv_to_ub(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, &
             numrotsv, ksv, csv, ssv, b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, &
-            numrotsu, jsu, csu, ssu,error)
+            numrotsu, jsu, csu, ssu)
        numrotsq=0; leftq=0; rightq=-1; incq=1
        return
     end if
@@ -233,13 +223,17 @@ contains
          ub%bc, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), ub%numrotsu, &
          ub%jsu, ub%csu, ub%ssu, sw%left, sw%right, sw%inc, get_minind(sw), &
          get_maxind(sw), get_maxord(sw), sw%numrots, sw%js, &
-         sw%cs, sw%ss, error)
+         sw%cs, sw%ss)
+    if (error%code > 0) then
+       call add_id(error,id_c_qr_bv_to_ub); return
+    end if
+
   end subroutine c_qr_bv_to_ub
 
   subroutine f_c_qr_bv_to_ub(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, &
        ksv, csv, ssv, &
        b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, csu, ssu, &
-       leftq, rightq, incq, minind, maxind, maxord, numrotsq, jsq, csq, ssq, error)
+       leftq, rightq, incq, minind, maxind, maxord, numrotsq, jsq, csq, ssq)
     integer(kind=int32), intent(in) :: n, lbw_bv, ubw_bv, lbwmax_ub, ubwmax_ub, &
          lbwmax_bv, ubwmax_bv
     complex(kind=dp), dimension(n,lbwmax_bv+ubwmax_bv+1), intent(inout) :: b_bv
@@ -261,12 +255,10 @@ contains
     integer(kind=int32), dimension(minind:maxind), intent(out) :: numrotsq
     integer(kind=int32), dimension(maxord,minind:maxind), intent(out) :: jsq
     integer(kind=int32), intent(out) :: leftq, rightq, incq
-    type(error_info), intent(out) :: error
 
     integer(kind=int32) :: j, k, lbw, ubw, lbw1, ubw1, k0, k1
     type(c_rotation) :: rot
 
-    call clear_error(error)
     if (n == 1) then
        b_ub(1,1)=b_bv(1,1);
        lbw_ub=0; ubw_ub=0; numrotsu=0; 
@@ -277,7 +269,7 @@ contains
     if (lbw_bv == 0) then
        call f_c_convert_bv_to_ub(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, &
             numrotsv, ksv, csv, ssv, b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, &
-            numrotsu, jsu, csu, ssu,error)
+            numrotsu, jsu, csu, ssu)
        numrotsq=0; leftq=0; rightq=-1; incq=1
        return
     end if

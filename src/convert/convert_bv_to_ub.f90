@@ -10,8 +10,6 @@ module mod_convert_bv_to_ub
   public :: convert_bv_to_ub, d_convert_bv_to_ub, c_convert_bv_to_ub, &
        f_convert_bv_to_ub, f_d_convert_bv_to_ub, f_c_convert_bv_to_ub
 
-  public :: info_d_convert_bv_to_ub, info_c_convert_bv_to_ub
-
   interface convert_bv_to_ub
      module procedure d_convert_bv_to_ub, c_convert_bv_to_ub
   end interface convert_bv_to_ub
@@ -19,16 +17,6 @@ module mod_convert_bv_to_ub
   interface f_convert_bv_to_ub
      module procedure f_d_convert_bv_to_ub, f_c_convert_bv_to_ub
   end interface f_convert_bv_to_ub
-
-  type(routine_info), parameter :: info_d_convert_bv_to_ub=routine_info(id_d_convert_bv_to_ub, &
-       'd_convert_bv_to_ub', &
-       [ character(len=error_message_length) :: 'n<1', 'Insufficient storage in bv.', &
-       'Insufficient Storage in ub.', 'ub%n /= bv%n' ] )
-
-  type(routine_info), parameter :: info_c_convert_bv_to_ub=routine_info(id_c_convert_bv_to_ub, &
-       'c_convert_bv_to_ub', &
-       [ character(len=error_message_length) :: 'n<1', 'Insufficient storage in bv.', &
-       'Insufficient Storage in ub.', 'ub%n /= bv%n' ] )
 
 contains
 
@@ -59,12 +47,12 @@ contains
 
     call f_d_convert_bv_to_ub(bv%br, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), &
          get_ubwmax(bv), bv%numrotsv, bv%ksv, bv%csv, bv%ssv, ub%bc,  ub%lbw, ub%ubw, get_lbwmax(ub), &
-         get_ubwmax(ub), ub%numrotsu, ub%jsu, ub%csu, ub%ssu, error)
+         get_ubwmax(ub), ub%numrotsu, ub%jsu, ub%csu, ub%ssu)
   end subroutine d_convert_bv_to_ub
 
   subroutine f_d_convert_bv_to_ub(b_bv, n, lbw, ubw, lbwmax_bv, ubwmax_bv, &
        numrotsv, ksv, csv, ssv, b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, &
-       csu, ssu, error)
+       csu, ssu)
     real(kind=dp), dimension(n,lbwmax_bv+ubwmax_bv+1), intent(inout) :: b_bv
     integer(kind=int32), intent(in) :: n, lbw, ubw, lbwmax_ub, ubwmax_ub, lbwmax_bv, ubwmax_bv
     integer(kind=int32), dimension(n), intent(in) :: numrotsv
@@ -76,12 +64,10 @@ contains
     integer(kind=int32), dimension(ubwmax_ub,n), intent(out) :: jsu
     integer(kind=int32), intent(out) :: lbw_ub, ubw_ub
     real(kind=dp), dimension(ubwmax_ub,n), intent(out) :: csu, ssu
-    type(error_info), intent(out) :: error
 
     integer(kind=int32) :: j, k, ubw1, lbw1, k0, k1
     type(d_rotation) :: rot
 
-    call clear_error(error)
     b_ub(1:lbw+ubw+1,:)=0.0_dp; numrotsu=0
     ssu(1:ubw,:)=0.0_dp; csu(1:ubw,:)=0.0_dp
     jsu(1:ubw,:)=0
@@ -139,11 +125,11 @@ contains
     call f_c_convert_bv_to_ub(bv%br, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), &
          get_ubwmax(bv), bv%numrotsv, bv%ksv, &
          bv%csv, bv%ssv, ub%bc,  ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), ub%numrotsu, ub%jsu, &
-         ub%csu, ub%ssu, error)
+         ub%csu, ub%ssu)
   end subroutine c_convert_bv_to_ub
 
   subroutine f_c_convert_bv_to_ub(b_bv, n, lbw, ubw, lbwmax_bv, ubwmax_bv, numrotsv, &
-       ksv, csv, ssv, b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, csu, ssu, error)
+       ksv, csv, ssv, b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, csu, ssu)
     complex(kind=dp), dimension(n,lbwmax_bv+ubwmax_bv+1), intent(inout) :: b_bv
     integer(kind=int32), intent(in) :: n, lbw, ubw, lbwmax_bv, ubwmax_bv, lbwmax_ub, ubwmax_ub
     integer(kind=int32), dimension(n), intent(in) :: numrotsv
@@ -157,12 +143,10 @@ contains
     integer(kind=int32), intent(out) :: lbw_ub, ubw_ub
     real(kind=dp), dimension(ubwmax_ub,n), intent(out) :: csu
     complex(kind=dp), dimension(ubwmax_ub,n), intent(out) :: ssu
-    type(error_info), intent(out) :: error
 
     integer(kind=int32) :: j, k, ubw1, lbw1, k0, k1
     type(c_rotation) :: rot
 
-    call clear_error(error)
     b_ub(1:lbw+ubw+1,:)=(0.0_dp, 0.0_dp); numrotsu=0
     ssu(1:ubw,:)=(0.0_dp, 0.0_dp); csu(1:ubw,:)=0.0_dp
     jsu(1:ubw,:)=0

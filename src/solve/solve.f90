@@ -18,11 +18,6 @@ module mod_solve
           f_forward_solve_bv, f_d_forward_solve_bv, f_c_forward_solve_bv, &
           f_d_v_forward_solve_bv, f_c_v_forward_solve_bv
 
-  public :: info_d_back_solve_ub, info_c_back_solve_ub, &
-       info_d_v_back_solve_ub, info_c_v_back_solve_ub, &
-       info_d_forward_solve_bv, info_c_forward_solve_bv, &
-       info_d_v_forward_solve_bv, info_c_v_forward_solve_bv
-
   interface back_solve_ub
      module procedure d_back_solve_ub, c_back_solve_ub, &
           d_v_back_solve_ub, c_v_back_solve_ub
@@ -42,56 +37,6 @@ module mod_solve
      module procedure f_d_forward_solve_bv, f_c_forward_solve_bv, &
           f_d_v_forward_solve_bv, f_c_v_forward_solve_bv
   end interface f_forward_solve_bv
-
-
-  type(routine_info), parameter :: info_d_back_solve_ub= &
-       routine_info(id_d_back_solve_ub, &
-       'd_back_solve_ub', &
-       [ character(len=error_message_length) :: 'ub%n /= size(c,1)', 'ub%lbw /= 0', 'n < 1', &
-       'x is not the same size as c.' ])
-
-  type(routine_info), parameter :: info_c_back_solve_ub= &
-       routine_info(id_c_back_solve_ub, &
-       'd_back_solve_ub', &
-       [ character(len=error_message_length) :: 'ub%n /= size(c,1)', 'ub%lbw /= 0', 'n < 1', &
-       'x is not the same size as c.' ])
-
-  type(routine_info), parameter :: info_d_v_back_solve_ub= &
-       routine_info(id_d_v_back_solve_ub, &
-       'd_v_back_solve_ub', &
-       [ character(len=error_message_length) :: 'ub%n /= size(c)', 'ub%lbw /= 0', 'n < 1', &
-       'x is not the same size as c.' ])
-
-  type(routine_info), parameter :: info_c_v_back_solve_ub= &
-       routine_info(id_c_v_back_solve_ub, &
-       'd_back_solve_ub', &
-       [ character(len=error_message_length) :: 'ub%n /= size(c)', 'ub%lbw /= 0', 'n < 1', &
-       'x is not the same size as c.' ])
-
-
-  type(routine_info), parameter :: info_d_forward_solve_bv= &
-       routine_info(id_d_forward_solve_bv, &
-       'd_forward_solve_bv', &
-       [ character(len=error_message_length) :: 'bv%n /= size(c,2)', 'bv%lbw /= 0', 'n < 1', &
-       'x is not the same size as c.' ])
-
-  type(routine_info), parameter :: info_c_forward_solve_bv= &
-       routine_info(id_c_forward_solve_bv, &
-       'd_forward_solve_bv', &
-       [ character(len=error_message_length) :: 'bv%n /= size(c,2)', 'bv%lbw /= 0', 'n < 1', &
-       'x is not the same size as c.' ])
-
-  type(routine_info), parameter :: info_d_v_forward_solve_bv= &
-       routine_info(id_d_v_forward_solve_bv, &
-       'd_v_forward_solve_bv', &
-       [ character(len=error_message_length) :: 'bv%n /= size(c,2)', 'bv%lbw /= 0', 'n < 1', &
-       'x is not the same size as c.' ])
-
-  type(routine_info), parameter :: info_c_v_forward_solve_bv= &
-       routine_info(id_c_v_forward_solve_bv, &
-       'd_forward_solve_bv', &
-       [ character(len=error_message_length) :: 'bv%n /= size(c,1)', 'bv%lbw /= 0', 'n < 1', &
-       'x is not the same size as c.' ])
 
 contains
 
@@ -128,7 +73,7 @@ contains
        call set_error(error, 4, id_d_back_solve_ub); return
     end if
     call f_d_back_solve_ub(ub%bc, n, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
-         ub%numrotsu, ub%jsu, ub%csu, ub%ssu, x, c, size(c,2), error)
+         ub%numrotsu, ub%jsu, ub%csu, ub%ssu, x, c, size(c,2))
   end subroutine d_back_solve_ub
 
   subroutine d_v_back_solve_ub(ub,x,c,error)
@@ -154,12 +99,12 @@ contains
        call set_error(error, 4, id_d_v_back_solve_ub); return
     end if
     call f_d_v_back_solve_ub(ub%bc, n, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
-         ub%numrotsu, ub%jsu, ub%csu, ub%ssu, x, c, error)
+         ub%numrotsu, ub%jsu, ub%csu, ub%ssu, x, c)
   end subroutine d_v_back_solve_ub
 
 
   subroutine f_d_back_solve_ub(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, &
-       csu, ssu, x, c, nc, error)
+       csu, ssu, x, c, nc)
     real(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(in) :: b_ub
     integer(kind=int32), dimension(n), intent(in) :: numrotsu
     integer(kind=int32), dimension(ubwmax_ub,n), intent(in) :: jsu
@@ -167,12 +112,10 @@ contains
     integer(kind=int32), intent(in) :: n, lbwmax_ub, ubwmax_ub, lbw_ub, ubw_ub, nc
     real(kind=dp), dimension(n,nc), intent(inout) :: c
     real(kind=dp), dimension(n,nc), intent(out) :: x
-    type(error_info), intent(out) :: error
 
     integer(kind=int32) :: j, k, l
     type(d_rotation) :: rot
 
-    call clear_error(error)
     if (n==1) then
        x=c/b_ub(1,1); return
     end if
@@ -201,7 +144,7 @@ contains
   end subroutine f_d_back_solve_ub
 
   subroutine f_d_v_back_solve_ub(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, &
-       csu, ssu, x, c, error)
+       csu, ssu, x, c)
     real(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(in) :: b_ub
     integer(kind=int32), dimension(n), intent(in) :: numrotsu
     integer(kind=int32), dimension(ubwmax_ub,n), intent(in) :: jsu
@@ -209,12 +152,10 @@ contains
     integer(kind=int32), intent(in) :: n, lbwmax_ub, ubwmax_ub, lbw_ub, ubw_ub
     real(kind=dp), dimension(n), intent(inout) :: c
     real(kind=dp), dimension(n), intent(out) :: x
-    type(error_info), intent(out) :: error
 
     integer(kind=int32) :: j, k, l
     type(d_rotation) :: rot
 
-    call clear_error(error)
     if (n==1) then
        x=c/b_ub(1,1); return
     end if
@@ -265,7 +206,7 @@ contains
        call set_error(error, 4, id_d_back_solve_ub); return
     end if
     call f_c_back_solve_ub(ub%bc, n, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
-         ub%numrotsu, ub%jsu, ub%csu, ub%ssu, x, c, size(c,2), error)
+         ub%numrotsu, ub%jsu, ub%csu, ub%ssu, x, c, size(c,2))
   end subroutine c_back_solve_ub
 
   subroutine c_v_back_solve_ub(ub,x,c,error)
@@ -291,12 +232,12 @@ contains
        call set_error(error, 4, id_d_v_back_solve_ub); return
     end if
     call f_c_v_back_solve_ub(ub%bc, n, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
-         ub%numrotsu, ub%jsu, ub%csu, ub%ssu, x, c, error)
+         ub%numrotsu, ub%jsu, ub%csu, ub%ssu, x, c)
   end subroutine c_v_back_solve_ub
 
 
   subroutine f_c_back_solve_ub(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, &
-       csu, ssu, x, c, nc, error)
+       csu, ssu, x, c, nc)
     complex(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(in) :: b_ub
     integer(kind=int32), dimension(n), intent(in) :: numrotsu
     integer(kind=int32), dimension(ubwmax_ub,n), intent(in) :: jsu
@@ -305,12 +246,10 @@ contains
     integer(kind=int32), intent(in) :: n, lbwmax_ub, ubwmax_ub, lbw_ub, ubw_ub, nc
     complex(kind=dp), dimension(n,nc), intent(inout) :: c
     complex(kind=dp), dimension(n,nc), intent(out) :: x
-    type(error_info), intent(out) :: error
 
     integer(kind=int32) :: j, k, l
     type(c_rotation) :: rot
 
-    call clear_error(error)
     if (n==1) then
        x=c/b_ub(1,1); return
     end if
@@ -339,7 +278,7 @@ contains
   end subroutine f_c_back_solve_ub
 
   subroutine f_c_v_back_solve_ub(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, &
-       csu, ssu, x, c, error)
+       csu, ssu, x, c)
     complex(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(in) :: b_ub
     integer(kind=int32), dimension(n), intent(in) :: numrotsu
     integer(kind=int32), dimension(ubwmax_ub,n), intent(in) :: jsu
@@ -348,12 +287,10 @@ contains
     integer(kind=int32), intent(in) :: n, lbwmax_ub, ubwmax_ub, lbw_ub, ubw_ub
     complex(kind=dp), dimension(n), intent(inout) :: c
     complex(kind=dp), dimension(n), intent(out) :: x
-    type(error_info), intent(out) :: error
 
     integer(kind=int32) :: j, k, l
     type(c_rotation) :: rot
 
-    call clear_error(error)
     if (n==1) then
        x=c/b_ub(1,1); return
     end if
@@ -413,12 +350,12 @@ contains
        call set_error(error, 4,id_d_forward_solve_bv); return
     end if
     call f_d_forward_solve_bv(x, bv%br, n, bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
-         bv%numrotsv, bv%ksv, bv%csv, bv%ssv, c, size(c,1), error)
+         bv%numrotsv, bv%ksv, bv%csv, bv%ssv, c, size(c,1))
 
   end subroutine d_forward_solve_bv
 
   subroutine f_d_forward_solve_bv(x, b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, &
-       csv, ssv, c, mc, error)
+       csv, ssv, c, mc)
     real(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(in) :: b_bv
     integer(kind=int32), dimension(n), intent(in) :: numrotsv
     integer(kind=int32), dimension(n,ubwmax_bv), intent(in) :: ksv
@@ -426,12 +363,10 @@ contains
     integer(kind=int32), intent(in) :: n, lbwmax_bv, ubwmax_bv, lbw_bv, ubw_bv, mc
     real(kind=dp), dimension(mc,n), intent(inout) :: c
     real(kind=dp), dimension(mc,n), intent(out) :: x
-    type(error_info), intent(out) :: error
 
     integer(kind=int32) :: j, k, l
     type(d_rotation) :: rot
 
-    call clear_error(error)
     if (n==1) then
        x=c/b_bv(1,1); return
     end if
@@ -482,11 +417,11 @@ contains
        call set_error(error, 4,id_d_forward_solve_bv); return
     end if
     call f_d_v_forward_solve_bv(x, bv%br, n, bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
-         bv%numrotsv, bv%ksv, bv%csv, bv%ssv, c, error)
+         bv%numrotsv, bv%ksv, bv%csv, bv%ssv, c)
   end subroutine d_v_forward_solve_bv
 
   subroutine f_d_v_forward_solve_bv(x, b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, &
-       csv, ssv, c, error)
+       csv, ssv, c)
     real(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(in) :: b_bv
     integer(kind=int32), dimension(n), intent(in) :: numrotsv
     integer(kind=int32), dimension(n,ubwmax_bv), intent(in) :: ksv
@@ -494,12 +429,10 @@ contains
     integer(kind=int32), intent(in) :: n, lbwmax_bv, ubwmax_bv, lbw_bv, ubw_bv
     real(kind=dp), dimension(n), intent(inout) :: c
     real(kind=dp), dimension(n), intent(out) :: x
-    type(error_info), intent(out) :: error
 
     integer(kind=int32) :: j, k, l
     type(d_rotation) :: rot
 
-    call clear_error(error)
     if (n==1) then
        x=c/b_bv(1,1); return
     end if
@@ -549,11 +482,11 @@ contains
        call set_error(error, 4,id_c_forward_solve_bv); return
     end if
     call f_c_forward_solve_bv(x, bv%br, n, bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
-         bv%numrotsv, bv%ksv, bv%csv, bv%ssv, c, size(c,1), error)
+         bv%numrotsv, bv%ksv, bv%csv, bv%ssv, c, size(c,1))
   end subroutine c_forward_solve_bv
 
   subroutine f_c_forward_solve_bv(x, b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, &
-       csv, ssv, c, mc, error)
+       csv, ssv, c, mc)
     complex(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(in) :: b_bv
     integer(kind=int32), dimension(n), intent(in) :: numrotsv
     integer(kind=int32), dimension(n,ubwmax_bv), intent(in) :: ksv
@@ -562,12 +495,10 @@ contains
     integer(kind=int32), intent(in) :: n, lbwmax_bv, ubwmax_bv, lbw_bv, ubw_bv, mc
     complex(kind=dp), dimension(mc,n), intent(inout) :: c
     complex(kind=dp), dimension(mc,n), intent(out) :: x
-    type(error_info), intent(out) :: error
 
     integer(kind=int32) :: j, k, l
     type(c_rotation) :: rot
 
-    call clear_error(error)
     if (n==1) then
        x=c/b_bv(1,1); return
     end if
@@ -617,11 +548,11 @@ contains
        call set_error(error, 4,id_c_forward_solve_bv); return
     end if
     call f_c_v_forward_solve_bv(x, bv%br, n, bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
-         bv%numrotsv, bv%ksv, bv%csv, bv%ssv, c, error)
+         bv%numrotsv, bv%ksv, bv%csv, bv%ssv, c)
   end subroutine c_v_forward_solve_bv
 
   subroutine f_c_v_forward_solve_bv(x, b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, &
-       csv, ssv, c, error)
+       csv, ssv, c)
     complex(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(in) :: b_bv
     integer(kind=int32), dimension(n), intent(in) :: numrotsv
     integer(kind=int32), dimension(n,ubwmax_bv), intent(in) :: ksv
@@ -630,12 +561,10 @@ contains
     integer(kind=int32), intent(in) :: n, lbwmax_bv, ubwmax_bv, lbw_bv, ubw_bv
     complex(kind=dp), dimension(n), intent(inout) :: c
     complex(kind=dp), dimension(n), intent(out) :: x
-    type(error_info), intent(out) :: error
 
     integer(kind=int32) :: j, k, l
     type(c_rotation) :: rot
 
-    call clear_error(error)
     if (n==1) then
        x=c/b_bv(1,1); return
     end if

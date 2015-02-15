@@ -16,9 +16,6 @@ module mod_general_ub
        f_upper_to_ub, f_d_upper_to_ub, f_c_upper_to_ub, &
        f_general_ub, f_d_general_ub, f_c_general_ub
 
-  public :: info_d_upper_to_ub, info_f_d_upper_to_ub, info_f_d_general_ub, &
-       info_c_upper_to_ub, info_f_c_upper_to_ub, info_f_c_general_ub
-
   interface upper_to_ub
      module procedure d_upper_to_ub, c_upper_to_ub
   end interface upper_to_ub
@@ -30,30 +27,6 @@ module mod_general_ub
   interface f_general_ub
      module procedure f_d_general_ub, f_c_general_ub
   end interface f_general_ub
-
-  type(routine_info), parameter :: info_d_upper_to_ub=routine_info(id_d_upper_to_ub, &
-       'd_upper_to_ub', &
-       [ character(len=error_message_length) :: 'n<1', 'ub%lbwmax < lbw', 'Size of a and ub not the same.' ] )
-
-  type(routine_info), parameter :: info_f_d_upper_to_ub=routine_info(id_f_d_upper_to_ub, &
-       'f_d_upper_to_ub', &
-       [ character(len=error_message_length) :: 'Insufficient Upper Bandwidth in ub' ])
-
-  type(routine_info), parameter :: info_f_d_general_ub=routine_info(id_f_d_general_ub, &
-       'f_d_general_ub', &
-       [ character(len=error_message_length) :: 'Insufficient Upper Bandwidth.' ])
-
-  type(routine_info), parameter :: info_c_upper_to_ub=routine_info(id_c_upper_to_ub, &
-       'c_upper_to_ub', &
-       [ character(len=error_message_length) :: 'n<1', 'ub%lbwmax < lbw', 'Size of a and ub not the same.' ] )
-
-  type(routine_info), parameter :: info_f_c_upper_to_ub=routine_info(id_f_c_upper_to_ub, &
-       'f_c_upper_to_ub', &
-       [ character(len=error_message_length) :: 'Insufficient Upper Bandwidth in ub' ])
-
-  type(routine_info), parameter :: info_f_c_general_ub=routine_info(id_f_c_general_ub, &
-       'f_c_general_ub', &
-       [ character(len=error_message_length) :: 'Insufficient Upper Bandwidth.' ])
 
 contains
 
@@ -80,6 +53,11 @@ contains
     end if
     call f_d_upper_to_ub(a,get_n(ub),ub%bc, lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
          ub%numrotsu, ub%jsu, ub%csu, ub%ssu, tol, error)
+
+    if (error%code > 0) then
+       call add_id(error,id_d_upper_to_ub); return
+    end if
+
     ub%lbw=lbw
   end subroutine d_upper_to_ub
 
@@ -112,6 +90,10 @@ contains
     end if
 
     call f_d_general_ub(a, n, ubws, ubwmax, numrotsu, jsu, csu, ssu, tol, error)
+
+    if (error%code > 0) then
+       call add_id(error,id_f_d_upper_to_ub); return
+    end if
     
     ubw=maxval(ubws)
     if (ubw > ubwmax) then
@@ -467,6 +449,10 @@ contains
     end if
     call f_c_upper_to_ub(a,get_n(ub),ub%bc, lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
          ub%numrotsu, ub%jsu, ub%csu, ub%ssu, tol, error)
+    if (error%code > 0) then
+       call add_id(error,id_c_upper_to_ub); return
+    end if
+
     ub%lbw=lbw
   end subroutine c_upper_to_ub
 
@@ -496,6 +482,11 @@ contains
     end if
 
     call f_c_general_ub(a, n, ubws, ubwmax, numrotsu, jsu, csu, ssu, tol, error)
+
+    if (error%code > 0) then
+       call add_id(error,id_f_c_upper_to_ub); return
+    end if
+
     ubw=maxval(ubws)
     if (ubw > ubwmax) then
        ! This should already have been detected in f_d_general_ub.

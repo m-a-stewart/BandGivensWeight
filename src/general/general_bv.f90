@@ -16,9 +16,6 @@ module mod_general_bv
        f_upper_to_bv, f_d_upper_to_bv, f_c_upper_to_bv, &
        f_general_bv, f_d_general_bv, f_c_general_bv
 
-  public :: info_d_upper_to_bv, info_f_d_upper_to_bv, info_f_d_general_bv, &
-       info_c_upper_to_bv, info_f_c_upper_to_bv, info_f_c_general_bv
-
   interface upper_to_bv
      module procedure d_upper_to_bv, c_upper_to_bv
   end interface upper_to_bv
@@ -30,31 +27,6 @@ module mod_general_bv
   interface f_general_bv
      module procedure f_d_general_bv, f_c_general_bv
   end interface f_general_bv
-
-
-  type(routine_info), parameter :: info_d_upper_to_bv=routine_info(id_d_upper_to_bv, &
-       'd_upper_to_bv', &
-       [ character(len=error_message_length) :: 'n<1', 'bv%lbwmax < lbw', 'Size of a and bv not the same.' ] )
-
-  type(routine_info), parameter :: info_f_d_upper_to_bv=routine_info(id_f_d_upper_to_bv, &
-       'f_d_upper_to_bv', &
-       [ character(len=error_message_length) :: 'Insufficient Upper Bandwidth in bv' ])
-
-  type(routine_info), parameter :: info_f_d_general_bv=routine_info(id_f_d_general_bv, &
-       'f_d_general_bv', &
-       [ character(len=error_message_length) :: 'Insufficient Upper Bandwidth.' ])
-
-  type(routine_info), parameter :: info_c_upper_to_bv=routine_info(id_c_upper_to_bv, &
-       'c_upper_to_bv', &
-       [ character(len=error_message_length) :: 'n<1', 'bv%lbwmax < lbw', 'Size of a and bv not the same.' ] )
-
-  type(routine_info), parameter :: info_f_c_upper_to_bv=routine_info(id_f_c_upper_to_bv, &
-       'f_c_upper_to_bv', &
-       [ character(len=error_message_length) :: 'n<1', 'Insufficient Upper Bandwidth in bv' ])
-
-  type(routine_info), parameter :: info_f_c_general_bv=routine_info(id_f_c_general_bv, &
-       'f_c_general_bv', &
-       [ character(len=error_message_length) :: 'Insufficient Upper Bandwidth.' ])
 
 contains
 
@@ -77,11 +49,15 @@ contains
        call set_error(error, 2, id_d_upper_to_bv); return
     end if
     if (get_n(bv) /= size(a,1) .or. get_n(bv) /= size(a,2)) then
-       call set_error(error, 3, id_d_upper_to_bv)
+       call set_error(error, 3, id_d_upper_to_bv); return
     end if
     call f_d_upper_to_bv(a,get_n(bv),bv%br, lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
          bv%numrotsv, bv%ksv, bv%csv, bv%ssv, tol, error)
     bv%lbw=lbw
+    if (error%code > 0) then
+       call add_id(error,id_d_upper_to_bv); return
+    end if
+    
   end subroutine d_upper_to_bv
 
   ! Errors:
@@ -112,6 +88,10 @@ contains
     end if
 
     call f_d_general_bv(a, n, ubws, ubwmax, numrotsv, ksv, csv, ssv, tol, error)
+
+    if (error%code > 0) then
+       call add_id(error,id_f_d_upper_to_bv); return
+    end if
 
     ubw=maxval(ubws)
     if (ubw > ubwmax) then
@@ -468,6 +448,10 @@ contains
     end if
     call f_c_upper_to_bv(a,get_n(bv),bv%br, lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
          bv%numrotsv, bv%ksv, bv%csv, bv%ssv, tol, error)
+    if (error%code > 0) then
+       call add_id(error,id_c_upper_to_bv); return
+    end if
+
     bv%lbw=lbw
   end subroutine c_upper_to_bv
 
@@ -498,6 +482,10 @@ contains
     end if
 
     call f_c_general_bv(a, n, ubws, ubwmax, numrotsv, ksv, csv, ssv, tol, error)
+    if (error%code > 0) then
+       call add_id(error,id_f_c_upper_to_bv); return
+    end if
+
     
     ubw=maxval(ubws)
     if (ubw > ubwmax) then

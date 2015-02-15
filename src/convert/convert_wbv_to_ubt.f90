@@ -12,8 +12,6 @@ module mod_convert_wbv_to_ubt
   public :: convert_wbv_to_ubt, d_convert_wbv_to_ubt, c_convert_wbv_to_ubt, &
        f_convert_wbv_to_ubt, f_d_convert_wbv_to_ubt, f_c_convert_wbv_to_ubt
 
-  public :: info_d_convert_wbv_to_ubt, info_c_convert_wbv_to_ubt
-
   interface convert_wbv_to_ubt
      module procedure d_convert_wbv_to_ubt, c_convert_wbv_to_ubt
   end interface convert_wbv_to_ubt
@@ -21,16 +19,6 @@ module mod_convert_wbv_to_ubt
   interface f_convert_wbv_to_ubt
      module procedure f_d_convert_wbv_to_ubt, f_c_convert_wbv_to_ubt
   end interface f_convert_wbv_to_ubt
-
-  type(routine_info), parameter :: info_d_convert_wbv_to_ubt=routine_info(id_d_convert_wbv_to_ubt, &
-       'd_convert_wbv_to_ubt', &
-       [ character(len=error_message_length) :: 'n<1', 'Insufficient storage in wbv', &
-       'Insufficient storage in ubt.', 'wbv%n /= ubt%n' ] )
-
-  type(routine_info), parameter :: info_c_convert_wbv_to_ubt=routine_info(id_c_convert_wbv_to_ubt, &
-       'c_convert_wbv_to_ubt', &
-       [ character(len=error_message_length) :: 'Insufficient storage in wbv', &
-       'Insufficient storage in ubt.', 'wbv%n /= ubt%n' ] )
 
 contains
 
@@ -64,13 +52,13 @@ contains
          wbv%numrotsv, wbv%ksv, wbv%csv, wbv%ssv, &
          ubt%bc, ubt%lbw, ubt%ubw, get_lbwmax(ubt), get_ubwmax(ubt), &
          ubt%numrotsu, ubt%jsu, ubt%csu, ubt%ssu, &
-         ubt%numrotst, ubt%kst, ubt%cst, ubt%sst, error)
+         ubt%numrotst, ubt%kst, ubt%cst, ubt%sst)
   end subroutine d_convert_wbv_to_ubt
 
   subroutine f_d_convert_wbv_to_ubt(b_wbv, n, lbw, ubw, lbwmax_wbv, ubwmax_wbv, numrotsw, &
        jsw, csw, ssw, numrotsv, ksv, csv, ssv, &
        b_ubt, lbw_ubt, ubw_ubt, lbwmax_ubt, ubwmax_ubt, &
-       numrotsu, jsu, csu, ssu, numrotst, kst, cst, sst, error)
+       numrotsu, jsu, csu, ssu, numrotst, kst, cst, sst)
     real(kind=dp), dimension(n,lbwmax_wbv+ubwmax_wbv+1), intent(inout) :: b_wbv
     integer(kind=int32), intent(in) :: n, lbw, ubw, lbwmax_wbv, ubwmax_wbv, lbwmax_ubt, ubwmax_ubt
     integer(kind=int32), dimension(n), intent(in) :: numrotsw
@@ -88,13 +76,11 @@ contains
     integer(kind=int32), dimension(n,lbwmax_ubt), intent(out) :: kst
     real(kind=dp), dimension(n,lbwmax_ubt), intent(out) :: cst, sst
     integer(kind=int32), intent(out) :: lbw_ubt, ubw_ubt
-    type(error_info), intent(out) :: error
 
     integer(kind=int32) :: j, k, k0, k1, ubw1, lbw1
     type(d_rotation) :: rot
     logical :: full_lbw
 
-    call clear_error(error)
     b_ubt(1:lbw+ubw+1,:)=0.0_dp; numrotsu=0
     ssu(1:ubw,:)=0.0_dp; csu(1:ubw,:)=0.0_dp
     jsu(1:ubw,:)=0
@@ -195,13 +181,13 @@ contains
          wbv%numrotsv, wbv%ksv, wbv%csv, wbv%ssv, &
          ubt%bc, ubt%lbw, ubt%ubw, get_lbwmax(ubt), get_ubwmax(ubt), &
          ubt%numrotsu, ubt%jsu, ubt%csu, ubt%ssu, &
-         ubt%numrotst, ubt%kst, ubt%cst, ubt%sst, error)
+         ubt%numrotst, ubt%kst, ubt%cst, ubt%sst)
   end subroutine c_convert_wbv_to_ubt
 
   subroutine f_c_convert_wbv_to_ubt(b_wbv, n, lbw, ubw, lbwmax_wbv, ubwmax_wbv, numrotsw, &
        jsw, csw, ssw, numrotsv, ksv, csv, ssv, &
        b_ubt, lbw_ubt, ubw_ubt, lbwmax_ubt, ubwmax_ubt, &
-       numrotsu, jsu, csu, ssu, numrotst, kst, cst, sst, error)
+       numrotsu, jsu, csu, ssu, numrotst, kst, cst, sst)
     complex(kind=dp), dimension(n,lbwmax_wbv+ubwmax_wbv+1), intent(inout) :: b_wbv
     integer(kind=int32), intent(in) :: n, lbw, ubw, lbwmax_wbv, ubwmax_wbv, lbwmax_ubt, ubwmax_ubt
     integer(kind=int32), dimension(n), intent(in) :: numrotsw
@@ -223,13 +209,11 @@ contains
     real(kind=dp), dimension(n,lbwmax_ubt), intent(out) :: cst
     complex(kind=dp), dimension(n,lbwmax_ubt), intent(out) :: sst
     integer(kind=int32), intent(out) :: lbw_ubt, ubw_ubt
-    type(error_info), intent(out) :: error
 
     integer(kind=int32) :: j, k, k0, k1, ubw1, lbw1
     type(c_rotation) :: rot
     logical :: full_lbw
 
-    call clear_error(error)
     b_ubt(1:lbw+ubw+1,:)=(0.0_dp,0.0_dp); numrotsu=0
     ssu(1:ubw,:)=(0.0_dp,0.0_dp); csu(1:ubw,:)=0.0_dp
     jsu(1:ubw,:)=0

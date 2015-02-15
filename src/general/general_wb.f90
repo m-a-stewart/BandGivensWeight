@@ -12,9 +12,6 @@ module mod_general_wb
        f_lower_to_wb, f_d_lower_to_wb, f_c_lower_to_wb, &
        lower_to_wb, d_lower_to_wb, c_lower_to_wb
 
-  public :: info_d_lower_to_wb, info_f_d_lower_to_wb, info_f_d_general_wb, &
-       info_c_lower_to_wb, info_f_c_lower_to_wb, info_f_c_general_wb
-
   interface f_general_wb
      module procedure f_d_general_wb, f_c_general_wb
   end interface f_general_wb
@@ -26,30 +23,6 @@ module mod_general_wb
   interface lower_to_wb
      module procedure d_lower_to_wb, c_lower_to_wb
   end interface lower_to_wb
-
-  type(routine_info), parameter :: info_d_lower_to_wb=routine_info(id_d_lower_to_wb, &
-       'd_lower_to_wb', &
-       [ character(len=error_message_length) :: 'n<1', 'bt%ubwmax < ubw', 'Size of a and bt not the same.' ] )
-
-  type(routine_info), parameter :: info_f_d_lower_to_wb=routine_info(id_f_d_lower_to_wb, &
-       'f_d_lower_to_wb', &
-       [ character(len=error_message_length) :: 'Insufficient lower bandwidth in bt' ])
-
-  type(routine_info), parameter :: info_f_d_general_wb=routine_info(id_f_d_general_wb, &
-       'f_d_general_wb', &
-       [ character(len=error_message_length) :: 'Insufficient lower bandwidth.' ])
-
-  type(routine_info), parameter :: info_c_lower_to_wb=routine_info(id_c_lower_to_wb, &
-       'c_lower_to_wb', &
-       [ character(len=error_message_length) :: 'n<1', 'bt%ubwmax < ubw', 'Size of a and bt not the same.' ] )
-
-  type(routine_info), parameter :: info_f_c_lower_to_wb=routine_info(id_f_c_lower_to_wb, &
-       'f_c_lower_to_wb', &
-       [ character(len=error_message_length) :: 'Insufficient lower bandwidth in bt' ])
-
-  type(routine_info), parameter :: info_f_c_general_wb=routine_info(id_f_c_general_wb, &
-       'f_c_general_wb', &
-       [ character(len=error_message_length) :: 'Insufficient lower bandwidth.' ])
 
 contains
 
@@ -66,8 +39,15 @@ contains
     integer(kind=int32), dimension(n,lbwmax) :: ksv
     real(kind=dp), dimension(n,lbwmax) :: csv, ssv
 
+    call clear_error(error)
+
     call ip_transpose(a)
     call f_d_general_bv(a,n,lbws,lbwmax,numrotsw,ksv,csv,ssv,tol,error)
+
+    if (error%code > 0) then
+       call add_id(error,id_f_d_general_wb); return
+    end if
+
     call ip_transpose(a)
     
     jsw=transpose(ksv)
@@ -105,6 +85,11 @@ contains
 
     call f_d_general_wb(a, n, lbws, lbwmax, numrotsw, jsw, csw, ssw, tol, error)
 
+    if (error%code > 0) then
+       call add_id(error,id_f_d_lower_to_wb); return
+    end if
+
+
     lbw=maxval(lbws)
     if (maxval(lbws) > lbwmax) then
        ! This should already have been detected in f_d_general_wb.
@@ -137,6 +122,11 @@ contains
     end if
     call f_d_lower_to_wb(a,get_n(wb),wb%bc, wb%lbw, ubw, get_lbwmax(wb), get_ubwmax(wb), &
          wb%numrotsw, wb%jsw, wb%csw, wb%ssw, tol, error)
+
+    if (error%code > 0) then
+       call add_id(error,id_d_lower_to_wb); return
+    end if
+
     wb%ubw=ubw
   end subroutine d_lower_to_wb
 
@@ -155,8 +145,13 @@ contains
     real(kind=dp), dimension(n,lbwmax) :: csv
     complex(kind=dp), dimension(n,lbwmax) :: ssv
 
+    call clear_error(error)
     call ip_transpose(a)
     call f_c_general_bv(a,n,lbws,lbwmax,numrotsw,ksv,csv,ssv,tol,error)
+    if (error%code > 0) then
+       call add_id(error,id_f_c_general_wb); return
+    end if
+
     call ip_transpose(a)
     
     jsw=transpose(ksv)
@@ -194,6 +189,10 @@ contains
     end if
 
     call f_c_general_wb(a, n, lbws, lbwmax, numrotsw, jsw, csw, ssw, tol, error)
+    if (error%code > 0) then
+       call add_id(error,id_f_c_lower_to_wb); return
+    end if
+
 
     lbw=maxval(lbws)
     if (maxval(lbws) > lbwmax) then
@@ -227,6 +226,9 @@ contains
     end if
     call f_c_lower_to_wb(a,get_n(wb),wb%bc, wb%lbw, ubw, get_lbwmax(wb), get_ubwmax(wb), &
          wb%numrotsw, wb%jsw, wb%csw, wb%ssw, tol, error)
+    if (error%code > 0) then
+       call add_id(error,id_c_lower_to_wb); return
+    end if
     wb%ubw=ubw
   end subroutine c_lower_to_wb
 

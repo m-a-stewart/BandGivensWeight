@@ -34,7 +34,6 @@ $(OBJDIR)/gs.o : $(OBJDIR)/utility.o $(OBJDIR)/prec.o $(OBJDIR)/error_id.o
 $(OBJDIR)/assemble.o : $(OBJDIR)/prec.o $(OBJDIR)/error_id.o $(OBJDIR)/band_types.o \
 	$(OBJDIR)/orth_band_types.o $(OBJDIR)/rotation.o
 
-
 $(OBJDIR)/general.o : $(OBJDIR)/general_bv.o $(OBJDIR)/general_ub.o $(OBJDIR)/general_bt.o \
 	$(OBJDIR)/general_wb.o $(OBJDIR)/general_ubt.o $(OBJDIR)/general_wbv.o
 $(OBJDIR)/general_bv.o : $(OBJDIR)/orth.o $(OBJDIR)/shift.o $(OBJDIR)/rotation.o \

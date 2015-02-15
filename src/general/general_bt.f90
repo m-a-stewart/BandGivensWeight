@@ -13,9 +13,6 @@ module mod_general_bt
        f_lower_to_bt, f_d_lower_to_bt, f_c_lower_to_bt, &
        lower_to_bt, d_lower_to_bt, c_lower_to_bt
 
-  public :: info_d_lower_to_bt, info_f_d_lower_to_bt, info_f_d_general_bt, &
-       info_c_lower_to_bt, info_f_c_lower_to_bt
-
   interface f_general_bt
      module procedure f_d_general_bt, f_c_general_bt
   end interface f_general_bt
@@ -27,26 +24,6 @@ module mod_general_bt
   interface lower_to_bt
      module procedure d_lower_to_bt, c_lower_to_bt
   end interface lower_to_bt
-
-  type(routine_info), parameter :: info_d_lower_to_bt=routine_info(id_d_lower_to_bt, &
-       'd_lower_to_bt', &
-       [ character(len=error_message_length) :: 'n<1', 'bt%ubwmax < ubw', 'Size of a and bt not the same.' ] )
-
-  type(routine_info), parameter :: info_f_d_lower_to_bt=routine_info(id_f_d_lower_to_bt, &
-       'f_d_lower_to_bt', &
-       [ character(len=error_message_length) :: 'Insufficient lower bandwidth in bt' ])
-
-  type(routine_info), parameter :: info_f_d_general_bt=routine_info(id_f_d_general_bt, &
-       'f_d_general_bt', &
-       [ character(len=error_message_length) :: 'Insufficient lower bandwidth.' ])
-
-  type(routine_info), parameter :: info_c_lower_to_bt=routine_info(id_c_lower_to_bt, &
-       'c_lower_to_bt', &
-       [ character(len=error_message_length) :: 'n<1', 'bt%ubwmax < ubw', 'Size of a and bt not the same.' ] )
-
-  type(routine_info), parameter :: info_f_c_lower_to_bt=routine_info(id_f_c_lower_to_bt, &
-       'f_c_lower_to_bt', &
-       [ character(len=error_message_length) :: 'Insufficient lower bandwidth in bt' ])
 
 contains
 
@@ -63,8 +40,14 @@ contains
     integer(kind=int32), dimension(lbwmax,n) :: jsu
     real(kind=dp), dimension(lbwmax,n) :: csu, ssu
 
+    call clear_error(error)
+    
     call ip_transpose(a)
     call f_d_general_ub(a,n,lbws,lbwmax,numrotst,jsu,csu,ssu,tol,error)
+    if (error%code > 0) then
+       call add_id(error,id_f_d_general_bt); return
+    end if
+
     call ip_transpose(a)
     
     kst=transpose(jsu)
@@ -102,6 +85,10 @@ contains
 
     call f_d_general_bt(a, n, lbws, lbwmax, numrotst, kst, cst, sst, tol, error)
     
+    if (error%code > 0) then
+       call add_id(error,id_f_d_lower_to_bt); return
+    end if
+
     lbw=maxval(lbws)
     if (maxval(lbws) > lbwmax) then
        ! This should already have been detected in f_d_general_bt.
@@ -134,6 +121,10 @@ contains
     end if
     call f_d_lower_to_bt(a,get_n(bt),bt%br, bt%lbw, ubw, get_lbwmax(bt), get_ubwmax(bt), &
          bt%numrotst, bt%kst, bt%cst, bt%sst, tol, error)
+    if (error%code > 0) then
+       call add_id(error,id_d_lower_to_bt); return
+    end if
+
     bt%ubw=ubw
   end subroutine d_lower_to_bt
 
@@ -153,8 +144,14 @@ contains
     real(kind=dp), dimension(lbwmax,n) :: csu
     complex(kind=dp), dimension(lbwmax,n) :: ssu
 
+    call clear_error(error)
+
     call ip_transpose(a)
     call f_c_general_ub(a,n,lbws,lbwmax,numrotst,jsu,csu,ssu,tol,error)
+    if (error%code > 0) then
+       call add_id(error,id_f_c_general_bt); return
+    end if
+
     call ip_transpose(a)
     
     kst=transpose(jsu)
@@ -192,6 +189,11 @@ contains
     end if
 
     call f_c_general_bt(a, n, lbws, lbwmax, numrotst, kst, cst, sst, tol, error)
+
+    if (error%code > 0) then
+       call add_id(error,id_f_c_lower_to_bt); return
+    end if
+
     
     lbw=maxval(lbws)
     if (maxval(lbws) > lbwmax) then
@@ -225,6 +227,10 @@ contains
     end if
     call f_c_lower_to_bt(a,get_n(bt),bt%br, bt%lbw, ubw, get_lbwmax(bt), get_ubwmax(bt), &
          bt%numrotst, bt%kst, bt%cst, bt%sst, tol, error)
+    if (error%code > 0) then
+       call add_id(error,id_c_lower_to_bt); return
+    end if
+
     bt%ubw=ubw
   end subroutine c_lower_to_bt
 
