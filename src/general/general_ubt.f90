@@ -38,30 +38,31 @@ contains
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), dimension(n), intent(out) :: numrotst, numrotsu
     integer(kind=int32), dimension(n), intent(out) :: lbws, ubws
-    type(error_info), intent(out) :: error
+    type(error_info), intent(out), optional :: error
     integer(kind=int32), intent(in) :: n, lbwmax, ubwmax
     !
     integer(kind=int32), dimension(lbwmax,n) :: jsu0
     real(kind=dp), dimension(lbwmax,n) :: csu0, ssu0
+    type(routine_info), parameter :: info=info_f_d_general_ubt
 
     call clear_error(error)
+    call push_id(info, error)
+
     call f_d_general_ub(a,n,ubws,ubwmax,numrotsu,jsu,csu,ssu,tol,error)
-    if (error%code > 0) then
-       call add_id(error,id_f_d_general_ubt); return
+
+    if (success(error)) then
+       call ip_transpose(a)
+       call f_d_general_ub(a,n,lbws,lbwmax,numrotst,jsu0,csu0,ssu0,tol,error)
+       if (success(error)) then
+          call ip_transpose(a)
+
+          kst=transpose(jsu0)
+          cst=transpose(csu0)
+          sst=transpose(ssu0)
+       end if
     end if
 
-    call ip_transpose(a)
-    call f_d_general_ub(a,n,lbws,lbwmax,numrotst,jsu0,csu0,ssu0,tol,error)
-    if (error%code > 0) then
-       call add_id(error,id_f_d_general_ubt); return
-    end if
-
-    call ip_transpose(a)
-    
-    kst=transpose(jsu0)
-    cst=transpose(csu0)
-    sst=transpose(ssu0)
-
+    call pop_id(error)
   end subroutine f_d_general_ubt
 
   ! Errors:
@@ -80,12 +81,14 @@ contains
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), dimension(n), intent(out) :: numrotst, numrotsu
     integer(kind=int32), intent(out) :: lbw, ubw
-    type(error_info), intent(out) :: error
+    type(error_info), intent(out), optional :: error
     integer(kind=int32), intent(in) :: n, ubwmax, lbwmax
     !
     integer(kind=int32), dimension(n) :: lbws, ubws
+    type(routine_info), parameter :: info=info_f_d_general_to_ubt
 
     call clear_error(error)
+    call push_id(info, error)
 
     if (n == 1) then
        numrotst=0;
@@ -102,20 +105,20 @@ contains
          numrotsu, jsu, csu, ssu, &
          numrotst, kst, cst, sst, tol, error)
 
-    if (error%code > 0) then
-       call add_id(error,id_f_d_general_to_ubt); return
+    if (success(error)) then
+       lbw=maxval(lbws)
+       ubw=maxval(ubws)
+       if (lbw > lbwmax) then
+          ! This should already have been detected in f_d_general_bt.
+          call set_error(1, info, error); return
+       else if (ubw > ubwmax) then
+          call set_error(2, info, error); return
+       else
+          call d_extract_diagonals_bc(a, n, bc, lbw, ubw, lbwmax, ubwmax)
+       end if
     end if
+    call pop_id(error)
 
-    lbw=maxval(lbws)
-    ubw=maxval(ubws)
-    if (lbw > lbwmax) then
-       ! This should already have been detected in f_d_general_bt.
-       call set_error(error, 1, id_f_d_general_to_ubt)
-    else if (ubw > ubwmax) then
-       call set_error(error, 2, id_f_d_general_to_ubt)
-    else
-       call d_extract_diagonals_bc(a, n, bc, lbw, ubw, lbwmax, ubwmax)
-    end if
   end subroutine f_d_general_to_ubt
 
   ! Errors:
@@ -125,41 +128,24 @@ contains
     real(kind=dp), target, dimension(:,:), intent(inout) :: a
     type(d_ubt), intent(inout) :: ubt
     type(error_info), intent(out), optional :: error
-    type(error_info) :: error1
+    type(routine_info), parameter :: info=info_d_general_to_ubt
 
     real(kind=dp), intent(in) :: tol
 
-    if (present(error)) then
-       call clear_error(error)
-       if (size(a,1) < 1) then
-          call set_error(error, 1, id_d_general_to_ubt); return
-       end if
-       if (get_n(ubt) /= size(a,1) .or. get_n(ubt) /= size(a,2)) then
-          call set_error(error, 2, id_d_general_to_ubt); return
-       end if
-       call f_d_general_to_ubt(a,get_n(ubt),ubt%bc, ubt%lbw, ubt%ubw, get_lbwmax(ubt), &
-            get_ubwmax(ubt), ubt%numrotsu, ubt%jsu, ubt%csu, ubt%ssu, &
-            ubt%numrotst, ubt%kst, ubt%cst, ubt%sst, tol, error)
-       if (error%code > 0) then
-          call add_id(error,id_d_general_to_ubt); return
-       end if
-
-    else
-       call clear_error(error1)
-       if (size(a,1) < 1) then
-          stop info_d_general_to_ubt%error_messages(1)
-       end if
-       if (get_n(ubt) /= size(a,1) .or. get_n(ubt) /= size(a,2)) then
-          stop info_d_general_to_ubt%error_messages(2)
-       end if
-       call f_d_general_to_ubt(a,get_n(ubt),ubt%bc, ubt%lbw, ubt%ubw, get_lbwmax(ubt), &
-            get_ubwmax(ubt), ubt%numrotsu, ubt%jsu, ubt%csu, ubt%ssu, &
-            ubt%numrotst, ubt%kst, ubt%cst, ubt%sst, tol, error1)
-       if (error1%code > 0) then
-          stop info_f_d_general_to_ubt%error_messages(error1%code)
-       end if
+    call clear_error(error)
+    call push_id(info, error)
+    
+    if (size(a,1) < 1) then
+       call set_error(1, info, error); return
     end if
-       
+    if (get_n(ubt) /= size(a,1) .or. get_n(ubt) /= size(a,2)) then
+       call set_error(2, info, error); return
+    end if
+    call f_d_general_to_ubt(a,get_n(ubt),ubt%bc, ubt%lbw, ubt%ubw, get_lbwmax(ubt), &
+         get_ubwmax(ubt), ubt%numrotsu, ubt%jsu, ubt%csu, ubt%ssu, &
+         ubt%numrotst, ubt%kst, ubt%cst, ubt%sst, tol, error)
+
+    call pop_id(error)
   end subroutine d_general_to_ubt
 
   subroutine f_c_general_ubt(a, n, lbws, ubws, lbwmax, ubwmax, &
@@ -175,29 +161,34 @@ contains
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), dimension(n), intent(out) :: numrotst, numrotsu
     integer(kind=int32), dimension(n), intent(out) :: lbws, ubws
-    type(error_info), intent(out) :: error
+    type(error_info), intent(out), optional :: error
     integer(kind=int32), intent(in) :: n, lbwmax, ubwmax
     !
     integer(kind=int32), dimension(lbwmax,n) :: jsu0
     real(kind=dp), dimension(lbwmax,n) :: csu0
     complex(kind=dp), dimension(lbwmax,n) :: ssu0
+    type(routine_info), parameter :: info=info_f_c_general_ubt
 
     call clear_error(error)
+    call push_id(info, error)
+    
     call f_c_general_ub(a,n,ubws,ubwmax,numrotsu,jsu,csu,ssu,tol,error)
-    if (error%code > 0) then
-       call add_id(error,id_f_c_general_ubt); return
+
+    if (success(error)) then
+       call ip_transpose(a)
+
+       call f_c_general_ub(a,n,lbws,lbwmax,numrotst,jsu0,csu0,ssu0,tol,error)
+
+       if (success(error)) then
+          call ip_transpose(a)
+
+          kst=transpose(jsu0)
+          cst=transpose(csu0)
+          sst=transpose(ssu0)
+       end if
     end if
 
-    call ip_transpose(a)
-    call f_c_general_ub(a,n,lbws,lbwmax,numrotst,jsu0,csu0,ssu0,tol,error)
-    if (error%code > 0) then
-       call add_id(error,id_f_c_general_ubt); return
-    end if
-    call ip_transpose(a)
-    
-    kst=transpose(jsu0)
-    cst=transpose(csu0)
-    sst=transpose(ssu0)
+    call pop_id(error)
 
   end subroutine f_c_general_ubt
 
@@ -219,12 +210,14 @@ contains
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), dimension(n), intent(out) :: numrotst, numrotsu
     integer(kind=int32), intent(out) :: lbw, ubw
-    type(error_info), intent(out) :: error
+    type(error_info), intent(out), optional :: error
     integer(kind=int32), intent(in) :: n, ubwmax, lbwmax
     !
     integer(kind=int32), dimension(n) :: lbws, ubws
+    type(routine_info), parameter :: info=info_f_c_general_to_ubt
 
     call clear_error(error)
+    call push_id(info, error)
 
     if (n == 1) then
        numrotst=0;
@@ -240,20 +233,19 @@ contains
     call f_c_general_ubt(a, n, lbws, ubws, lbwmax, ubwmax, &
          numrotsu, jsu, csu, ssu, &
          numrotst, kst, cst, sst, tol, error)
-    if (error%code > 0) then
-       call add_id(error,id_f_c_general_to_ubt); return
+    if (success(error)) then
+       lbw=maxval(lbws)
+       ubw=maxval(ubws)
+       if (lbw > lbwmax) then
+          ! This should already have been detected in f_c_general_bt.
+          call set_error(1, info, error); return
+       else if (ubw > ubwmax) then
+          call set_error(2, info, error); return
+       else
+          call c_extract_diagonals_bc(a, n, bc, lbw, ubw, lbwmax, ubwmax)
+       end if
     end if
-
-    lbw=maxval(lbws)
-    ubw=maxval(ubws)
-    if (lbw > lbwmax) then
-       ! This should already have been detected in f_c_general_bt.
-       call set_error(error, 1, id_f_c_general_to_ubt)
-    else if (ubw > ubwmax) then
-       call set_error(error, 2, id_f_c_general_to_ubt)
-    else
-       call c_extract_diagonals_bc(a, n, bc, lbw, ubw, lbwmax, ubwmax)
-    end if
+    call pop_id(error)
   end subroutine f_c_general_to_ubt
 
   ! Errors:
@@ -262,23 +254,24 @@ contains
   subroutine c_general_to_ubt(a,ubt,tol,error)
     complex(kind=dp), target, dimension(:,:), intent(inout) :: a
     type(c_ubt), intent(inout) :: ubt
-    type(error_info), intent(out) :: error
+    type(error_info), intent(out), optional :: error
     real(kind=dp), intent(in) :: tol
+    type(routine_info), parameter :: info=info_c_general_to_ubt
+
     call clear_error(error)
+    call push_id(info, error)
+
     if (size(a,1) < 1) then
-       call set_error(error, 1, id_c_general_to_ubt); return
+       call set_error(1, info, error); return
     end if
     if (get_n(ubt) /= size(a,1) .or. get_n(ubt) /= size(a,2)) then
-       call set_error(error, 2, id_c_general_to_ubt); return
+       call set_error(2, info, error); return
     end if
     call f_c_general_to_ubt(a,get_n(ubt),ubt%bc, ubt%lbw, ubt%ubw, get_lbwmax(ubt), &
          get_ubwmax(ubt), ubt%numrotsu, ubt%jsu, ubt%csu, ubt%ssu, &
          ubt%numrotst, ubt%kst, ubt%cst, ubt%sst, tol, error)
-    if (error%code > 0) then
-       call add_id(error,id_c_general_to_ubt); return
-    end if
-
+    
+    call pop_id(error)
   end subroutine c_general_to_ubt
-
 
 end module mod_general_ubt

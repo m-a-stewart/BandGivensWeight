@@ -30,25 +30,30 @@ contains
   subroutine d_convert_wb_to_bt(wb, bt, error)
     type(d_wb) :: wb
     type(d_bt) :: bt
-    type(error_info), intent(out) :: error
+    type(error_info), intent(out), optional :: error
+    type(routine_info), parameter :: info=info_d_convert_wb_to_bt
+
     call clear_error(error)
+    call push_id(info, error)
+
     if (get_n(bt) < 1) then
-       call set_error(error, 1, id_d_convert_wb_to_bt); return
+       call set_error(1, info, error); return
     end if
     ! must allow for temporary fill-in
     if (get_lbwmax(wb) < wb%lbw+1 .and. wb%lbw < get_n(wb)-1) then
-       call set_error(error, 2, id_d_convert_wb_to_bt); return
+       call set_error(2, info, error); return
     end if
     if (get_ubwmax(bt) < wb%ubw .or. get_lbwmax(bt) < wb%lbw) then
-       call set_error(error, 3, id_d_convert_wb_to_bt); return
+       call set_error(3, info, error); return
     end if
     if (get_n(bt) /= get_n(wb)) then
-       call set_error(error, 4, id_d_convert_wb_to_bt); return
+       call set_error(4, info, error); return
     end if
 
     call f_d_convert_wb_to_bt(wb%bc, get_n(wb), wb%lbw, wb%ubw, get_lbwmax(wb), &
-         get_ubwmax(wb), wb%numrotsw, wb%jsw, wb%csw, wb%ssw, bt%br,  bt%lbw, bt%ubw, get_lbwmax(bt), &
-         get_ubwmax(bt), bt%numrotst, bt%kst, bt%cst, bt%sst)
+         get_ubwmax(wb), wb%numrotsw, wb%jsw, wb%csw, wb%ssw, bt%br,  bt%lbw, bt%ubw, &
+         get_lbwmax(bt), get_ubwmax(bt), bt%numrotst, bt%kst, bt%cst, bt%sst)
+    call pop_id(error)
   end subroutine d_convert_wb_to_bt
 
   subroutine f_d_convert_wb_to_bt(b_wb, n, lbw, ubw, lbwmax_wb, ubwmax_wb, &
@@ -116,25 +121,30 @@ contains
   subroutine c_convert_wb_to_bt(wb, bt, error)
     type(c_wb) :: wb
     type(c_bt) :: bt
-    type(error_info), intent(out) :: error
+    type(error_info), intent(out), optional :: error
+    type(routine_info), parameter :: info=info_c_convert_wb_to_bt
+
     call clear_error(error)
+    call push_id(info, error)
+
     if (get_n(bt) < 1) then
-       call set_error(error, 1, id_c_convert_wb_to_bt); return
+       call set_error(1, info, error); return
     end if
     ! must allow for temporary fill-in
     if (get_lbwmax(wb) < wb%lbw+1 .and. wb%lbw < get_n(wb)-1) then
-       call set_error(error, 2, id_c_convert_wb_to_bt); return
+       call set_error(2, info, error); return
     end if
     if (get_ubwmax(bt) < wb%ubw .or. get_lbwmax(bt) < wb%lbw) then
-       call set_error(error, 3, id_c_convert_wb_to_bt); return
+       call set_error(3, info, error); return
     end if
     if (get_n(bt) /= get_n(wb)) then
-       call set_error(error, 4, id_c_convert_wb_to_bt); return
+       call set_error(4, info, error); return
     end if
 
     call f_c_convert_wb_to_bt(wb%bc, get_n(wb), wb%lbw, wb%ubw, get_lbwmax(wb), &
-         get_ubwmax(wb), wb%numrotsw, wb%jsw, wb%csw, wb%ssw, bt%br,  bt%lbw, bt%ubw, get_lbwmax(bt), &
-         get_ubwmax(bt), bt%numrotst, bt%kst, bt%cst, bt%sst)
+         get_ubwmax(wb), wb%numrotsw, wb%jsw, wb%csw, wb%ssw, bt%br,  bt%lbw, bt%ubw, &
+         get_lbwmax(bt), get_ubwmax(bt), bt%numrotst, bt%kst, bt%cst, bt%sst)
+    call pop_id(error)
   end subroutine c_convert_wb_to_bt
 
   subroutine f_c_convert_wb_to_bt(b_wb, n, lbw, ubw, lbwmax_wb, ubwmax_wb, &

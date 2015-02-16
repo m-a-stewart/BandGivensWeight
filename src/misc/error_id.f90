@@ -1,7 +1,7 @@
 module mod_error_id
   use mod_prec
+  use, intrinsic :: iso_fortran_env, only : error_unit
   implicit none
-
   integer(kind=int32), parameter :: routine_name_length=30
   integer(kind=int32), parameter :: max_errors=15
   integer(kind=int32), parameter :: error_message_length=50
@@ -18,8 +18,8 @@ module mod_error_id
   end type routine_info
 
   type error_info
-     integer(kind=int32) :: code=0, rptr=1
-     integer(kind=int32), dimension(max_routines) :: routines=-1
+     integer(kind=int32) :: code=0, rix=1
+     integer(kind=int32), dimension(max_routines) :: routines=0
   end type error_info
 
   type(routine_info), parameter :: info_empty=routine_info(0, &
@@ -348,6 +348,10 @@ module mod_error_id
        [ character(len=error_message_length) :: 'Insufficient lower bandwidth in ubt', &
        'Insufficient upper bandwidth in ubt' ])
 
+  type(routine_info), parameter :: info_f_d_general_ubt=routine_info(id_f_d_general_ubt, &
+       'f_d_general_ubt', &
+       [ character(len=error_message_length) :: '' ])
+
   type(routine_info), parameter :: info_c_general_to_ubt=routine_info(id_c_general_to_ubt, &
        'c_general_to_ubt', &
        [ character(len=error_message_length) :: 'n<1', &
@@ -357,6 +361,10 @@ module mod_error_id
        'f_c_general_to_ubt', &
        [ character(len=error_message_length) :: 'Insufficient lower bandwidth in ubt', &
        'Insufficient upper bandwidth in ubt' ])
+
+  type(routine_info), parameter :: info_f_c_general_ubt=routine_info(id_f_c_general_ubt, &
+       'f_c_general_ubt', &
+       [ character(len=error_message_length) :: '' ])
 
   ! src/general/general_wbv, 160s
   integer(int32), parameter :: id_d_general_to_wbv=160
@@ -376,6 +384,10 @@ module mod_error_id
        [ character(len=error_message_length) :: 'Insufficient lower bandwidth in wbv', &
        'Insufficient upper bandwidth in wbv' ])
 
+  type(routine_info), parameter :: info_f_d_general_wbv=routine_info(id_f_d_general_wbv, &
+       'f_d_general_wbv', &
+       [ character(len=error_message_length) :: '' ])
+  
   type(routine_info), parameter :: info_c_general_to_wbv=routine_info(id_c_general_to_wbv, &
        'c_general_to_wbv', &
        [ character(len=error_message_length) :: 'n<1', &
@@ -385,6 +397,10 @@ module mod_error_id
        'f_c_general_to_wbv', &
        [ character(len=error_message_length) :: 'Insufficient lower bandwidth in wbv', &
        'Insufficient upper bandwidth in wbv' ])
+
+  type(routine_info), parameter :: info_f_c_general_wbv=routine_info(id_f_c_general_wbv, &
+       'f_c_general_wbv', &
+       [ character(len=error_message_length) :: '' ])
 
   ! src/orth/gs 170s
   integer(int32), parameter :: id_d_extend_gs_rows=170
@@ -530,29 +546,75 @@ module mod_error_id
 
 contains
 
-  subroutine add_id(err,id)
-    type(error_info), intent(inout) :: err
-    integer(kind=int32), intent(in) :: id
-    if (err%rptr <= max_routines) then
-       err%routines(err%rptr)=id
-       err%rptr=err%rptr+1
+  subroutine push_id(info,err)
+    type(error_info), intent(inout), optional :: err
+    type(routine_info), intent(in) :: info    
+    if (present(err)) then
+       if (err%rix <= max_routines) then
+          err%routines(err%rix)=info%routine_id
+          err%rix=err%rix+1
+       end if
     end if
-  end subroutine add_id
+  end subroutine push_id
 
-  subroutine set_error(err,code, id)
-    type(error_info), intent(inout) :: err
-    integer(kind=int32), intent(in) :: code, id
-    err%rptr=2
-    err%code=code
-    err%routines(1)=id
+  subroutine set_error(code, info, err)
+    type(error_info), intent(inout), optional :: err
+    type(routine_info), intent(in) :: info
+    integer(kind=int32), intent(in) :: code
+    if (present(err)) then
+       err%code=code
+    else
+       write(error_unit,*) info%error_messages(code)
+       stop
+    end if
   end subroutine set_error
 
   subroutine clear_error(err)
-    type(error_info), intent(inout) :: err
-    err%routines(1:err%rptr)=-1
-    err%rptr=1
-    err%code=0
+    type(error_info), intent(inout), optional :: err
+    if (present(err)) then
+       err%code=0
+    end if
   end subroutine clear_error
+
+  subroutine clear_routines(err)
+    type(error_info), intent(inout), optional :: err
+    if (present(err)) then
+       err%routines(1:err%rix)=0
+       err%rix=1
+    end if
+  end subroutine clear_routines
+
+  function failure(err) result(f)
+    logical :: f
+    type(error_info), intent(inout), optional :: err
+    f=.false.
+    if (present(err)) then
+       if (err%code > 0) then
+          f=.true.
+       end if
+    end if
+  end function failure
+
+  function success(err) result(s)
+    logical :: s
+    type(error_info), intent(inout), optional :: err
+    s=.true.
+    if (present(err)) then
+       if (err%code > 0) then
+          s=.false.
+       end if
+    end if
+  end function success
+
+  subroutine pop_id(err)
+    type(error_info), intent(inout), optional :: err
+    if (present(err)) then
+       if (err%code <= 0 .and. err%rix > 1) then
+          err%rix=err%rix-1
+          err%routines(err%rix)=0
+       end if
+    end if
+  end subroutine pop_id
 
   subroutine initialize_errors
     if (.not. allocated(info_index)) then
@@ -641,15 +703,19 @@ contains
 
        info_index(info_d_general_to_ubt%routine_id)=info_d_general_to_ubt
        info_index(info_f_d_general_to_ubt%routine_id)=info_f_d_general_to_ubt
+       info_index(info_f_d_general_ubt%routine_id)=info_f_d_general_ubt
        info_index(info_c_general_to_ubt%routine_id)=info_c_general_to_ubt
        info_index(info_f_c_general_to_ubt%routine_id)=info_f_c_general_to_ubt
+       info_index(info_f_c_general_ubt%routine_id)=info_f_c_general_ubt
 
        ! general_wbv
 
        info_index(info_d_general_to_wbv%routine_id)=info_d_general_to_wbv
        info_index(info_f_d_general_to_wbv%routine_id)=info_f_d_general_to_wbv
+       info_index(info_f_d_general_wbv%routine_id)=info_f_d_general_wbv
        info_index(info_c_general_to_wbv%routine_id)=info_c_general_to_wbv
        info_index(info_f_c_general_to_wbv%routine_id)=info_f_c_general_to_wbv
+       info_index(info_f_c_general_wbv%routine_id)=info_f_c_general_wbv
 
        ! gs
        info_index(info_d_extend_gs_rows%routine_id)=info_d_extend_gs_rows

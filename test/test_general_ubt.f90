@@ -49,8 +49,7 @@ program test_general_ubt
   call d_assemble_general(a,ul,vl,uu,vu,d)
   a0=a
   call cpu_time(t0)
-  !  call general_to_ubt(a,ubt_d,tol,error)
-  call general_to_ubt(a(1:n-1,1:n),ubt_d,tol)
+  call general_to_ubt(a,ubt_d,tol,error)
   call cpu_time(t1)
   call ubt_to_general(ubt_d,a1,error)
   test_name="Real UBT;"

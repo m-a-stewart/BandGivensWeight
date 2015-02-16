@@ -32,20 +32,24 @@ contains
   subroutine d_convert_wbv_to_ubt(wbv, ubt, error)
     type(d_wbv) :: wbv
     type(d_ubt) :: ubt
-    type(error_info), intent(out) :: error
+    type(error_info), intent(out), optional :: error
+    type(routine_info), parameter :: info=info_d_convert_wbv_to_ubt
+
     call clear_error(error)
+    call push_id(info, error)
+    
     if (get_n(wbv) < 1) then
-       call set_error(error, 1, id_d_convert_wbv_to_ubt); return
+       call set_error(1, info, error); return
     end if
     if ((get_ubwmax(wbv) < wbv%ubw+1 .and. wbv%ubw < get_n(wbv)-1) .or. &
          (get_lbwmax(wbv) < wbv%lbw+1 .and. wbv%lbw < get_n(wbv)-1)) then
-       call set_error(error, 2, id_d_convert_wbv_to_ubt); return
+       call set_error(2, info, error); return
     end if
     if (get_lbwmax(ubt) < wbv%lbw .or. get_ubwmax(ubt) < wbv%ubw) then
-       call set_error(error, 3, id_d_convert_wbv_to_ubt); return
+       call set_error(3, info, error); return
     end if
     if (get_n(wbv) /= get_n(ubt)) then
-       call set_error(error, 4, id_d_convert_wbv_to_ubt); return
+       call set_error(4, info, error); return
     end if
     call f_d_convert_wbv_to_ubt(wbv%br, get_n(wbv), wbv%lbw, wbv%ubw, get_lbwmax(wbv), &
          get_ubwmax(wbv), wbv%numrotsw, wbv%jsw, wbv%csw, wbv%ssw, &
@@ -53,6 +57,7 @@ contains
          ubt%bc, ubt%lbw, ubt%ubw, get_lbwmax(ubt), get_ubwmax(ubt), &
          ubt%numrotsu, ubt%jsu, ubt%csu, ubt%ssu, &
          ubt%numrotst, ubt%kst, ubt%cst, ubt%sst)
+    call pop_id(error)
   end subroutine d_convert_wbv_to_ubt
 
   subroutine f_d_convert_wbv_to_ubt(b_wbv, n, lbw, ubw, lbwmax_wbv, ubwmax_wbv, numrotsw, &
@@ -161,20 +166,24 @@ contains
   subroutine c_convert_wbv_to_ubt(wbv, ubt, error)
     type(c_wbv) :: wbv
     type(c_ubt) :: ubt
-    type(error_info), intent(out) :: error
+    type(error_info), intent(out), optional :: error
+    type(routine_info), parameter :: info=info_c_convert_wbv_to_ubt
+
     call clear_error(error)
+    call push_id(info, error)
+
     if (get_n(wbv) < 1) then
-       call set_error(error, 1, id_c_convert_wbv_to_ubt); return
+       call set_error(1, info, error); return
     end if
     if ((get_ubwmax(wbv) < wbv%ubw+1 .and. wbv%ubw < get_n(wbv)-1) .or. &
          (get_lbwmax(wbv) < wbv%lbw+1 .and. wbv%lbw < get_n(wbv)-1)) then
-       call set_error(error, 2, id_c_convert_wbv_to_ubt); return
+       call set_error(2, info, error); return
     end if
     if (get_lbwmax(ubt) < wbv%lbw .or. get_ubwmax(ubt) < wbv%ubw) then
-       call set_error(error, 3, id_c_convert_wbv_to_ubt); return
+       call set_error(3, info, error); return
     end if
     if (get_n(wbv) /= get_n(ubt)) then
-       call set_error(error, 4, id_c_convert_wbv_to_ubt); return
+       call set_error(4, info, error); return
     end if
     call f_c_convert_wbv_to_ubt(wbv%br, get_n(wbv), wbv%lbw, wbv%ubw, get_lbwmax(wbv), &
          get_ubwmax(wbv), wbv%numrotsw, wbv%jsw, wbv%csw, wbv%ssw, &
@@ -182,6 +191,7 @@ contains
          ubt%bc, ubt%lbw, ubt%ubw, get_lbwmax(ubt), get_ubwmax(ubt), &
          ubt%numrotsu, ubt%jsu, ubt%csu, ubt%ssu, &
          ubt%numrotst, ubt%kst, ubt%cst, ubt%sst)
+    call pop_id(error)
   end subroutine c_convert_wbv_to_ubt
 
   subroutine f_c_convert_wbv_to_ubt(b_wbv, n, lbw, ubw, lbwmax_wbv, ubwmax_wbv, numrotsw, &

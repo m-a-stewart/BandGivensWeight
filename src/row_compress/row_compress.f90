@@ -27,28 +27,29 @@ contains
     type(d_ubt) :: ubt
     type(d_bv) :: bv
     type(d_sweeps) :: sw
-    type(error_info), intent(out) :: error
-
+    type(error_info), intent(inout), optional :: error
+    type(routine_info), parameter :: info=info_d_row_compress
     integer(kind=int32) :: n, lbw
     lbw=ubt%lbw
     n=get_n(ubt)
     call clear_error(error)
+    call push_id(info, error)
     if (n /= get_n(bv) .or. n /= get_n(sw)) then
-       call set_error(error, 1, id_d_row_compress); return
+       call set_error(1, info, error); return
     end if
     if (get_maxord(sw) < ubt%lbw) then
-       call set_error(error, 2, id_d_row_compress); return
+       call set_error(2, info, error); return
     end if
     if (get_maxind(sw) < n-2 .or. get_minind(sw) > 1) then
-       call set_error(error, 3, id_d_row_compress); return
+       call set_error(3, info, error); return
     end if
     if (get_ubwmax(ubt) < min(ubt%lbw+ubt%ubw+1,n-1) .or. &
          get_lbwmax(ubt) < min(ubt%lbw+1,n-1)) then
-       call set_error(error, 4, id_d_row_compress); return
+       call set_error(4, info, error); return
     end if
     if (get_lbwmax(bv) < ubt%lbw .or. &
          get_ubwmax(bv) < min(ubt%lbw+ubt%ubw,n-1)) then
-       call set_error(error, 5, id_d_row_compress); return
+       call set_error(5, info, error); return
     end if
     call f_d_row_compress(ubt%bc, get_n(ubt), ubt%lbw, ubt%ubw, get_lbwmax(ubt), &
          get_ubwmax(ubt), ubt%numrotsu, ubt%jsu, ubt%csu, ubt%ssu, & 
@@ -56,6 +57,7 @@ contains
          bv%br, bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), bv%numrotsv, bv%ksv, &
          bv%csv, bv%ssv, sw%left, sw%right, sw%inc, get_minind(sw), get_maxind(sw), &
          get_maxord(sw), sw%numrots, sw%js, sw%cs, sw%ss)
+    call pop_id(error)
   end subroutine d_row_compress
 
   subroutine f_d_row_compress(b_ubt, n, lbw_ubt, ubw_ubt, lbwmax_ubt, ubwmax_ubt, numrotsu, &
@@ -176,28 +178,30 @@ contains
     type(c_ubt) :: ubt
     type(c_bv) :: bv
     type(c_sweeps) :: sw
-    type(error_info), intent(out) :: error
-
+    type(error_info), intent(inout), optional :: error
+    type(routine_info), parameter :: info=info_c_row_compress
     integer(kind=int32) :: n, lbw
     lbw=ubt%lbw
     n=get_n(ubt)
     call clear_error(error)
+    call push_id(info, error)
+    
     if (n /= get_n(bv) .or. n /= get_n(sw)) then
-       call set_error(error, 1, id_c_row_compress); return
+       call set_error(1, info, error); return
     end if
     if (get_maxord(sw) < ubt%lbw) then
-       call set_error(error, 2, id_c_row_compress); return
+       call set_error(2, info, error); return
     end if
     if (get_maxind(sw) < n-2 .or. get_minind(sw) > 1) then
-       call set_error(error, 3, id_c_row_compress); return
+       call set_error(3, info, error); return
     end if
     if (get_ubwmax(ubt) < min(ubt%lbw+ubt%ubw+1,n-1) .or. &
          get_lbwmax(ubt) < min(ubt%lbw+1,n-1)) then
-       call set_error(error, 4, id_c_row_compress); return
+       call set_error(4, info, error); return
     end if
     if (get_lbwmax(bv) < ubt%lbw .or. &
          get_ubwmax(bv) < min(ubt%lbw+ubt%ubw,n-1)) then
-       call set_error(error, 5, id_d_row_compress); return
+       call set_error(5, info, error); return
     end if
     call f_c_row_compress(ubt%bc, get_n(ubt), ubt%lbw, ubt%ubw, get_lbwmax(ubt), &
          get_ubwmax(ubt), ubt%numrotsu, ubt%jsu, ubt%csu, ubt%ssu, & 
@@ -205,6 +209,7 @@ contains
          bv%br, bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), bv%numrotsv, bv%ksv, &
          bv%csv, bv%ssv, sw%left, sw%right, sw%inc, get_minind(sw), get_maxind(sw), &
          get_maxord(sw), sw%numrots, sw%js, sw%cs, sw%ss)
+    call pop_id(error)
   end subroutine c_row_compress
 
   subroutine f_c_row_compress(b_ubt, n, lbw_ubt, ubw_ubt, lbwmax_ubt, ubwmax_ubt, numrotsu, &

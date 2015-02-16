@@ -38,25 +38,28 @@ contains
   subroutine d_upper_to_bv(a,bv,lbw,tol,error)
     real(kind=dp), target, dimension(:,:), intent(inout) :: a
     type(d_bv), intent(inout) :: bv
-    type(error_info), intent(out) :: error
+    type(error_info), intent(out), optional :: error
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), intent(in) :: lbw
+    type(routine_info), parameter :: info=info_d_upper_to_bv
+
     call clear_error(error)
+    call push_id(info, error)
+    
     if (size(a,1) < 1) then
-       call set_error(error, 1, id_d_upper_to_bv); return
+       call set_error(1, info, error); return
     end if
     if (get_lbwmax(bv) < lbw) then
-       call set_error(error, 2, id_d_upper_to_bv); return
+       call set_error(2, info, error); return
     end if
     if (get_n(bv) /= size(a,1) .or. get_n(bv) /= size(a,2)) then
-       call set_error(error, 3, id_d_upper_to_bv); return
+       call set_error(3, info, error); return
     end if
     call f_d_upper_to_bv(a,get_n(bv),bv%br, lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
          bv%numrotsv, bv%ksv, bv%csv, bv%ssv, tol, error)
     bv%lbw=lbw
-    if (error%code > 0) then
-       call add_id(error,id_d_upper_to_bv); return
-    end if
+
+    call pop_id(error)
     
   end subroutine d_upper_to_bv
 
@@ -72,12 +75,14 @@ contains
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), dimension(n), intent(out) :: numrotsv
     integer(kind=int32), intent(out) :: ubw
-    type(error_info) :: error
+    type(error_info), optional :: error
     integer(kind=int32), intent(in) :: n, lbw, lbwmax, ubwmax
     !
     integer(kind=int32), dimension(n) :: ubws
+    type(routine_info), parameter :: info=info_f_d_upper_to_bv
     !
     call clear_error(error)
+    call push_id(info, error)
 
     if (n == 1) then
        numrotsv=0
@@ -89,17 +94,16 @@ contains
 
     call f_d_general_bv(a, n, ubws, ubwmax, numrotsv, ksv, csv, ssv, tol, error)
 
-    if (error%code > 0) then
-       call add_id(error,id_f_d_upper_to_bv); return
+    if (success(error)) then
+       ubw=maxval(ubws)
+       if (ubw > ubwmax) then
+          call set_error(1, info, error); return
+       else
+          call d_extract_diagonals_br(a, n, b, lbw, ubw, lbwmax, ubwmax)
+       end if
     end if
 
-    ubw=maxval(ubws)
-    if (ubw > ubwmax) then
-       call set_error(error, 1, id_f_d_upper_to_bv)
-    else
-       call d_extract_diagonals_br(a, n, b, lbw, ubw, lbwmax, ubwmax)
-    end if
-
+    call pop_id(error)
   end subroutine f_d_upper_to_bv
 
   ! Errors:
@@ -113,17 +117,20 @@ contains
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), dimension(n), intent(out) :: numrotsv
     integer(kind=int32), dimension(n), intent(out) :: ubws
-    type(error_info) :: error
+    type(error_info), optional :: error
     integer(kind=int32), intent(in) :: n, ubwmax
     !
     real(kind=dp), target, dimension(n,ubwmax+1) :: q
     real(kind=dp), dimension(ubwmax+1) :: x
     real(kind=dp) :: nrma, nrmq1
     real(kind=dp), pointer, dimension(:,:) :: pl, pq
-    integer(kind=int32) :: i, j, k, roffs, coffs, nl, klast
+    integer(kind=int32) :: i, j, k, roffs, coffs, nl, klast, p
     type(d_rotation) :: rot
+    type(routine_info), parameter :: info=info_f_d_general_bv
     !
     call clear_error(error)
+    call push_id(info, error)
+    
     q=0.0_dp; numrotsv=0;
     ssv=0.0_dp; csv=0.0_dp; ksv=0
     ubws=0
@@ -179,7 +186,7 @@ contains
              end if
           else ! no null vector
              if (ubwmax==0) then
-                call set_error(error, 1, id_f_d_general_bv); return
+                call set_error(1, info, error); return
              end if
              ubws(k)=1
              if (k==n-1) then
@@ -205,8 +212,8 @@ contains
                    pq(:,1)=a(1:n-k-1,coffs)
                    pl => a(roffs-1:roffs,coffs:coffs+1)
                    call extend_gs_columns(pq(:,2:2),pl(2:2,1), pl(1,1), pq(:,1), error)
-                   if (error%code > 0) then
-                      call add_id(error,id_f_d_general_bv); return
+                   if (failure(error)) then
+                      return
                    end if
                    if (n-k-3 >= 1) then
                       a(1:n-k-3,coffs)=0.0_dp
@@ -220,25 +227,23 @@ contains
              end if
           end if
        else ! nl > 1
-          call lower_right_nullvec(x(1:nl),pl,tol*nrma,nullmaxits,error)
-          if (error%code <= 0) then ! if there is a left null vector then introduce a zero row.
+          call lower_right_nullvec(x(1:nl),pl,tol*nrma,nullmaxits,p,error)
+          if (success(error)) then ! if there is a left null vector then introduce a zero row.
              ubws(k)=nl-1
-             if (error%code == -nl) then
+             if (p == nl) then
                 pl(nl,nl)=0.0_dp
                 numrotsv(n-k)=0
-                call clear_error(error)
-             else if (error%code <= -1) then
-                numrotsv(n-k)=nl+error%code
-                pl(-error%code,-error%code)=0.0_dp
-                do j=-error%code,nl-1
+             else if (p >= 1) then
+                numrotsv(n-k)=nl-p
+                pl(p,p)=0.0_dp
+                do j=p,nl-1
                    rot=rgivens(pl(j+1,j),pl(j+1,j+1))
                    call general_times_rotation(pl(j+1:nl,:),rot,j,j+1)
                    pl(j+1,j+1)=0.0_dp
                    csv(n-k,nl-j)=rot%cosine; ssv(n-k,nl-j)=rot%sine
                    ksv(n-k,nl-j)=coffs+j
                 end do
-                call clear_error(error)
-             else ! error=0
+             else ! p==0
                 numrotsv(n-k)=nl-1;
                 do j=2,nl ! apply v_k while preserving the triangular structure of L
                    rot=lgivens2(x(j-1),x(j))
@@ -280,8 +285,7 @@ contains
              else
                 pq(:,nl)=0.0_dp; pq(n-k,nl)=1.0_dp
                 call extend_gs_columns(pq(:,1:nl-1), x(1:nl-1), x(nl), pq(:,nl), error)
-                if (error%code > 0) then
-                   call add_id(error,id_f_d_general_bv)
+                if (failure(error)) then
                    return
                 end if
                 do j=1,nl-1
@@ -296,8 +300,7 @@ contains
                 pq(:,1)=a(1:n-k-1,coffs)
                 pl => a(roffs:roffs+nl-1, coffs:coffs+nl-1)
                 call extend_gs_columns(pq(:,2:nl),pl(2:nl,1),pl(1,1),pq(:,1),error)
-                if (error%code > 0) then
-                   call add_id(error,id_f_d_general_bv)
+                if (failure(error)) then
                    return
                 end if
                 if (roffs>1) then
@@ -308,8 +311,9 @@ contains
              ! no null vector found.  Simply reveal row nl if there is room.
              ! Otherwise terminate with square L
              call clear_error(error)
+             call pop_id(error)
              if (ubwmax < nl) then
-                call set_error(error, 1, id_f_d_general_bv); return
+                call set_error(1, info, error); return
              end if
              ubws(k)=nl
              if (k+nl == n) then
@@ -321,8 +325,7 @@ contains
                 pq => q(1:n-k,1:nl+1)
                 pq(:,nl+1)=0.0_dp; pq(n-k,nl+1)=1.0_dp
                 call extend_gs_columns(pq(:,1:nl),x(1:nl), x(nl+1),pq(:,nl+1),error)
-                if (error%code > 0) then
-                   call add_id(error,id_f_d_general_bv)
+                if (failure(error)) then
                    return
                 end if
                 do j=1,nl
@@ -348,8 +351,7 @@ contains
                    pq(:,1)=a(1:n-k-1,coffs)
                    pl => a(roffs-1:roffs-1+nl,coffs:coffs+nl)
                    call extend_gs_columns(pq(:,2:nl+1), pl(2:nl+1,1), pl(1,1), pq(:,1), error)
-                   if (error%code>0) then
-                      call add_id(error,id_f_d_general_bv)
+                   if (failure(error)) then
                       return
                    end if
                    if (roffs-2 >= 1) then
@@ -368,7 +370,7 @@ contains
     ! of kloop found a null vector.  The latter happens when it didn't.
     if (klast == k) then ! square termination
        if (ubwmax<n-k) then
-          call set_error(error, 1, id_f_d_general_bv); return
+          call set_error(1, info, error); return
        end if
        ubws(k:n-1)=n-k       
        nl = n-k
@@ -399,7 +401,7 @@ contains
     else ! rectangular termination
        k=k+1
        if (ubwmax<n-k) then
-          call set_error(error, 1, id_f_d_general_bv); return
+          call set_error(1, info, error); return
        end if
        ubws(k:n-1)=n-k
        nl=n-k
@@ -425,6 +427,7 @@ contains
           pl(nl,:)=pq(nl,nl)*pl(nl,:)
        end do
     end if
+    call pop_id(error)
   end subroutine f_d_general_bv
 
   ! complex BV
@@ -432,27 +435,29 @@ contains
   subroutine c_upper_to_bv(a,bv,lbw,tol,error)
     complex(kind=dp), target, dimension(:,:), intent(inout) :: a
     type(c_bv), intent(inout) :: bv
-    type(error_info), intent(out) :: error
+    type(error_info), intent(out), optional :: error
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), intent(in) :: lbw
+    type(routine_info), parameter :: info=info_c_upper_to_bv
+    
     call clear_error(error)
+    call push_id(info, error)
     !
     if (size(a,1) < 1) then
-       call set_error(error, 1, id_c_upper_to_bv); return
+       call set_error(1, info, error); return
     end if
     if (get_lbwmax(bv) < lbw) then
-       call set_error(error, 2, id_c_upper_to_bv); return
+       call set_error(2, info, error); return
     end if
     if (get_n(bv) /= size(a,1) .or. get_n(bv) /= size(a,2)) then
-       call set_error(error, 3, id_c_upper_to_bv)
+       call set_error(3, info, error); return
     end if
     call f_c_upper_to_bv(a,get_n(bv),bv%br, lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
          bv%numrotsv, bv%ksv, bv%csv, bv%ssv, tol, error)
-    if (error%code > 0) then
-       call add_id(error,id_c_upper_to_bv); return
-    end if
 
     bv%lbw=lbw
+    call pop_id(error)
+    
   end subroutine c_upper_to_bv
 
   subroutine f_c_upper_to_bv(a, n, b, lbw, ubw, lbwmax, ubwmax, &
@@ -465,13 +470,15 @@ contains
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), dimension(n), intent(out) :: numrotsv
     integer(kind=int32), intent(out) :: ubw
-    type(error_info), intent(out) :: error
+    type(error_info), intent(out), optional :: error
     integer(kind=int32), intent(in) :: n, lbw, lbwmax, ubwmax
     !
     integer(kind=int32), dimension(n) :: ubws
+    type(routine_info), parameter :: info=info_f_c_upper_to_bv
     !
 
     call clear_error(error)
+    call push_id(info, error)
 
     if (n == 1) then
        numrotsv=0
@@ -482,17 +489,16 @@ contains
     end if
 
     call f_c_general_bv(a, n, ubws, ubwmax, numrotsv, ksv, csv, ssv, tol, error)
-    if (error%code > 0) then
-       call add_id(error,id_f_c_upper_to_bv); return
-    end if
 
-    
-    ubw=maxval(ubws)
-    if (ubw > ubwmax) then
-       call set_error(error, 2, id_f_c_upper_to_bv)
-    else
-       call c_extract_diagonals_br(a,n,b,lbw,ubw,lbwmax, ubwmax)
+    if (success(error)) then
+       ubw=maxval(ubws)
+       if (ubw > ubwmax) then
+          call set_error(2, info, error); return
+       else
+          call c_extract_diagonals_br(a,n,b,lbw,ubw,lbwmax, ubwmax)
+       end if
     end if
+    call pop_id(error)
   end subroutine f_c_upper_to_bv
 
   subroutine f_c_general_bv(a, n, ubws, ubwmax, &
@@ -504,20 +510,23 @@ contains
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), dimension(n), intent(out) :: ubws
     integer(kind=int32), dimension(n), intent(out) :: numrotsv
-    type(error_info), intent(out) :: error
+    type(error_info), intent(out), optional :: error
     integer(kind=int32), intent(in) :: n, ubwmax
     !
     complex(kind=dp), target, dimension(n,ubwmax+1) :: q
     complex(kind=dp), dimension(ubwmax+1) :: x
     real(kind=dp) :: nrma, nrmq1
     complex(kind=dp), pointer, dimension(:,:) :: pl, pq
-    integer(kind=int32) :: i, j, k, roffs, coffs, nl, klast
+    integer(kind=int32) :: i, j, k, roffs, coffs, nl, klast, p
     type(c_rotation) :: rot
+    type(routine_info), parameter :: info=info_f_c_general_bv
     !
     q=(0.0_dp, 0.0_dp); numrotsv=0;
     ssv=(0.0_dp, 0.0_dp); csv=0.0_dp; ksv=0
     ubws=0
     call clear_error(error)
+    call push_id(info, error)
+
     nrma = maxabs(a)*sqrt(real(n))
 
     if (n == 1) then
@@ -569,7 +578,7 @@ contains
              end if
           else ! no null vector
              if (ubwmax==0) then
-                call set_error(error, 1, id_f_c_general_bv); return
+                call set_error(1, info, error); return
              end if
              ubws(k)=1
              if (k==n-1) then
@@ -595,10 +604,9 @@ contains
                    pq(:,1)=a(1:n-k-1,coffs)
                    pl => a(roffs-1:roffs,coffs:coffs+1)
                    call extend_gs_columns(pq(:,2:2),pl(2:2,1), pl(1,1), pq(:,1), error)
-                   if (error%code > 0 ) then
-                      call add_id(error,id_f_c_general_bv)
+                   if (failure(error)) then
                       return
-                   end if
+                   endif
                    if (n-k-3 >= 1) then
                       a(1:n-k-3,coffs)=(0.0_dp, 0.0_dp)
                    end if
@@ -611,25 +619,23 @@ contains
              end if
           end if
        else ! nl > 1
-          call lower_right_nullvec(x(1:nl),pl,tol*nrma,nullmaxits,error)
-          if (error%code <= 0) then ! if there is a left null vector then introduce a zero row.
+          call lower_right_nullvec(x(1:nl),pl,tol*nrma,nullmaxits,p,error)
+          if (success(error)) then ! if there is a left null vector then introduce a zero row.
              ubws(k)=nl-1
-             if (error%code == -nl) then
+             if (p == nl) then
                 pl(nl,nl)=(0.0_dp, 0.0_dp)
                 numrotsv(n-k)=0
-                call clear_error(error)
-             else if (error%code <= -1) then
-                numrotsv(n-k)=nl+error%code
-                pl(-error%code,-error%code)=(0.0_dp, 0.0_dp)
-                do j=-error%code,nl-1
+             else if (p >= 1) then
+                numrotsv(n-k)=nl-p
+                pl(p,p)=(0.0_dp, 0.0_dp)
+                do j=p,nl-1
                    rot=rgivens(pl(j+1,j),pl(j+1,j+1))
                    call general_times_rotation(pl(j+1:nl,:),rot,j,j+1)
                    pl(j+1,j+1)=(0.0_dp, 0.0_dp)
                    csv(n-k,nl-j)=rot%cosine; ssv(n-k,nl-j)=rot%sine
                    ksv(n-k,nl-j)=coffs+j
                 end do
-                call clear_error(error)
-             else ! nullerr=0
+             else ! p==0
                 numrotsv(n-k)=nl-1;
                 do j=2,nl ! apply v_k while preserving the triangular structure of L
                    rot=lgivens2(x(j-1),x(j))
@@ -671,8 +677,7 @@ contains
              else
                 pq(:,nl)=(0.0_dp, 0.0_dp); pq(n-k,nl)=(1.0_dp, 0.0_dp)
                 call extend_gs_columns(pq(:,1:nl-1), x(1:nl-1), x(nl), pq(:,nl), error)
-                if (error%code > 0) then
-                   call add_id(error,id_f_c_general_bv)
+                if (failure(error)) then
                    return
                 end if
                 do j=1,nl-1
@@ -687,8 +692,7 @@ contains
                 pq(:,1)=a(1:n-k-1,coffs)
                 pl => a(roffs:roffs+nl-1, coffs:coffs+nl-1)
                 call extend_gs_columns(pq(:,2:nl),pl(2:nl,1),pl(1,1),pq(:,1),error)
-                if (error%code > 0) then
-                   call add_id(error,id_f_c_general_bv)
+                if (failure(error)) then
                    return
                 end if
                 if (roffs>1) then
@@ -699,8 +703,9 @@ contains
              ! no null vector found.  Simply reveal row nl if there is room.
              ! Otherwise terminate with square L
              call clear_error(error)
+             call pop_id(error)
              if (ubwmax < nl) then
-                call set_error(error, 1, id_f_c_general_bv); return
+                call set_error(1, info, error); return
              end if
              ubws(k)=nl
              if (k+nl == n) then
@@ -712,8 +717,7 @@ contains
                 pq => q(1:n-k,1:nl+1)
                 pq(:,nl+1)=(0.0_dp, 0.0_dp); pq(n-k,nl+1)=(1.0_dp, 0.0_dp)
                 call extend_gs_columns(pq(:,1:nl),x(1:nl), x(nl+1),pq(:,nl+1),error)
-                if (error%code > 0) then
-                   call add_id(error,id_f_c_general_bv)
+                if (failure(error)) then
                    return
                 end if
                 do j=1,nl
@@ -739,8 +743,7 @@ contains
                    pq(:,1)=a(1:n-k-1,coffs)
                    pl => a(roffs-1:roffs-1+nl,coffs:coffs+nl)
                    call extend_gs_columns(pq(:,2:nl+1), pl(2:nl+1,1), pl(1,1), pq(:,1), error)
-                   if (error%code > 0) then
-                      call add_id(error,id_f_c_general_bv)
+                   if (failure(error)) then
                       return
                    end if
                    if (roffs-2 >= 1) then
@@ -759,7 +762,7 @@ contains
     ! of kloop found a null vector.  The latter happens when it didn't.
     if (klast == k) then ! square termination
        if (ubwmax < n-k) then
-          call set_error(error, 1, id_f_c_general_bv); return
+          call set_error(1, info, error); return
        end if
        ubws(k:n-1)=n-k
        nl = n-k
@@ -790,7 +793,7 @@ contains
     else ! rectangular termination
        k=k+1
        if (ubwmax < n-k) then
-          call set_error(error, 1, id_f_c_general_bv); return
+          call set_error(1, info, error); return
        end if
        ubws(k:n-1)=n-k
        nl=n-k
@@ -816,6 +819,7 @@ contains
           pl(nl,:)=pq(nl,nl)*pl(nl,:)
        end do
     end if
+    call pop_id(error)
   end subroutine f_c_general_bv
 
 end module mod_general_bv

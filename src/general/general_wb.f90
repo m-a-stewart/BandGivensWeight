@@ -33,26 +33,29 @@ contains
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), dimension(n), intent(out) :: numrotsw
     integer(kind=int32), dimension(n), intent(out) :: lbws
-    type(error_info), intent(out) :: error
+    type(error_info), intent(out), optional :: error
     integer(kind=int32), intent(in) :: n, lbwmax
     !
     integer(kind=int32), dimension(n,lbwmax) :: ksv
     real(kind=dp), dimension(n,lbwmax) :: csv, ssv
+    type(routine_info), parameter :: info=info_f_d_general_wb
 
     call clear_error(error)
+    call push_id(info, error)
 
     call ip_transpose(a)
     call f_d_general_bv(a,n,lbws,lbwmax,numrotsw,ksv,csv,ssv,tol,error)
 
-    if (error%code > 0) then
-       call add_id(error,id_f_d_general_wb); return
+    if (success(error)) then
+
+       call ip_transpose(a)
+
+       jsw=transpose(ksv)
+       csw=transpose(csv)
+       ssw=transpose(ssv)
     end if
 
-    call ip_transpose(a)
-    
-    jsw=transpose(ksv)
-    csw=transpose(csv)
-    ssw=transpose(ssv)
+    call pop_id(error)
 
   end subroutine f_d_general_wb
 
@@ -68,12 +71,14 @@ contains
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), dimension(n), intent(out) :: numrotsw
     integer(kind=int32), intent(out) :: lbw
-    type(error_info), intent(out) :: error
+    type(error_info), intent(out), optional :: error
     integer(kind=int32), intent(in) :: n, ubw, ubwmax, lbwmax
     !
     integer(kind=int32), dimension(n) :: lbws
-
+    type(routine_info), parameter :: info=info_f_d_lower_to_wb
+    
     call clear_error(error)
+    call push_id(info, error)
 
     if (n == 1) then
        numrotsw=0;
@@ -85,18 +90,17 @@ contains
 
     call f_d_general_wb(a, n, lbws, lbwmax, numrotsw, jsw, csw, ssw, tol, error)
 
-    if (error%code > 0) then
-       call add_id(error,id_f_d_lower_to_wb); return
+    if (success(error)) then
+       lbw=maxval(lbws)
+       if (maxval(lbws) > lbwmax) then
+          ! This should already have been detected in f_d_general_wb.
+          call set_error(1, info, error); return
+       else
+          call d_extract_diagonals_bc(a, n, b, lbw, ubw, lbwmax, ubwmax)
+       end if
     end if
 
-
-    lbw=maxval(lbws)
-    if (maxval(lbws) > lbwmax) then
-       ! This should already have been detected in f_d_general_wb.
-       call set_error(error, 1, id_f_d_lower_to_wb)
-    else
-       call d_extract_diagonals_bc(a, n, b, lbw, ubw, lbwmax, ubwmax)
-    end if
+    call pop_id(error)
   end subroutine f_d_lower_to_wb
 
   ! Errors:
@@ -107,27 +111,28 @@ contains
   subroutine d_lower_to_wb(a,wb,ubw,tol,error)
     real(kind=dp), target, dimension(:,:), intent(inout) :: a
     type(d_wb), intent(inout) :: wb
-    type(error_info), intent(out) :: error
+    type(error_info), intent(out), optional :: error
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), intent(in) :: ubw
+    type(routine_info), parameter :: info=info_d_lower_to_wb
+
     call clear_error(error)
+    call push_id(info, error)
+    
     if (size(a,1) < 1) then
-       call set_error(error, 1, id_d_lower_to_wb); return
+       call set_error(1, info, error); return
     end if
     if (get_ubwmax(wb) < ubw) then
-       call set_error(error, 2, id_d_lower_to_wb); return
+       call set_error(2, info, error); return
     end if
     if (get_n(wb) /= size(a,1) .or. get_n(wb) /= size(a,2)) then
-       call set_error(error, 3, id_d_lower_to_wb); return
+       call set_error(3, info, error); return
     end if
     call f_d_lower_to_wb(a,get_n(wb),wb%bc, wb%lbw, ubw, get_lbwmax(wb), get_ubwmax(wb), &
          wb%numrotsw, wb%jsw, wb%csw, wb%ssw, tol, error)
 
-    if (error%code > 0) then
-       call add_id(error,id_d_lower_to_wb); return
-    end if
-
     wb%ubw=ubw
+    call pop_id(error)
   end subroutine d_lower_to_wb
 
   subroutine f_c_general_wb(a, n, lbws, lbwmax, numrotsw, jsw, csw, ssw, tol, error)
@@ -138,26 +143,29 @@ contains
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), dimension(n), intent(out) :: numrotsw
     integer(kind=int32), dimension(n), intent(out) :: lbws
-    type(error_info), intent(out) :: error
+    type(error_info), intent(out), optional :: error
     integer(kind=int32), intent(in) :: n, lbwmax
     !
     integer(kind=int32), dimension(n,lbwmax) :: ksv
     real(kind=dp), dimension(n,lbwmax) :: csv
     complex(kind=dp), dimension(n,lbwmax) :: ssv
+    type(routine_info), parameter :: info=info_f_c_general_wb
 
     call clear_error(error)
+    call push_id(info, error)
+    
     call ip_transpose(a)
     call f_c_general_bv(a,n,lbws,lbwmax,numrotsw,ksv,csv,ssv,tol,error)
-    if (error%code > 0) then
-       call add_id(error,id_f_c_general_wb); return
+
+    if (success(error)) then
+       
+       call ip_transpose(a)
+
+       jsw=transpose(ksv)
+       csw=transpose(csv)
+       ssw=transpose(ssv)
     end if
-
-    call ip_transpose(a)
-    
-    jsw=transpose(ksv)
-    csw=transpose(csv)
-    ssw=transpose(ssv)
-
+    call pop_id(error)
   end subroutine f_c_general_wb
 
   ! Errors:
@@ -173,12 +181,14 @@ contains
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), dimension(n), intent(out) :: numrotsw
     integer(kind=int32), intent(out) :: lbw
-    type(error_info), intent(out) :: error
+    type(error_info), intent(out), optional :: error
     integer(kind=int32), intent(in) :: n, ubw, ubwmax, lbwmax
     !
     integer(kind=int32), dimension(n) :: lbws
+    type(routine_info), parameter :: info=info_f_c_lower_to_wb
 
     call clear_error(error)
+    call push_id(info, error)
 
     if (n == 1) then
        numrotsw=0;
@@ -189,18 +199,18 @@ contains
     end if
 
     call f_c_general_wb(a, n, lbws, lbwmax, numrotsw, jsw, csw, ssw, tol, error)
-    if (error%code > 0) then
-       call add_id(error,id_f_c_lower_to_wb); return
-    end if
 
-
-    lbw=maxval(lbws)
-    if (maxval(lbws) > lbwmax) then
-       ! This should already have been detected in f_c_general_wb.
-       call set_error(error, 1, id_f_c_lower_to_wb)
-    else
-       call c_extract_diagonals_bc(a, n, b, lbw, ubw, lbwmax, ubwmax)
+    if (success(error)) then
+       
+       lbw=maxval(lbws)
+       if (maxval(lbws) > lbwmax) then
+          ! This should already have been detected in f_c_general_wb.
+          call set_error(1, info, error); return
+       else
+          call c_extract_diagonals_bc(a, n, b, lbw, ubw, lbwmax, ubwmax)
+       end if
     end if
+    call pop_id(error)
   end subroutine f_c_lower_to_wb
 
   ! Errors:
@@ -211,25 +221,27 @@ contains
   subroutine c_lower_to_wb(a,wb,ubw,tol,error)
     complex(kind=dp), target, dimension(:,:), intent(inout) :: a
     type(c_wb), intent(inout) :: wb
-    type(error_info), intent(out) :: error
+    type(error_info), intent(out), optional :: error
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), intent(in) :: ubw
+    type(routine_info), parameter :: info=info_c_lower_to_wb
+
     call clear_error(error)
+    call push_id(info, error)
+    
     if (size(a,1) < 1) then
-       call set_error(error, 1, id_c_lower_to_wb); return
+       call set_error(1, info, error); return
     end if
     if (get_ubwmax(wb) < ubw) then
-       call set_error(error, 2, id_c_lower_to_wb); return
+       call set_error(2, info, error); return
     end if
     if (get_n(wb) /= size(a,1) .or. get_n(wb) /= size(a,2)) then
-       call set_error(error, 3, id_c_lower_to_wb); return
+       call set_error(3, info, error); return
     end if
     call f_c_lower_to_wb(a,get_n(wb),wb%bc, wb%lbw, ubw, get_lbwmax(wb), get_ubwmax(wb), &
          wb%numrotsw, wb%jsw, wb%csw, wb%ssw, tol, error)
-    if (error%code > 0) then
-       call add_id(error,id_c_lower_to_wb); return
-    end if
     wb%ubw=ubw
+    call pop_id(error)
   end subroutine c_lower_to_wb
 
 

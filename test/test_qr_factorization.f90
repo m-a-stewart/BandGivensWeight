@@ -3,7 +3,8 @@ program test_qr_factorization
   use mod_test_data
   implicit none
   real(kind=dp) :: t0, t1
-  integer(kind=int32) :: na, lbwa, ubwa, j, k, numsweeps, lbwmaxa, ubwmaxa
+  integer(kind=int32) :: na, lbwa, ubwa, j, k
+  ! integer(kind=int32) :: lbwmaxa, ubwmaxa, numsweeps
   integer(kind=int32), parameter :: nmax=1000
   type(error_info) :: error
   integer, parameter :: n=50, rmax=13, ubwmax=rmax+5, lbw=2, lbwmax=10
@@ -23,8 +24,8 @@ program test_qr_factorization
   type(c_ub), allocatable :: ub_c
   type(d_bv), allocatable :: bv_d
   type(c_bv), allocatable :: bv_c
-  type(d_sweeps), allocatable :: sw_d, rsw_d
-  type(c_sweeps), allocatable :: sw_c, rsw_c
+  type(d_sweeps), allocatable :: sw_d ! , rsw_d
+  type(c_sweeps), allocatable :: sw_c ! , rsw_c
 
   call random_seed
   call random_matrix(u_d)

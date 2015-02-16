@@ -35,27 +35,31 @@ contains
     type(d_ub) :: ub
     type(d_bv) :: bv
     type(d_sweeps) :: sw
-    type(error_info), intent(out) :: error
+    type(error_info), intent(out), optional :: error
 
     integer(kind=int32) :: lbw, n
+    type(routine_info), parameter :: info=info_d_qr_bv_to_ub
+
+    call clear_error(error)
+    call push_id(info, error)
+    
     lbw=bv%lbw
     n=get_n(bv)
-    call clear_error(error)
     if (n /= get_n(sw) .or. n /= get_n(ub)) then
-       call set_error(error, 1, id_d_qr_bv_to_ub); return
+       call set_error(1, info, error); return
     end if
     if (get_maxord(sw) < bv%lbw) then
-       call set_error(error, 2, id_d_qr_bv_to_ub); return
+       call set_error(2, info, error); return
     end if
     if (get_maxind(sw) < n+lbw-1 .or. get_minind(sw) > lbw+1) then
-       call set_error(error, 3, id_d_qr_bv_to_ub); return
+       call set_error(3, info, error); return
     end if
     if (get_ubwmax(bv) < min(bv%lbw+bv%ubw+1,n-1) .or. &
          get_lbwmax(bv) < min(bv%lbw+1,n-1)) then
-       call set_error(error, 4, id_d_qr_bv_to_ub); return
+       call set_error(4, info, error); return
     end if
     if (get_ubwmax(ub) < min(bv%lbw+bv%ubw,n-1)) then
-       call set_error(error, 5, id_d_qr_bv_to_ub); return
+       call set_error(5, info, error); return
     end if
     call f_d_qr_bv_to_ub(bv%br, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), &
          get_ubwmax(bv), bv%numrotsv, bv%ksv, bv%csv, bv%ssv, & 
@@ -64,11 +68,7 @@ contains
          sw%left, sw%right, sw%inc, get_minind(sw), get_maxind(sw), get_maxord(sw), &
          sw%numrots, sw%js, &
          sw%cs, sw%ss)
-
-    if (error%code > 0) then
-       call add_id(error,id_d_qr_bv_to_ub); return
-    end if
-
+    call pop_id(error)
   end subroutine d_qr_bv_to_ub
 
   subroutine f_d_qr_bv_to_ub(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, &
@@ -196,27 +196,31 @@ contains
     type(c_ub) :: ub
     type(c_bv) :: bv
     type(c_sweeps) :: sw
-    type(error_info), intent(out) :: error
+    type(error_info), intent(out), optional :: error
+    type(routine_info), parameter :: info=info_c_qr_bv_to_ub
 
     integer(kind=int32) :: lbw, n
+
+    call clear_error(error)
+    call push_id(info, error)
+
     lbw=bv%lbw
     n=get_n(bv)
-    call clear_error(error)
     if (n /= get_n(sw) .or. n /= get_n(ub)) then
-       call set_error(error, 1, id_c_qr_bv_to_ub); return
+       call set_error(1, info, error); return
     end if
     if (get_maxord(sw) < bv%lbw) then
-       call set_error(error, 2, id_c_qr_bv_to_ub); return
+       call set_error(2, info, error); return
     end if
     if (get_maxind(sw)  < n+lbw-1 .or. get_minind(sw) > lbw+1) then
-       call set_error(error, 3, id_c_qr_bv_to_ub); return
+       call set_error(3, info, error); return
     end if
     if (get_ubwmax(bv) < min(bv%lbw+bv%ubw+1,n-1) .or. &
          get_lbwmax(bv) < min(bv%lbw+1,n-1)) then
-       call set_error(error, 4, id_c_qr_bv_to_ub); return
+       call set_error(4, info, error); return
     end if
     if (get_ubwmax(ub) < min(bv%lbw+bv%ubw,n-1)) then
-       call set_error(error, 5, id_c_qr_bv_to_ub); return
+       call set_error(5, info, error); return
     end if
     call f_c_qr_bv_to_ub(bv%br, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), &
          get_ubwmax(bv), bv%numrotsv, bv%ksv, bv%csv, bv%ssv, & 
@@ -224,10 +228,7 @@ contains
          ub%jsu, ub%csu, ub%ssu, sw%left, sw%right, sw%inc, get_minind(sw), &
          get_maxind(sw), get_maxord(sw), sw%numrots, sw%js, &
          sw%cs, sw%ss)
-    if (error%code > 0) then
-       call add_id(error,id_c_qr_bv_to_ub); return
-    end if
-
+    call pop_id(error)
   end subroutine c_qr_bv_to_ub
 
   subroutine f_c_qr_bv_to_ub(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, &

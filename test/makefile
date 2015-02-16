@@ -25,19 +25,30 @@ orth_rank : force_look
 force_look :
 	true
 
-run_row_compress : ORTH_RANK $(BINDIR)/test_row_compress
+run_row_compress : $(BINDIR)/test_row_compress
 	$(BINDIR)/test_row_compress
 
-run_qr_factorization : ORTH_RANK $(BINDIR)/test_qr_factorization
+run_qr_factorization : $(BINDIR)/test_qr_factorization
 	$(BINDIR)/test_qr_factorization
 
-$(BINDIR)/% : $(OBJDIR)/%.o $(OBJDIR)/test_data.o orth_rank
+$(BINDIR)/% : $(OBJDIR)/%.o
 	$(FC) $(LFLAGS) $(PROFLFLAGS) $(OBJDIR)/$< $(OBJS) \
 	$(OBJDIR)/test_data.o -o $@
 
-$(OBJDIR)/test_data.o : test_data.f90
+$(OBJDIR)/test_data.o : orth_rank
+$(OBJDIR)/test_general.o : $(OBJDIR)/test_data.o
+$(OBJDIR)/test_general_bt.o : $(OBJDIR)/test_data.o
+$(OBJDIR)/test_general_wb.o : $(OBJDIR)/test_data.o
+$(OBJDIR)/test_general_ubt.o : $(OBJDIR)/test_data.o
+$(OBJDIR)/test_general_wbv.o : $(OBJDIR)/test_data.o
+$(OBJDIR)/test_convert_ub_and_bv.o : $(OBJDIR)/test_data.o
+$(OBJDIR)/test_convert_wb_and_bt.o : $(OBJDIR)/test_data.o
+$(OBJDIR)/test_convert_ubt_and_wbv.o : $(OBJDIR)/test_data.o
+$(OBJDIR)/test_row_compress.o : $(OBJDIR)/test_data.o
+$(OBJDIR)/test_qr_factorization.o : $(OBJDIR)/test_data.o
+$(OBJDIR)/test_solve.o : $(OBJDIR)/test_data.o
 
-$(OBJDIR)/%.o : %.f90 $(OBJDIR)/test_data.o
+$(OBJDIR)/%.o : %.f90
 	$(FC) $(CFLAGS) $(PROFCFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@
 
 clean :

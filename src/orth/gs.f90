@@ -31,11 +31,12 @@ contains
     real(kind=dp), intent(out) :: rho
     real(kind=dp), dimension(:), intent(out) :: l
     real(kind=dp), dimension(:), intent(inout) :: q2
-    type(error_info), intent(out) :: error
+    type(error_info), intent(out), optional :: error
     !
     real(kind=dp), dimension(size(l)) :: x
     real(kind=dp) :: nrm1, nrm2
     integer(kind=int32) :: k
+    type(routine_info), parameter :: info=info_d_extend_gs_rows
     !
     nrm1=norm2(q2)
     l = matmul(q1,q2)
@@ -44,6 +45,7 @@ contains
     rho=nrm2
     ! reorthogonalize as needed
     call clear_error(error)
+    call push_id(info, error)
     k=0
     do while (nrm1 > eta * nrm2 .and. nrm2 > 0 .and. k < orthmaxits)
        k=k+1
@@ -70,8 +72,10 @@ contains
     end do
     q2=q2/nrm2
     if (k >= orthmaxits) then
-       call set_error(error, 1, id_d_extend_gs_rows)
+       call set_error(1, info, error); return
     end if
+    call pop_id(error)
+
   end subroutine d_extend_gs_rows
 
   ! Extend a Gram-Schmidt LQ decomposition
@@ -82,11 +86,12 @@ contains
     complex(kind=dp), intent(out) :: rho
     complex(kind=dp), dimension(:), intent(out) :: l
     complex(kind=dp), dimension(:), intent(inout) :: q2
-    type(error_info), intent(out) :: error
+    type(error_info), intent(out), optional :: error
     !
     complex(kind=dp), dimension(size(l)) :: x
     real(kind=dp) :: nrm1, nrm2
     integer(kind=int32) :: k
+    type(routine_info), parameter :: info=info_c_extend_gs_rows
     !
     nrm1=norm2(q2)
     l = matmul(q1,conjg(q2))
@@ -96,6 +101,7 @@ contains
     rho=nrm2
     ! reorthogonalize as needed
     call clear_error(error)
+    call push_id(info, error)
     k=0
     do while (nrm1 > eta * nrm2 .and. nrm2 > 0 .and. k < orthmaxits)
        k=k+1
@@ -124,8 +130,9 @@ contains
     end do
     q2=q2/nrm2
     if (k >= orthmaxits) then
-       call set_error(error, 1, id_c_extend_gs_rows)
+       call set_error(1, info, error); return
     end if
+    call pop_id(error)
   end subroutine c_extend_gs_rows
 
   ! Extend a Gram-Schmidt QL decomposition
@@ -136,11 +143,12 @@ contains
     real(kind=dp), intent(out) :: rho
     real(kind=dp), dimension(:), intent(out) :: l
     real(kind=dp), dimension(:), intent(inout) :: q2
-    type(error_info), intent(out) :: error
+    type(error_info), intent(out), optional :: error
     !
     real(kind=dp), dimension(size(l)) :: x
     real(kind=dp) :: nrm1, nrm2
     integer(kind=int32) :: k
+    type(routine_info), parameter :: info=info_d_extend_gs_columns
     !
     nrm1=norm2(q2)
     l = matmul(q2,q1)
@@ -149,6 +157,7 @@ contains
     rho=nrm2
     ! reorthogonalize as needed
     call clear_error(error)
+    call push_id(info, error)
     k=0
     do while (nrm1 > eta * nrm2 .and. nrm2 > 0 .and. k < orthmaxits)
        k=k+1
@@ -175,8 +184,9 @@ contains
     end do
     q2=q2/nrm2
     if (k >= orthmaxits) then
-       call set_error(error, 1, id_d_extend_gs_columns)
+       call set_error(1, info, error); return
     end if
+    call pop_id(error)
   end subroutine d_extend_gs_columns
 
   ! Extend a Gram-Schmidt QL decomposition
@@ -187,11 +197,12 @@ contains
     complex(kind=dp), intent(out) :: rho
     complex(kind=dp), dimension(:), intent(out) :: l
     complex(kind=dp), dimension(:), intent(inout) :: q2
-    type(error_info), intent(out) :: error
+    type(error_info), intent(out), optional :: error
     !
     complex(kind=dp), dimension(size(l)) :: x
     real(kind=dp) :: nrm1, nrm2
     integer(kind=int32) :: k
+    type(routine_info), parameter :: info=info_c_extend_gs_columns
     !
     nrm1=norm2(q2)
     l = matmul(conjg(q2),q1)
@@ -201,6 +212,7 @@ contains
     rho=nrm2
     ! reorthogonalize as needed
     call clear_error(error)
+    call push_id(info, error)
     k=0
     do while (nrm1 > eta * nrm2 .and. nrm2 > 0 .and. k < orthmaxits)
        k=k+1
@@ -229,9 +241,9 @@ contains
     end do
     q2=q2/nrm2
     if (k >= orthmaxits) then
-       call set_error(error, 1, id_c_extend_gs_columns)
+       call set_error(1, info, error); return
     end if
+    call pop_id(error)
   end subroutine c_extend_gs_columns
-
 
 end module mod_gs

@@ -29,25 +29,29 @@ contains
   subroutine d_convert_bv_to_ub(bv, ub, error)
     type(d_bv) :: bv
     type(d_ub) :: ub
-    type(error_info), intent(out) :: error
+    type(error_info), intent(out), optional :: error
+    type(routine_info), parameter :: info=info_d_convert_bv_to_ub
+    
     call clear_error(error)
+    call push_id(info, error)
+    
     if (get_n(ub) < 1) then
-       call set_error(error, 1, id_d_convert_bv_to_ub); return
+       call set_error(1, info, error); return
     end if
     ! must allow for temporary fill-in
     if (get_ubwmax(bv) < bv%ubw+1 .and. bv%ubw < get_n(bv)-1) then
-       call set_error(error, 2, id_d_convert_bv_to_ub); return
+       call set_error(2, info, error); return
     end if
     if (get_lbwmax(ub) < bv%lbw .or. get_ubwmax(ub) < bv%ubw) then
-       call set_error(error, 3, id_d_convert_bv_to_ub); return
+       call set_error(3, info, error); return
     end if
     if (get_n(ub) /= get_n(bv)) then
-       call set_error(error, 4, id_d_convert_bv_to_ub); return
+       call set_error(4, info, error); return
     end if
-
     call f_d_convert_bv_to_ub(bv%br, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), &
-         get_ubwmax(bv), bv%numrotsv, bv%ksv, bv%csv, bv%ssv, ub%bc,  ub%lbw, ub%ubw, get_lbwmax(ub), &
-         get_ubwmax(ub), ub%numrotsu, ub%jsu, ub%csu, ub%ssu)
+         get_ubwmax(bv), bv%numrotsv, bv%ksv, bv%csv, bv%ssv, ub%bc,  ub%lbw, ub%ubw, &
+         get_lbwmax(ub), get_ubwmax(ub), ub%numrotsu, ub%jsu, ub%csu, ub%ssu)
+    call push_id(info, error)
   end subroutine d_convert_bv_to_ub
 
   subroutine f_d_convert_bv_to_ub(b_bv, n, lbw, ubw, lbwmax_bv, ubwmax_bv, &
@@ -107,25 +111,29 @@ contains
   subroutine c_convert_bv_to_ub(bv, ub, error)
     type(c_bv) :: bv
     type(c_ub) :: ub
-    type(error_info), intent(out) :: error
+    type(error_info), intent(out), optional :: error
+    type(routine_info), parameter :: info=info_c_convert_bv_to_ub
     call clear_error(error)
+    call push_id(info, error)
+    
     if (get_n(ub) < 1) then
-       call set_error(error, 1, id_d_convert_bv_to_ub); return
+       call set_error(1, info, error); return
     end if
     ! must allow for temporary fill-in
     if (get_ubwmax(bv) < bv%ubw+1 .and. bv%ubw < get_n(bv)-1) then
-       call set_error(error, 2, id_d_convert_bv_to_ub); return
+       call set_error(2, info, error); return
     end if
     if (get_lbwmax(ub) < bv%lbw .or. get_ubwmax(ub) < bv%ubw) then
-       call set_error(error, 3, id_d_convert_bv_to_ub); return
+       call set_error(3, info, error); return
     end if
     if (get_n(ub) /= get_n(bv)) then
-       call set_error(error, 4, id_d_convert_bv_to_ub); return
+       call set_error(4, info, error); return
     end if
     call f_c_convert_bv_to_ub(bv%br, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), &
          get_ubwmax(bv), bv%numrotsv, bv%ksv, &
-         bv%csv, bv%ssv, ub%bc,  ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), ub%numrotsu, ub%jsu, &
-         ub%csu, ub%ssu)
+         bv%csv, bv%ssv, ub%bc,  ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), ub%numrotsu, &
+         ub%jsu, ub%csu, ub%ssu)
+    call pop_id(error)
   end subroutine c_convert_bv_to_ub
 
   subroutine f_c_convert_bv_to_ub(b_bv, n, lbw, ubw, lbwmax_bv, ubwmax_bv, numrotsv, &
