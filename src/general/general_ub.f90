@@ -124,6 +124,7 @@ contains
     integer(kind=int32) :: i, j, k, roffs, nl, klast, p
     type(d_rotation) :: rot
     type(routine_info), parameter :: info=info_f_d_general_ub
+    type(error_info) :: errornv
     !
     call clear_error(error)
     call push_id(info, error)
@@ -223,8 +224,10 @@ contains
              end if
           end if
        else ! nl > 1
-          call lower_left_nullvec(x(1:nl),pl,tol*nrma,nullmaxits,p,error)
-          if (success(error)) then ! if there is a left null vector then introduce a zero row.
+          call clear_error(errornv)
+          call clear_routines(errornv)
+          call lower_left_nullvec(x(1:nl),pl,tol*nrma,nullmaxits,p,errornv)
+          if (success(errornv)) then ! if there is a left null vector then introduce a zero row.
              ubws(k)=nl-1
              if (p == 1) then
                 pl(1,1)=0.0_dp
@@ -305,8 +308,6 @@ contains
                 end if
              end if
           else
-             call clear_error(error)
-             call pop_id(error)
              ! no null vector found.  Simply reveal column k+1 if there is room.  Otherwise terminate
              !  with square L.
              if (ubwmax<nl) then
@@ -525,6 +526,7 @@ contains
     integer(kind=int32) :: i, j, k, roffs, nl, klast, p
     type(c_rotation) :: rot
     type(routine_info), parameter :: info=info_f_c_general_ub
+    type(error_info) :: errornv
 
     call clear_error(error)
     call push_id(info, error)
@@ -624,8 +626,10 @@ contains
              end if
           end if
        else ! nl > 1
-          call lower_left_nullvec(x(1:nl),pl,tol*nrma,nullmaxits,p,error)
-          if (success(error)) then ! if there is a left null vector then introduce a zero row.
+          call clear_error(errornv)
+          call clear_routines(errornv)
+          call lower_left_nullvec(x(1:nl),pl,tol*nrma,nullmaxits,p,errornv)
+          if (success(errornv)) then ! if there is a left null vector then introduce a zero row.
              ubws(k)=nl-1
              if (p == 1) then
                 pl(1,1)=(0.0_dp, 0.0_dp)
@@ -708,8 +712,6 @@ contains
           else
              ! no null vector found.  Simply reveal column k+1 if there is room.  Otherwise terminate
              !  with square L.
-             call clear_error(error)
-             call pop_id(error)
              if (ubwmax<nl) then
                 call set_error(1, info, error); return
              end if
