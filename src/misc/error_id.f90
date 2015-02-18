@@ -544,6 +544,105 @@ module mod_error_id
        'Not enough stroage for each sweeps', 'Not enough storage for number of sweeps', &
        'Insufficient storage in ubt.', 'Insufficient storage in bv.'])
 
+  ! src/types/random 270s
+  integer(int32), parameter :: id_d_random_bc=270
+  integer(int32), parameter :: id_d_random_br=271
+  integer(int32), parameter :: id_d_random_ub=272
+  integer(int32), parameter :: id_d_random_bv=273
+  integer(int32), parameter :: id_d_random_bt=274
+  integer(int32), parameter :: id_d_random_wb=275
+  integer(int32), parameter :: id_d_random_ubt=276
+  integer(int32), parameter :: id_d_random_wbv=277
+
+  integer(int32), parameter :: id_c_random_bc=278
+  integer(int32), parameter :: id_c_random_br=279
+  integer(int32), parameter :: id_c_random_ub=280
+  integer(int32), parameter :: id_c_random_bv=281
+  integer(int32), parameter :: id_c_random_bt=282
+  integer(int32), parameter :: id_c_random_wb=283
+  integer(int32), parameter :: id_c_random_ubt=284
+  integer(int32), parameter :: id_c_random_wbv=285
+
+  type(routine_info), parameter :: info_d_random_bc=routine_info(id_d_random_bc, &
+       'd_random_bc', &
+       [ character(len=error_message_length) :: 'n < 1', &
+       'lbw > lbwmax', 'ubw > ubwmax'])
+
+  type(routine_info), parameter :: info_d_random_br=routine_info(id_d_random_br, &
+       'd_random_br', &
+       [ character(len=error_message_length) :: 'n < 1', &
+       'lbw > lbwmax', 'ubw > ubwmax'])
+
+  type(routine_info), parameter :: info_d_random_ub=routine_info(id_d_random_ub, &
+       'd_random_ub', &
+       [ character(len=error_message_length) :: 'n < 1', &
+       'lbw > lbwmax', 'ubw > ubwmax'])
+
+  type(routine_info), parameter :: info_d_random_bv=routine_info(id_d_random_bv, &
+       'd_random_bv', &
+       [ character(len=error_message_length) :: 'n < 1', &
+       'lbw > lbwmax', 'ubw > ubwmax'])
+
+  type(routine_info), parameter :: info_d_random_bt=routine_info(id_d_random_bt, &
+       'd_random_bt', &
+       [ character(len=error_message_length) :: 'n < 1', &
+       'lbw > lbwmax', 'ubw > ubwmax'])
+
+  type(routine_info), parameter :: info_d_random_wb=routine_info(id_d_random_wb, &
+       'd_random_wb', &
+       [ character(len=error_message_length) :: 'n < 1', &
+       'lbw > lbwmax', 'ubw > ubwmax'])
+
+  type(routine_info), parameter :: info_d_random_ubt=routine_info(id_d_random_ubt, &
+       'd_random_ubt', &
+       [ character(len=error_message_length) :: 'n < 1', &
+       'lbw > lbwmax', 'ubw > ubwmax'])
+  
+  type(routine_info), parameter :: info_d_random_wbv=routine_info(id_d_random_wbv, &
+       'd_random_wbv', &
+       [ character(len=error_message_length) :: 'n < 1', &
+       'lbw > lbwmax', 'ubw > ubwmax'])
+
+  type(routine_info), parameter :: info_c_random_bc=routine_info(id_c_random_bc, &
+       'c_random_bc', &
+       [ character(len=error_message_length) :: 'n < 1', &
+       'lbw > lbwmax', 'ubw > ubwmax'])
+
+  type(routine_info), parameter :: info_c_random_br=routine_info(id_c_random_br, &
+       'c_random_br', &
+       [ character(len=error_message_length) :: 'n < 1', &
+       'lbw > lbwmax', 'ubw > ubwmax'])
+
+  type(routine_info), parameter :: info_c_random_ub=routine_info(id_c_random_ub, &
+       'c_random_ub', &
+       [ character(len=error_message_length) :: 'n < 1', &
+       'lbw > lbwmax', 'ubw > ubwmax'])
+
+  type(routine_info), parameter :: info_c_random_bv=routine_info(id_c_random_bv, &
+       'c_random_bv', &
+       [ character(len=error_message_length) :: 'n < 1', &
+       'lbw > lbwmax', 'ubw > ubwmax'])
+
+  type(routine_info), parameter :: info_c_random_bt=routine_info(id_c_random_bt, &
+       'c_random_bt', &
+       [ character(len=error_message_length) :: 'n < 1', &
+       'lbw > lbwmax', 'ubw > ubwmax'])
+
+  type(routine_info), parameter :: info_c_random_wb=routine_info(id_c_random_wb, &
+       'c_random_wb', &
+       [ character(len=error_message_length) :: 'n < 1', &
+       'lbw > lbwmax', 'ubw > ubwmax'])
+
+  type(routine_info), parameter :: info_c_random_ubt=routine_info(id_c_random_ubt, &
+       'c_random_ubt', &
+       [ character(len=error_message_length) :: 'n < 1', &
+       'lbw > lbwmax', 'ubw > ubwmax'])
+  
+  type(routine_info), parameter :: info_c_random_wbv=routine_info(id_c_random_wbv, &
+       'c_random_wbv', &
+       [ character(len=error_message_length) :: 'n < 1', &
+       'lbw > lbwmax', 'ubw > ubwmax'])
+  
 contains
 
   subroutine push_id(info,err)
@@ -750,6 +849,25 @@ contains
        info_index(info_d_row_compress%routine_id)=info_d_row_compress
        info_index(info_c_row_compress%routine_id)=info_c_row_compress
 
+       ! random
+
+       info_index(info_d_random_bc%routine_id)=info_d_random_bc
+       info_index(info_d_random_br%routine_id)=info_d_random_br
+       info_index(info_d_random_ub%routine_id)=info_d_random_ub
+       info_index(info_d_random_bv%routine_id)=info_d_random_bv
+       info_index(info_d_random_bt%routine_id)=info_d_random_bt
+       info_index(info_d_random_wb%routine_id)=info_d_random_wb
+       info_index(info_d_random_ubt%routine_id)=info_d_random_ubt
+       info_index(info_d_random_wbv%routine_id)=info_d_random_wbv
+
+       info_index(info_c_random_bc%routine_id)=info_c_random_bc
+       info_index(info_c_random_br%routine_id)=info_c_random_br
+       info_index(info_c_random_ub%routine_id)=info_c_random_ub
+       info_index(info_c_random_bv%routine_id)=info_c_random_bv
+       info_index(info_c_random_bt%routine_id)=info_c_random_bt
+       info_index(info_c_random_wb%routine_id)=info_c_random_wb
+       info_index(info_c_random_ubt%routine_id)=info_c_random_ubt
+       info_index(info_c_random_wbv%routine_id)=info_c_random_wbv
     end if
   end subroutine initialize_errors
 

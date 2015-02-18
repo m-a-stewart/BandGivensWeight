@@ -3,6 +3,7 @@ module mod_random
   use mod_utility
   use mod_band_types
   use mod_orth_band_types
+  use mod_error_id
   implicit none
 
   private
@@ -47,17 +48,34 @@ contains
 
   ! Random band types
 
-  function d_random_bc(n,lbw,ubw,lbwmax0,ubwmax0) result(b)
+  function d_random_bc(n,lbw,ubw,lbwmax0,ubwmax0,error) result(b)
     real(kind=dp), dimension(:,:), allocatable :: b
     integer(kind=int32), intent(in) :: n, lbw, ubw
     integer(kind=int32), intent(in), optional :: lbwmax0, ubwmax0
+    type(error_info), optional :: error
+    type(routine_info), parameter :: info=info_d_random_bc
     integer(kind=int32) :: lbwmax, ubwmax
+
+    call clear_error(error)
+    call push_id(info,error)
 
     lbwmax=equals_option(lbw,lbwmax0)
     ubwmax=equals_option(ubw,ubwmax0)
 
+    if(n<1) then
+       call set_error(1,info,error); return
+    end if
+    if(lbw > lbwmax) then
+       call set_error(2,info,error); return
+    end if
+    if(ubw > ubwmax) then
+       call set_error(3,info,error); return
+    end if
+
     allocate(b(lbwmax+ubwmax+1,n))
     call f_d_random_bc(b,n,lbw,ubw,lbwmax,ubwmax)
+
+    call pop_id(error)
   end function d_random_bc
 
   subroutine f_d_random_bc(b,n,lbw,ubw,lbwmax,ubwmax)
@@ -75,17 +93,33 @@ contains
     end do
   end subroutine f_d_random_bc
 
-  function c_random_bc(n,lbw,ubw,lbwmax0,ubwmax0) result(b)
+  function c_random_bc(n,lbw,ubw,lbwmax0,ubwmax0,error) result(b)
     complex(kind=dp), dimension(:,:), allocatable :: b
     integer(kind=int32), intent(in) :: n, lbw, ubw
     integer(kind=int32), intent(in), optional :: lbwmax0, ubwmax0
+    type(error_info), optional :: error
+    type(routine_info), parameter :: info=info_c_random_bc
     integer(kind=int32) :: lbwmax, ubwmax
 
+    call clear_error(error)
+    call push_id(info,error)
     lbwmax=equals_option(lbw,lbwmax0)
     ubwmax=equals_option(ubw,ubwmax0)
 
+    if(n<1) then
+       call set_error(1,info,error); return
+    end if
+    if(lbw > lbwmax) then
+       call set_error(2,info,error); return
+    end if
+    if(ubw > ubwmax) then
+       call set_error(3,info,error); return
+    end if
+
     allocate(b(lbwmax+ubwmax+1,n))
     call f_c_random_bc(b,n,lbw,ubw,lbwmax,ubwmax)
+
+    call pop_id(error)
   end function c_random_bc
 
   subroutine f_c_random_bc(b,n,lbw,ubw,lbwmax,ubwmax)
@@ -103,17 +137,34 @@ contains
     end do
   end subroutine f_c_random_bc
 
-  function d_random_br(n,lbw,ubw,lbwmax0,ubwmax0) result(b)
+  function d_random_br(n,lbw,ubw,lbwmax0,ubwmax0,error) result(b)
     real(kind=dp), dimension(:,:), allocatable :: b
     integer(kind=int32), intent(in) :: n, lbw, ubw
     integer(kind=int32), intent(in), optional :: lbwmax0, ubwmax0
+    type(error_info), optional :: error
+    type(routine_info), parameter :: info=info_d_random_br
     integer(kind=int32) :: lbwmax, ubwmax
+
+    call clear_error(error)
+    call push_id(info,error)
 
     lbwmax=equals_option(lbw,lbwmax0)
     ubwmax=equals_option(ubw,ubwmax0)
 
+    if(n<1) then
+       call set_error(1,info,error); return
+    end if
+    if(lbw > lbwmax) then
+       call set_error(2,info,error); return
+    end if
+    if(ubw > ubwmax) then
+       call set_error(3,info,error); return
+    end if
+
     allocate(b(n,lbwmax+ubwmax+1))
     call f_d_random_br(b,n,lbw,ubw,lbwmax,ubwmax)
+    call pop_id(error)
+
   end function d_random_br
 
   subroutine f_d_random_br(b,n,lbw,ubw,lbwmax,ubwmax)
@@ -131,17 +182,34 @@ contains
     end do
   end subroutine f_d_random_br
 
-  function c_random_br(n,lbw,ubw,lbwmax0,ubwmax0) result(b)
+  function c_random_br(n,lbw,ubw,lbwmax0,ubwmax0,error) result(b)
     complex(kind=dp), dimension(:,:), allocatable :: b
     integer(kind=int32), intent(in) :: n, lbw, ubw
     integer(kind=int32), intent(in), optional :: lbwmax0, ubwmax0
+    type(error_info), optional :: error
+    type(routine_info), parameter :: info=info_c_random_br
     integer(kind=int32) :: lbwmax, ubwmax
+
+    call clear_error(error)
+    call push_id(info,error)
 
     lbwmax=equals_option(lbw,lbwmax0)
     ubwmax=equals_option(ubw,ubwmax0)
 
+    if(n<1) then
+       call set_error(1,info,error); return
+    end if
+    if(lbw > lbwmax) then
+       call set_error(2,info,error); return
+    end if
+    if(ubw > ubwmax) then
+       call set_error(3,info,error); return
+    end if
+
     allocate(b(n,lbwmax+ubwmax+1))
     call f_c_random_br(b,n,lbw,ubw,lbwmax,ubwmax)
+    call pop_id(error)
+
   end function c_random_br
 
   subroutine f_c_random_br(b,n,lbw,ubw,lbwmax,ubwmax)
@@ -158,22 +226,36 @@ contains
        call random_matrix(b(j,k0:k1))
     end do
   end subroutine f_c_random_br
-
-
-
   
   ! Random ub
 
-  type(d_ub) function d_random_ub(n,lbw,ubw,lbwmax0,ubwmax0) result(ub)
+  type(d_ub) function d_random_ub(n,lbw,ubw,lbwmax0,ubwmax0,error) result(ub)
     integer(kind=int32), intent(in) :: n, lbw, ubw
     integer(kind=int32), intent(in), optional :: lbwmax0, ubwmax0
+    type(error_info), optional :: error
+    type(routine_info), parameter :: info=info_d_random_ub
     integer(kind=int32) :: lbwmax, ubwmax
+
+    call clear_error(error)
+    call push_id(info,error)
     lbwmax=equals_option(lbw,lbwmax0)
     ubwmax=equals_option(ubw,ubwmax0)
+
+    if(n<1) then
+       call set_error(1,info,error); return
+    end if
+    if(lbw > lbwmax) then
+       call set_error(2,info,error); return
+    end if
+    if(ubw > ubwmax) then
+       call set_error(3,info,error); return
+    end if
+    
     ub=d_new_ub(n,lbwmax,ubwmax)
     ub%ubw=ubw; ub%lbw=lbw
     call f_d_random_bc(ub%bc,n,lbw,ubw,lbwmax,ubwmax)
     call f_d_random_rotations_ub(n,lbw,ubw,lbwmax,ubwmax,ub%numrotsu, ub%jsu, ub%csu, ub%ssu)
+    call pop_id(error)
   end function d_random_ub
 
   subroutine f_d_random_rotations_ub(n,lbw,ubw,lbwmax,ubwmax,numrotsu,jsu,csu,ssu)
@@ -203,17 +285,34 @@ contains
     end do
   end subroutine f_d_random_rotations_ub
 
-  type(c_ub) function c_random_ub(n,lbw,ubw,lbwmax0,ubwmax0) result(ub)
+  type(c_ub) function c_random_ub(n,lbw,ubw,lbwmax0,ubwmax0,error) result(ub)
     integer(kind=int32), intent(in) :: n, lbw, ubw
     integer(kind=int32), intent(in), optional :: lbwmax0, ubwmax0
+    type(error_info), optional :: error
+    type(routine_info), parameter :: info=info_c_random_ub
     integer(kind=int32) :: lbwmax, ubwmax
+
+    call clear_error(error)
+    call push_id(info,error)
 
     lbwmax=equals_option(lbw,lbwmax0)
     ubwmax=equals_option(ubw,ubwmax0)
+
+    if(n<1) then
+       call set_error(1,info,error); return
+    end if
+    if(lbw > lbwmax) then
+       call set_error(2,info,error); return
+    end if
+    if(ubw > ubwmax) then
+       call set_error(3,info,error); return
+    end if
+
     ub=c_new_ub(n,lbwmax,ubwmax)
     ub%ubw=ubw; ub%lbw=lbw
     call f_c_random_bc(ub%bc,n,lbw,ubw,lbwmax,ubwmax)
     call f_c_random_rotations_ub(n,lbw,ubw,lbwmax,ubwmax,ub%numrotsu, ub%jsu, ub%csu, ub%ssu)
+    call pop_id(error)
   end function c_random_ub
 
   subroutine f_c_random_rotations_ub(n,lbw,ubw,lbwmax,ubwmax,numrotsu,jsu,csu,ssu)
@@ -245,17 +344,33 @@ contains
 
   ! Random bv
 
-  type(d_bv) function d_random_bv(n,lbw,ubw,lbwmax0,ubwmax0) result(bv)
+  type(d_bv) function d_random_bv(n,lbw,ubw,lbwmax0,ubwmax0,error) result(bv)
     integer(kind=int32), intent(in) :: n, lbw, ubw
     integer(kind=int32), intent(in), optional :: lbwmax0, ubwmax0
+    type(error_info), optional :: error
+    type(routine_info), parameter :: info=info_d_random_bv
     integer(kind=int32) :: lbwmax, ubwmax
-
+    call clear_error(error)
+    call push_id(info,error)
     lbwmax=equals_option(lbw,lbwmax0)
     ubwmax=equals_option(ubw,ubwmax0)
+
+    if(n<1) then
+       call set_error(1,info,error); return
+    end if
+    if(lbw > lbwmax) then
+       call set_error(2,info,error); return
+    end if
+    if(ubw > ubwmax) then
+       call set_error(3,info,error); return
+    end if
+
     bv=d_new_bv(n,lbwmax,ubwmax)
     bv%ubw=ubw; bv%lbw=lbw
     call f_d_random_br(bv%br,n,lbw,ubw,lbwmax,ubwmax)
     call f_d_random_rotations_bv(n,lbw,ubw,lbwmax,ubwmax,bv%numrotsv, bv%ksv, bv%csv, bv%ssv)
+    call pop_id(error)
+
   end function d_random_bv
 
   subroutine f_d_random_rotations_bv(n,lbw,ubw,lbwmax,ubwmax,numrotsv,ksv,csv,ssv)
@@ -285,17 +400,33 @@ contains
     end do
   end subroutine f_d_random_rotations_bv
 
-  type(c_bv) function c_random_bv(n,lbw,ubw,lbwmax0,ubwmax0) result(bv)
+  type(c_bv) function c_random_bv(n,lbw,ubw,lbwmax0,ubwmax0,error) result(bv)
     integer(kind=int32), intent(in) :: n, lbw, ubw
     integer(kind=int32), intent(in), optional :: lbwmax0, ubwmax0
+    type(error_info), optional :: error
+    type(routine_info), parameter :: info=info_c_random_bv
     integer(kind=int32) :: lbwmax, ubwmax
 
+    call clear_error(error)
+    call push_id(info,error)
     lbwmax=equals_option(lbw,lbwmax0)
     ubwmax=equals_option(ubw,ubwmax0)
+
+    if(n<1) then
+       call set_error(1,info,error); return
+    end if
+    if(lbw > lbwmax) then
+       call set_error(2,info,error); return
+    end if
+    if(ubw > ubwmax) then
+       call set_error(3,info,error); return
+    end if
+
     bv=c_new_bv(n,lbwmax,ubwmax)
     bv%ubw=ubw; bv%lbw=lbw
     call f_c_random_br(bv%br,n,lbw,ubw,lbwmax,ubwmax)
     call f_c_random_rotations_bv(n,lbw,ubw,lbwmax,ubwmax,bv%numrotsv, bv%ksv, bv%csv, bv%ssv)
+    call pop_id(error)
   end function c_random_bv
 
   subroutine f_c_random_rotations_bv(n,lbw,ubw,lbwmax,ubwmax,numrotsv,ksv,csv,ssv)
@@ -328,17 +459,31 @@ contains
 
   ! Random bt
 
-  type(d_bt) function d_random_bt(n,lbw,ubw,lbwmax0,ubwmax0) result(bt)
+  type(d_bt) function d_random_bt(n,lbw,ubw,lbwmax0,ubwmax0,error) result(bt)
     integer(kind=int32), intent(in) :: n, lbw, ubw
     integer(kind=int32), intent(in), optional :: lbwmax0, ubwmax0
+    type(error_info), optional :: error
+    type(routine_info), parameter :: info=info_d_random_bt
     integer(kind=int32) :: lbwmax, ubwmax
 
+    call clear_error(error)
+    call push_id(info,error)
     lbwmax=equals_option(lbw,lbwmax0)
     ubwmax=equals_option(ubw,ubwmax0)
+    if(n<1) then
+       call set_error(1,info,error); return
+    end if
+    if(lbw > lbwmax) then
+       call set_error(2,info,error); return
+    end if
+    if(ubw > ubwmax) then
+       call set_error(3,info,error); return
+    end if
     bt=d_new_bt(n,lbwmax,ubwmax)
     bt%ubw=ubw; bt%lbw=lbw
     call f_d_random_br(bt%br,n,lbw,ubw,lbwmax,ubwmax)
     call f_d_random_rotations_bt(n,lbw,ubw,lbwmax,ubwmax,bt%numrotst, bt%kst, bt%cst, bt%sst)
+    call pop_id(error)
   end function d_random_bt
 
   subroutine f_d_random_rotations_bt(n,lbw,ubw,lbwmax,ubwmax,numrotst,kst,cst,sst)
@@ -368,17 +513,31 @@ contains
     end do
   end subroutine f_d_random_rotations_bt
 
-  type(c_bt) function c_random_bt(n,lbw,ubw,lbwmax0,ubwmax0) result(bt)
+  type(c_bt) function c_random_bt(n,lbw,ubw,lbwmax0,ubwmax0,error) result(bt)
     integer(kind=int32), intent(in) :: n, lbw, ubw
     integer(kind=int32), intent(in), optional :: lbwmax0, ubwmax0
+    type(error_info), optional :: error
+    type(routine_info), parameter :: info=info_c_random_bt
     integer(kind=int32) :: lbwmax, ubwmax
 
+    call clear_error(error)
+    call push_id(info,error)
     lbwmax=equals_option(lbw,lbwmax0)
     ubwmax=equals_option(ubw,ubwmax0)
+    if(n<1) then
+       call set_error(1,info,error); return
+    end if
+    if(lbw > lbwmax) then
+       call set_error(2,info,error); return
+    end if
+    if(ubw > ubwmax) then
+       call set_error(3,info,error); return
+    end if
     bt=c_new_bt(n,lbwmax,ubwmax)
     bt%ubw=ubw; bt%lbw=lbw
     call f_c_random_br(bt%br,n,lbw,ubw,lbwmax,ubwmax)
     call f_c_random_rotations_bt(n,lbw,ubw,lbwmax,ubwmax,bt%numrotst, bt%kst, bt%cst, bt%sst)
+    call pop_id(error)
   end function c_random_bt
 
   subroutine f_c_random_rotations_bt(n,lbw,ubw,lbwmax,ubwmax,numrotst,kst,cst,sst)
@@ -411,16 +570,31 @@ contains
 
   ! Random wb
 
-  type(d_wb) function d_random_wb(n,lbw,ubw,lbwmax0,ubwmax0) result(wb)
+  type(d_wb) function d_random_wb(n,lbw,ubw,lbwmax0,ubwmax0,error) result(wb)
     integer(kind=int32), intent(in) :: n, lbw, ubw
     integer(kind=int32), intent(in), optional :: lbwmax0, ubwmax0
+    type(error_info), optional :: error
+    type(routine_info), parameter :: info=info_d_random_wb
     integer(kind=int32) :: lbwmax, ubwmax
+
+    call clear_error(error)
+    call push_id(info,error)
     lbwmax=equals_option(lbw,lbwmax0)
     ubwmax=equals_option(ubw,ubwmax0)
+    if(n<1) then
+       call set_error(1,info,error); return
+    end if
+    if(lbw > lbwmax) then
+       call set_error(2,info,error); return
+    end if
+    if(ubw > ubwmax) then
+       call set_error(3,info,error); return
+    end if
     wb=d_new_wb(n,lbwmax,ubwmax)
     wb%ubw=ubw; wb%lbw=lbw
     call f_d_random_bc(wb%bc,n,lbw,ubw,lbwmax,ubwmax)
     call f_d_random_rotations_wb(n,lbw,ubw,lbwmax,ubwmax,wb%numrotsw, wb%jsw, wb%csw, wb%ssw)
+    call pop_id(error)
   end function d_random_wb
 
   subroutine f_d_random_rotations_wb(n,lbw,ubw,lbwmax,ubwmax,numrotsw,jsw,csw,ssw)
@@ -450,16 +624,31 @@ contains
     end do
   end subroutine f_d_random_rotations_wb
 
-  type(c_wb) function c_random_wb(n,lbw,ubw,lbwmax0,ubwmax0) result(wb)
+  type(c_wb) function c_random_wb(n,lbw,ubw,lbwmax0,ubwmax0,error) result(wb)
     integer(kind=int32), intent(in) :: n, lbw, ubw
     integer(kind=int32), intent(in), optional :: lbwmax0, ubwmax0
+    type(error_info), optional :: error
+    type(routine_info), parameter :: info=info_c_random_wb
     integer(kind=int32) :: lbwmax, ubwmax
+
+    call clear_error(error)
+    call push_id(info,error)
     lbwmax=equals_option(lbw,lbwmax0)
     ubwmax=equals_option(ubw,ubwmax0)
+    if(n<1) then
+       call set_error(1,info,error); return
+    end if
+    if(lbw > lbwmax) then
+       call set_error(2,info,error); return
+    end if
+    if(ubw > ubwmax) then
+       call set_error(3,info,error); return
+    end if
     wb=c_new_wb(n,lbwmax,ubwmax)
     wb%ubw=ubw; wb%lbw=lbw
     call f_c_random_bc(wb%bc,n,lbw,ubw,lbwmax,ubwmax)
     call f_c_random_rotations_wb(n,lbw,ubw,lbwmax,ubwmax,wb%numrotsw, wb%jsw, wb%csw, wb%ssw)
+    call pop_id(error)
   end function c_random_wb
 
   subroutine f_c_random_rotations_wb(n,lbw,ubw,lbwmax,ubwmax,numrotsw,jsw,csw,ssw)
@@ -490,56 +679,116 @@ contains
     end do
   end subroutine f_c_random_rotations_wb
 
-  type(d_ubt) function d_random_ubt(n,lbw,ubw,lbwmax0,ubwmax0) result(ubt)
+  type(d_ubt) function d_random_ubt(n,lbw,ubw,lbwmax0,ubwmax0,error) result(ubt)
     integer(kind=int32), intent(in) :: n, lbw, ubw
     integer(kind=int32), intent(in), optional :: lbwmax0, ubwmax0
+    type(error_info), optional :: error
+    type(routine_info), parameter :: info=info_d_random_ubt
     integer(kind=int32) :: lbwmax, ubwmax
+
+    call clear_error(error)
+    call push_id(info,error)
     lbwmax=equals_option(lbw,lbwmax0)
     ubwmax=equals_option(ubw,ubwmax0)
+    if(n<1) then
+       call set_error(1,info,error); return
+    end if
+    if(lbw > lbwmax) then
+       call set_error(2,info,error); return
+    end if
+    if(ubw > ubwmax) then
+       call set_error(3,info,error); return
+    end if
     ubt=d_new_ubt(n,lbwmax,ubwmax)
     ubt%ubw=ubw; ubt%lbw=lbw
     call f_d_random_bc(ubt%bc,n,lbw,ubw,lbwmax,ubwmax)
     call f_d_random_rotations_ub(n,lbw,ubw,lbwmax,ubwmax,ubt%numrotsu, ubt%jsu, ubt%csu, ubt%ssu)
     call f_d_random_rotations_bt(n,lbw,ubw,lbwmax,ubwmax,ubt%numrotst, ubt%kst, ubt%cst, ubt%sst)
+    call pop_id(error)
   end function d_random_ubt
 
-  type(c_ubt) function c_random_ubt(n,lbw,ubw,lbwmax0,ubwmax0) result(ubt)
+  type(c_ubt) function c_random_ubt(n,lbw,ubw,lbwmax0,ubwmax0,error) result(ubt)
     integer(kind=int32), intent(in) :: n, lbw, ubw
     integer(kind=int32), intent(in), optional :: lbwmax0, ubwmax0
+    type(error_info), optional :: error
+    type(routine_info), parameter :: info=info_c_random_ubt
     integer(kind=int32) :: lbwmax, ubwmax
+
+    call clear_error(error)
+    call push_id(info,error)
     lbwmax=equals_option(lbw,lbwmax0)
     ubwmax=equals_option(ubw,ubwmax0)
+    if(n<1) then
+       call set_error(1,info,error); return
+    end if
+    if(lbw > lbwmax) then
+       call set_error(2,info,error); return
+    end if
+    if(ubw > ubwmax) then
+       call set_error(3,info,error); return
+    end if
     ubt=c_new_ubt(n,lbwmax,ubwmax)
     ubt%ubw=ubw; ubt%lbw=lbw
     call f_c_random_bc(ubt%bc,n,lbw,ubw,lbwmax,ubwmax)
     call f_c_random_rotations_ub(n,lbw,ubw,lbwmax,ubwmax,ubt%numrotsu, ubt%jsu, ubt%csu, ubt%ssu)
     call f_c_random_rotations_bt(n,lbw,ubw,lbwmax,ubwmax,ubt%numrotst, ubt%kst, ubt%cst, ubt%sst)
+    call pop_id(error)
   end function c_random_ubt
 
-  type(d_wbv) function d_random_wbv(n,lbw,ubw,lbwmax0,ubwmax0) result(wbv)
+  type(d_wbv) function d_random_wbv(n,lbw,ubw,lbwmax0,ubwmax0,error) result(wbv)
     integer(kind=int32), intent(in) :: n, lbw, ubw
     integer(kind=int32), intent(in), optional :: lbwmax0, ubwmax0
+    type(error_info), optional :: error
+    type(routine_info), parameter :: info=info_d_random_wbv
     integer(kind=int32) :: lbwmax, ubwmax
+
+    call clear_error(error)
+    call push_id(info,error)
     lbwmax=equals_option(lbw,lbwmax0)
     ubwmax=equals_option(ubw,ubwmax0)
+    if(n<1) then
+       call set_error(1,info,error); return
+    end if
+    if(lbw > lbwmax) then
+       call set_error(2,info,error); return
+    end if
+    if(ubw > ubwmax) then
+       call set_error(3,info,error); return
+    end if
     wbv=d_new_wbv(n,lbwmax,ubwmax)
     wbv%ubw=ubw; wbv%lbw=lbw
     call f_d_random_br(wbv%br,n,lbw,ubw,lbwmax,ubwmax)
     call f_d_random_rotations_wb(n,lbw,ubw,lbwmax,ubwmax,wbv%numrotsw, wbv%jsw, wbv%csw, wbv%ssw)
     call f_d_random_rotations_bv(n,lbw,ubw,lbwmax,ubwmax,wbv%numrotsv, wbv%ksv, wbv%csv, wbv%ssv)
+    call pop_id(error)
   end function d_random_wbv
 
-  type(c_wbv) function c_random_wbv(n,lbw,ubw,lbwmax0,ubwmax0) result(wbv)
+  type(c_wbv) function c_random_wbv(n,lbw,ubw,lbwmax0,ubwmax0,error) result(wbv)
     integer(kind=int32), intent(in) :: n, lbw, ubw
     integer(kind=int32), intent(in), optional :: lbwmax0, ubwmax0
+    type(error_info), optional :: error
+    type(routine_info), parameter :: info=info_c_random_wbv
     integer(kind=int32) :: lbwmax, ubwmax
+
+    call clear_error(error)
+    call push_id(info,error)
     lbwmax=equals_option(lbw,lbwmax0)
     ubwmax=equals_option(ubw,ubwmax0)
+    if(n<1) then
+       call set_error(1,info,error); return
+    end if
+    if(lbw > lbwmax) then
+       call set_error(2,info,error); return
+    end if
+    if(ubw > ubwmax) then
+       call set_error(3,info,error); return
+    end if
     wbv=c_new_wbv(n,lbwmax,ubwmax)
     wbv%ubw=ubw; wbv%lbw=lbw
     call f_c_random_br(wbv%br,n,lbw,ubw,lbwmax,ubwmax)
     call f_c_random_rotations_wb(n,lbw,ubw,lbwmax,ubwmax,wbv%numrotsw, wbv%jsw, wbv%csw, wbv%ssw)
     call f_c_random_rotations_bv(n,lbw,ubw,lbwmax,ubwmax,wbv%numrotsv, wbv%ksv, wbv%csv, wbv%ssv)
+    call pop_id(error)
   end function c_random_wbv
 
   
