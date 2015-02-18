@@ -51,11 +51,11 @@ program test_qr_factorization
   sw_d=d_new_sweeps(na,lbwa+1, na+lbwa-1,lbwmax)
   call d_assemble_upper(a_d,u_d(1:na,1:ubwa),v_d(1:ubwa,1:na),d_d(1:na),lbwa)
   a0_d=a_d
-  call upper_to_bv(a_d,bv_d,lbwa, tol,error)
+  call general_to_bv(a_d,bv_d,lbwa, tol,error)
   call cpu_time(t0)
   call d_qr_bv_to_ub(bv_d,ub_d,sw_d,error)
   call cpu_time(t1)
-  call ub_to_upper(ub_d,a1_d,error)
+  call ub_to_general(ub_d,a1_d,error)
   q_d=reshape([ real(kind=dp) :: ((d_delta(j,k), j=1,na), k=1,na) ], shape(q_d))
   call sweeps_times_general(sw_d,a1_d)
   test_name = "Real QR Factorization"
@@ -83,11 +83,11 @@ program test_qr_factorization
   sw_c=c_new_sweeps(na,lbwa+1,na+lbwa-1,lbwmax)
   call c_assemble_upper(a_c,u_c(1:na,1:ubwa),v_c(1:ubwa,1:na),d_c(1:na),lbwa)
   a0_c=a_c
-  call upper_to_bv(a_c,bv_c,lbwa, tol,error)
+  call general_to_bv(a_c,bv_c,lbwa, tol,error)
   call cpu_time(t0)
   call c_qr_bv_to_ub(bv_c,ub_c,sw_c,error)
   call cpu_time(t1)
-  call ub_to_upper(ub_c,a1_c,error)
+  call ub_to_general(ub_c,a1_c,error)
   q_c=reshape([ complex(kind=dp) :: ((c_delta(j,k), j=1,na), k=1,na) ], shape(q_c))
   call sweeps_times_general(sw_c,a1_c)
   test_name = "Complex QR Factorization"

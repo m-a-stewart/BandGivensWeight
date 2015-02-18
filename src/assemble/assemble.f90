@@ -8,34 +8,34 @@ module mod_assemble
 
   private
 
-  public :: ub_to_upper, d_ub_to_upper, c_ub_to_upper, &
-       f_ub_to_upper, f_d_ub_to_upper, f_c_ub_to_upper, &
-       bt_to_lower, d_bt_to_lower, c_bt_to_lower, &
-       f_bt_to_lower, f_d_bt_to_lower, f_c_bt_to_lower, &
+  public :: ub_to_general, d_ub_to_general, c_ub_to_general, &
+       f_ub_to_general, f_d_ub_to_general, f_c_ub_to_general, &
+       bt_to_general, d_bt_to_general, c_bt_to_general, &
+       f_bt_to_general, f_d_bt_to_general, f_c_bt_to_general, &
        ubt_to_general, d_ubt_to_general, c_ubt_to_general, &
        f_ubt_to_general, f_d_ubt_to_general, f_c_ubt_to_general, &
-       bv_to_upper, d_bv_to_upper, c_bv_to_upper, &
-       f_bv_to_upper, f_d_bv_to_upper, f_c_bv_to_upper, &
-       wb_to_lower, d_wb_to_lower, c_wb_to_lower, &
-       f_wb_to_lower, f_d_wb_to_lower, f_c_wb_to_lower, &
+       bv_to_general, d_bv_to_general, c_bv_to_general, &
+       f_bv_to_general, f_d_bv_to_general, f_c_bv_to_general, &
+       wb_to_general, d_wb_to_general, c_wb_to_general, &
+       f_wb_to_general, f_d_wb_to_general, f_c_wb_to_general, &
        wbv_to_general, d_wbv_to_general, c_wbv_to_general, &
        f_wbv_to_general, f_d_wbv_to_general, f_c_wbv_to_general
 
-  interface ub_to_upper
-     module procedure d_ub_to_upper, c_ub_to_upper
-  end interface ub_to_upper
+  interface ub_to_general
+     module procedure d_ub_to_general, c_ub_to_general
+  end interface ub_to_general
 
-  interface f_ub_to_upper
-     module procedure f_d_ub_to_upper, f_c_ub_to_upper
-  end interface f_ub_to_upper
+  interface f_ub_to_general
+     module procedure f_d_ub_to_general, f_c_ub_to_general
+  end interface f_ub_to_general
 
-  interface bt_to_lower
-     module procedure d_bt_to_lower, c_bt_to_lower
-  end interface bt_to_lower
+  interface bt_to_general
+     module procedure d_bt_to_general, c_bt_to_general
+  end interface bt_to_general
 
-  interface f_bt_to_lower
-     module procedure f_d_bt_to_lower, f_c_bt_to_lower
-  end interface f_bt_to_lower
+  interface f_bt_to_general
+     module procedure f_d_bt_to_general, f_c_bt_to_general
+  end interface f_bt_to_general
 
   interface ubt_to_general
      module procedure d_ubt_to_general, c_ubt_to_general
@@ -45,21 +45,21 @@ module mod_assemble
      module procedure f_d_ubt_to_general, f_c_ubt_to_general
   end interface f_ubt_to_general
 
-  interface bv_to_upper
-     module procedure d_bv_to_upper, c_bv_to_upper
-  end interface bv_to_upper
+  interface bv_to_general
+     module procedure d_bv_to_general, c_bv_to_general
+  end interface bv_to_general
 
-  interface f_bv_to_upper
-     module procedure f_d_bv_to_upper, f_c_bv_to_upper
-  end interface f_bv_to_upper
+  interface f_bv_to_general
+     module procedure f_d_bv_to_general, f_c_bv_to_general
+  end interface f_bv_to_general
 
-  interface wb_to_lower
-     module procedure d_wb_to_lower, c_wb_to_lower
-  end interface wb_to_lower
+  interface wb_to_general
+     module procedure d_wb_to_general, c_wb_to_general
+  end interface wb_to_general
 
-  interface f_wb_to_lower
-     module procedure f_d_wb_to_lower, f_c_wb_to_lower
-  end interface f_wb_to_lower
+  interface f_wb_to_general
+     module procedure f_d_wb_to_general, f_c_wb_to_general
+  end interface f_wb_to_general
 
   interface wbv_to_general
      module procedure d_wbv_to_general, c_wbv_to_general
@@ -74,11 +74,11 @@ contains
   ! Errors
   ! 0: no error
   ! 1: ub%n /= n
-  subroutine d_ub_to_upper(ub,a,error)
+  subroutine d_ub_to_general(ub,a,error)
     type(d_ub), intent(in) :: ub
     real(kind=dp), dimension(:,:), intent(out) :: a
     type(error_info), intent(out), optional :: error
-    type(routine_info), parameter :: info=info_d_ub_to_upper
+    type(routine_info), parameter :: info=info_d_ub_to_general
     
     call clear_error(error)
     call push_id(info, error)
@@ -86,12 +86,12 @@ contains
     if (get_n(ub) /= size(a,1) .or. get_n(ub) /= size(a,2)) then
        call set_error(1, info, error); return
     end if
-    call f_d_ub_to_upper(ub%bc, get_n(ub), ub%lbw, ub%ubw, get_lbwmax(ub), &
+    call f_d_ub_to_general(ub%bc, get_n(ub), ub%lbw, ub%ubw, get_lbwmax(ub), &
          get_ubwmax(ub), ub%numrotsu, ub%jsu, ub%csu, ub%ssu, a)
     call pop_id(error)
-  end subroutine d_ub_to_upper
+  end subroutine d_ub_to_general
 
-  subroutine f_d_ub_to_upper(bc, n, lbw, ubw, lbwmax, ubwmax, numrotsu, jsu, csu, ssu, a)
+  subroutine f_d_ub_to_general(bc, n, lbw, ubw, lbwmax, ubwmax, numrotsu, jsu, csu, ssu, a)
     real(kind=dp), target, dimension(n,n), intent(out) :: a
     integer(kind=int32), dimension(ubwmax,n), intent(in) :: jsu
     real(kind=dp), dimension(ubwmax,n), intent(in) :: csu, ssu
@@ -111,13 +111,13 @@ contains
           call rotation_times_general(rot,a(:,k+1:n),jsu(j,k),jsu(j,k)+1)
        end do
     end do
-  end subroutine f_d_ub_to_upper
+  end subroutine f_d_ub_to_general
 
-  subroutine c_ub_to_upper(ub,a,error)
+  subroutine c_ub_to_general(ub,a,error)
     type(c_ub), intent(in) :: ub
     complex(kind=dp), dimension(:,:), intent(out) :: a
     type(error_info), intent(out), optional :: error
-    type(routine_info), parameter :: info=info_c_ub_to_upper
+    type(routine_info), parameter :: info=info_c_ub_to_general
 
     call clear_error(error)
     call push_id(info, error)
@@ -125,12 +125,12 @@ contains
     if (get_n(ub) /= size(a,1) .or. get_n(ub) /= size(a,2)) then
        call set_error(1, info, error); return
     end if
-    call f_c_ub_to_upper(ub%bc, get_n(ub), ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
+    call f_c_ub_to_general(ub%bc, get_n(ub), ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
          ub%numrotsu, ub%jsu, ub%csu, ub%ssu, a)
     call pop_id(error)
-  end subroutine c_ub_to_upper
+  end subroutine c_ub_to_general
 
-  subroutine f_c_ub_to_upper(bc, n, lbw, ubw, lbwmax, ubwmax, numrotsu, jsu, csu, ssu, a)
+  subroutine f_c_ub_to_general(bc, n, lbw, ubw, lbwmax, ubwmax, numrotsu, jsu, csu, ssu, a)
     complex(kind=dp), target, dimension(n,n), intent(out) :: a
     integer(kind=int32), dimension(ubwmax,n), intent(in) :: jsu
     real(kind=dp), dimension(ubwmax,n), intent(in) :: csu
@@ -152,16 +152,16 @@ contains
           call rotation_times_general(rot,a(:,k+1:n),jsu(j,k),jsu(j,k)+1)
        end do
     end do
-  end subroutine f_c_ub_to_upper
+  end subroutine f_c_ub_to_general
 
   ! Errors
   ! 0: no error
   ! 1: bt%n /= n
-  subroutine d_bt_to_lower(bt,a,error)
+  subroutine d_bt_to_general(bt,a,error)
     type(d_bt), intent(in) :: bt
     real(kind=dp), dimension(:,:), intent(out) :: a
     type(error_info), intent(out), optional :: error
-    type(routine_info), parameter :: info=info_d_bt_to_lower
+    type(routine_info), parameter :: info=info_d_bt_to_general
 
     call clear_error(error)
     call push_id(info, error)
@@ -169,12 +169,12 @@ contains
     if (get_n(bt) /= size(a,1) .or. get_n(bt) /= size(a,2)) then
        call set_error(1, info, error); return
     end if
-    call f_d_bt_to_lower(bt%br, get_n(bt), bt%lbw, bt%ubw, get_lbwmax(bt), get_ubwmax(bt), &
+    call f_d_bt_to_general(bt%br, get_n(bt), bt%lbw, bt%ubw, get_lbwmax(bt), get_ubwmax(bt), &
          bt%numrotst, bt%kst, bt%cst, bt%sst, a)
     call pop_id(error)
-  end subroutine d_bt_to_lower
+  end subroutine d_bt_to_general
 
-  subroutine f_d_bt_to_lower(br, n, lbw, ubw, lbwmax, ubwmax, numrotst, kst, cst, sst, a)
+  subroutine f_d_bt_to_general(br, n, lbw, ubw, lbwmax, ubwmax, numrotst, kst, cst, sst, a)
     real(kind=dp), target, dimension(n,n), intent(out) :: a
     integer(kind=int32), dimension(n,lbwmax), intent(in) :: kst
     real(kind=dp), dimension(n,lbwmax), intent(in) :: cst, sst
@@ -194,28 +194,28 @@ contains
           call general_times_rotation(a(k+1:n,:), trp_rot(rot), kst(k,j),kst(k,j)+1)
        end do
     end do
-  end subroutine f_d_bt_to_lower
+  end subroutine f_d_bt_to_general
 
   ! Errors
   ! 0: no error
   ! 1: bt%n /= n
-  subroutine c_bt_to_lower(bt,a,error)
+  subroutine c_bt_to_general(bt,a,error)
     type(c_bt), intent(in) :: bt
     complex(kind=dp), dimension(:,:), intent(out) :: a
     type(error_info), intent(out), optional :: error
-    type(routine_info), parameter :: info=info_c_bt_to_lower
+    type(routine_info), parameter :: info=info_c_bt_to_general
     
     call clear_error(error)
     call push_id(info, error)
     if (get_n(bt) /= size(a,1) .or. get_n(bt) /= size(a,2)) then
        call set_error(1, info, error); return
     end if
-    call f_c_bt_to_lower(bt%br, get_n(bt), bt%lbw, bt%ubw, get_lbwmax(bt), get_ubwmax(bt), &
+    call f_c_bt_to_general(bt%br, get_n(bt), bt%lbw, bt%ubw, get_lbwmax(bt), get_ubwmax(bt), &
          bt%numrotst, bt%kst, bt%cst, bt%sst, a)
     call pop_id(error)
-  end subroutine c_bt_to_lower
+  end subroutine c_bt_to_general
 
-  subroutine f_c_bt_to_lower(br, n, lbw, ubw, lbwmax, ubwmax, numrotst, kst, cst, sst, a)
+  subroutine f_c_bt_to_general(br, n, lbw, ubw, lbwmax, ubwmax, numrotst, kst, cst, sst, a)
     complex(kind=dp), target, dimension(n,n), intent(out) :: a
     integer(kind=int32), dimension(n,lbwmax), intent(in) :: kst
     real(kind=dp), dimension(n,lbwmax), intent(in) :: cst
@@ -236,7 +236,7 @@ contains
           call general_times_rotation(a(k+1:n,:), trp_rot(rot), kst(k,j),kst(k,j)+1)
        end do
     end do
-  end subroutine f_c_bt_to_lower
+  end subroutine f_c_bt_to_general
 
   ! Errors
   ! 0: no error
@@ -346,23 +346,23 @@ contains
     end do
   end subroutine f_c_ubt_to_general
 
-  subroutine d_bv_to_upper(bv,a,error)
+  subroutine d_bv_to_general(bv,a,error)
     type(d_bv), intent(in) :: bv
     real(kind=dp), dimension(:,:), intent(out) :: a
     type(error_info), intent(out), optional :: error
-    type(routine_info), parameter :: info=info_d_bv_to_upper
+    type(routine_info), parameter :: info=info_d_bv_to_general
     
     call clear_error(error)
     call push_id(info, error)
     if (get_n(bv) /= size(a,1) .or. get_n(bv) /= size(a,2)) then
        call set_error(1, info, error); return
     end if
-    call f_d_bv_to_upper(bv%br, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
+    call f_d_bv_to_general(bv%br, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
          bv%numrotsv, bv%ksv, bv%csv, bv%ssv, a)
     call pop_id(error)
-  end subroutine d_bv_to_upper
+  end subroutine d_bv_to_general
 
-  subroutine f_d_bv_to_upper(br, n, lbw, ubw, lbwmax, ubwmax, numrotsv, ksv, csv, ssv, a)
+  subroutine f_d_bv_to_general(br, n, lbw, ubw, lbwmax, ubwmax, numrotsv, ksv, csv, ssv, a)
     real(kind=dp), target, dimension(n,n), intent(out) :: a
     integer(kind=int32), dimension(n,ubwmax), intent(in) :: ksv
     real(kind=dp), dimension(n, ubwmax), intent(in) :: csv, ssv
@@ -382,25 +382,25 @@ contains
           call general_times_rotation(a(1:j,:),trp_rot(rot),ksv(j,k), ksv(j,k)+1)
        end do
     end do
-  end subroutine f_d_bv_to_upper
+  end subroutine f_d_bv_to_general
 
-  subroutine c_bv_to_upper(bv,a,error)
+  subroutine c_bv_to_general(bv,a,error)
     type(c_bv), intent(in) :: bv
     complex(kind=dp), dimension(:,:), intent(out) :: a
     type(error_info), intent(out), optional :: error
-    type(routine_info), parameter :: info=info_c_bv_to_upper
+    type(routine_info), parameter :: info=info_c_bv_to_general
 
     call clear_error(error)
     call push_id(info, error)
     if (get_n(bv) /= size(a,1) .or. get_n(bv) /= size(a,2)) then
        call set_error(1, info, error); return
     end if
-    call f_c_bv_to_upper(bv%br, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
+    call f_c_bv_to_general(bv%br, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
          bv%numrotsv, bv%ksv, bv%csv, bv%ssv, a)
     call pop_id(error)
-  end subroutine c_bv_to_upper
+  end subroutine c_bv_to_general
 
-  subroutine f_c_bv_to_upper(br, n, lbw, ubw, lbwmax, ubwmax, numrotsv, ksv, csv, ssv, a)
+  subroutine f_c_bv_to_general(br, n, lbw, ubw, lbwmax, ubwmax, numrotsv, ksv, csv, ssv, a)
     complex(kind=dp), target, dimension(n,n), intent(out) :: a
     integer(kind=int32), dimension(n,ubwmax), intent(in) :: ksv
     real(kind=dp), dimension(n, ubwmax), intent(in) :: csv
@@ -421,25 +421,25 @@ contains
           call general_times_rotation(a(1:j,:),trp_rot(rot),ksv(j,k), ksv(j,k)+1)
        end do
     end do
-  end subroutine f_c_bv_to_upper
+  end subroutine f_c_bv_to_general
 
-  subroutine d_wb_to_lower(wb,a,error)
+  subroutine d_wb_to_general(wb,a,error)
     type(d_wb), intent(in) :: wb
     real(kind=dp), dimension(:,:), intent(out) :: a
     type(error_info), intent(out), optional :: error
-    type(routine_info), parameter :: info=info_d_wb_to_lower
+    type(routine_info), parameter :: info=info_d_wb_to_general
 
     call clear_error(error)
     call push_id(info, error)
     if (get_n(wb) /= size(a,1) .or. get_n(wb) /= size(a,2)) then
        call set_error(1, info, error); return
     end if
-    call f_d_wb_to_lower(wb%bc, get_n(wb), wb%lbw, wb%ubw, get_lbwmax(wb), get_ubwmax(wb), &
+    call f_d_wb_to_general(wb%bc, get_n(wb), wb%lbw, wb%ubw, get_lbwmax(wb), get_ubwmax(wb), &
          wb%numrotsw, wb%jsw, wb%csw, wb%ssw, a)
     call pop_id(error)
-  end subroutine d_wb_to_lower
+  end subroutine d_wb_to_general
 
-  subroutine f_d_wb_to_lower(bc, n, lbw, ubw, lbwmax, ubwmax, numrotsw, jsw, csw, ssw, a)
+  subroutine f_d_wb_to_general(bc, n, lbw, ubw, lbwmax, ubwmax, numrotsw, jsw, csw, ssw, a)
     real(kind=dp), target, dimension(n,n), intent(out) :: a
     integer(kind=int32), dimension(lbwmax,n), intent(in) :: jsw
     real(kind=dp), dimension(lbwmax,n), intent(in) :: csw, ssw
@@ -460,25 +460,25 @@ contains
           call rotation_times_general(rot,a(:,1:k),jsw(j,k),jsw(j,k)+1)
        end do
     end do
-  end subroutine f_d_wb_to_lower
+  end subroutine f_d_wb_to_general
 
-  subroutine c_wb_to_lower(wb,a,error)
+  subroutine c_wb_to_general(wb,a,error)
     type(c_wb), intent(in) :: wb
     complex(kind=dp), dimension(:,:), intent(out) :: a
     type(error_info), intent(out), optional :: error
-    type(routine_info), parameter :: info=info_c_wb_to_lower
+    type(routine_info), parameter :: info=info_c_wb_to_general
     
     call clear_error(error)
     call push_id(info, error)
     if (get_n(wb) /= size(a,1) .or. get_n(wb) /= size(a,2)) then
        call set_error(1, info, error); return
     end if
-    call f_c_wb_to_lower(wb%bc, get_n(wb), wb%lbw, wb%ubw, get_lbwmax(wb), get_ubwmax(wb), &
+    call f_c_wb_to_general(wb%bc, get_n(wb), wb%lbw, wb%ubw, get_lbwmax(wb), get_ubwmax(wb), &
          wb%numrotsw, wb%jsw, wb%csw, wb%ssw, a)
     call pop_id(error)
-  end subroutine c_wb_to_lower
+  end subroutine c_wb_to_general
 
-  subroutine f_c_wb_to_lower(bc, n, lbw, ubw, lbwmax, ubwmax, numrotsw, jsw, csw, ssw, a)
+  subroutine f_c_wb_to_general(bc, n, lbw, ubw, lbwmax, ubwmax, numrotsw, jsw, csw, ssw, a)
     complex(kind=dp), target, dimension(n,n), intent(out) :: a
     integer(kind=int32), dimension(lbwmax,n), intent(in) :: jsw
     real(kind=dp), dimension(lbwmax,n), intent(in) :: csw
@@ -500,7 +500,7 @@ contains
           call rotation_times_general(rot,a(:,1:k),jsw(j,k),jsw(j,k)+1)
        end do
     end do
-  end subroutine f_c_wb_to_lower
+  end subroutine f_c_wb_to_general
 
   subroutine d_wbv_to_general(wbv,a,error)
     type(d_wbv), intent(in) :: wbv

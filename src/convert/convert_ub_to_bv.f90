@@ -28,7 +28,6 @@ contains
   ! 2: Insufficient storage in ub
   ! 3: Insufficient stroage in bv
   ! 4: ub%n /= bv%n
-
   subroutine d_convert_ub_to_bv(ub, bv, error)
     type(d_ub) :: ub
     type(d_bv) :: bv

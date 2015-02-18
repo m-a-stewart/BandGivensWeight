@@ -43,9 +43,9 @@ program test_general_bt
   call d_assemble_lower(a,u,v,d,ubw)
   a0=a
   call cpu_time(t0)
-  call lower_to_bt(a,bt_d,ubw,tol,error)
+  call general_to_bt(a,bt_d,ubw,tol,error)
   call cpu_time(t1)
-  call bt_to_lower(bt_d,a1,error)
+  call bt_to_general(bt_d,a1,error)
   test_name="Real BT;"
   call d_output_result_lower(test_name,a0,a1,rmax,bt_d%lbw,t0,t0,tol2,error)
   deallocate(bt_d)
@@ -53,10 +53,10 @@ program test_general_bt
   na=40
   lbwa=3; ubwa=5
   bt_d=d_random_bt(na,lbwa,ubwa)
-  call bt_to_lower(bt_d,a(1:na,1:na))
+  call bt_to_general(bt_d,a(1:na,1:na))
   a1(1:na,1:na)=a(1:na,1:na)
-  call lower_to_bt(a(1:na,1:na),bt_d,ubwa,tol)
-  call bt_to_lower(bt_d,a0(1:na,1:na))
+  call general_to_bt(a(1:na,1:na),bt_d,ubwa,tol)
+  call bt_to_general(bt_d,a0(1:na,1:na))
   test_name="Random Real BT;"  
   call d_output_result_upper(test_name,a0(1:na,1:na),a1(1:na,1:na),lbwa,bt_d%lbw,t0,t0,tol2,error)
   deallocate(bt_d)
@@ -69,9 +69,9 @@ program test_general_bt
   call c_assemble_lower(a_c,u_c,v_c,d_c,ubw)
   a0_c=a_c
   call cpu_time(t0)
-  call lower_to_bt(a_c,bt_c,ubw,tol,error)
+  call general_to_bt(a_c,bt_c,ubw,tol,error)
   call cpu_time(t1)
-  call bt_to_lower(bt_c,a1_c,error)
+  call bt_to_general(bt_c,a1_c,error)
   test_name="Complex BT;"
   call c_output_result_lower(test_name,a0_c,a1_c,rmax,bt_c%lbw,t0,t0,tol2,error)
   deallocate(bt_c)
@@ -79,10 +79,10 @@ program test_general_bt
   na=40
   lbwa=3; ubwa=5
   bt_c=c_random_bt(na,lbwa,ubwa)
-  call bt_to_lower(bt_c,a_c(1:na,1:na))
+  call bt_to_general(bt_c,a_c(1:na,1:na))
   a1_c(1:na,1:na)=a_c(1:na,1:na)
-  call lower_to_bt(a_c(1:na,1:na),bt_c,ubwa,tol)
-  call bt_to_lower(bt_c,a0_c(1:na,1:na))
+  call general_to_bt(a_c(1:na,1:na),bt_c,ubwa,tol)
+  call bt_to_general(bt_c,a0_c(1:na,1:na))
   test_name="Random Complex BT;"  
   call c_output_result_upper(test_name,a0_c(1:na,1:na),a1_c(1:na,1:na), &
        lbwa,bt_c%lbw,t0,t0,tol2,error)

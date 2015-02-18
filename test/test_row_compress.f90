@@ -68,7 +68,7 @@ program test_row_compress
   call cpu_time(t0)
   call row_compress(ubt_d, bv_d, sw_d, error)
   call cpu_time(t1)
-  call bv_to_upper(bv_d,a1,error)
+  call bv_to_general(bv_d,a1,error)
   call sweeps_times_general(sw_d,a1)
   test_name = "Real Row Compression;"
   call d_output_result_lower_upper(test_name,a0,a1,rmaxl,bv_d%lbw, &
@@ -87,7 +87,7 @@ program test_row_compress
   call cpu_time(t0)
   call row_compress(ubt_na_d, bv_na_d, sw_na_d,error)
   call cpu_time(t1)
-  call bv_to_upper(bv_na_d,a1(1:na,1:na),error)
+  call bv_to_general(bv_na_d,a1(1:na,1:na),error)
   call sweeps_times_general(sw_na_d,a1)
   test_name = "Complex Row Compression (n=1);"
   call d_output_result_lower_upper(test_name,a0(1:na,1:na),a1(1:na,1:na),0,bv_na_d%lbw,0, &
@@ -107,7 +107,7 @@ program test_row_compress
   call cpu_time(t0)
   call row_compress(ubt_na_d, bv_na_d, sw_na_d,error)
   call cpu_time(t1)
-  call bv_to_upper(bv_na_d,a1(1:na,1:na),error)
+  call bv_to_general(bv_na_d,a1(1:na,1:na),error)
   call sweeps_times_general(sw_na_d,a1)
   test_name = "Complex Row Compression (n=2);"
   call d_output_result_lower_upper(test_name,a0(1:na,1:na),a1(1:na,1:na),1,bv_na_d%lbw,1, &
@@ -127,7 +127,7 @@ program test_row_compress
   call cpu_time(t0)
   call row_compress(ubt_na_d, bv_na_d, sw_na_d,error)
   call cpu_time(t1)
-  call bv_to_upper(bv_na_d,a1(1:na,1:na),error)
+  call bv_to_general(bv_na_d,a1(1:na,1:na),error)
   call sweeps_times_general(sw_na_d,a1(1:na,1:na))
   test_name = "Real Row Compression (n=3);"
   call d_output_result_lower_upper(test_name,a0(1:na,1:na),a1(1:na,1:na),1,bv_na_d%lbw,2, &
@@ -147,7 +147,7 @@ program test_row_compress
   call cpu_time(t0)
   call row_compress(ubt_na_d, bv_na_d, sw_na_d,error)
   call cpu_time(t1)
-  call bv_to_upper(bv_na_d,a1(1:na,1:na),error)
+  call bv_to_general(bv_na_d,a1(1:na,1:na),error)
   call sweeps_times_general(sw_na_d,a1(1:na,1:na))
   test_name = "Real Row Compression (n=4);"
   call d_output_result_lower_upper(test_name,a0(1:na,1:na),a1(1:na,1:na),2,bv_na_d%lbw,3, &
@@ -166,7 +166,7 @@ program test_row_compress
   call cpu_time(t0)
   call row_compress(ubt_c, bv_c, sw_c, error)
   call cpu_time(t1)
-  call bv_to_upper(bv_c,a1_c,error)
+  call bv_to_general(bv_c,a1_c,error)
   call sweeps_times_general(sw_c,a1_c)
   test_name = "Complex Row Compression;"
   call c_output_result_lower_upper(test_name,a0_c,a1_c,rmaxl,bv_c%lbw, &
@@ -185,7 +185,7 @@ program test_row_compress
   call cpu_time(t0)
   call row_compress(ubt_na_c, bv_na_c, sw_na_c,error)
   call cpu_time(t1)
-  call bv_to_upper(bv_na_c,a1_c(1:na,1:na),error)
+  call bv_to_general(bv_na_c,a1_c(1:na,1:na),error)
   call sweeps_times_general(sw_na_c,a1_c(1:na,1:na))
   test_name = "Complex Row Compression (n=1);"
   call c_output_result_lower_upper(test_name,a0_c(1:na,1:na),a1_c(1:na,1:na),0,bv_na_c%lbw,0, &
@@ -205,7 +205,7 @@ program test_row_compress
   call cpu_time(t0)
   call row_compress(ubt_na_c, bv_na_c, sw_na_c,error)
   call cpu_time(t1)
-  call bv_to_upper(bv_na_c,a1_c(1:na,1:na),error)
+  call bv_to_general(bv_na_c,a1_c(1:na,1:na),error)
   call sweeps_times_general(sw_na_c,a1_c(1:na,1:na))
   test_name = "Complex Row Compression (n=2);"
   call c_output_result_lower_upper(test_name,a0_c(1:na,1:na),a1_c(1:na,1:na),1,bv_na_c%lbw,1, &
@@ -225,7 +225,7 @@ program test_row_compress
   call cpu_time(t0)
   call row_compress(ubt_na_c, bv_na_c, sw_na_c,error)
   call cpu_time(t1)
-  call bv_to_upper(bv_na_c,a1_c(1:na,1:na),error)
+  call bv_to_general(bv_na_c,a1_c(1:na,1:na),error)
   call sweeps_times_general(sw_na_c,a1_c(1:na,1:na))
   test_name = "Complex Row Compression (n=2);"
   call c_output_result_lower_upper(test_name,a0_c(1:na,1:na),a1_c(1:na,1:na),1,bv_na_c%lbw,2, &
@@ -245,7 +245,7 @@ program test_row_compress
   call cpu_time(t0)
   call row_compress(ubt_na_c, bv_na_c, sw_na_c,error)
   call cpu_time(t1)
-  call bv_to_upper(bv_na_c,a1_c(1:na,1:na),error)
+  call bv_to_general(bv_na_c,a1_c(1:na,1:na),error)
   call sweeps_times_general(sw_na_c,a1_c(1:na,1:na))
   test_name = "Complex Row Compression (n=4);"
   call c_output_result_lower_upper(test_name,a0_c(1:na,1:na),a1_c(1:na,1:na),2,bv_na_c%lbw,3, &

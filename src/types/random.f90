@@ -790,6 +790,4 @@ contains
     call f_c_random_rotations_bv(n,lbw,ubw,lbwmax,ubwmax,wbv%numrotsv, wbv%ksv, wbv%csv, wbv%ssv)
     call pop_id(error)
   end function c_random_wbv
-
-  
 end module mod_random

@@ -12,17 +12,17 @@ module mod_general_bv
 
   private
 
-  public :: upper_to_bv, d_upper_to_bv, c_upper_to_bv, &
-       f_upper_to_bv, f_d_upper_to_bv, f_c_upper_to_bv, &
+  public :: general_to_bv, d_general_to_bv, c_general_to_bv, &
+       f_general_to_bv, f_d_general_to_bv, f_c_general_to_bv, &
        f_general_bv, f_d_general_bv, f_c_general_bv
 
-  interface upper_to_bv
-     module procedure d_upper_to_bv, c_upper_to_bv
-  end interface upper_to_bv
+  interface general_to_bv
+     module procedure d_general_to_bv, c_general_to_bv
+  end interface general_to_bv
 
-  interface f_upper_to_bv
-     module procedure f_d_upper_to_bv, f_c_upper_to_bv
-  end interface f_upper_to_bv
+  interface f_general_to_bv
+     module procedure f_d_general_to_bv, f_c_general_to_bv
+  end interface f_general_to_bv
 
   interface f_general_bv
      module procedure f_d_general_bv, f_c_general_bv
@@ -35,13 +35,13 @@ contains
   ! 1: n<1
   ! 2: bv%lbwmax < lbw
   ! 3: n is not the same for a and bv.
-  subroutine d_upper_to_bv(a,bv,lbw,tol,error)
+  subroutine d_general_to_bv(a,bv,lbw,tol,error)
     real(kind=dp), target, dimension(:,:), intent(inout) :: a
     type(d_bv), intent(inout) :: bv
     type(error_info), intent(out), optional :: error
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), intent(in) :: lbw
-    type(routine_info), parameter :: info=info_d_upper_to_bv
+    type(routine_info), parameter :: info=info_d_general_to_bv
 
     call clear_error(error)
     call push_id(info, error)
@@ -55,18 +55,18 @@ contains
     if (get_n(bv) /= size(a,1) .or. get_n(bv) /= size(a,2)) then
        call set_error(3, info, error); return
     end if
-    call f_d_upper_to_bv(a,get_n(bv),bv%br, lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
+    call f_d_general_to_bv(a,get_n(bv),bv%br, lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
          bv%numrotsv, bv%ksv, bv%csv, bv%ssv, tol, error)
     bv%lbw=lbw
 
     call pop_id(error)
     
-  end subroutine d_upper_to_bv
+  end subroutine d_general_to_bv
 
   ! Errors:
   ! 0: no error
   ! 1: insufficient upper bw in bv%br
-  subroutine f_d_upper_to_bv(a, n, b, lbw, ubw, lbwmax, ubwmax, &
+  subroutine f_d_general_to_bv(a, n, b, lbw, ubw, lbwmax, ubwmax, &
        numrotsv, ksv, csv, ssv, tol, error)
     real(kind=dp), target, dimension(n,n), intent(inout) :: a
     integer(kind=int32), dimension(n,ubwmax), intent(out) :: ksv
@@ -79,7 +79,7 @@ contains
     integer(kind=int32), intent(in) :: n, lbw, lbwmax, ubwmax
     !
     integer(kind=int32), dimension(n) :: ubws
-    type(routine_info), parameter :: info=info_f_d_upper_to_bv
+    type(routine_info), parameter :: info=info_f_d_general_to_bv
     !
     call clear_error(error)
     call push_id(info, error)
@@ -104,7 +104,7 @@ contains
     end if
 
     call pop_id(error)
-  end subroutine f_d_upper_to_bv
+  end subroutine f_d_general_to_bv
 
   ! Errors:
   ! 0: no error
@@ -433,13 +433,13 @@ contains
 
   ! complex BV
 
-  subroutine c_upper_to_bv(a,bv,lbw,tol,error)
+  subroutine c_general_to_bv(a,bv,lbw,tol,error)
     complex(kind=dp), target, dimension(:,:), intent(inout) :: a
     type(c_bv), intent(inout) :: bv
     type(error_info), intent(out), optional :: error
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), intent(in) :: lbw
-    type(routine_info), parameter :: info=info_c_upper_to_bv
+    type(routine_info), parameter :: info=info_c_general_to_bv
     
     call clear_error(error)
     call push_id(info, error)
@@ -453,15 +453,15 @@ contains
     if (get_n(bv) /= size(a,1) .or. get_n(bv) /= size(a,2)) then
        call set_error(3, info, error); return
     end if
-    call f_c_upper_to_bv(a,get_n(bv),bv%br, lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
+    call f_c_general_to_bv(a,get_n(bv),bv%br, lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
          bv%numrotsv, bv%ksv, bv%csv, bv%ssv, tol, error)
 
     bv%lbw=lbw
     call pop_id(error)
     
-  end subroutine c_upper_to_bv
+  end subroutine c_general_to_bv
 
-  subroutine f_c_upper_to_bv(a, n, b, lbw, ubw, lbwmax, ubwmax, &
+  subroutine f_c_general_to_bv(a, n, b, lbw, ubw, lbwmax, ubwmax, &
        numrotsv, ksv, csv, ssv, tol, error)
     complex(kind=dp), target, dimension(n,n), intent(inout) :: a
     integer(kind=int32), dimension(n,ubwmax), intent(out) :: ksv
@@ -475,7 +475,7 @@ contains
     integer(kind=int32), intent(in) :: n, lbw, lbwmax, ubwmax
     !
     integer(kind=int32), dimension(n) :: ubws
-    type(routine_info), parameter :: info=info_f_c_upper_to_bv
+    type(routine_info), parameter :: info=info_f_c_general_to_bv
     !
 
     call clear_error(error)
@@ -500,7 +500,7 @@ contains
        end if
     end if
     call pop_id(error)
-  end subroutine f_c_upper_to_bv
+  end subroutine f_c_general_to_bv
 
   subroutine f_c_general_bv(a, n, ubws, ubwmax, &
        numrotsv, ksv, csv, ssv, tol, error)

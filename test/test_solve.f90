@@ -56,7 +56,7 @@ program test_solve
   sw_d=d_new_sweeps(na,lbwa+1,na+lbwa-1,lbwmax)
   call d_assemble_upper(a_d,u_d(1:na,1:ubwa),v_d(1:ubwa,1:na),d_d(1:na)+shiftr,lbwa)
   a0_d=a_d
-  call upper_to_bv(a_d,bv_d,lbwa, tol,error)
+  call general_to_bv(a_d,bv_d,lbwa, tol,error)
   call qr_bv_to_ub(bv_d,ub_d,sw_d,error)
   call d_trp_sweeps_times_general(sw_d,rhs_d)
   call cpu_time(t0)
@@ -79,7 +79,7 @@ program test_solve
   sw_d=d_new_sweeps(na,lbwa+1,na+lbwa-1,lbwmax)
   call d_assemble_upper(a_d,u_d(1:na,1:ubwa),v_d(1:ubwa,1:na),d_d(1:na)+shiftr,lbwa)
   a0_d=a_d
-  call upper_to_bv(a_d,bv_d,lbwa, tol,error)
+  call general_to_bv(a_d,bv_d,lbwa, tol,error)
   call qr_bv_to_ub(bv_d,ub_d,sw_d,error)
   call d_trp_sweeps_times_general(sw_d,rhs_d)
   call cpu_time(t0)
@@ -102,7 +102,7 @@ program test_solve
   sw_d=d_new_sweeps(na,lbwa+1,na+lbwa-1,lbwmax)
   call d_assemble_upper(a_d,u_d(1:na,1:ubwa),v_d(1:ubwa,1:na),d_d(1:na)+shiftr,lbwa)
   a0_d=a_d
-  call upper_to_bv(a_d,bv_d,lbwa, tol,error)
+  call general_to_bv(a_d,bv_d,lbwa, tol,error)
   call qr_bv_to_ub(bv_d,ub_d,sw_d,error)
   call d_v_trp_sweeps_times_general(sw_d,rhs_v_d)
   call cpu_time(t0)
@@ -132,7 +132,7 @@ program test_solve
   sw_d=d_new_sweeps(na,lbwa+1,na+lbwa-1,lbwmax)
   call d_assemble_upper(a_d,u_d(1:na,1:ubwa),v_d(1:ubwa,1:na),d_d(1:na)+shiftr,lbwa)
   a0_d=a_d
-  call upper_to_bv(a_d,bv_d,lbwa, tol,error)
+  call general_to_bv(a_d,bv_d,lbwa, tol,error)
   call cpu_time(t0)
   call d_forward_solve_bv(x_d,bv_d,rhs_d,error)
   call cpu_time(t1)
@@ -153,7 +153,7 @@ program test_solve
   sw_d=d_new_sweeps(na,lbwa+1,na+lbwa-1,lbwmax)
   call d_assemble_upper(a_d,u_d(1:na,1:ubwa),v_d(1:ubwa,1:na),d_d(1:na)+shiftr,lbwa)
   a0_d=a_d
-  call upper_to_bv(a_d,bv_d,lbwa, tol,error)
+  call general_to_bv(a_d,bv_d,lbwa, tol,error)
   call cpu_time(t0)
   call d_forward_solve_bv(x_d,bv_d,rhs_d,error)
   call cpu_time(t1)
@@ -174,7 +174,7 @@ program test_solve
   sw_d=d_new_sweeps(na,lbwa+1,na+lbwa-1,lbwmax)
   call d_assemble_upper(a_d,u_d(1:na,1:ubwa),v_d(1:ubwa,1:na),d_d(1:na)+shiftr,lbwa)
   a0_d=a_d
-  call upper_to_bv(a_d,bv_d,lbwa, tol,error)
+  call general_to_bv(a_d,bv_d,lbwa, tol,error)
   call cpu_time(t0)
   call forward_solve_bv(x_v_d,bv_d,rhs_v_d,error)
   call cpu_time(t1)
@@ -207,7 +207,7 @@ program test_solve
   sw_c=c_new_sweeps(na,lbwa+1,na+lbwa-1,lbwmax)
   call c_assemble_upper(a_c,u_c(1:na,1:ubwa),v_c(1:ubwa,1:na),d_c(1:na)+shiftc,lbwa)
   a0_c=a_c
-  call upper_to_bv(a_c,bv_c,lbwa, tol,error)
+  call general_to_bv(a_c,bv_c,lbwa, tol,error)
   call qr_bv_to_ub(bv_c,ub_c,sw_c,error)
   call c_trp_sweeps_times_general(sw_c,rhs_c)
   call cpu_time(t0)
@@ -230,7 +230,7 @@ program test_solve
   sw_c=c_new_sweeps(na,lbwa+1,na+lbwa-1,lbwmax)
   call c_assemble_upper(a_c,u_c(1:na,1:ubwa),v_c(1:ubwa,1:na),d_c(1:na)+shiftc,lbwa)
   a0_c=a_c
-  call upper_to_bv(a_c,bv_c,lbwa, tol,error)
+  call general_to_bv(a_c,bv_c,lbwa, tol,error)
   call qr_bv_to_ub(bv_c,ub_c,sw_c,error)
   call cpu_time(t1)
   call c_trp_sweeps_times_general(sw_c,rhs_c)
@@ -254,7 +254,7 @@ program test_solve
   sw_c=c_new_sweeps(na,lbwa+1,na+lbwa-1,lbwmax)
   call c_assemble_upper(a_c,u_c(1:na,1:ubwa),v_c(1:ubwa,1:na),d_c(1:na)+shiftc,lbwa)
   a0_c=a_c
-  call upper_to_bv(a_c,bv_c,lbwa, tol,error)
+  call general_to_bv(a_c,bv_c,lbwa, tol,error)
   call qr_bv_to_ub(bv_c,ub_c,sw_c,error)
   call c_v_trp_sweeps_times_general(sw_c,rhs_v_c)
   call cpu_time(t0)
@@ -284,7 +284,7 @@ program test_solve
   sw_c=c_new_sweeps(na,lbwa+1,na+lbwa-1,lbwmax)
   call c_assemble_upper(a_c,u_c(1:na,1:ubwa),v_c(1:ubwa,1:na),d_c(1:na)+shiftc,lbwa)
   a0_c=a_c
-  call upper_to_bv(a_c,bv_c,lbwa, tol,error)
+  call general_to_bv(a_c,bv_c,lbwa, tol,error)
   call cpu_time(t0)
   call c_forward_solve_bv(x_c,bv_c,rhs_c,error)
   call cpu_time(t1)
@@ -305,7 +305,7 @@ program test_solve
   sw_c=c_new_sweeps(na,lbwa+1,na+lbwa-1,lbwmax)
   call c_assemble_upper(a_c,u_c(1:na,1:ubwa),v_c(1:ubwa,1:na),d_c(1:na)+shiftc,lbwa)
   a0_c=a_c
-  call upper_to_bv(a_c,bv_c,lbwa, tol,error)
+  call general_to_bv(a_c,bv_c,lbwa, tol,error)
   call cpu_time(t0)
   call c_forward_solve_bv(x_c,bv_c,rhs_c,error)
   call cpu_time(t1)
@@ -326,7 +326,7 @@ program test_solve
   sw_c=c_new_sweeps(na,lbwa+1,na+lbwa-1,lbwmax)
   call c_assemble_upper(a_c,u_c(1:na,1:ubwa),v_c(1:ubwa,1:na),d_c(1:na)+shiftc,lbwa)
   a0_c=a_c
-  call upper_to_bv(a_c,bv_c,lbwa, tol,error)
+  call general_to_bv(a_c,bv_c,lbwa, tol,error)
   call cpu_time(t0)
   call forward_solve_bv(x_v_c,bv_c,rhs_v_c,error)
   call cpu_time(t1)

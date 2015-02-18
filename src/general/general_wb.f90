@@ -9,20 +9,20 @@ module mod_general_wb
 
   private
   public :: f_general_wb, f_d_general_wb, f_c_general_wb, &
-       f_lower_to_wb, f_d_lower_to_wb, f_c_lower_to_wb, &
-       lower_to_wb, d_lower_to_wb, c_lower_to_wb
+       f_general_to_wb, f_d_general_to_wb, f_c_general_to_wb, &
+       general_to_wb, d_general_to_wb, c_general_to_wb
 
   interface f_general_wb
      module procedure f_d_general_wb, f_c_general_wb
   end interface f_general_wb
 
-  interface f_lower_to_wb
-     module procedure f_d_lower_to_wb, f_c_lower_to_wb
-  end interface f_lower_to_wb
+  interface f_general_to_wb
+     module procedure f_d_general_to_wb, f_c_general_to_wb
+  end interface f_general_to_wb
 
-  interface lower_to_wb
-     module procedure d_lower_to_wb, c_lower_to_wb
-  end interface lower_to_wb
+  interface general_to_wb
+     module procedure d_general_to_wb, c_general_to_wb
+  end interface general_to_wb
 
 contains
 
@@ -62,7 +62,7 @@ contains
   ! Errors:
   ! 0: no error
   ! 1: insufficient lower bw in wb%bc
-  subroutine f_d_lower_to_wb(a, n, b, lbw, ubw, lbwmax, ubwmax, &
+  subroutine f_d_general_to_wb(a, n, b, lbw, ubw, lbwmax, ubwmax, &
        numrotsw, jsw, csw, ssw, tol, error)
     real(kind=dp), target, dimension(n,n), intent(inout) :: a
     integer(kind=int32), dimension(lbwmax,n), intent(out) :: jsw
@@ -75,7 +75,7 @@ contains
     integer(kind=int32), intent(in) :: n, ubw, ubwmax, lbwmax
     !
     integer(kind=int32), dimension(n) :: lbws
-    type(routine_info), parameter :: info=info_f_d_lower_to_wb
+    type(routine_info), parameter :: info=info_f_d_general_to_wb
     
     call clear_error(error)
     call push_id(info, error)
@@ -101,20 +101,20 @@ contains
     end if
 
     call pop_id(error)
-  end subroutine f_d_lower_to_wb
+  end subroutine f_d_general_to_wb
 
   ! Errors:
   ! 0: no error
   ! 1: n < 1
   ! 2: wb%ubwmax < ubw
   ! 3: n is not the same for a and wb.
-  subroutine d_lower_to_wb(a,wb,ubw,tol,error)
+  subroutine d_general_to_wb(a,wb,ubw,tol,error)
     real(kind=dp), target, dimension(:,:), intent(inout) :: a
     type(d_wb), intent(inout) :: wb
     type(error_info), intent(out), optional :: error
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), intent(in) :: ubw
-    type(routine_info), parameter :: info=info_d_lower_to_wb
+    type(routine_info), parameter :: info=info_d_general_to_wb
 
     call clear_error(error)
     call push_id(info, error)
@@ -128,12 +128,12 @@ contains
     if (get_n(wb) /= size(a,1) .or. get_n(wb) /= size(a,2)) then
        call set_error(3, info, error); return
     end if
-    call f_d_lower_to_wb(a,get_n(wb),wb%bc, wb%lbw, ubw, get_lbwmax(wb), get_ubwmax(wb), &
+    call f_d_general_to_wb(a,get_n(wb),wb%bc, wb%lbw, ubw, get_lbwmax(wb), get_ubwmax(wb), &
          wb%numrotsw, wb%jsw, wb%csw, wb%ssw, tol, error)
 
     wb%ubw=ubw
     call pop_id(error)
-  end subroutine d_lower_to_wb
+  end subroutine d_general_to_wb
 
   subroutine f_c_general_wb(a, n, lbws, lbwmax, numrotsw, jsw, csw, ssw, tol, error)
     complex(kind=dp), target, dimension(n,n), intent(inout) :: a
@@ -171,7 +171,7 @@ contains
   ! Errors:
   ! 0: no error
   ! 1: insufficient lower bw in wb%bc
-  subroutine f_c_lower_to_wb(a, n, b, lbw, ubw, lbwmax, ubwmax, &
+  subroutine f_c_general_to_wb(a, n, b, lbw, ubw, lbwmax, ubwmax, &
        numrotsw, jsw, csw, ssw, tol, error)
     complex(kind=dp), target, dimension(n,n), intent(inout) :: a
     integer(kind=int32), dimension(lbwmax,n), intent(out) :: jsw
@@ -185,7 +185,7 @@ contains
     integer(kind=int32), intent(in) :: n, ubw, ubwmax, lbwmax
     !
     integer(kind=int32), dimension(n) :: lbws
-    type(routine_info), parameter :: info=info_f_c_lower_to_wb
+    type(routine_info), parameter :: info=info_f_c_general_to_wb
 
     call clear_error(error)
     call push_id(info, error)
@@ -211,20 +211,20 @@ contains
        end if
     end if
     call pop_id(error)
-  end subroutine f_c_lower_to_wb
+  end subroutine f_c_general_to_wb
 
   ! Errors:
   ! 0: no error
   ! 1: n < 1
   ! 2: wb%ubwmax < ubw
   ! 3: n is not the same for a and wb.
-  subroutine c_lower_to_wb(a,wb,ubw,tol,error)
+  subroutine c_general_to_wb(a,wb,ubw,tol,error)
     complex(kind=dp), target, dimension(:,:), intent(inout) :: a
     type(c_wb), intent(inout) :: wb
     type(error_info), intent(out), optional :: error
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), intent(in) :: ubw
-    type(routine_info), parameter :: info=info_c_lower_to_wb
+    type(routine_info), parameter :: info=info_c_general_to_wb
 
     call clear_error(error)
     call push_id(info, error)
@@ -238,11 +238,11 @@ contains
     if (get_n(wb) /= size(a,1) .or. get_n(wb) /= size(a,2)) then
        call set_error(3, info, error); return
     end if
-    call f_c_lower_to_wb(a,get_n(wb),wb%bc, wb%lbw, ubw, get_lbwmax(wb), get_ubwmax(wb), &
+    call f_c_general_to_wb(a,get_n(wb),wb%bc, wb%lbw, ubw, get_lbwmax(wb), get_ubwmax(wb), &
          wb%numrotsw, wb%jsw, wb%csw, wb%ssw, tol, error)
     wb%ubw=ubw
     call pop_id(error)
-  end subroutine c_lower_to_wb
+  end subroutine c_general_to_wb
 
 
 end module mod_general_wb

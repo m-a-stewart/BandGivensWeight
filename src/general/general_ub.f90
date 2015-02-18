@@ -12,17 +12,17 @@ module mod_general_ub
 
   private
 
-  public :: upper_to_ub, d_upper_to_ub, c_upper_to_ub, &
-       f_upper_to_ub, f_d_upper_to_ub, f_c_upper_to_ub, &
+  public :: general_to_ub, d_general_to_ub, c_general_to_ub, &
+       f_general_to_ub, f_d_general_to_ub, f_c_general_to_ub, &
        f_general_ub, f_d_general_ub, f_c_general_ub
 
-  interface upper_to_ub
-     module procedure d_upper_to_ub, c_upper_to_ub
-  end interface upper_to_ub
+  interface general_to_ub
+     module procedure d_general_to_ub, c_general_to_ub
+  end interface general_to_ub
 
-  interface f_upper_to_ub
-     module procedure f_d_upper_to_ub, f_c_upper_to_ub
-  end interface f_upper_to_ub
+  interface f_general_to_ub
+     module procedure f_d_general_to_ub, f_c_general_to_ub
+  end interface f_general_to_ub
 
   interface f_general_ub
      module procedure f_d_general_ub, f_c_general_ub
@@ -35,13 +35,13 @@ contains
   ! 1: n < 1
   ! 2: ub%lbwmax < lbw
   ! 3: n is not the same for a and ub or bv.
-  subroutine d_upper_to_ub(a,ub,lbw,tol,error)
+  subroutine d_general_to_ub(a,ub,lbw,tol,error)
     real(kind=dp), target, dimension(:,:), intent(inout) :: a
     type(d_ub), intent(inout) :: ub
     type(error_info), intent(out), optional :: error
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), intent(in) :: lbw
-    type(routine_info), parameter :: info=info_d_upper_to_ub
+    type(routine_info), parameter :: info=info_d_general_to_ub
 
     call clear_error(error)
     call push_id(info, error)
@@ -54,19 +54,19 @@ contains
     if (get_n(ub) /= size(a,1) .or. get_n(ub) /= size(a,2)) then
        call set_error(3, info, error); return
     end if
-    call f_d_upper_to_ub(a,get_n(ub),ub%bc, lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
+    call f_d_general_to_ub(a,get_n(ub),ub%bc, lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
          ub%numrotsu, ub%jsu, ub%csu, ub%ssu, tol, error)
 
     ub%lbw=lbw
     call pop_id(error)
 
-  end subroutine d_upper_to_ub
+  end subroutine d_general_to_ub
 
 
   ! Errors:
   ! 0: no error
   ! 1: insufficient upper bw in ub%bc
-  subroutine f_d_upper_to_ub(a, n, b, lbw, ubw, lbwmax, ubwmax, &
+  subroutine f_d_general_to_ub(a, n, b, lbw, ubw, lbwmax, ubwmax, &
        numrotsu, jsu, csu, ssu, tol, error)
     real(kind=dp), target, dimension(n,n), intent(inout) :: a
     integer(kind=int32), dimension(ubwmax,n), intent(out) :: jsu
@@ -79,7 +79,7 @@ contains
     integer(kind=int32), intent(in) :: n, lbw, ubwmax, lbwmax
     !
     integer(kind=int32), dimension(n) :: ubws
-    type(routine_info), parameter :: info=info_f_d_upper_to_ub
+    type(routine_info), parameter :: info=info_f_d_general_to_ub
 
     call clear_error(error)
     call push_id(info, error)
@@ -105,7 +105,7 @@ contains
        end if
     end if
     call pop_id(error)
-  end subroutine f_d_upper_to_ub
+  end subroutine f_d_general_to_ub
 
   subroutine f_d_general_ub(a, n, ubws, ubwmax, numrotsu, jsu, csu, ssu, tol, error)
     real(kind=dp), target, dimension(n,n), intent(inout) :: a
@@ -438,13 +438,13 @@ contains
   ! Updating procedure to compute a UB factorization from a general matrix.
   !
 
-  subroutine c_upper_to_ub(a,ub,lbw,tol,error)
+  subroutine c_general_to_ub(a,ub,lbw,tol,error)
     complex(kind=dp), target, dimension(:,:), intent(inout) :: a
     type(c_ub), intent(inout) :: ub
     type(error_info), intent(out), optional :: error
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), intent(in) :: lbw
-    type(routine_info), parameter :: info=info_c_upper_to_ub
+    type(routine_info), parameter :: info=info_c_general_to_ub
 
     call clear_error(error)
     call push_id(info, error)
@@ -458,14 +458,14 @@ contains
     if (get_n(ub) /= size(a,1) .or. get_n(ub) /= size(a,2)) then
        call set_error(3, info, error); return
     end if
-    call f_c_upper_to_ub(a,get_n(ub),ub%bc, lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
+    call f_c_general_to_ub(a,get_n(ub),ub%bc, lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
          ub%numrotsu, ub%jsu, ub%csu, ub%ssu, tol, error)
     ub%lbw=lbw
     call pop_id(error)
     
-  end subroutine c_upper_to_ub
+  end subroutine c_general_to_ub
 
-  subroutine f_c_upper_to_ub(a, n, b, lbw, ubw, lbwmax, ubwmax, &
+  subroutine f_c_general_to_ub(a, n, b, lbw, ubw, lbwmax, ubwmax, &
        numrotsu, jsu, csu, ssu, tol, error)
     complex(kind=dp), target, dimension(n,n), intent(inout) :: a
     integer(kind=int32), dimension(ubwmax,n), intent(out) :: jsu
@@ -479,7 +479,7 @@ contains
     integer(kind=int32), intent(in) :: n, lbw, lbwmax, ubwmax
     
     integer(kind=int32), dimension(n) :: ubws
-    type(routine_info), parameter :: info=info_f_c_upper_to_ub
+    type(routine_info), parameter :: info=info_f_c_general_to_ub
     !
     call clear_error(error)
     call push_id(info, error)
@@ -506,7 +506,7 @@ contains
     end if
 
     call pop_id(error)
-  end subroutine f_c_upper_to_ub
+  end subroutine f_c_general_to_ub
 
   subroutine f_c_general_ub(a, n, ubws, ubwmax, numrotsu, jsu, csu, ssu, tol, error)
     complex(kind=dp), target, dimension(n,n), intent(inout) :: a
