@@ -12,11 +12,13 @@ $(OBJDIR)/error_id.o : $(OBJDIR)/prec.o
 $(OBJDIR)/utility.o : $(OBJDIR)/prec.o
 
 
-$(OBJDIR)/types.o : $(OBJDIR)/band_types.o $(OBJDIR)/orth_band_types.o
+$(OBJDIR)/types.o : $(OBJDIR)/band_types.o $(OBJDIR)/orth_band_types.o \
+	$(OBJDIR)/random.o
 $(OBJDIR)/band_types.o : $(OBJDIR)/rotation.o $(OBJDIR)/utility.o $(OBJDIR)/shift.o \
 	$(OBJDIR)/prec.o
-$(OBJDIR)/orth_band_types.o : $(OBJDIR)/prec.o
-
+$(OBJDIR)/orth_band_types.o : $(OBJDIR)/prec.o $(OBJDIR)/utility.o
+$(OBJDIR)/random.o : $(OBJDIR)/prec.o $(OBJDIR)/utility.o \
+	$(OBJDIR)/band_types.o $(OBJDIR)/orth_band_types.o
 
 $(OBJDIR)/transforms.o : $(OBJDIR)/sweeps.o $(OBJDIR)/rotation.o $(OBJDIR)/shift.o
 $(OBJDIR)/rotation.o : $(OBJDIR)/prec.o

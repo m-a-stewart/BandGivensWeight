@@ -19,6 +19,8 @@ module mod_utility
 
   public :: c_delta, d_delta
 
+  public :: equals_option, i_equals_option
+
   interface maxabs
      module procedure c_maxabs, d_maxabs, c_maxabs_v, d_maxabs_v
   end interface maxabs
@@ -43,6 +45,10 @@ module mod_utility
   interface ip_transpose
      module procedure d_ip_transpose, c_ip_transpose
   end interface ip_transpose
+
+  interface equals_option
+     module procedure i_equals_option
+  end interface equals_option
 
   interface includes_nan
      module procedure d_includes_nan, d_v_includes_nan, c_includes_nan, c_v_includes_nan
@@ -290,7 +296,6 @@ contains
     a=d_random_scale*a+d_random_shift
   end subroutine d_s_random_matrix
 
-
   subroutine c_random_matrix(a)
     complex(kind=dp), dimension(:,:), intent(out) :: a
     real(kind=dp) :: x,y
@@ -340,6 +345,17 @@ contains
        c_delta=(0.0_dp,0.0_dp)
     end if
   end function c_delta
+
+  integer(kind=int32) function i_equals_option(j,k) result(i)
+    integer(kind=int32) :: j
+    integer(kind=int32), optional :: k
+
+    if(present(k)) then
+       i=k
+    else
+       i=j
+    end if
+  end function i_equals_option
 
   type(logical) function d_includes_nan(a) result(nanflag)
     real(kind=dp), dimension(:,:) :: a

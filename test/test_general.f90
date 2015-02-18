@@ -4,7 +4,8 @@ program test_general
   implicit none
   real(kind=dp) :: t0, t1
   type(error_info) :: error
-  integer, parameter :: n=50, rmax=13, ubwmax=rmax+5, lbw=2, lbwmax=10
+  integer(kind=int32), parameter :: n=50, rmax=13, ubwmax=rmax+5, lbw=2, lbwmax=10
+  integer(kind=int32) :: na, lbwa, ubwa
   real(kind=dp), parameter :: tol=1e-14, tol1=1e-14, tol2=1e-10
   !
   real(kind=dp), dimension(n,n) :: a, a0, a1
@@ -23,6 +24,8 @@ program test_general
   ub_c=c_new_ub(n,lbwmax,ubwmax)
   bv_d=d_new_bv(n,lbwmax,ubwmax)
   bv_c=c_new_bv(n,lbwmax,ubwmax)
+
+  call initialize_errors
 
   call random_seed
   call random_matrix(u)
@@ -59,6 +62,18 @@ program test_general
   call ub_to_upper(ub_d,a1,error)
   test_name="Real Sq. term. UB;"
   call d_output_result_upper(test_name,a0,a1,rmax,ub_d%ubw,t0,t0,tol2,error)
+
+  na=40
+  lbwa=3; ubwa=5
+  ub_d=d_random_ub(na,lbwa,ubwa)
+  call ub_to_upper(ub_d,a(1:na,1:na))
+  a1(1:na,1:na)=a(1:na,1:na)
+  call upper_to_ub(a(1:na,1:na),ub_d,lbwa,tol)
+  call ub_to_upper(ub_d,a0(1:na,1:na))
+  test_name="Random Real UB;"  
+  call d_output_result_upper(test_name,a0(1:na,1:na),a1(1:na,1:na),ubwa,ub_d%ubw,t0,t0,tol2,error)
+  deallocate(ub_d)
+
   print *
   print *, "--------------------------------"
   print *
@@ -84,6 +99,18 @@ program test_general
   call bv_to_upper(bv_d,a1,error)
   test_name="Real Sq. Term BV;"
   call d_output_result_upper(test_name,a0,a1,rmax,bv_d%ubw,t0,t0,tol2,error)
+  !
+  na=40
+  lbwa=3; ubwa=5
+  bv_d=d_random_bv(na,lbwa,ubwa)
+  call bv_to_upper(bv_d,a(1:na,1:na))
+  a1(1:na,1:na)=a(1:na,1:na)
+  call upper_to_bv(a(1:na,1:na),bv_d,lbwa,tol)
+  call bv_to_upper(bv_d,a0(1:na,1:na))
+  test_name="Random Real BV;"  
+  call d_output_result_upper(test_name,a0(1:na,1:na),a1(1:na,1:na),ubwa,bv_d%ubw,t0,t0,tol2,error)
+  deallocate(bv_d)
+
   !
   ! Complex UB test
   !
@@ -112,6 +139,19 @@ program test_general
   call ub_to_upper(ub_c,a1_c,error)
   test_name="Complex square term. UB;"
   call c_output_result_upper(test_name,a0_c,a1_c,rmax,ub_c%ubw,t0,t0,tol2,error)
+
+  na=40
+  lbwa=3; ubwa=5
+  ub_c=c_random_ub(na,lbwa,ubwa)
+  call ub_to_upper(ub_c,a_c(1:na,1:na))
+  a1_c(1:na,1:na)=a_c(1:na,1:na)
+  call upper_to_ub(a_c(1:na,1:na),ub_c,lbwa,tol)
+  call ub_to_upper(ub_c,a0_c(1:na,1:na))
+  test_name="Random Complex UB;"  
+  call c_output_result_upper(test_name,a0_c(1:na,1:na),a1_c(1:na,1:na),ubwa,ub_c%ubw,t0,t0,tol2,error)
+  deallocate(ub_c)
+  print *
+  
   print *
   print *, "--------------------------------"
   print *
@@ -137,6 +177,17 @@ program test_general
   call bv_to_upper(bv_c,a1_c,error)
   test_name="Complex Sq. Term. BV;"
   call c_output_result_upper(test_name,a0_c,a1_c,rmax,bv_c%ubw,t0,t0,tol2,error)
+
+  na=40
+  lbwa=3; ubwa=5
+  bv_c=c_random_bv(na,lbwa,ubwa)
+  call bv_to_upper(bv_c,a_c(1:na,1:na))
+  a1_c(1:na,1:na)=a_c(1:na,1:na)
+  call upper_to_bv(a_c(1:na,1:na),bv_c,lbwa,tol)
+  call bv_to_upper(bv_c,a0_c(1:na,1:na))
+  test_name="Random Complex BV;"  
+  call c_output_result_upper(test_name,a0_c(1:na,1:na),a1_c(1:na,1:na),ubwa,bv_c%ubw,t0,t0,tol2,error)
+  deallocate(bv_c)
   print *
 
 end program test_general

@@ -26,6 +26,9 @@ program test_convert_wb_and_bt
   type(c_wb), allocatable :: wb_c, wb_na_c
   type(d_bt), allocatable :: bt_d, bt_na_d
   type(c_bt), allocatable :: bt_c, bt_na_c
+
+  call initialize_errors
+
   wb_d=d_new_wb(n,lbwmax,ubwmax)
   wb_c=c_new_wb(n,lbwmax,ubwmax)
   bt_d=d_new_bt(n,lbwmax,ubwmax)

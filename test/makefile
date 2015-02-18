@@ -25,6 +25,12 @@ orth_rank : force_look
 force_look :
 	true
 
+# $(OBJDIR)/orth_rank.o : force_look
+# 	cd ../src; $(MAKE)
+
+run_test_general : $(BINDIR)/test_general
+	$(BINDIR)/test_general
+
 run_row_compress : $(BINDIR)/test_row_compress
 	$(BINDIR)/test_row_compress
 

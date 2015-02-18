@@ -1,5 +1,7 @@
 module mod_orth_band_types
   use mod_prec
+  use mod_utility
+  use mod_band_types
   implicit none
 
   private

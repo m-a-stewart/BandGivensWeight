@@ -27,6 +27,8 @@ program test_qr_factorization
   type(d_sweeps), allocatable :: sw_d ! , rsw_d
   type(c_sweeps), allocatable :: sw_c ! , rsw_c
 
+  call initialize_errors
+
   call random_seed
   call random_matrix(u_d)
   call random_matrix(v_d)

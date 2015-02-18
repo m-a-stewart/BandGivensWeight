@@ -30,6 +30,9 @@ program test_row_compress
   type(c_bv), allocatable :: bv_c, bv_na_c
   type(d_sweeps), allocatable :: sw_d, sw_na_d
   type(c_sweeps), allocatable :: sw_c, sw_na_c
+
+  call initialize_errors
+
   ubt_d=d_new_ubt(n,lbwmax,ubwmax)
   ubt_c=c_new_ubt(n,lbwmax,ubwmax)
   bv_d=d_new_bv(n,lbwmax,lbwmax+ubwmax)

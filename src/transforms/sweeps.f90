@@ -210,7 +210,7 @@ contains
 
   type(c_sweeps) function c_random_full_sweeps(n,l) result(sw)
     integer(kind=int32) :: n, l, j, k
-    real(kind=dp) :: nrm, cr
+    real(kind=dp) :: nrm
     sw=c_new_sweeps(n, 1, l, n-1)
     sw%left=1
     sw%right=l
@@ -222,9 +222,7 @@ contains
     call random_matrix(sw%ss)
     do j=1,n-1
        do k=1,l
-          cr=real(sw%cs(j,k),kind=dp)
-          sw%cs(j,k)=cr
-          nrm=sqrt(abs(sw%cs(j,k))**2+abs(sw%ss(j,k))**2)
+          nrm=sqrt(sw%cs(j,k)**2+abs(sw%ss(j,k))**2)
           sw%cs(j,k)=sw%cs(j,k)/nrm
           sw%ss(j,k)=sw%ss(j,k)/nrm
        end do

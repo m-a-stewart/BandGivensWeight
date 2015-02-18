@@ -30,6 +30,9 @@ program test_convert_ubt_and_wbv
   type(c_ubt), allocatable :: ubt_c, ubt_na_c
   type(d_wbv), allocatable :: wbv_d, wbv_na_d
   type(c_wbv), allocatable :: wbv_c, wbv_na_c
+
+  call initialize_errors
+
   ubt_d=d_new_ubt(n,lbwmax,ubwmax)
   ubt_c=c_new_ubt(n,lbwmax,ubwmax)
   wbv_d=d_new_wbv(n,lbwmax,ubwmax)

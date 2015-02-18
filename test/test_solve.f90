@@ -32,6 +32,7 @@ program test_solve
   type(d_sweeps), allocatable :: sw_d
   type(c_sweeps), allocatable :: sw_c
 
+  call initialize_errors
   call random_seed
   call random_matrix(u_d)
   call random_matrix(v_d)

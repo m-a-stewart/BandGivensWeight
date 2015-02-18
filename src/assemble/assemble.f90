@@ -86,8 +86,8 @@ contains
     if (get_n(ub) /= size(a,1) .or. get_n(ub) /= size(a,2)) then
        call set_error(1, info, error); return
     end if
-    call f_d_ub_to_upper(ub%bc, get_n(ub), ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
-         ub%numrotsu, ub%jsu, ub%csu, ub%ssu, a)
+    call f_d_ub_to_upper(ub%bc, get_n(ub), ub%lbw, ub%ubw, get_lbwmax(ub), &
+         get_ubwmax(ub), ub%numrotsu, ub%jsu, ub%csu, ub%ssu, a)
     call pop_id(error)
   end subroutine d_ub_to_upper
 

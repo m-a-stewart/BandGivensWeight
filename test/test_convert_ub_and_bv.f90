@@ -26,6 +26,9 @@ program test_convert_ub_and_bv
   type(c_ub), allocatable :: ub_c, ub_na_c
   type(d_bv), allocatable :: bv_d, bv_na_d
   type(c_bv), allocatable :: bv_c, bv_na_c
+
+  call initialize_errors
+
   ub_d=d_new_ub(n,lbwmax,ubwmax)
   ub_c=c_new_ub(n,lbwmax,ubwmax)
   bv_d=d_new_bv(n,lbwmax,ubwmax)

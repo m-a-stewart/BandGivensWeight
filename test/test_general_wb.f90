@@ -4,7 +4,8 @@ program test_general_wb
   implicit none
   real(kind=dp) :: t0, t1
   type(error_info) :: error
-  integer, parameter :: n=50, rmax=13, lbwmax=rmax+5, ubw=2, ubwmax=10
+  integer(kind=int32), parameter :: n=50, rmax=13, lbwmax=rmax+5, ubw=2, ubwmax=10
+  integer(kind=int32) :: na, lbwa, ubwa  
   real(kind=dp), parameter :: tol=1e-14, tol1=1e-14, tol2=1e-10
   !
   real(kind=dp), dimension(n,n) :: a, a0, a1
@@ -17,6 +18,9 @@ program test_general_wb
   complex(kind=dp), dimension(n) :: d_c
   type(d_wb), allocatable :: wb_d
   type(c_wb), allocatable :: wb_c
+
+  call initialize_errors
+  
   wb_d=d_new_wb(n,lbwmax,ubwmax)
   wb_c=c_new_wb(n,lbwmax,ubwmax)
 
@@ -44,7 +48,18 @@ program test_general_wb
   call wb_to_lower(wb_d,a1,error)
   test_name="Real WB;"
   call d_output_result_lower(test_name,a0,a1,rmax,wb_d%lbw,t0,t0,tol2,error)
+  deallocate(wb_d)
 
+  na=40
+  lbwa=3; ubwa=5
+  wb_d=d_random_wb(na,lbwa,ubwa)
+  call wb_to_lower(wb_d,a(1:na,1:na))
+  a1(1:na,1:na)=a(1:na,1:na)
+  call lower_to_wb(a(1:na,1:na),wb_d,ubwa,tol)
+  call wb_to_lower(wb_d,a0(1:na,1:na))
+  test_name="Random Real WB;"  
+  call d_output_result_upper(test_name,a0(1:na,1:na),a1(1:na,1:na),lbwa,wb_d%lbw,t0,t0,tol2,error)
+  deallocate(wb_d)
 
   print *
   print *, "--------------------------------"
@@ -59,5 +74,18 @@ program test_general_wb
   call wb_to_lower(wb_c,a1_c,error)
   test_name="Complex WB;"
   call c_output_result_lower(test_name,a0_c,a1_c,rmax,wb_c%lbw,t0,t0,tol2,error)
+  deallocate(wb_c)
+
+  na=40
+  lbwa=3; ubwa=5
+  wb_c=c_random_wb(na,lbwa,ubwa)
+  call wb_to_lower(wb_c,a_c(1:na,1:na))
+  a1_c(1:na,1:na)=a_c(1:na,1:na)
+  call lower_to_wb(a_c(1:na,1:na),wb_c,ubwa,tol)
+  call wb_to_lower(wb_c,a0_c(1:na,1:na))
+  test_name="Random Complex WB;"  
+  call c_output_result_upper(test_name,a0_c(1:na,1:na),a1_c(1:na,1:na),&
+       lbwa,wb_c%lbw,t0,t0,tol2,error)
+  deallocate(wb_c)
 
 end program test_general_wb
