@@ -20,6 +20,7 @@ program test_general
   type(c_ub), allocatable :: ub_c
   type(d_bv), allocatable :: bv_d
   type(c_bv), allocatable :: bv_c
+  real(kind=dp), dimension(:,:), allocatable :: a_a
   ub_d=d_new_ub(n,lbwmax,ubwmax)
   ub_c=c_new_ub(n,lbwmax,ubwmax)
   bv_d=d_new_bv(n,lbwmax,ubwmax)
@@ -66,10 +67,10 @@ program test_general
   na=40
   lbwa=3; ubwa=5
   ub_d=d_random_ub(na,lbwa,ubwa)
-  call ub_to_general(ub_d,a(1:na,1:na))
+  a(1:na,1:na)=general_of(ub_d)
   a1(1:na,1:na)=a(1:na,1:na)
   call general_to_ub(a(1:na,1:na),ub_d,lbwa,tol)
-  call ub_to_general(ub_d,a0(1:na,1:na))
+  a0(1:na,1:na) = general_of(ub_d)
   test_name="Random Real UB;"  
   call d_output_result_upper(test_name,a0(1:na,1:na),a1(1:na,1:na),ubwa,ub_d%ubw,t0,t0,tol2,error)
   deallocate(ub_d)
@@ -125,6 +126,7 @@ program test_general
   call cpu_time(t0)
   call general_to_ub(a_c,ub_c,lbw,tol,error)
   call cpu_time(t1)
+  
   call ub_to_general(ub_c,a1_c,error)
   test_name="Complex UB;"
   call c_output_result_upper(test_name,a0_c,a1_c,rmax,ub_c%ubw,t0,t0,tol2,error)

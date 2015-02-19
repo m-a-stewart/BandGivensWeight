@@ -77,11 +77,23 @@ module mod_error_id
   type(routine_info), parameter :: info_c_ub_to_general=routine_info(id_c_ub_to_general, &
        'c_ub_to_general', [ character(len=error_message_length) :: 'Size error in A.' ] )
 
+  type(routine_info), parameter :: info_d_general_of_ub=routine_info(id_d_general_of_ub, &
+       'd_general_of_ub', [ character(len=error_message_length) :: '' ] )
+
+  type(routine_info), parameter :: info_c_general_of_ub=routine_info(id_c_general_of_ub, &
+       'c_general_of_ub', [ character(len=error_message_length) :: '' ] )
+  
   type(routine_info), parameter :: info_d_bt_to_general=routine_info(id_d_bt_to_general, &
        'd_bt_to_general', [ character(len=error_message_length) :: 'Size error in A.' ] )
 
   type(routine_info), parameter :: info_c_bt_to_general=routine_info(id_c_bt_to_general, &
        'c_bt_to_general', [ character(len=error_message_length) :: 'Size error in A.' ] )
+
+  type(routine_info), parameter :: info_d_general_of_bt=routine_info(id_d_general_of_bt, &
+       'd_general_of_bt', [ character(len=error_message_length) :: '' ] )
+
+  type(routine_info), parameter :: info_c_general_of_bt=routine_info(id_c_general_of_bt, &
+       'c_general_of_bt', [ character(len=error_message_length) :: '' ] )
 
   type(routine_info), parameter :: info_d_ubt_to_general=routine_info(id_d_ubt_to_general, &
        'd_ubt_to_general', [ character(len=error_message_length) :: 'Size error in A.' ] )
@@ -89,11 +101,23 @@ module mod_error_id
   type(routine_info), parameter :: info_c_ubt_to_general=routine_info(id_c_ubt_to_general, &
        'c_ubt_to_general', [ character(len=error_message_length) :: 'Size error in A.' ] )
 
+  type(routine_info), parameter :: info_d_general_of_ubt=routine_info(id_d_general_of_ubt, &
+       'd_general_of_ubt', [ character(len=error_message_length) :: '' ] )
+
+  type(routine_info), parameter :: info_c_general_of_ubt=routine_info(id_c_general_of_ubt, &
+       'c_general_of_ubt', [ character(len=error_message_length) :: '' ] )
+
   type(routine_info), parameter :: info_d_bv_to_general=routine_info(id_d_bv_to_general, &
        'd_bv_to_general', [ character(len=error_message_length) :: 'Size error in A.' ] )
   
   type(routine_info), parameter :: info_c_bv_to_general=routine_info(id_c_bv_to_general, &
        'c_bv_to_general', [ character(len=error_message_length) :: 'Size error in A.' ] )
+
+  type(routine_info), parameter :: info_d_general_of_bv=routine_info(id_d_general_of_bv, &
+       'd_general_of_bv', [ character(len=error_message_length) :: '' ] )
+
+  type(routine_info), parameter :: info_c_general_of_bv=routine_info(id_c_general_of_bv, &
+       'c_general_of_bv', [ character(len=error_message_length) :: '' ] )
 
   type(routine_info), parameter :: info_d_wb_to_general=routine_info(id_d_wb_to_general, &
        'd_wb_to_general', [ character(len=error_message_length) :: 'Size error in A.' ] )
@@ -101,11 +125,23 @@ module mod_error_id
   type(routine_info), parameter :: info_c_wb_to_general=routine_info(id_c_wb_to_general, &
        'c_wb_to_general', [ character(len=error_message_length) :: 'Size error in A.' ] )
 
+  type(routine_info), parameter :: info_d_general_of_wb=routine_info(id_d_general_of_wb, &
+       'd_general_of_wb', [ character(len=error_message_length) :: '' ] )
+
+  type(routine_info), parameter :: info_c_general_of_wb=routine_info(id_c_general_of_wb, &
+       'c_general_of_wb', [ character(len=error_message_length) :: '' ] )
+  
   type(routine_info), parameter :: info_d_wbv_to_general=routine_info(id_d_wbv_to_general, &
        'd_wbv_to_general', [ character(len=error_message_length) :: 'Size error in A.' ] )
   
   type(routine_info), parameter :: info_c_wbv_to_general=routine_info(id_c_wbv_to_general, &
        'c_wbv_to_general', [ character(len=error_message_length) :: 'Size error in A.' ] )
+
+  type(routine_info), parameter :: info_d_general_of_wbv=routine_info(id_d_general_of_wbv, &
+       'd_general_of_wbv', [ character(len=error_message_length) :: '' ] )
+
+  type(routine_info), parameter :: info_c_general_of_wbv=routine_info(id_c_general_of_wbv, &
+       'c_general_of_wbv', [ character(len=error_message_length) :: '' ] )
 
   ! src/convert/convert_bv_to_ub, 0100s
   integer(int32), parameter :: mod_id_convert_bv_to_ub=100

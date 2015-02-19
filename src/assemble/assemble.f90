@@ -9,17 +9,37 @@ module mod_assemble
   private
 
   public :: ub_to_general, d_ub_to_general, c_ub_to_general, &
+       d_general_of_ub, c_general_of_ub, &
        f_ub_to_general, f_d_ub_to_general, f_c_ub_to_general, &
        bt_to_general, d_bt_to_general, c_bt_to_general, &
+       d_general_of_bt, c_general_of_bt, &
        f_bt_to_general, f_d_bt_to_general, f_c_bt_to_general, &
        ubt_to_general, d_ubt_to_general, c_ubt_to_general, &
+       d_general_of_ubt, c_general_of_ubt, &
        f_ubt_to_general, f_d_ubt_to_general, f_c_ubt_to_general, &
        bv_to_general, d_bv_to_general, c_bv_to_general, &
+       d_general_of_bv, c_general_of_bv, &
        f_bv_to_general, f_d_bv_to_general, f_c_bv_to_general, &
        wb_to_general, d_wb_to_general, c_wb_to_general, &
+       d_general_of_wb, c_general_of_wb, &       
        f_wb_to_general, f_d_wb_to_general, f_c_wb_to_general, &
        wbv_to_general, d_wbv_to_general, c_wbv_to_general, &
-       f_wbv_to_general, f_d_wbv_to_general, f_c_wbv_to_general
+       d_general_of_wbv, c_general_of_wbv, &
+       f_wbv_to_general, f_d_wbv_to_general, f_c_wbv_to_general, &
+       general_of, to_general
+  
+
+  interface to_general
+     module procedure d_ub_to_general, c_ub_to_general, d_bt_to_general, c_bt_to_general, &
+          d_ubt_to_general, c_ubt_to_general, d_bv_to_general, c_bv_to_general, &
+          d_wb_to_general, c_wb_to_general, d_wbv_to_general, c_wbv_to_general
+  end interface to_general
+
+  interface general_of
+     module procedure d_general_of_ub, c_general_of_ub, d_general_of_bt, c_general_of_bt, &
+          d_general_of_ubt, c_general_of_ubt, d_general_of_bv, c_general_of_bv, &
+          d_general_of_wb, c_general_of_wb, d_general_of_wbv, c_general_of_wbv
+  end interface general_of
 
   interface ub_to_general
      module procedure d_ub_to_general, c_ub_to_general
@@ -71,6 +91,21 @@ module mod_assemble
 
 contains
 
+  function d_general_of_ub(ub, error) result(a)
+    real(kind=dp), dimension(:,:), allocatable :: a
+    type(d_ub), intent(in) :: ub
+    type(error_info), intent(out), optional :: error
+    type(routine_info), parameter :: info=info_d_general_of_ub
+    integer(kind=int32) :: n
+    call clear_error(error)
+    call push_id(info, error)
+    
+    n=get_n(ub)
+    allocate(a(n,n))
+    call d_ub_to_general(ub,a,error)
+    call pop_id(error)
+  end function d_general_of_ub
+
   ! Errors
   ! 0: no error
   ! 1: ub%n /= n
@@ -113,6 +148,21 @@ contains
     end do
   end subroutine f_d_ub_to_general
 
+  function c_general_of_ub(ub, error) result(a)
+    complex(kind=dp), dimension(:,:), allocatable :: a
+    type(c_ub), intent(in) :: ub
+    type(error_info), intent(out), optional :: error
+    type(routine_info), parameter :: info=info_c_general_of_ub
+    integer(kind=int32) :: n
+    call clear_error(error)
+    call push_id(info, error)
+    
+    n=get_n(ub)
+    allocate(a(n,n))
+    call c_ub_to_general(ub,a,error)
+    call pop_id(error)
+  end function c_general_of_ub
+
   subroutine c_ub_to_general(ub,a,error)
     type(c_ub), intent(in) :: ub
     complex(kind=dp), dimension(:,:), intent(out) :: a
@@ -153,6 +203,21 @@ contains
        end do
     end do
   end subroutine f_c_ub_to_general
+
+  function d_general_of_bt(bt, error) result(a)
+    real(kind=dp), dimension(:,:), allocatable :: a
+    type(d_bt), intent(in) :: bt
+    type(error_info), intent(out), optional :: error
+    type(routine_info), parameter :: info=info_d_general_of_bt
+    integer(kind=int32) :: n
+    call clear_error(error)
+    call push_id(info, error)
+    
+    n=get_n(bt)
+    allocate(a(n,n))
+    call d_bt_to_general(bt,a,error)
+    call pop_id(error)
+  end function d_general_of_bt
 
   ! Errors
   ! 0: no error
@@ -196,6 +261,21 @@ contains
     end do
   end subroutine f_d_bt_to_general
 
+  function c_general_of_bt(bt, error) result(a)
+    complex(kind=dp), dimension(:,:), allocatable :: a
+    type(c_bt), intent(in) :: bt
+    type(error_info), intent(out), optional :: error
+    type(routine_info), parameter :: info=info_c_general_of_bt
+    integer(kind=int32) :: n
+    call clear_error(error)
+    call push_id(info, error)
+    
+    n=get_n(bt)
+    allocate(a(n,n))
+    call c_bt_to_general(bt,a,error)
+    call pop_id(error)
+  end function c_general_of_bt
+
   ! Errors
   ! 0: no error
   ! 1: bt%n /= n
@@ -237,6 +317,22 @@ contains
        end do
     end do
   end subroutine f_c_bt_to_general
+
+  function d_general_of_ubt(ubt, error) result(a)
+    real(kind=dp), dimension(:,:), allocatable :: a
+    type(d_ubt), intent(in) :: ubt
+    type(error_info), intent(out), optional :: error
+    type(routine_info), parameter :: info=info_d_general_of_ubt
+    integer(kind=int32) :: n
+    call clear_error(error)
+    call push_id(info, error)
+    
+    n=get_n(ubt)
+    allocate(a(n,n))
+    call d_ubt_to_general(ubt,a,error)
+    call pop_id(error)
+  end function d_general_of_ubt
+
 
   ! Errors
   ! 0: no error
@@ -290,6 +386,21 @@ contains
        end do
     end do
   end subroutine f_d_ubt_to_general
+
+  function c_general_of_ubt(ubt, error) result(a)
+    complex(kind=dp), dimension(:,:), allocatable :: a
+    type(c_ubt), intent(in) :: ubt
+    type(error_info), intent(out), optional :: error
+    type(routine_info), parameter :: info=info_c_general_of_ubt
+    integer(kind=int32) :: n
+    call clear_error(error)
+    call push_id(info, error)
+    
+    n=get_n(ubt)
+    allocate(a(n,n))
+    call c_ubt_to_general(ubt,a,error)
+    call pop_id(error)
+  end function c_general_of_ubt
 
   ! Errors
   ! 0: no error
@@ -346,6 +457,22 @@ contains
     end do
   end subroutine f_c_ubt_to_general
 
+  function d_general_of_bv(bv, error) result(a)
+    real(kind=dp), dimension(:,:), allocatable :: a
+    type(d_bv), intent(in) :: bv
+    type(error_info), intent(out), optional :: error
+    type(routine_info), parameter :: info=info_d_general_of_bv
+    integer(kind=int32) :: n
+    call clear_error(error)
+    call push_id(info, error)
+    
+    n=get_n(bv)
+    allocate(a(n,n))
+    call d_bv_to_general(bv,a,error)
+    call pop_id(error)
+  end function d_general_of_bv
+
+
   subroutine d_bv_to_general(bv,a,error)
     type(d_bv), intent(in) :: bv
     real(kind=dp), dimension(:,:), intent(out) :: a
@@ -383,6 +510,21 @@ contains
        end do
     end do
   end subroutine f_d_bv_to_general
+
+  function c_general_of_bv(bv, error) result(a)
+    complex(kind=dp), dimension(:,:), allocatable :: a
+    type(c_bv), intent(in) :: bv
+    type(error_info), intent(out), optional :: error
+    type(routine_info), parameter :: info=info_c_general_of_bv
+    integer(kind=int32) :: n
+    call clear_error(error)
+    call push_id(info, error)
+    
+    n=get_n(bv)
+    allocate(a(n,n))
+    call c_bv_to_general(bv,a,error)
+    call pop_id(error)
+  end function c_general_of_bv
 
   subroutine c_bv_to_general(bv,a,error)
     type(c_bv), intent(in) :: bv
@@ -423,6 +565,21 @@ contains
     end do
   end subroutine f_c_bv_to_general
 
+  function d_general_of_wb(wb, error) result(a)
+    real(kind=dp), dimension(:,:), allocatable :: a
+    type(d_wb), intent(in) :: wb
+    type(error_info), intent(out), optional :: error
+    type(routine_info), parameter :: info=info_d_general_of_wb
+    integer(kind=int32) :: n
+    call clear_error(error)
+    call push_id(info, error)
+    
+    n=get_n(wb)
+    allocate(a(n,n))
+    call d_wb_to_general(wb,a,error)
+    call pop_id(error)
+  end function d_general_of_wb
+
   subroutine d_wb_to_general(wb,a,error)
     type(d_wb), intent(in) :: wb
     real(kind=dp), dimension(:,:), intent(out) :: a
@@ -461,6 +618,21 @@ contains
        end do
     end do
   end subroutine f_d_wb_to_general
+
+  function c_general_of_wb(wb, error) result(a)
+    complex(kind=dp), dimension(:,:), allocatable :: a
+    type(c_wb), intent(in) :: wb
+    type(error_info), intent(out), optional :: error
+    type(routine_info), parameter :: info=info_c_general_of_wb
+    integer(kind=int32) :: n
+    call clear_error(error)
+    call push_id(info, error)
+    
+    n=get_n(wb)
+    allocate(a(n,n))
+    call c_wb_to_general(wb,a,error)
+    call pop_id(error)
+  end function c_general_of_wb
 
   subroutine c_wb_to_general(wb,a,error)
     type(c_wb), intent(in) :: wb
@@ -501,6 +673,21 @@ contains
        end do
     end do
   end subroutine f_c_wb_to_general
+
+  function d_general_of_wbv(wbv, error) result(a)
+    real(kind=dp), dimension(:,:), allocatable :: a
+    type(d_wbv), intent(in) :: wbv
+    type(error_info), intent(out), optional :: error
+    type(routine_info), parameter :: info=info_d_general_of_wbv
+    integer(kind=int32) :: n
+    call clear_error(error)
+    call push_id(info, error)
+    
+    n=get_n(wbv)
+    allocate(a(n,n))
+    call d_wbv_to_general(wbv,a,error)
+    call pop_id(error)
+  end function d_general_of_wbv
 
   subroutine d_wbv_to_general(wbv,a,error)
     type(d_wbv), intent(in) :: wbv
@@ -551,6 +738,21 @@ contains
        end do
     end do
   end subroutine f_d_wbv_to_general
+
+  function c_general_of_wbv(wbv, error) result(a)
+    complex(kind=dp), dimension(:,:), allocatable :: a
+    type(c_wbv), intent(in) :: wbv
+    type(error_info), intent(out), optional :: error
+    type(routine_info), parameter :: info=info_c_general_of_wbv
+    integer(kind=int32) :: n
+    call clear_error(error)
+    call push_id(info, error)
+    
+    n=get_n(wbv)
+    allocate(a(n,n))
+    call c_wbv_to_general(wbv,a,error)
+    call pop_id(error)
+  end function c_general_of_wbv
 
   subroutine c_wbv_to_general(wbv,a,error)
     type(c_wbv), intent(in) :: wbv
