@@ -11,7 +11,12 @@ module mod_general_bt
 
   public :: f_general_bt, f_d_general_bt, f_c_general_bt, &
        f_general_to_bt, f_d_general_to_bt, f_c_general_to_bt, &
-       general_to_bt, d_general_to_bt, c_general_to_bt
+       general_to_bt, d_general_to_bt, c_general_to_bt, &
+       d_bt_of_general, c_bt_of_general, bt_of_general
+
+  interface bt_of_general
+     module procedure d_bt_of_general, c_bt_of_general
+  end interface bt_of_general
 
   interface f_general_bt
      module procedure f_d_general_bt, f_c_general_bt
@@ -27,6 +32,27 @@ module mod_general_bt
 
 contains
 
+  function d_bt_of_general(a, ubw, lbwmax, ubwmax, tol, error) result(bt)
+    type(d_bt), allocatable :: bt
+    real(kind=dp), target, dimension(:,:), intent(inout) :: a
+    type(error_info), intent(out), optional :: error
+    real(kind=dp), intent(in) :: tol
+    integer(kind=int32), intent(in) :: ubw, lbwmax, ubwmax
+    type(routine_info), parameter :: info=info_d_bt_of_general
+    integer(kind=int32) :: n
+
+    call clear_error(error)
+    call push_id(info, error)
+
+    n=size(a,1)
+    bt=d_new_bt(n,lbwmax,ubwmax)
+
+    call d_general_to_bt(a,bt,ubw,tol,error)
+
+    call pop_id(error)
+    
+  end function d_bt_of_general
+  
   subroutine f_d_general_bt(a, n, lbws, lbwmax, numrotst, kst, cst, sst, tol, error)
     real(kind=dp), target, dimension(n,n), intent(inout) :: a
     integer(kind=int32), dimension(n,lbwmax), intent(out) :: kst
@@ -132,6 +158,28 @@ contains
   end subroutine d_general_to_bt
 
 
+  function c_bt_of_general(a, ubw, lbwmax, ubwmax, tol, error) result(bt)
+    type(c_bt), allocatable :: bt
+    complex(kind=dp), target, dimension(:,:), intent(inout) :: a
+    type(error_info), intent(out), optional :: error
+    real(kind=dp), intent(in) :: tol
+    integer(kind=int32), intent(in) :: ubw, lbwmax, ubwmax
+    type(routine_info), parameter :: info=info_c_bt_of_general
+    integer(kind=int32) :: n
+
+    call clear_error(error)
+    call push_id(info, error)
+
+    n=size(a,1)
+    bt=c_new_bt(n,lbwmax,ubwmax)
+
+    call c_general_to_bt(a,bt,ubw,tol,error)
+
+    call pop_id(error)
+    
+  end function c_bt_of_general
+
+  
   subroutine f_c_general_bt(a, n, lbws, lbwmax, numrotst, kst, cst, sst, tol, error)
     complex(kind=dp), target, dimension(n,n), intent(inout) :: a
     integer(kind=int32), dimension(n,lbwmax), intent(out) :: kst

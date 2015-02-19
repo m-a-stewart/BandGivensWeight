@@ -11,7 +11,12 @@ module mod_general_ubt
 
   public :: f_general_ubt, f_d_general_ubt, f_c_general_ubt, &
        f_general_to_ubt, f_d_general_to_ubt, f_c_general_to_ubt, &
-       general_to_ubt, d_general_to_ubt, c_general_to_ubt
+       general_to_ubt, d_general_to_ubt, c_general_to_ubt, &
+       d_ubt_of_general, c_ubt_of_general, ubt_of_general
+
+  interface ubt_of_general
+     module procedure d_ubt_of_general, c_ubt_of_general
+  end interface ubt_of_general
 
   interface f_general_ubt
      module procedure f_d_general_ubt, f_c_general_ubt
@@ -26,6 +31,27 @@ module mod_general_ubt
   end interface general_to_ubt
 
 contains
+
+  function d_ubt_of_general(a, lbwmax, ubwmax, tol, error) result(ubt)
+    type(d_ubt), allocatable :: ubt
+    real(kind=dp), target, dimension(:,:), intent(inout) :: a
+    type(error_info), intent(out), optional :: error
+    real(kind=dp), intent(in) :: tol
+    integer(kind=int32), intent(in) :: lbwmax, ubwmax
+    type(routine_info), parameter :: info=info_d_ubt_of_general
+    integer(kind=int32) :: n
+
+    call clear_error(error)
+    call push_id(info, error)
+
+    n=size(a,1)
+    ubt=d_new_ubt(n,lbwmax,ubwmax)
+
+    call d_general_to_ubt(a,ubt,tol,error)
+
+    call pop_id(error)
+    
+  end function d_ubt_of_general
 
   subroutine f_d_general_ubt(a, n, lbws, ubws, lbwmax, ubwmax, &
        numrotsu, jsu, csu, ssu, &
@@ -147,6 +173,28 @@ contains
 
     call pop_id(error)
   end subroutine d_general_to_ubt
+
+  function c_ubt_of_general(a, lbwmax, ubwmax, tol, error) result(ubt)
+    type(c_ubt), allocatable :: ubt
+    complex(kind=dp), target, dimension(:,:), intent(inout) :: a
+    type(error_info), intent(out), optional :: error
+    real(kind=dp), intent(in) :: tol
+    integer(kind=int32), intent(in) :: lbwmax, ubwmax
+    type(routine_info), parameter :: info=info_c_ubt_of_general
+    integer(kind=int32) :: n
+
+    call clear_error(error)
+    call push_id(info, error)
+
+    n=size(a,1)
+    ubt=c_new_ubt(n,lbwmax,ubwmax)
+
+    call c_general_to_ubt(a,ubt,tol,error)
+
+    call pop_id(error)
+    
+  end function c_ubt_of_general
+  
 
   subroutine f_c_general_ubt(a, n, lbws, ubws, lbwmax, ubwmax, &
        numrotsu, jsu, csu, ssu, &

@@ -14,7 +14,12 @@ module mod_general_bv
 
   public :: general_to_bv, d_general_to_bv, c_general_to_bv, &
        f_general_to_bv, f_d_general_to_bv, f_c_general_to_bv, &
-       f_general_bv, f_d_general_bv, f_c_general_bv
+       f_general_bv, f_d_general_bv, f_c_general_bv, &
+       d_bv_of_general, c_bv_of_general, bv_of_general
+
+  interface bv_of_general
+     module procedure d_bv_of_general, c_bv_of_general
+  end interface bv_of_general
 
   interface general_to_bv
      module procedure d_general_to_bv, c_general_to_bv
@@ -29,6 +34,28 @@ module mod_general_bv
   end interface f_general_bv
 
 contains
+
+  function d_bv_of_general(a, lbw, lbwmax, ubwmax, tol, error) result(bv)
+    type(d_bv), allocatable :: bv
+    real(kind=dp), target, dimension(:,:), intent(inout) :: a
+    type(error_info), intent(out), optional :: error
+    real(kind=dp), intent(in) :: tol
+    integer(kind=int32), intent(in) :: lbw, lbwmax, ubwmax
+    type(routine_info), parameter :: info=info_d_bv_of_general
+    integer(kind=int32) :: n
+
+    call clear_error(error)
+    call push_id(info, error)
+
+    n=size(a,1)
+    bv=d_new_bv(n,lbwmax,ubwmax)
+
+    call d_general_to_bv(a,bv,lbw,tol,error)
+
+    call pop_id(error)
+    
+  end function d_bv_of_general
+
 
   ! Errors:
   ! 0: no error
@@ -432,6 +459,27 @@ contains
   end subroutine f_d_general_bv
 
   ! complex BV
+
+  function c_bv_of_general(a, lbw, lbwmax, ubwmax, tol, error) result(bv)
+    type(c_bv), allocatable :: bv
+    complex(kind=dp), target, dimension(:,:), intent(inout) :: a
+    type(error_info), intent(out), optional :: error
+    real(kind=dp), intent(in) :: tol
+    integer(kind=int32), intent(in) :: lbw, lbwmax, ubwmax
+    type(routine_info), parameter :: info=info_c_bv_of_general
+    integer(kind=int32) :: n
+
+    call clear_error(error)
+    call push_id(info, error)
+
+    n=size(a,1)
+    bv=c_new_bv(n,lbwmax,ubwmax)
+
+    call c_general_to_bv(a,bv,lbw,tol,error)
+
+    call pop_id(error)
+    
+  end function c_bv_of_general
 
   subroutine c_general_to_bv(a,bv,lbw,tol,error)
     complex(kind=dp), target, dimension(:,:), intent(inout) :: a

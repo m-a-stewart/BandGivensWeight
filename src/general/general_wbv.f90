@@ -11,7 +11,12 @@ module mod_general_wbv
 
   public :: f_general_wbv, f_d_general_wbv, f_c_general_wbv, &
        f_general_to_wbv, f_d_general_to_wbv, f_c_general_to_wbv, &
-       general_to_wbv, d_general_to_wbv, c_general_to_wbv
+       general_to_wbv, d_general_to_wbv, c_general_to_wbv, &
+       d_wbv_of_general, c_wbv_of_general, wbv_of_general
+
+  interface wbv_of_general
+     module procedure d_wbv_of_general, c_wbv_of_general
+  end interface wbv_of_general
   
   interface f_general_wbv
      module procedure f_d_general_wbv, f_c_general_wbv
@@ -27,6 +32,27 @@ module mod_general_wbv
 
 contains
 
+  function d_wbv_of_general(a, lbwmax, ubwmax, tol, error) result(wbv)
+    type(d_wbv), allocatable :: wbv
+    real(kind=dp), target, dimension(:,:), intent(inout) :: a
+    type(error_info), intent(out), optional :: error
+    real(kind=dp), intent(in) :: tol
+    integer(kind=int32), intent(in) :: lbwmax, ubwmax
+    type(routine_info), parameter :: info=info_d_wbv_of_general
+    integer(kind=int32) :: n
+
+    call clear_error(error)
+    call push_id(info, error)
+
+    n=size(a,1)
+    wbv=d_new_wbv(n,lbwmax,ubwmax)
+
+    call d_general_to_wbv(a,wbv,tol,error)
+
+    call pop_id(error)
+    
+  end function d_wbv_of_general
+  
   subroutine f_d_general_wbv(a, n, lbws, ubws, lbwmax, ubwmax, &
        numrotsw, jsw, csw, ssw, &
        numrotsv, ksv, csv, ssv, tol, error)
@@ -64,6 +90,28 @@ contains
     end if
     call pop_id(error)
   end subroutine f_d_general_wbv
+
+  function c_wbv_of_general(a, lbwmax, ubwmax, tol, error) result(wbv)
+    type(c_wbv), allocatable :: wbv
+    complex(kind=dp), target, dimension(:,:), intent(inout) :: a
+    type(error_info), intent(out), optional :: error
+    real(kind=dp), intent(in) :: tol
+    integer(kind=int32), intent(in) :: lbwmax, ubwmax
+    type(routine_info), parameter :: info=info_c_wbv_of_general
+    integer(kind=int32) :: n
+
+    call clear_error(error)
+    call push_id(info, error)
+
+    n=size(a,1)
+    wbv=c_new_wbv(n,lbwmax,ubwmax)
+
+    call c_general_to_wbv(a,wbv,tol,error)
+
+    call pop_id(error)
+    
+  end function c_wbv_of_general
+
 
   subroutine f_c_general_wbv(a, n, lbws, ubws, lbwmax, ubwmax, &
        numrotsw, jsw, csw, ssw, &

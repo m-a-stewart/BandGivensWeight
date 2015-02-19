@@ -10,7 +10,12 @@ module mod_general_wb
   private
   public :: f_general_wb, f_d_general_wb, f_c_general_wb, &
        f_general_to_wb, f_d_general_to_wb, f_c_general_to_wb, &
-       general_to_wb, d_general_to_wb, c_general_to_wb
+       general_to_wb, d_general_to_wb, c_general_to_wb, &
+       d_wb_of_general, c_wb_of_general, wb_of_general
+
+  interface wb_of_general
+     module procedure d_wb_of_general, c_wb_of_general
+  end interface wb_of_general
 
   interface f_general_wb
      module procedure f_d_general_wb, f_c_general_wb
@@ -25,6 +30,27 @@ module mod_general_wb
   end interface general_to_wb
 
 contains
+
+  function d_wb_of_general(a, ubw, lbwmax, ubwmax, tol, error) result(wb)
+    type(d_wb), allocatable :: wb
+    real(kind=dp), target, dimension(:,:), intent(inout) :: a
+    type(error_info), intent(out), optional :: error
+    real(kind=dp), intent(in) :: tol
+    integer(kind=int32), intent(in) :: ubw, lbwmax, ubwmax
+    type(routine_info), parameter :: info=info_d_wb_of_general
+    integer(kind=int32) :: n
+
+    call clear_error(error)
+    call push_id(info, error)
+
+    n=size(a,1)
+    wb=d_new_wb(n,lbwmax,ubwmax)
+
+    call d_general_to_wb(a,wb,ubw,tol,error)
+
+    call pop_id(error)
+    
+  end function d_wb_of_general
 
   subroutine f_d_general_wb(a, n, lbws, lbwmax, numrotsw, jsw, csw, ssw, tol, error)
     real(kind=dp), target, dimension(n,n), intent(inout) :: a
@@ -134,6 +160,28 @@ contains
     wb%ubw=ubw
     call pop_id(error)
   end subroutine d_general_to_wb
+
+  function c_wb_of_general(a, ubw, lbwmax, ubwmax, tol, error) result(wb)
+    type(c_wb), allocatable :: wb
+    complex(kind=dp), target, dimension(:,:), intent(inout) :: a
+    type(error_info), intent(out), optional :: error
+    real(kind=dp), intent(in) :: tol
+    integer(kind=int32), intent(in) :: ubw, lbwmax, ubwmax
+    type(routine_info), parameter :: info=info_c_wb_of_general
+    integer(kind=int32) :: n
+
+    call clear_error(error)
+    call push_id(info, error)
+
+    n=size(a,1)
+    wb=c_new_wb(n,lbwmax,ubwmax)
+
+    call c_general_to_wb(a,wb,ubw,tol,error)
+
+    call pop_id(error)
+    
+  end function c_wb_of_general
+  
 
   subroutine f_c_general_wb(a, n, lbws, lbwmax, numrotsw, jsw, csw, ssw, tol, error)
     complex(kind=dp), target, dimension(n,n), intent(inout) :: a

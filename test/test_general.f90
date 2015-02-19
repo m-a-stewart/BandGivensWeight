@@ -69,7 +69,7 @@ program test_general
   ub_d=d_random_ub(na,lbwa,ubwa)
   a(1:na,1:na)=general_of(ub_d)
   a1(1:na,1:na)=a(1:na,1:na)
-  call general_to_ub(a(1:na,1:na),ub_d,lbwa,tol)
+  ub_d=ub_of_general(a(1:na,1:na),lbwa,lbwmax,ubwmax,tol)
   a0(1:na,1:na) = general_of(ub_d)
   test_name="Random Real UB;"  
   call d_output_result_upper(test_name,a0(1:na,1:na),a1(1:na,1:na),ubwa,ub_d%ubw,t0,t0,tol2,error)
@@ -145,10 +145,10 @@ program test_general
   na=40
   lbwa=3; ubwa=5
   ub_c=c_random_ub(na,lbwa,ubwa)
-  call ub_to_general(ub_c,a_c(1:na,1:na))
+  a_c(1:na,1:na)=general_of(ub_c)
   a1_c(1:na,1:na)=a_c(1:na,1:na)
-  call general_to_ub(a_c(1:na,1:na),ub_c,lbwa,tol)
-  call ub_to_general(ub_c,a0_c(1:na,1:na))
+  ub_c=ub_of_general(a_c(1:na,1:na), lbwa, lbwmax, ubwmax, tol)
+  a0_c(1:na,1:na)=general_of(ub_c)
   test_name="Random Complex UB;"  
   call c_output_result_upper(test_name,a0_c(1:na,1:na),a1_c(1:na,1:na),ubwa,ub_c%ubw,t0,t0,tol2,error)
   deallocate(ub_c)

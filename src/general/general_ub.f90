@@ -14,7 +14,12 @@ module mod_general_ub
 
   public :: general_to_ub, d_general_to_ub, c_general_to_ub, &
        f_general_to_ub, f_d_general_to_ub, f_c_general_to_ub, &
-       f_general_ub, f_d_general_ub, f_c_general_ub
+       f_general_ub, f_d_general_ub, f_c_general_ub, &
+       d_ub_of_general, c_ub_of_general, ub_of_general
+
+  interface ub_of_general
+     module procedure d_ub_of_general, c_ub_of_general
+  end interface ub_of_general
 
   interface general_to_ub
      module procedure d_general_to_ub, c_general_to_ub
@@ -29,6 +34,27 @@ module mod_general_ub
   end interface f_general_ub
 
 contains
+
+  function d_ub_of_general(a, lbw, lbwmax, ubwmax, tol, error) result(ub)
+    type(d_ub), allocatable :: ub
+    real(kind=dp), target, dimension(:,:), intent(inout) :: a
+    type(error_info), intent(out), optional :: error
+    real(kind=dp), intent(in) :: tol
+    integer(kind=int32), intent(in) :: lbw, lbwmax, ubwmax
+    type(routine_info), parameter :: info=info_d_ub_of_general
+    integer(kind=int32) :: n
+
+    call clear_error(error)
+    call push_id(info, error)
+
+    n=size(a,1)
+    ub=d_new_ub(n,lbwmax,ubwmax)
+
+    call d_general_to_ub(a,ub,lbw,tol,error)
+
+    call pop_id(error)
+    
+  end function d_ub_of_general
 
   ! Errors:
   ! 0: no error
@@ -435,8 +461,27 @@ contains
   !
   ! Complex.
   !
-  ! Updating procedure to compute a UB factorization from a general matrix.
-  !
+
+  function c_ub_of_general(a, lbw, lbwmax, ubwmax, tol, error) result(ub)
+    type(c_ub), allocatable :: ub
+    complex(kind=dp), target, dimension(:,:), intent(inout) :: a
+    type(error_info), intent(out), optional :: error
+    real(kind=dp), intent(in) :: tol
+    integer(kind=int32), intent(in) :: lbw, lbwmax, ubwmax
+    type(routine_info), parameter :: info=info_c_ub_of_general
+    integer(kind=int32) :: n
+
+    call clear_error(error)
+    call push_id(info, error)
+
+    n=size(a,1)
+    ub=c_new_ub(n,lbwmax,ubwmax)
+
+    call c_general_to_ub(a,ub,lbw,tol,error)
+
+    call pop_id(error)
+    
+  end function c_ub_of_general
 
   subroutine c_general_to_ub(a,ub,lbw,tol,error)
     complex(kind=dp), target, dimension(:,:), intent(inout) :: a
