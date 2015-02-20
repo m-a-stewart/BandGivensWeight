@@ -75,7 +75,7 @@ $(OBJDIR)/row_compress.o : $(OBJDIR)/misc.o $(OBJDIR)/sweeps.o
 
 $(OBJDIR)/qr_factorization.o : $(OBJDIR)/prec.o $(OBJDIR)/error_id.o \
 	$(OBJDIR)/convert_bv_to_ub.o $(OBJDIR)/convert_ub_to_bv.o \
-	$(OBJDIR)/sweeps.o $(OBJDIR)/rotation.o \
+	$(OBJDIR)/sweeps.o $(OBJDIR)/shift.o $(OBJDIR)/rotation.o \
 	$(OBJDIR)/band_types.o $(OBJDIR)/orth_band_types.o
 
 $(OBJDIR)/solve.o : $(OBJDIR)/prec.o $(OBJDIR)/error_id.o $(OBJDIR)/orth_band_types.o \

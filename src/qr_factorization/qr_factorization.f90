@@ -3,6 +3,7 @@ module mod_qr_factorization
   use mod_error_id
   use mod_convert_bv_to_ub
   use mod_sweeps
+  use mod_shift
   use mod_rotation
   use mod_band_types
   use mod_orth_band_types
@@ -10,8 +11,15 @@ module mod_qr_factorization
 
   private
 
+  public d_qr, c_qr
+  
   public qr_bv_to_ub, d_qr_bv_to_ub, c_qr_bv_to_ub, &
-       f_qr_bv_to_ub, f_d_qr_bv_to_ub, f_c_qr_bv_to_ub
+       f_qr_bv_to_ub, f_d_qr_bv_to_ub, f_c_qr_bv_to_ub, &
+       d_qr_of, c_qr_of, qr_of
+
+  interface qr_of
+     module procedure d_qr_of, c_qr_of
+  end interface qr_of
 
   interface qr_bv_to_ub
      module procedure d_qr_bv_to_ub, c_qr_bv_to_ub
@@ -21,8 +29,42 @@ module mod_qr_factorization
      module procedure f_d_qr_bv_to_ub, f_c_qr_bv_to_ub
   end interface f_qr_bv_to_ub
 
+  type d_qr
+     type(d_sweeps), allocatable :: sw
+     type(d_ub), allocatable :: ub
+  end type d_qr
+
+  type c_qr
+     type(c_sweeps), allocatable :: sw
+     type(c_ub), allocatable :: ub
+  end type c_qr
+
 contains
 
+  function d_qr_of(bv,error) result(swub)
+    type(d_qr) :: swub
+    type(d_bv), intent(in) :: bv
+    type(error_info), intent(inout), optional :: error
+    type(routine_info), parameter :: info=info_d_qr_of
+    integer(kind=int32) :: n, lbwmax, ubwmax, lbw, ubw
+    type(d_bv), allocatable :: bv1
+
+    call clear_error(error)
+    call push_id(info,error)
+    n=get_n(bv)
+    lbwmax=get_lbwmax(bv);
+    ubwmax=get_ubwmax(bv);
+    lbw=bv%lbw
+    ubw=bv%ubw
+    swub%ub=d_new_ub(n,0,min(lbw+ubw,n-1))
+    bv1=d_new_bv(n,lbw,min(lbw+ubw+1,n-1))
+    call copy_bv(bv,bv1)
+    swub%sw=d_new_sweeps(n, lbw+1, n+lbw-1, lbw)
+    call d_qr_bv_to_ub(bv1, swub%ub, swub%sw,error)
+    deallocate(bv1)
+    call pop_id(error)
+  end function d_qr_of
+  
   ! Errors
   ! 0: no error
   ! 1: ub%n /= bv%n .or. sw%n /= ub%n
@@ -55,7 +97,7 @@ contains
        call set_error(3, info, error); return
     end if
     if (get_ubwmax(bv) < min(bv%lbw+bv%ubw+1,n-1) .or. &
-         get_lbwmax(bv) < min(bv%lbw+1,n-1)) then
+         get_lbwmax(bv) < min(bv%lbw,n-1)) then
        call set_error(4, info, error); return
     end if
     if (get_ubwmax(ub) < min(bv%lbw+bv%ubw,n-1)) then
@@ -181,8 +223,34 @@ contains
     end do
 
     lbw_ub=0; ubw_ub=ubw
-    call br_to_bc(b_bv,b_ub,lbw,ubw)    
+    call shift2(b_bv,0,-lbw)
+    call br_to_bc(b_bv,b_ub,0,ubw)
   end subroutine f_d_qr_bv_to_ub
+
+  function c_qr_of(bv,error) result(swub)
+    type(c_qr) :: swub
+    type(c_bv), intent(in) :: bv
+    type(error_info), intent(inout), optional :: error
+    type(routine_info), parameter :: info=info_c_qr_of
+    integer(kind=int32) :: n, lbwmax, ubwmax, lbw, ubw
+    type(c_bv), allocatable :: bv1
+
+    call clear_error(error)
+    call push_id(info,error)
+    n=get_n(bv)
+    lbwmax=get_lbwmax(bv);
+    ubwmax=get_ubwmax(bv);
+    lbw=bv%lbw
+    ubw=bv%ubw
+    swub%ub=c_new_ub(n,0,min(lbw+ubw,n-1))
+    bv1=c_new_bv(n,lbw,min(lbw+ubw+1,n-1))
+    call copy_bv(bv,bv1)
+    swub%sw=c_new_sweeps(n, lbw+1, n+lbw-1, lbw)
+    call c_qr_bv_to_ub(bv1, swub%ub, swub%sw,error)
+    deallocate(bv1)
+    call pop_id(error)
+  end function c_qr_of
+  
 
   ! Errors
   ! 0: no error
@@ -216,7 +284,7 @@ contains
        call set_error(3, info, error); return
     end if
     if (get_ubwmax(bv) < min(bv%lbw+bv%ubw+1,n-1) .or. &
-         get_lbwmax(bv) < min(bv%lbw+1,n-1)) then
+         get_lbwmax(bv) < min(bv%lbw,n-1)) then
        call set_error(4, info, error); return
     end if
     if (get_ubwmax(ub) < min(bv%lbw+bv%ubw,n-1)) then
@@ -344,7 +412,8 @@ contains
     end do
 
     lbw_ub=0; ubw_ub=ubw
-    call br_to_bc(b_bv,b_ub,lbw,ubw)
+    call shift2(b_bv,0,-lbw)
+    call br_to_bc(b_bv,b_ub,0,ubw)
   end subroutine f_c_qr_bv_to_ub
 
 end module mod_qr_factorization

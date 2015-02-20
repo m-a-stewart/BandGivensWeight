@@ -26,14 +26,17 @@ program test_qr_factorization
   type(c_bv), allocatable :: bv_c
   type(d_sweeps), allocatable :: sw_d ! , rsw_d
   type(c_sweeps), allocatable :: sw_c ! , rsw_c
+  type(d_qr), allocatable :: swub_d
+  type(c_qr), allocatable :: swub_c
 
   call initialize_errors
-
+  allocate(ub_d,ub_c,bv_d,bv_c,sw_d,sw_c,swub_d,swub_c)
   call random_seed
   call random_matrix(u_d)
   call random_matrix(v_d)
   call random_matrix(d_d)
   u0_d=u_d; v0_d=v_d; d0_d=d_d
+
 
   print *
   print *, "--------------------------------"
@@ -59,9 +62,22 @@ program test_qr_factorization
   q_d=reshape([ real(kind=dp) :: ((d_delta(j,k), j=1,na), k=1,na) ], shape(q_d))
   call sweeps_times_general(sw_d,a1_d)
   test_name = "Real QR Factorization"
-  call d_output_result_lower_upper(test_name,a0_d,a1_d,0,ub_d%lbw,ubwa+lbwa,ub_d%ubw,t0,t1,tol2,error)
+  call d_output_result_lower_upper(test_name,a0_d,a1_d,0,ub_d%lbw,ubwa+lbwa, &
+       ub_d%ubw,t0,t1,tol2,error)
   deallocate(a_d, a0_d, a1_d, q_d, ub_d, bv_d, sw_d)
-  
+
+  na=40; lbwa=3; ubwa=5
+  allocate(a_d(na,na), a0_d(na,na))
+  bv_d=d_random_bv(na,lbwa,ubwa,error=error)
+  a_d = general_of(bv_d,error)
+  a0_d = a_d
+  swub_d=qr_of(bv_d,error)
+  a_d = general_of(swub_d%ub,error)
+  call sweeps_times_general(swub_d%sw, a_d)
+  test_name = "Random Real QR Factorization"
+  call d_output_result_lower_upper(test_name,a0_d,a_d,0, &
+       swub_d%ub%lbw, ubwa+lbwa,swub_d%ub%ubw,t0,t1,tol2,error)
+
   !
   print *
   print *, "--------------------------------"
@@ -93,5 +109,17 @@ program test_qr_factorization
   test_name = "Complex QR Factorization"
   call c_output_result_lower_upper(test_name,a0_c,a1_c,0,ub_c%lbw,ubwa+lbwa,ub_c%ubw,t0,t1,tol2,error)
   deallocate(a_c, a0_c, a1_c, q_c, ub_c, bv_c, sw_c)
+
+  na=40; lbwa=3; ubwa=5
+  allocate(a_c(na,na), a0_c(na,na))
+  bv_c=c_random_bv(na,lbwa,ubwa)
+  a_c = general_of(bv_c)
+  a0_c = a_c
+  swub_c=qr_of(bv_c)
+  a_c(1:na,1:na) = general_of(swub_c%ub)
+  call sweeps_times_general(swub_c%sw, a_c)
+  test_name = "Random Complex QR Factorization"
+  call c_output_result_lower_upper(test_name,a0_c,a_c,0, &
+       swub_c%ub%lbw, ubwa+lbwa,swub_c%ub%ubw,t0,t1,tol2,error)
 
 end program test_qr_factorization
