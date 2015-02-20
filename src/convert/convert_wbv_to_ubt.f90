@@ -32,7 +32,7 @@ contains
   subroutine d_convert_wbv_to_ubt(wbv, ubt, error)
     type(d_wbv) :: wbv
     type(d_ubt) :: ubt
-    type(error_info), intent(out), optional :: error
+    type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_d_convert_wbv_to_ubt
 
     call clear_error(error)
@@ -166,7 +166,7 @@ contains
   subroutine c_convert_wbv_to_ubt(wbv, ubt, error)
     type(c_wbv) :: wbv
     type(c_ubt) :: ubt
-    type(error_info), intent(out), optional :: error
+    type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_c_convert_wbv_to_ubt
 
     call clear_error(error)

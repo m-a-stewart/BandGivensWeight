@@ -54,7 +54,7 @@ contains
     type(d_ub) :: ub
     real(kind=dp), dimension(:,:), intent(inout) :: c
     real(kind=dp), dimension(:,:), intent(out) :: x
-    type(error_info), intent(out), optional :: error
+    type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_d_back_solve_ub
 
     integer(kind=int32) :: n
@@ -84,7 +84,7 @@ contains
     type(d_ub) :: ub
     real(kind=dp), dimension(:), intent(inout) :: c
     real(kind=dp), dimension(:), intent(out) :: x
-    type(error_info), intent(out), optional :: error
+    type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_d_v_back_solve_ub
 
     integer(kind=int32) :: n
@@ -193,7 +193,7 @@ contains
     type(c_ub) :: ub
     complex(kind=dp), dimension(:,:), intent(inout) :: c
     complex(kind=dp), dimension(:,:), intent(out) :: x
-    type(error_info), intent(out), optional :: error
+    type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_c_back_solve_ub
     integer(kind=int32) :: n
 
@@ -221,7 +221,7 @@ contains
     type(c_ub) :: ub
     complex(kind=dp), dimension(:), intent(inout) :: c
     complex(kind=dp), dimension(:), intent(out) :: x
-    type(error_info), intent(out), optional :: error
+    type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_c_v_back_solve_ub
 
     integer(kind=int32) :: n
@@ -342,7 +342,7 @@ contains
     type(d_bv) :: bv
     real(kind=dp), dimension(:,:), intent(inout) :: c
     real(kind=dp), dimension(:,:), intent(out) :: x
-    type(error_info), intent(out), optional :: error
+    type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_d_forward_solve_bv
 
     integer(kind=int32) :: n
@@ -412,7 +412,7 @@ contains
     type(d_bv) :: bv
     real(kind=dp), dimension(:), intent(inout) :: c
     real(kind=dp), dimension(:), intent(out) :: x
-    type(error_info), intent(out), optional :: error
+    type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_d_v_forward_solve_bv
     integer(kind=int32) :: n
 
@@ -480,7 +480,7 @@ contains
     type(c_bv) :: bv
     complex(kind=dp), dimension(:,:), intent(inout) :: c
     complex(kind=dp), dimension(:,:), intent(out) :: x
-    type(error_info), intent(out), optional :: error
+    type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_c_forward_solve_bv
 
     integer(kind=int32) :: n
@@ -549,7 +549,7 @@ contains
     type(c_bv) :: bv
     complex(kind=dp), dimension(:), intent(inout) :: c
     complex(kind=dp), dimension(:), intent(out) :: x
-    type(error_info), intent(out), optional :: error
+    type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_c_v_forward_solve_bv
 
     integer(kind=int32) :: n

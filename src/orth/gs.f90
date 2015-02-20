@@ -31,7 +31,7 @@ contains
     real(kind=dp), intent(out) :: rho
     real(kind=dp), dimension(:), intent(out) :: l
     real(kind=dp), dimension(:), intent(inout) :: q2
-    type(error_info), intent(out), optional :: error
+    type(error_info), intent(inout), optional :: error
     !
     real(kind=dp), dimension(size(l)) :: x
     real(kind=dp) :: nrm1, nrm2
@@ -86,7 +86,7 @@ contains
     complex(kind=dp), intent(out) :: rho
     complex(kind=dp), dimension(:), intent(out) :: l
     complex(kind=dp), dimension(:), intent(inout) :: q2
-    type(error_info), intent(out), optional :: error
+    type(error_info), intent(inout), optional :: error
     !
     complex(kind=dp), dimension(size(l)) :: x
     real(kind=dp) :: nrm1, nrm2
@@ -143,7 +143,7 @@ contains
     real(kind=dp), intent(out) :: rho
     real(kind=dp), dimension(:), intent(out) :: l
     real(kind=dp), dimension(:), intent(inout) :: q2
-    type(error_info), intent(out), optional :: error
+    type(error_info), intent(inout), optional :: error
     !
     real(kind=dp), dimension(size(l)) :: x
     real(kind=dp) :: nrm1, nrm2
@@ -197,7 +197,7 @@ contains
     complex(kind=dp), intent(out) :: rho
     complex(kind=dp), dimension(:), intent(out) :: l
     complex(kind=dp), dimension(:), intent(inout) :: q2
-    type(error_info), intent(out), optional :: error
+    type(error_info), intent(inout), optional :: error
     !
     complex(kind=dp), dimension(size(l)) :: x
     real(kind=dp) :: nrm1, nrm2

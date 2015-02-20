@@ -29,7 +29,7 @@ contains
   subroutine d_convert_bv_to_ub(bv, ub, error)
     type(d_bv) :: bv
     type(d_ub) :: ub
-    type(error_info), intent(out), optional :: error
+    type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_d_convert_bv_to_ub
     
     call clear_error(error)
@@ -111,7 +111,7 @@ contains
   subroutine c_convert_bv_to_ub(bv, ub, error)
     type(c_bv) :: bv
     type(c_ub) :: ub
-    type(error_info), intent(out), optional :: error
+    type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_c_convert_bv_to_ub
     call clear_error(error)
     call push_id(info, error)

@@ -29,7 +29,7 @@ contains
     real(kind=dp), dimension(:,:), intent(in) :: l
     real(kind=dp), dimension(:), intent(out) :: x
     real(kind=dp), intent(in) :: tol
-    type(error_info), intent(out), optional :: error
+    type(error_info), intent(inout), optional :: error
     integer(kind=int32), intent(in) :: maxit
     integer(kind=int32), intent(out) :: p
     !
@@ -105,7 +105,7 @@ contains
     complex(kind=dp), dimension(:,:), intent(in) :: l
     complex(kind=dp), dimension(:), intent(out) :: x
     real(kind=dp), intent(in) :: tol
-    type(error_info), intent(out), optional :: error
+    type(error_info), intent(inout), optional :: error
     integer(kind=int32), intent(in) :: maxit
     integer(kind=int32), intent(out) :: p
     !
@@ -181,7 +181,7 @@ contains
     real(kind=dp), dimension(:,:), intent(in) :: l
     real(kind=dp), dimension(:), intent(out) :: x
     real(kind=dp), intent(in) :: tol
-    type(error_info), intent(out), optional :: error
+    type(error_info), intent(inout), optional :: error
     integer(kind=int32), intent(in) :: maxit
     integer(kind=int32), intent(out) :: p
     !
@@ -255,7 +255,7 @@ contains
     complex(kind=dp), dimension(:,:), intent(in) :: l
     complex(kind=dp), dimension(:), intent(out) :: x
     real(kind=dp), intent(in) :: tol
-    type(error_info), intent(out), optional :: error
+    type(error_info), intent(inout), optional :: error
     integer(kind=int32), intent(in) :: maxit
     integer(kind=int32), intent(out) :: p
     !

@@ -35,7 +35,7 @@ contains
   function d_ubt_of_general(a, lbwmax, ubwmax, tol, error) result(ubt)
     type(d_ubt), allocatable :: ubt
     real(kind=dp), target, dimension(:,:), intent(inout) :: a
-    type(error_info), intent(out), optional :: error
+    type(error_info), intent(inout), optional :: error
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), intent(in) :: lbwmax, ubwmax
     type(routine_info), parameter :: info=info_d_ubt_of_general
@@ -64,7 +64,7 @@ contains
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), dimension(n), intent(out) :: numrotst, numrotsu
     integer(kind=int32), dimension(n), intent(out) :: lbws, ubws
-    type(error_info), intent(out), optional :: error
+    type(error_info), intent(inout), optional :: error
     integer(kind=int32), intent(in) :: n, lbwmax, ubwmax
     !
     integer(kind=int32), dimension(lbwmax,n) :: jsu0
@@ -107,7 +107,7 @@ contains
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), dimension(n), intent(out) :: numrotst, numrotsu
     integer(kind=int32), intent(out) :: lbw, ubw
-    type(error_info), intent(out), optional :: error
+    type(error_info), intent(inout), optional :: error
     integer(kind=int32), intent(in) :: n, ubwmax, lbwmax
     !
     integer(kind=int32), dimension(n) :: lbws, ubws
@@ -153,7 +153,7 @@ contains
   subroutine d_general_to_ubt(a,ubt,tol,error)
     real(kind=dp), target, dimension(:,:), intent(inout) :: a
     type(d_ubt), intent(inout) :: ubt
-    type(error_info), intent(out), optional :: error
+    type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_d_general_to_ubt
 
     real(kind=dp), intent(in) :: tol
@@ -177,7 +177,7 @@ contains
   function c_ubt_of_general(a, lbwmax, ubwmax, tol, error) result(ubt)
     type(c_ubt), allocatable :: ubt
     complex(kind=dp), target, dimension(:,:), intent(inout) :: a
-    type(error_info), intent(out), optional :: error
+    type(error_info), intent(inout), optional :: error
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), intent(in) :: lbwmax, ubwmax
     type(routine_info), parameter :: info=info_c_ubt_of_general
@@ -209,7 +209,7 @@ contains
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), dimension(n), intent(out) :: numrotst, numrotsu
     integer(kind=int32), dimension(n), intent(out) :: lbws, ubws
-    type(error_info), intent(out), optional :: error
+    type(error_info), intent(inout), optional :: error
     integer(kind=int32), intent(in) :: n, lbwmax, ubwmax
     !
     integer(kind=int32), dimension(lbwmax,n) :: jsu0
@@ -258,7 +258,7 @@ contains
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), dimension(n), intent(out) :: numrotst, numrotsu
     integer(kind=int32), intent(out) :: lbw, ubw
-    type(error_info), intent(out), optional :: error
+    type(error_info), intent(inout), optional :: error
     integer(kind=int32), intent(in) :: n, ubwmax, lbwmax
     !
     integer(kind=int32), dimension(n) :: lbws, ubws
@@ -302,7 +302,7 @@ contains
   subroutine c_general_to_ubt(a,ubt,tol,error)
     complex(kind=dp), target, dimension(:,:), intent(inout) :: a
     type(c_ubt), intent(inout) :: ubt
-    type(error_info), intent(out), optional :: error
+    type(error_info), intent(inout), optional :: error
     real(kind=dp), intent(in) :: tol
     type(routine_info), parameter :: info=info_c_general_to_ubt
 

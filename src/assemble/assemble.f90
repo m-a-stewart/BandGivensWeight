@@ -94,7 +94,7 @@ contains
   function d_general_of_ub(ub, error) result(a)
     real(kind=dp), dimension(:,:), allocatable :: a
     type(d_ub), intent(in) :: ub
-    type(error_info), intent(out), optional :: error
+    type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_d_general_of_ub
     integer(kind=int32) :: n
     call clear_error(error)
@@ -112,7 +112,7 @@ contains
   subroutine d_ub_to_general(ub,a,error)
     type(d_ub), intent(in) :: ub
     real(kind=dp), dimension(:,:), intent(out) :: a
-    type(error_info), intent(out), optional :: error
+    type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_d_ub_to_general
     
     call clear_error(error)
@@ -151,7 +151,7 @@ contains
   function c_general_of_ub(ub, error) result(a)
     complex(kind=dp), dimension(:,:), allocatable :: a
     type(c_ub), intent(in) :: ub
-    type(error_info), intent(out), optional :: error
+    type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_c_general_of_ub
     integer(kind=int32) :: n
     call clear_error(error)
@@ -166,7 +166,7 @@ contains
   subroutine c_ub_to_general(ub,a,error)
     type(c_ub), intent(in) :: ub
     complex(kind=dp), dimension(:,:), intent(out) :: a
-    type(error_info), intent(out), optional :: error
+    type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_c_ub_to_general
 
     call clear_error(error)
@@ -207,7 +207,7 @@ contains
   function d_general_of_bt(bt, error) result(a)
     real(kind=dp), dimension(:,:), allocatable :: a
     type(d_bt), intent(in) :: bt
-    type(error_info), intent(out), optional :: error
+    type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_d_general_of_bt
     integer(kind=int32) :: n
     call clear_error(error)
@@ -225,7 +225,7 @@ contains
   subroutine d_bt_to_general(bt,a,error)
     type(d_bt), intent(in) :: bt
     real(kind=dp), dimension(:,:), intent(out) :: a
-    type(error_info), intent(out), optional :: error
+    type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_d_bt_to_general
 
     call clear_error(error)
@@ -264,7 +264,7 @@ contains
   function c_general_of_bt(bt, error) result(a)
     complex(kind=dp), dimension(:,:), allocatable :: a
     type(c_bt), intent(in) :: bt
-    type(error_info), intent(out), optional :: error
+    type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_c_general_of_bt
     integer(kind=int32) :: n
     call clear_error(error)
@@ -282,7 +282,7 @@ contains
   subroutine c_bt_to_general(bt,a,error)
     type(c_bt), intent(in) :: bt
     complex(kind=dp), dimension(:,:), intent(out) :: a
-    type(error_info), intent(out), optional :: error
+    type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_c_bt_to_general
     
     call clear_error(error)
@@ -321,7 +321,7 @@ contains
   function d_general_of_ubt(ubt, error) result(a)
     real(kind=dp), dimension(:,:), allocatable :: a
     type(d_ubt), intent(in) :: ubt
-    type(error_info), intent(out), optional :: error
+    type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_d_general_of_ubt
     integer(kind=int32) :: n
     call clear_error(error)
@@ -340,7 +340,7 @@ contains
   subroutine d_ubt_to_general(ubt,a,error)
     type(d_ubt), intent(in) :: ubt
     real(kind=dp), dimension(:,:), intent(out) :: a
-    type(error_info), intent(out), optional :: error
+    type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_d_ubt_to_general
     
     call clear_error(error)
@@ -390,7 +390,7 @@ contains
   function c_general_of_ubt(ubt, error) result(a)
     complex(kind=dp), dimension(:,:), allocatable :: a
     type(c_ubt), intent(in) :: ubt
-    type(error_info), intent(out), optional :: error
+    type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_c_general_of_ubt
     integer(kind=int32) :: n
     call clear_error(error)
@@ -408,7 +408,7 @@ contains
   subroutine c_ubt_to_general(ubt,a,error)
     type(c_ubt), intent(in) :: ubt
     complex(kind=dp), dimension(:,:), intent(out) :: a
-    type(error_info), intent(out), optional :: error
+    type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_c_ubt_to_general
 
     call clear_error(error)
@@ -460,7 +460,7 @@ contains
   function d_general_of_bv(bv, error) result(a)
     real(kind=dp), dimension(:,:), allocatable :: a
     type(d_bv), intent(in) :: bv
-    type(error_info), intent(out), optional :: error
+    type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_d_general_of_bv
     integer(kind=int32) :: n
     call clear_error(error)
@@ -476,7 +476,7 @@ contains
   subroutine d_bv_to_general(bv,a,error)
     type(d_bv), intent(in) :: bv
     real(kind=dp), dimension(:,:), intent(out) :: a
-    type(error_info), intent(out), optional :: error
+    type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_d_bv_to_general
     
     call clear_error(error)
@@ -514,7 +514,7 @@ contains
   function c_general_of_bv(bv, error) result(a)
     complex(kind=dp), dimension(:,:), allocatable :: a
     type(c_bv), intent(in) :: bv
-    type(error_info), intent(out), optional :: error
+    type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_c_general_of_bv
     integer(kind=int32) :: n
     call clear_error(error)
@@ -529,7 +529,7 @@ contains
   subroutine c_bv_to_general(bv,a,error)
     type(c_bv), intent(in) :: bv
     complex(kind=dp), dimension(:,:), intent(out) :: a
-    type(error_info), intent(out), optional :: error
+    type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_c_bv_to_general
 
     call clear_error(error)
@@ -568,7 +568,7 @@ contains
   function d_general_of_wb(wb, error) result(a)
     real(kind=dp), dimension(:,:), allocatable :: a
     type(d_wb), intent(in) :: wb
-    type(error_info), intent(out), optional :: error
+    type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_d_general_of_wb
     integer(kind=int32) :: n
     call clear_error(error)
@@ -583,7 +583,7 @@ contains
   subroutine d_wb_to_general(wb,a,error)
     type(d_wb), intent(in) :: wb
     real(kind=dp), dimension(:,:), intent(out) :: a
-    type(error_info), intent(out), optional :: error
+    type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_d_wb_to_general
 
     call clear_error(error)
@@ -622,7 +622,7 @@ contains
   function c_general_of_wb(wb, error) result(a)
     complex(kind=dp), dimension(:,:), allocatable :: a
     type(c_wb), intent(in) :: wb
-    type(error_info), intent(out), optional :: error
+    type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_c_general_of_wb
     integer(kind=int32) :: n
     call clear_error(error)
@@ -637,7 +637,7 @@ contains
   subroutine c_wb_to_general(wb,a,error)
     type(c_wb), intent(in) :: wb
     complex(kind=dp), dimension(:,:), intent(out) :: a
-    type(error_info), intent(out), optional :: error
+    type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_c_wb_to_general
     
     call clear_error(error)
@@ -677,7 +677,7 @@ contains
   function d_general_of_wbv(wbv, error) result(a)
     real(kind=dp), dimension(:,:), allocatable :: a
     type(d_wbv), intent(in) :: wbv
-    type(error_info), intent(out), optional :: error
+    type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_d_general_of_wbv
     integer(kind=int32) :: n
     call clear_error(error)
@@ -692,7 +692,7 @@ contains
   subroutine d_wbv_to_general(wbv,a,error)
     type(d_wbv), intent(in) :: wbv
     real(kind=dp), dimension(:,:), intent(out) :: a
-    type(error_info), intent(out), optional :: error
+    type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_d_wbv_to_general
     
     call clear_error(error)
@@ -742,7 +742,7 @@ contains
   function c_general_of_wbv(wbv, error) result(a)
     complex(kind=dp), dimension(:,:), allocatable :: a
     type(c_wbv), intent(in) :: wbv
-    type(error_info), intent(out), optional :: error
+    type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_c_general_of_wbv
     integer(kind=int32) :: n
     call clear_error(error)
@@ -757,7 +757,7 @@ contains
   subroutine c_wbv_to_general(wbv,a,error)
     type(c_wbv), intent(in) :: wbv
     complex(kind=dp), dimension(:,:), intent(out) :: a
-    type(error_info), intent(out), optional :: error
+    type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_c_wbv_to_general
     
     call clear_error(error)

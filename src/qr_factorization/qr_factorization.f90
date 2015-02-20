@@ -35,7 +35,7 @@ contains
     type(d_ub) :: ub
     type(d_bv) :: bv
     type(d_sweeps) :: sw
-    type(error_info), intent(out), optional :: error
+    type(error_info), intent(inout), optional :: error
 
     integer(kind=int32) :: lbw, n
     type(routine_info), parameter :: info=info_d_qr_bv_to_ub
@@ -181,7 +181,7 @@ contains
     end do
 
     lbw_ub=0; ubw_ub=ubw
-    call br_to_bc(b_bv,b_ub,lbw,ubw)
+    call br_to_bc(b_bv,b_ub,lbw,ubw)    
   end subroutine f_d_qr_bv_to_ub
 
   ! Errors
@@ -196,7 +196,7 @@ contains
     type(c_ub) :: ub
     type(c_bv) :: bv
     type(c_sweeps) :: sw
-    type(error_info), intent(out), optional :: error
+    type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_c_qr_bv_to_ub
 
     integer(kind=int32) :: lbw, n
@@ -346,9 +346,6 @@ contains
     lbw_ub=0; ubw_ub=ubw
     call br_to_bc(b_bv,b_ub,lbw,ubw)
   end subroutine f_c_qr_bv_to_ub
-
-
-
 
 end module mod_qr_factorization
 

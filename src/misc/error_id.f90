@@ -567,15 +567,23 @@ module mod_error_id
 
   ! src/qr_factorization/qr_factorization 1500
   integer(int32), parameter :: mod_id_qr_factorization=1500
-  integer(int32), parameter :: id_d_qr_bv_to_ub=mod_id_qr_factorization + 0
-  integer(int32), parameter :: id_f_d_qr_bv_to_ub=mod_id_qr_factorization + 1
-  integer(int32), parameter :: id_c_qr_bv_to_ub=mod_id_qr_factorization + 2
-  integer(int32), parameter :: id_f_c_qr_bv_to_ub=mod_id_qr_factorization + 3
+  integer(int32), parameter :: id_d_qr_of=mod_id_qr_factorization + 0
+  integer(int32), parameter :: id_d_qr_bv_to_ub=mod_id_qr_factorization + 1
+  integer(int32), parameter :: id_f_d_qr_bv_to_ub=mod_id_qr_factorization + 2
+  integer(int32), parameter :: id_c_qr_of=mod_id_qr_factorization + 3
+  integer(int32), parameter :: id_c_qr_bv_to_ub=mod_id_qr_factorization + 4
+  integer(int32), parameter :: id_f_c_qr_bv_to_ub=mod_id_qr_factorization + 5
+
+  type(routine_info), parameter :: info_d_qr_of=routine_info(id_d_qr_of, &
+       'd_qr_of', [ character(len=error_message_length) :: '' ])
 
   type(routine_info), parameter :: info_d_qr_bv_to_ub=routine_info(id_d_qr_bv_to_ub, &
        'd_qr_bv_to_ub', &
        [ character(len=error_message_length) :: 'ub%n /= bv%n or sw%n /= ub%n', &
        'Not enough stroage for sweeps' ])
+
+  type(routine_info), parameter :: info_c_qr_of=routine_info(id_c_qr_of, &
+       'c_qr_of', [ character(len=error_message_length) :: '' ])
 
   type(routine_info), parameter :: info_c_qr_bv_to_ub=routine_info(id_c_qr_bv_to_ub, &
        'c_qr_bv_to_ub', &

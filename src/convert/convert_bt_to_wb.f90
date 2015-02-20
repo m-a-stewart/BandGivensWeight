@@ -31,7 +31,7 @@ contains
   subroutine d_convert_bt_to_wb(bt, wb, error)
     type(d_bt) :: bt
     type(d_wb) :: wb
-    type(error_info), intent(out), optional :: error
+    type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_d_convert_bt_to_wb
     
     call clear_error(error)
@@ -129,7 +129,7 @@ contains
   subroutine c_convert_bt_to_wb(bt, wb, error)
     type(c_bt) :: bt
     type(c_wb) :: wb
-    type(error_info), intent(out), optional :: error
+    type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_c_convert_bt_to_wb
     
     call clear_error(error)

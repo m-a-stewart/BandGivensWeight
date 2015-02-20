@@ -38,7 +38,7 @@ contains
   function d_bv_of_general(a, lbw, lbwmax, ubwmax, tol, error) result(bv)
     type(d_bv), allocatable :: bv
     real(kind=dp), target, dimension(:,:), intent(inout) :: a
-    type(error_info), intent(out), optional :: error
+    type(error_info), intent(inout), optional :: error
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), intent(in) :: lbw, lbwmax, ubwmax
     type(routine_info), parameter :: info=info_d_bv_of_general
@@ -65,7 +65,7 @@ contains
   subroutine d_general_to_bv(a,bv,lbw,tol,error)
     real(kind=dp), target, dimension(:,:), intent(inout) :: a
     type(d_bv), intent(inout) :: bv
-    type(error_info), intent(out), optional :: error
+    type(error_info), intent(inout), optional :: error
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), intent(in) :: lbw
     type(routine_info), parameter :: info=info_d_general_to_bv
@@ -463,7 +463,7 @@ contains
   function c_bv_of_general(a, lbw, lbwmax, ubwmax, tol, error) result(bv)
     type(c_bv), allocatable :: bv
     complex(kind=dp), target, dimension(:,:), intent(inout) :: a
-    type(error_info), intent(out), optional :: error
+    type(error_info), intent(inout), optional :: error
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), intent(in) :: lbw, lbwmax, ubwmax
     type(routine_info), parameter :: info=info_c_bv_of_general
@@ -484,7 +484,7 @@ contains
   subroutine c_general_to_bv(a,bv,lbw,tol,error)
     complex(kind=dp), target, dimension(:,:), intent(inout) :: a
     type(c_bv), intent(inout) :: bv
-    type(error_info), intent(out), optional :: error
+    type(error_info), intent(inout), optional :: error
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), intent(in) :: lbw
     type(routine_info), parameter :: info=info_c_general_to_bv
@@ -519,7 +519,7 @@ contains
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), dimension(n), intent(out) :: numrotsv
     integer(kind=int32), intent(out) :: ubw
-    type(error_info), intent(out), optional :: error
+    type(error_info), intent(inout), optional :: error
     integer(kind=int32), intent(in) :: n, lbw, lbwmax, ubwmax
     !
     integer(kind=int32), dimension(n) :: ubws
@@ -559,7 +559,7 @@ contains
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), dimension(n), intent(out) :: ubws
     integer(kind=int32), dimension(n), intent(out) :: numrotsv
-    type(error_info), intent(out), optional :: error
+    type(error_info), intent(inout), optional :: error
     integer(kind=int32), intent(in) :: n, ubwmax
     !
     complex(kind=dp), target, dimension(n,ubwmax+1) :: q
