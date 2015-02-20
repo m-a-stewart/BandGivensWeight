@@ -30,11 +30,13 @@ module mod_orth_band_types
        d_ubt_get_n, d_wbv_get_n, c_ubt_get_n, c_wbv_get_n, &
        d_bt_get_n, d_wb_get_n, c_bt_get_n, c_wb_get_n
 
-  public :: get_lbwmax, d_ub_get_lbwmax, d_bv_get_lbwmax, c_ub_get_lbwmax, c_bv_get_lbwmax, &
+  public :: get_lbwmax, d_ub_get_lbwmax, d_bv_get_lbwmax, c_ub_get_lbwmax, &
+       c_bv_get_lbwmax, &
        d_ubt_get_lbwmax, d_wbv_get_lbwmax, c_ubt_get_lbwmax, c_wbv_get_lbwmax, &
        d_bt_get_lbwmax, d_wb_get_lbwmax, c_bt_get_lbwmax, c_wb_get_lbwmax
 
-  public :: get_ubwmax, d_ub_get_ubwmax, d_bv_get_ubwmax, c_ub_get_ubwmax, c_bv_get_ubwmax, &
+  public :: get_ubwmax, d_ub_get_ubwmax, d_bv_get_ubwmax, c_ub_get_ubwmax, &
+       c_bv_get_ubwmax, &
        d_ubt_get_ubwmax, d_wbv_get_ubwmax, c_ubt_get_ubwmax, c_wbv_get_ubwmax, &
        d_bt_get_ubwmax, d_wb_get_ubwmax, c_bt_get_ubwmax, c_wb_get_ubwmax
 

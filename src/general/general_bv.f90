@@ -236,7 +236,7 @@ contains
                 end if
                 pq=>q(1:n-k-1,1:2)
                 if (k < n-2) then
-                   call shift2(pq,0,1)
+                   call shift(pq,0,1)
                    pq(:,1)=a(1:n-k-1,coffs)
                    pl => a(roffs-1:roffs,coffs:coffs+1)
                    call extend_gs_columns(pq(:,2:2),pl(2:2,1), pl(1,1), pq(:,1), error)
@@ -257,6 +257,7 @@ contains
        else ! nl > 1
           call clear_error(errornv)
           call clear_routines(errornv)
+          errornv%halt=.false.
           call lower_right_nullvec(x(1:nl),pl,tol*nrma,nullmaxits,p,errornv)
           if (success(errornv)) then ! if there is a left null vector then introduce a zero row.
              ubws(k)=nl-1
@@ -325,7 +326,7 @@ contains
                 end do
                 pl(nl,:)=pq(n-k,nl)*pl(nl,:)
                 ! extend the LQ factorization with a(1:n-k-1,coffs)
-                call shift2(pq,0,1)
+                call shift(pq,0,1)
                 pq => q(1:n-k-1,1:nl)
                 pq(:,1)=a(1:n-k-1,coffs)
                 pl => a(roffs:roffs+nl-1, coffs:coffs+nl-1)
@@ -349,7 +350,7 @@ contains
                 exit kloop
              else
                 pl => a(roffs:roffs+nl, coffs+1:coffs+nl) ! extend pl up
-                call shift2(pl,-1,0)
+                call shift(pl,-1,0)
                 pq => q(1:n-k,1:nl+1)
                 pq(:,nl+1)=0.0_dp; pq(n-k,nl+1)=1.0_dp
                 call extend_gs_columns(pq(:,1:nl),x(1:nl), x(nl+1),pq(:,nl+1),error)
@@ -375,7 +376,7 @@ contains
                    exit kloop
                 else ! q is not square.  Make L (nl+1)x(nl+1)
                    pq => q(1:n-k-1,1:nl+1)
-                   call shift2(pq,0,1)
+                   call shift(pq,0,1)
                    pq(:,1)=a(1:n-k-1,coffs)
                    pl => a(roffs-1:roffs-1+nl,coffs:coffs+nl)
                    call extend_gs_columns(pq(:,2:nl+1), pl(2:nl+1,1), pl(1,1), pq(:,1), error)
@@ -650,7 +651,7 @@ contains
                 end if
                 pq=>q(1:n-k-1,1:2)
                 if (k < n-2) then
-                   call shift2(pq,0,1)
+                   call shift(pq,0,1)
                    pq(:,1)=a(1:n-k-1,coffs)
                    pl => a(roffs-1:roffs,coffs:coffs+1)
                    call extend_gs_columns(pq(:,2:2),pl(2:2,1), pl(1,1), pq(:,1), error)
@@ -671,6 +672,7 @@ contains
        else ! nl > 1
           call clear_error(errornv)
           call clear_routines(errornv)
+          errornv%halt=.false.
           call lower_right_nullvec(x(1:nl),pl,tol*nrma,nullmaxits,p,errornv)
           if (success(errornv)) then ! if there is a left null vector then introduce a zero row.
              ubws(k)=nl-1
@@ -739,7 +741,7 @@ contains
                 end do
                 pl(nl,:)=pq(n-k,nl)*pl(nl,:)
                 ! extend the LQ factorization with a(1:n-k-1,coffs)
-                call shift2(pq,0,1)
+                call shift(pq,0,1)
                 pq => q(1:n-k-1,1:nl)
                 pq(:,1)=a(1:n-k-1,coffs)
                 pl => a(roffs:roffs+nl-1, coffs:coffs+nl-1)
@@ -763,7 +765,7 @@ contains
                 exit kloop
              else
                 pl => a(roffs:roffs+nl, coffs+1:coffs+nl) ! extend pl up
-                call shift2(pl,-1,0)
+                call shift(pl,-1,0)
                 pq => q(1:n-k,1:nl+1)
                 pq(:,nl+1)=(0.0_dp, 0.0_dp); pq(n-k,nl+1)=(1.0_dp, 0.0_dp)
                 call extend_gs_columns(pq(:,1:nl),x(1:nl), x(nl+1),pq(:,nl+1),error)
@@ -789,7 +791,7 @@ contains
                    exit kloop
                 else ! q is not square.  Make L (nl+1)x(nl+1)
                    pq => q(1:n-k-1,1:nl+1)
-                   call shift2(pq,0,1)
+                   call shift(pq,0,1)
                    pq(:,1)=a(1:n-k-1,coffs)
                    pl => a(roffs-1:roffs-1+nl,coffs:coffs+nl)
                    call extend_gs_columns(pq(:,2:nl+1), pl(2:nl+1,1), pl(1,1), pq(:,1), error)

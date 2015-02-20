@@ -96,11 +96,11 @@ contains
     end if
 
     ubw=min(n-1,ubw_ubt+lbw_ubt)
-    call shift2(b_ubt,ubw-ubw_ubt,0)
+    call shift(b_ubt,ubw-ubw_ubt,0)
     if (ubw < n-1) then
        ubw1=ubw+1
        full_ubw=.false.
-       call shift2(b_ubt,1,0)
+       call shift(b_ubt,1,0)
     else
        ubw1=ubw
        full_ubw=.true.
@@ -161,7 +161,7 @@ contains
     end do
 
     if (.not. full_ubw) then
-       call shift2(b_ubt,-1,0)
+       call shift(b_ubt,-1,0)
     end if
     call bc_to_br(b_ubt,b_bv,lbw,ubw)
     lbw_bv=lbw; ubw_bv=ubw
@@ -252,11 +252,11 @@ contains
     end if
 
     ubw=min(n-1,ubw_ubt+lbw_ubt)
-    call shift2(b_ubt,ubw-ubw_ubt,0)
+    call shift(b_ubt,ubw-ubw_ubt,0)
     if (ubw < n-1) then
        ubw1=ubw+1
        full_ubw=.false.
-       call shift2(b_ubt,1,0)
+       call shift(b_ubt,1,0)
     else
        ubw1=ubw
        full_ubw=.true.
@@ -316,7 +316,7 @@ contains
     end do
 
     if (.not. full_ubw) then
-       call shift2(b_ubt,-1,0)
+       call shift(b_ubt,-1,0)
     end if
     call bc_to_br(b_ubt,b_bv,lbw,ubw)
     lbw_bv=lbw; ubw_bv=ubw

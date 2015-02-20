@@ -229,7 +229,7 @@ contains
                    pq(1,2:n-k)=pq(1,2:n-k)/nrmq12
                    pl(1,2) = pl(1,2)*nrmq12
                 end if
-                call shift2(pq,0,-1)
+                call shift(pq,0,-1)
                 if (k < n-2) then
                    pq => q(1:2,1:n-k-1)
                    pq(2,:)=a(k+1,k+2:n)
@@ -252,6 +252,7 @@ contains
        else ! nl > 1
           call clear_error(errornv)
           call clear_routines(errornv)
+          errornv%halt=.false.
           call lower_left_nullvec(x(1:nl),pl,tol*nrma,nullmaxits,p,errornv)
           if (success(errornv)) then ! if there is a left null vector then introduce a zero row.
              ubws(k)=nl-1
@@ -297,7 +298,7 @@ contains
                    call general_times_rotation(pl(j:nl,:),rot,1,j)
                 end do
                 pl(:,1)=pl(:,1)*pq(1,1)
-                call shift2(pq,-1,-1)
+                call shift(pq,-1,-1)
                 ! extend one row
                 x(1:nl-1)=0.0_dp
                 do j=1,nl-1
@@ -320,7 +321,7 @@ contains
                    call general_times_rotation(pl(j:nl,:),rot,1,j)
                 end do
                 pl(:,1)=pl(:,1)*pq(1,1)
-                call shift2(pq,-1,-1)
+                call shift(pq,-1,-1)
                 ! extend the LQ factorization
                 pq => q(1:nl,1:n-k-1)
                 pq(nl,:)=a(k+1,k+2:n)
@@ -345,9 +346,9 @@ contains
                 exit kloop
              else
                 pl => a(roffs+1:k, k+1:k+nl+1) ! extend pl to the right. (note this requires k+nl < n)
-                call shift2(pl,0,1)
+                call shift(pl,0,1)
                 pq => q(1:nl+1, 1:n-k)
-                call shift2(pq,1,0)
+                call shift(pq,1,0)
                 pq(1,:)=0.0_dp
                 pq(1,1)=1.0_dp
                 ! orthogonalizing.  Note x is used as workspace for coefficients.
@@ -361,7 +362,7 @@ contains
                    call general_times_rotation(pl(j-1:nl,:),rot,1,j)
                 end do
                 pl(:,1)=pl(:,1)*pq(1,1)
-                call shift2(pq,-1,-1)
+                call shift(pq,-1,-1)
                 if (nl==n-k-1) then ! q is now nl by nl.  Extend the LQ factorization down one row before stopping.
                    pq => q(1:nl,1:nl)
                    x(1:nl)=0.0_dp
@@ -650,7 +651,7 @@ contains
                    pq(1,2:n-k)=pq(1,2:n-k)/nrmq12
                    pl(1,2) = pl(1,2)*nrmq12
                 end if
-                call shift2(pq,0,-1)
+                call shift(pq,0,-1)
                 if (k < n-2) then
                    pq => q(1:2,1:n-k-1)
                    pq(2,:)=a(k+1,k+2:n)
@@ -673,6 +674,7 @@ contains
        else ! nl > 1
           call clear_error(errornv)
           call clear_routines(errornv)
+          errornv%halt=.false.
           call lower_left_nullvec(x(1:nl),pl,tol*nrma,nullmaxits,p,errornv)
           if (success(errornv)) then ! if there is a left null vector then introduce a zero row.
              ubws(k)=nl-1
@@ -718,7 +720,7 @@ contains
                    call general_times_rotation(pl(j:nl,:),rot,1,j)
                 end do
                 pl(:,1)=pl(:,1)*pq(1,1)
-                call shift2(pq,-1,-1)
+                call shift(pq,-1,-1)
                 ! extend one row
                 x(1:nl-1)=(0.0_dp, 0.0_dp)
                 do j=1,nl-1
@@ -741,7 +743,7 @@ contains
                    call general_times_rotation(pl(j:nl,:),rot,1,j)
                 end do
                 pl(:,1)=pl(:,1)*pq(1,1)
-                call shift2(pq,-1,-1)
+                call shift(pq,-1,-1)
                 ! extend the LQ factorization
                 pq => q(1:nl,1:n-k-1)
                 pq(nl,:)=a(k+1,k+2:n)
@@ -766,9 +768,9 @@ contains
                 exit kloop
              else
                 pl => a(roffs+1:k, k+1:k+nl+1) ! extend pl to the right. (note this requires k+nl < n)
-                call shift2(pl,0,1)
+                call shift(pl,0,1)
                 pq => q(1:nl+1, 1:n-k)
-                call shift2(pq,1,0)
+                call shift(pq,1,0)
                 pq(1,:)=(0.0_dp, 0.0_dp)
                 pq(1,1)=(1.0_dp, 0.0_dp)
                 ! orthogonalizing.  Note x is used as workspace for coefficients.
@@ -782,7 +784,7 @@ contains
                    call general_times_rotation(pl(j-1:nl,:),rot,1,j)
                 end do
                 pl(:,1)=pl(:,1)*pq(1,1)
-                call shift2(pq,-1,-1)
+                call shift(pq,-1,-1)
                 if (nl==n-k-1) then ! q is now nl by nl.  Extend the LQ factorization down one row before stopping.
                    pq => q(1:nl,1:nl)
                    x(1:nl)=(0.0_dp, 0.0_dp)

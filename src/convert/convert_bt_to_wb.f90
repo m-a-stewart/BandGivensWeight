@@ -88,7 +88,7 @@ contains
     ubw1=ubw
     if (lbw < n-1) then
        lbw1=lbw+1
-       call shift2(b_bt,0,1)
+       call shift(b_bt,0,1)
        full_lbw=.false.
     else
        lbw1=lbw
@@ -115,7 +115,7 @@ contains
        end do
     end do
     if (.not. full_lbw) then
-       call shift2(b_bt,0,-1)
+       call shift(b_bt,0,-1)
     end if
     call br_to_bc(b_bt,b_wb,lbw,ubw)
   end subroutine f_d_convert_bt_to_wb
@@ -188,7 +188,7 @@ contains
     ubw1=ubw
     if (lbw < n-1) then
        lbw1=lbw+1
-       call shift2(b_bt,0,1)
+       call shift(b_bt,0,1)
        full_lbw=.false.
     else
        lbw1=lbw
@@ -215,7 +215,7 @@ contains
        end do
     end do
     if (.not. full_lbw) then
-       call shift2(b_bt,0,-1)
+       call shift(b_bt,0,-1)
     end if
     call br_to_bc(b_bt,b_wb,lbw,ubw)
   end subroutine f_c_convert_bt_to_wb

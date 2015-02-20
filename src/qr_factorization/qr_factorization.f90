@@ -223,7 +223,7 @@ contains
     end do
 
     lbw_ub=0; ubw_ub=ubw
-    call shift2(b_bv,0,-lbw)
+    call shift(b_bv,0,-lbw)
     call br_to_bc(b_bv,b_ub,0,ubw)
   end subroutine f_d_qr_bv_to_ub
 
@@ -412,7 +412,7 @@ contains
     end do
 
     lbw_ub=0; ubw_ub=ubw
-    call shift2(b_bv,0,-lbw)
+    call shift(b_bv,0,-lbw)
     call br_to_bc(b_bv,b_ub,0,ubw)
   end subroutine f_c_qr_bv_to_ub
 

@@ -100,7 +100,7 @@ contains
     ! must allow for temporary fill-in
     if (ubw < n-1) then
        ubw1=ubw+1
-       call shift2(b_ubt,1,0)
+       call shift(b_ubt,1,0)
        full_ubw=.false.
     else
        ubw1=ubw
@@ -150,7 +150,7 @@ contains
     end do
     ! Store the results in b_wbv
     if (.not. full_ubw) then
-       call shift2(b_ubt,-1,0)
+       call shift(b_ubt,-1,0)
     end if
     call bc_to_br(b_ubt, b_wbv, lbw, ubw)
   end subroutine f_d_convert_ubt_to_wbv
@@ -238,7 +238,7 @@ contains
     ! must allow for temporary fill-in
     if (ubw < n-1) then
        ubw1=ubw+1
-       call shift2(b_ubt,1,0)
+       call shift(b_ubt,1,0)
        full_ubw=.false.
     else
        ubw1=ubw
@@ -288,7 +288,7 @@ contains
     end do
     ! Store the results in b_wbv
     if (.not. full_ubw) then
-       call shift2(b_ubt,-1,0)
+       call shift(b_ubt,-1,0)
     end if
     call bc_to_br(b_ubt, b_wbv, lbw, ubw)
   end subroutine f_c_convert_ubt_to_wbv
