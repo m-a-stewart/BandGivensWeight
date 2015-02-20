@@ -1,5 +1,6 @@
 module mod_error_id
   use mod_prec
+  use mod_shift
   use, intrinsic :: iso_fortran_env, only : error_unit
   implicit none
   integer(kind=int32), parameter :: routine_name_length=30
@@ -20,6 +21,7 @@ module mod_error_id
   type error_info
      integer(kind=int32) :: code=0, rix=1
      integer(kind=int32), dimension(max_routines) :: routines=0
+     logical :: halt=.true.
   end type error_info
 
   type(routine_info), parameter :: info_empty=routine_info(0, &
@@ -580,15 +582,17 @@ module mod_error_id
   type(routine_info), parameter :: info_d_qr_bv_to_ub=routine_info(id_d_qr_bv_to_ub, &
        'd_qr_bv_to_ub', &
        [ character(len=error_message_length) :: 'ub%n /= bv%n or sw%n /= ub%n', &
-       'Not enough stroage for sweeps' ])
+       'Not enough stroage for sweeps', 'Maxind or Minind out of bounds for sweeps.', &
+       'Insufficient storage in bv', 'Insufficient storage in ub'])
 
   type(routine_info), parameter :: info_c_qr_of=routine_info(id_c_qr_of, &
        'c_qr_of', [ character(len=error_message_length) :: '' ])
 
   type(routine_info), parameter :: info_c_qr_bv_to_ub=routine_info(id_c_qr_bv_to_ub, &
        'c_qr_bv_to_ub', &
-       [ character(len=error_message_length) :: 'ub%n /= bv%n', 'bv%lbw <= 0', &
-       'dim. of cs or ss /= n' ])
+       [ character(len=error_message_length) :: 'ub%n /= bv%n or sw%n /= ub%n', &
+       'Not enough stroage for sweeps', 'Maxind or Minind out of bounds for sweeps.', &
+       'Insufficient storage in bv', 'Insufficient storage in ub' ])
 
   ! src/solve/back_solve 210s and 220s
   integer(int32), parameter :: mod_id_back_solve=1600
@@ -786,6 +790,10 @@ contains
        if (err%rix <= max_routines) then
           err%routines(err%rix)=info%routine_id
           err%rix=err%rix+1
+       else
+          call shift(err%routines,-1)
+          err%routines(max_routines)=info%routine_id
+          err%rix=max_routines+1
        end if
     end if
   end subroutine push_id
@@ -794,10 +802,22 @@ contains
     type(error_info), intent(inout), optional :: err
     type(routine_info), intent(in) :: info
     integer(kind=int32), intent(in) :: code
+    integer(kind=int32) :: j
     if (present(err)) then
-       err%code=code
+       if (err%halt) then
+          write(error_unit,*) info%error_messages(code)
+          write(error_unit,*) "Routines called: "
+          do j=1,err%rix-1
+             write(error_unit,*) info_index(err%routines(j))%routine_name
+          end do
+          stop
+       else
+          err%code=code
+       end if
     else
        write(error_unit,*) info%error_messages(code)
+       write(error_unit,*) "Routine called: "
+       write(error_unit,*) info%routine_name
        stop
     end if
   end subroutine set_error
@@ -965,8 +985,10 @@ contains
        ! qr_factorization
 
        info_index(info_d_qr_bv_to_ub%routine_id)=info_d_qr_bv_to_ub
+       info_index(info_d_qr_of%routine_id)=info_d_qr_of
        info_index(info_c_qr_bv_to_ub%routine_id)=info_c_qr_bv_to_ub
-
+       info_index(info_c_qr_of%routine_id)=info_c_qr_of
+       
        ! back_solve
        info_index(info_d_back_solve_ub%routine_id)=info_d_back_solve_ub
        info_index(info_c_back_solve_ub%routine_id)=info_c_back_solve_ub

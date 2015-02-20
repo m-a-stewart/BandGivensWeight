@@ -8,7 +8,7 @@ $(OBJDIR)/orth_rank.o : $(OBJDIR)/general.o $(OBJDIR)/assemble.o \
 
 
 $(OBJDIR)/misc.o : $(OBJDIR)/error_id.o $(OBJDIR)/utility.o
-$(OBJDIR)/error_id.o : $(OBJDIR)/prec.o
+$(OBJDIR)/error_id.o : $(OBJDIR)/prec.o $(OBJDIR)/shift.o
 $(OBJDIR)/utility.o : $(OBJDIR)/prec.o
 
 
