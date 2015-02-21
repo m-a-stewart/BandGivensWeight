@@ -5,7 +5,7 @@ program test_general
   real(kind=dp) :: t0, t1
   type(error_info) :: error
   integer(kind=int32), parameter :: n=50, rmax=13, ubwmax=rmax+5, lbw=2, lbwmax=10
-  integer(kind=int32) :: na, lbwa, ubwa
+  integer(kind=int32) :: na, lbwa, ubwa, j
   real(kind=dp), parameter :: tol=1e-14, tol1=1e-14, tol2=1e-10
   !
   real(kind=dp), dimension(n,n) :: a, a0, a1
@@ -72,6 +72,18 @@ program test_general
   ub_d=ub_of_general(a(1:na,1:na),lbwa,lbwmax,ubwmax,tol)
   a0(1:na,1:na) = general_of(ub_d)
   test_name="Random Real UB;"  
+  call d_output_result_upper(test_name,a0(1:na,1:na),a1(1:na,1:na),ubwa,ub_d%ubw,t0,t0,tol2,error)
+  deallocate(ub_d)
+
+  na=50
+  lbwa=3; ubwa=rmax
+  ub_d=d_random_ub(na,(/ (lbwa, j=1,n) /), &
+       (/ (ubwa-1, j=1,n-ubwa), (ubwa, j=n-ubwa+1,n) /) )
+  a(1:na,1:na)=general_of(ub_d)
+  a1(1:na,1:na)=a(1:na,1:na)
+  ub_d=ub_of_general(a(1:na,1:na),lbwa,lbwmax,ubwmax,10*tol)
+  a0(1:na,1:na) = general_of(ub_d)
+  test_name="Random Real Square Termination UB;"  
   call d_output_result_upper(test_name,a0(1:na,1:na),a1(1:na,1:na),ubwa,ub_d%ubw,t0,t0,tol2,error)
   deallocate(ub_d)
 
@@ -190,6 +202,19 @@ program test_general
   test_name="Random Complex BV;"  
   call c_output_result_upper(test_name,a0_c(1:na,1:na),a1_c(1:na,1:na),ubwa,bv_c%ubw,t0,t0,tol2,error)
   deallocate(bv_c)
+  na=50
+  lbwa=3; ubwa=rmax
+  ub_c=c_random_ub(na,(/ (lbwa, j=1,n) /), &
+       (/ (ubwa-1, j=1,n-ubwa), (ubwa, j=n-ubwa+1,n) /) )
+  a_c(1:na,1:na)=general_of(ub_c)
+  a1_c(1:na,1:na)=a_c(1:na,1:na)
+  ub_c=ub_of_general(a_c(1:na,1:na),lbwa,lbwmax,ubwmax,10*tol)
+  a0_c(1:na,1:na) = general_of(ub_c)
+  test_name="Random Complex Square Termination UB;"  
+  call c_output_result_upper(test_name,a0_c(1:na,1:na),a1_c(1:na,1:na),ubwa,ub_c%ubw, &
+       t0,t0,tol2,error)
+  deallocate(ub_c)
   print *
+  
 
 end program test_general

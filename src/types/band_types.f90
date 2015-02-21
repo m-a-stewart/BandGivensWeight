@@ -38,6 +38,9 @@ module mod_band_types
   public :: extract_diagonals_bc, d_extract_diagonals_bc, c_extract_diagonals_bc, &
        extract_diagonals_br, d_extract_diagonals_br, c_extract_diagonals_br
 
+  public :: truncate_profile_bc, d_truncate_profile_bc, c_truncate_profile_bc, &
+       truncate_profile_br, d_truncate_profile_br, c_truncate_profile_br
+
   interface get_el_bc
      module procedure d_get_el_bc, c_get_el_bc
   end interface get_el_bc
@@ -144,6 +147,14 @@ module mod_band_types
   interface extract_diagonals_bc
      module procedure d_extract_diagonals_bc, c_extract_diagonals_bc 
   end interface extract_diagonals_bc
+
+  interface truncate_profile_bc
+     module procedure d_truncate_profile_bc, c_truncate_profile_bc
+  end interface truncate_profile_bc
+
+  interface truncate_profile_br
+     module procedure d_truncate_profile_br, c_truncate_profile_br
+  end interface truncate_profile_br
 
 contains
 
@@ -988,7 +999,7 @@ contains
     end do
   end subroutine d_extract_diagonals_br
 
-subroutine c_extract_diagonals_br(a, n, b, lbw, ubw, lbwmax, ubwmax)
+  subroutine c_extract_diagonals_br(a, n, b, lbw, ubw, lbwmax, ubwmax)
     complex(kind=dp), target, dimension(n,n), intent(in) :: a
     complex(kind=dp), dimension(n,lbwmax+ubwmax+1), intent(out) :: b
     integer(kind=int32), intent(in) :: n, lbw, ubw, lbwmax, ubwmax
@@ -1007,5 +1018,88 @@ subroutine c_extract_diagonals_br(a, n, b, lbw, ubw, lbwmax, ubwmax)
        end do
     end do
   end subroutine c_extract_diagonals_br
+
+  subroutine d_truncate_profile_br(b,n,lbw,ubw,lbwmax,ubwmax,lower,upper)
+    real(kind=dp), dimension(n,lbwmax+ubwmax+1), intent(inout) :: b
+    integer(kind=int32), intent(in) :: n, lbw, ubw, lbwmax, ubwmax
+    integer(kind=int32), dimension(n), intent(in), optional :: lower, upper
+    
+    integer(kind=int32) :: j
+
+    if (present(upper)) then
+       do j=1,n
+          b(j,lbw+2+upper(j):lbwmax+ubwmax+1) = 0.0_dp
+       end do
+    end if
+
+    if (present(lower)) then
+       do j=1,n
+          b(j,1:lbw-lower(j)) = 0.0_dp
+       end do
+    end if
+    
+  end subroutine d_truncate_profile_br
+
+  subroutine c_truncate_profile_br(b,n,lbw,ubw,lbwmax,ubwmax,lower,upper)
+    complex(kind=dp), dimension(n,lbwmax+ubwmax+1), intent(inout) :: b
+    integer(kind=int32), intent(in) :: n, lbw, ubw, lbwmax, ubwmax
+    integer(kind=int32), dimension(n), intent(in), optional :: lower, upper
+    
+    integer(kind=int32) :: j
+
+    if (present(upper)) then
+       do j=1,n
+          b(j,lbw+2+upper(j):lbwmax+ubwmax+1) = (0.0_dp,0.0_dp)
+       end do
+    end if
+
+    if (present(lower)) then
+       do j=1,n
+          b(j,1:lbw-lower(j)) = (0.0_dp,0.0_dp)
+       end do
+    end if
+  end subroutine c_truncate_profile_br
+
+  subroutine d_truncate_profile_bc(b,n,lbw,ubw,lbwmax,ubwmax,lower,upper)
+    real(kind=dp), dimension(lbwmax+ubwmax+1,n), intent(inout) :: b
+    integer(kind=int32), intent(in) :: n, lbw, ubw, lbwmax, ubwmax
+    integer(kind=int32), dimension(n), intent(in), optional :: lower, upper
+    
+    integer(kind=int32) :: j
+
+    if (present(upper)) then
+       do j=1,n
+          b(1:ubw-upper(j),j)=0.0_dp
+       end do
+    end if
+
+    if (present(lower)) then
+       do j=1,n
+          b(ubw+2+lower(j):lbwmax+ubwmax+1,j)=0.0_dp
+       end do
+    end if
+    
+  end subroutine d_truncate_profile_bc
+
+  subroutine c_truncate_profile_bc(b,n,lbw,ubw,lbwmax,ubwmax,lower,upper)
+    complex(kind=dp), dimension(lbwmax+ubwmax+1,n), intent(inout) :: b
+    integer(kind=int32), intent(in) :: n, lbw, ubw, lbwmax, ubwmax
+    integer(kind=int32), dimension(n), intent(in), optional :: lower, upper
+    
+    integer(kind=int32) :: j
+
+    if (present(upper)) then
+       do j=1,n
+          b(1:ubw-upper(j),j)=(0.0_dp,0.0_dp)
+       end do
+    end if
+
+    if (present(lower)) then
+       do j=1,n
+          b(ubw+2+lower(j):lbwmax+ubwmax+1,j)=(0.0_dp,0.0_dp)
+       end do
+    end if
+    
+  end subroutine c_truncate_profile_bc
 
 end module mod_band_types

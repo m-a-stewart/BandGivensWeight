@@ -19,12 +19,20 @@ module mod_orth_band_types
        deallocate_wb, d_deallocate_wb, c_deallocate_wb, &
        deallocate_wbv, d_deallocate_wbv, c_deallocate_wbv
 
-  public :: copy_ub, d_copy_ub, c_copy_ub, &
-       copy_bt, d_copy_bt, c_copy_bt, &
-       copy_ubt, d_copy_ubt, c_copy_ubt, &
-       copy_bv, d_copy_bv, c_copy_bv, &
-       copy_wb, d_copy_wb, c_copy_wb, &
-       copy_wbv, d_copy_wbv, c_copy_wbv
+  public :: copy, d_copy_ub, c_copy_ub, &
+       d_copy_bt, c_copy_bt, &
+       d_copy_ubt, c_copy_ubt, &
+       d_copy_bv, c_copy_bv, &
+       d_copy_wb, c_copy_wb, &
+       d_copy_wbv, c_copy_wbv
+
+  public :: d_truncate_profile_ub, c_truncate_profile_ub, &
+       d_truncate_profile_ubt, c_truncate_profile_ubt, &
+       d_truncate_profile_bv, c_truncate_profile_bv, &
+       d_truncate_profile_wbv, c_truncate_profile_wbv, &
+       d_truncate_profile_wb, c_truncate_profile_wb, &
+       d_truncate_profile_bt, c_truncate_profile_bt, &
+       truncate_profile
 
   public :: get_n, d_ub_get_n, d_bv_get_n, c_ub_get_n, c_bv_get_n, &
        d_ubt_get_n, d_wbv_get_n, c_ubt_get_n, c_wbv_get_n, &
@@ -190,29 +198,20 @@ module mod_orth_band_types
      module procedure d_deallocate_wbv, c_deallocate_wbv
   end interface deallocate_wbv
 
-  interface copy_ub
-     module procedure d_copy_ub, c_copy_ub
-  end interface copy_ub
+  interface copy
+     module procedure d_copy_ub, c_copy_ub, d_copy_bt, c_copy_bt,  &
+          d_copy_ubt, c_copy_ubt, d_copy_bv, c_copy_bv, d_copy_wb, c_copy_wb, &
+          d_copy_wbv, c_copy_wbv
+  end interface copy
 
-  interface copy_bt
-     module procedure d_copy_bt, c_copy_bt
-  end interface copy_bt
-
-  interface copy_ubt
-     module procedure d_copy_ubt, c_copy_ubt
-  end interface copy_ubt
-
-  interface copy_bv
-     module procedure d_copy_bv, c_copy_bv
-  end interface copy_bv
-
-  interface copy_wb
-     module procedure d_copy_wb, c_copy_wb
-  end interface copy_wb
-
-  interface copy_wbv
-     module procedure d_copy_wbv, c_copy_wbv
-  end interface copy_wbv
+  interface truncate_profile
+     module procedure d_truncate_profile_ub, c_truncate_profile_ub, &
+          d_truncate_profile_ubt, c_truncate_profile_ubt, &
+          d_truncate_profile_bv, c_truncate_profile_bv, &
+          d_truncate_profile_wbv, c_truncate_profile_wbv, &
+          d_truncate_profile_wb, c_truncate_profile_wb, &
+          d_truncate_profile_bt, c_truncate_profile_bt
+  end interface truncate_profile
 
   interface get_n
      module procedure d_ub_get_n, d_bv_get_n, c_ub_get_n, c_bv_get_n, &
@@ -767,6 +766,102 @@ contains
     wbv2%jsw(1:wbv1%lbw,:)=wbv1%jsw(1:wbv1%ubw,:)
   end subroutine c_copy_wbv
 
+  subroutine d_truncate_profile_ub(ub,lower,upper)
+    type(d_ub), intent(inout) :: ub
+    integer(kind=int32), dimension(:), intent(in), optional :: lower, upper
+
+    call d_truncate_profile_bc(ub%bc,get_n(ub), ub%lbw, ub%ubw, get_lbwmax(ub), &
+         get_ubwmax(ub), lower, upper)
+  end subroutine d_truncate_profile_ub
+
+  subroutine c_truncate_profile_ub(ub,lower,upper)
+    type(c_ub), intent(inout) :: ub
+    integer(kind=int32), dimension(:), intent(in), optional :: lower, upper
+
+    call c_truncate_profile_bc(ub%bc,get_n(ub), ub%lbw, ub%ubw, get_lbwmax(ub), &
+         get_ubwmax(ub), lower, upper)
+  end subroutine c_truncate_profile_ub
+
+  subroutine d_truncate_profile_bt(bt,lower,upper)
+    type(d_bt), intent(inout) :: bt
+    integer(kind=int32), dimension(:), intent(in), optional :: lower, upper
+
+    call d_truncate_profile_br(bt%br,get_n(bt), bt%lbw, bt%ubw, get_lbwmax(bt), &
+         get_ubwmax(bt), lower, upper)
+  end subroutine d_truncate_profile_bt
+
+  subroutine c_truncate_profile_bt(bt,lower,upper)
+    type(c_bt), intent(inout) :: bt
+    integer(kind=int32), dimension(:), intent(in), optional :: lower, upper
+
+    call c_truncate_profile_br(bt%br,get_n(bt), bt%lbw, bt%ubw, get_lbwmax(bt), &
+         get_ubwmax(bt), lower, upper)
+  end subroutine c_truncate_profile_bt
+
+  subroutine d_truncate_profile_bv(bv,lower,upper)
+    type(d_bv), intent(inout) :: bv
+    integer(kind=int32), dimension(:), intent(in), optional :: lower, upper
+
+    call d_truncate_profile_br(bv%br,get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), &
+         get_ubwmax(bv), lower, upper)
+  end subroutine d_truncate_profile_bv
+
+  subroutine c_truncate_profile_bv(bv,lower,upper)
+    type(c_bv), intent(inout) :: bv
+    integer(kind=int32), dimension(:), intent(in), optional :: lower, upper
+
+    call c_truncate_profile_br(bv%br,get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), &
+         get_ubwmax(bv), lower, upper)
+  end subroutine c_truncate_profile_bv
+
+  subroutine d_truncate_profile_ubt(ubt,lower,upper)
+    type(d_ubt), intent(inout) :: ubt
+    integer(kind=int32), dimension(:), intent(in), optional :: lower, upper
+
+    call d_truncate_profile_bc(ubt%bc,get_n(ubt), ubt%lbw, ubt%ubw, get_lbwmax(ubt), &
+         get_ubwmax(ubt), lower, upper)
+  end subroutine d_truncate_profile_ubt
+
+  subroutine c_truncate_profile_ubt(ubt,lower,upper)
+    type(c_ubt), intent(inout) :: ubt
+    integer(kind=int32), dimension(:), intent(in), optional :: lower, upper
+
+    call c_truncate_profile_bc(ubt%bc,get_n(ubt), ubt%lbw, ubt%ubw, get_lbwmax(ubt), &
+         get_ubwmax(ubt), lower, upper)
+  end subroutine c_truncate_profile_ubt
+  
+  subroutine d_truncate_profile_wbv(wbv,lower,upper)
+    type(d_wbv), intent(inout) :: wbv
+    integer(kind=int32), dimension(:), intent(in), optional :: lower, upper
+
+    call d_truncate_profile_br(wbv%br,get_n(wbv), wbv%lbw, wbv%ubw, get_lbwmax(wbv), &
+         get_ubwmax(wbv), lower, upper)
+  end subroutine d_truncate_profile_wbv
+
+  subroutine c_truncate_profile_wbv(wbv,lower,upper)
+    type(c_wbv), intent(inout) :: wbv
+    integer(kind=int32), dimension(:), intent(in), optional :: lower, upper
+
+    call c_truncate_profile_br(wbv%br,get_n(wbv), wbv%lbw, wbv%ubw, get_lbwmax(wbv), &
+         get_ubwmax(wbv), lower, upper)
+  end subroutine c_truncate_profile_wbv
+
+  subroutine d_truncate_profile_wb(wb,lower,upper)
+    type(d_wb), intent(inout) :: wb
+    integer(kind=int32), dimension(:), intent(in), optional :: lower, upper
+
+    call d_truncate_profile_bc(wb%bc,get_n(wb), wb%lbw, wb%ubw, get_lbwmax(wb), &
+         get_ubwmax(wb), lower, upper)
+  end subroutine d_truncate_profile_wb
+
+  subroutine c_truncate_profile_wb(wb,lower,upper)
+    type(c_wb), intent(inout) :: wb
+    integer(kind=int32), dimension(:), intent(in), optional :: lower, upper
+
+    call c_truncate_profile_bc(wb%bc,get_n(wb), wb%lbw, wb%ubw, get_lbwmax(wb), &
+         get_ubwmax(wb), lower, upper)
+  end subroutine c_truncate_profile_wb
+  
   integer(kind=int32) function d_ub_get_n(ub) result(n)
     type(d_ub) :: ub
     n=ub%n

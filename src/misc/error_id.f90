@@ -685,22 +685,37 @@ module mod_error_id
   integer(int32), parameter :: mod_id_random=1800
   integer(int32), parameter :: id_d_random_bc=mod_id_random + 0
   integer(int32), parameter :: id_d_random_br=mod_id_random + 1
-  integer(int32), parameter :: id_d_random_ub=mod_id_random + 2
-  integer(int32), parameter :: id_d_random_bv=mod_id_random + 3
-  integer(int32), parameter :: id_d_random_bt=mod_id_random + 4
-  integer(int32), parameter :: id_d_random_wb=mod_id_random + 5
-  integer(int32), parameter :: id_d_random_ubt=mod_id_random + 6
-  integer(int32), parameter :: id_d_random_wbv=mod_id_random + 7
+  integer(int32), parameter :: id_d_random_ub0=mod_id_random + 2
+  integer(int32), parameter :: id_d_random_bv0=mod_id_random + 3
+  integer(int32), parameter :: id_d_random_bt0=mod_id_random + 4
+  integer(int32), parameter :: id_d_random_wb0=mod_id_random + 5
+  integer(int32), parameter :: id_d_random_ubt0=mod_id_random + 6
+  integer(int32), parameter :: id_d_random_wbv0=mod_id_random + 7
 
-  integer(int32), parameter :: id_c_random_bc=mod_id_random + 8
-  integer(int32), parameter :: id_c_random_br=mod_id_random + 9
-  integer(int32), parameter :: id_c_random_ub=mod_id_random + 10
-  integer(int32), parameter :: id_c_random_bv=mod_id_random + 11
-  integer(int32), parameter :: id_c_random_bt=mod_id_random + 12
-  integer(int32), parameter :: id_c_random_wb=mod_id_random + 13
-  integer(int32), parameter :: id_c_random_ubt=mod_id_random + 14
-  integer(int32), parameter :: id_c_random_wbv=mod_id_random + 15
+  integer(int32), parameter :: id_d_random_ub1=mod_id_random + 8
+  integer(int32), parameter :: id_d_random_bv1=mod_id_random + 9
+  integer(int32), parameter :: id_d_random_bt1=mod_id_random + 10
+  integer(int32), parameter :: id_d_random_wb1=mod_id_random + 11
+  integer(int32), parameter :: id_d_random_ubt1=mod_id_random + 12
+  integer(int32), parameter :: id_d_random_wbv1=mod_id_random + 13
+  
 
+  integer(int32), parameter :: id_c_random_bc=mod_id_random + 14
+  integer(int32), parameter :: id_c_random_br=mod_id_random + 15
+  integer(int32), parameter :: id_c_random_ub0=mod_id_random + 16
+  integer(int32), parameter :: id_c_random_bv0=mod_id_random + 17
+  integer(int32), parameter :: id_c_random_bt0=mod_id_random + 18
+  integer(int32), parameter :: id_c_random_wb0=mod_id_random + 19
+  integer(int32), parameter :: id_c_random_ubt0=mod_id_random + 20
+  integer(int32), parameter :: id_c_random_wbv0=mod_id_random + 21
+
+  integer(int32), parameter :: id_c_random_ub1=mod_id_random + 22
+  integer(int32), parameter :: id_c_random_bv1=mod_id_random + 23
+  integer(int32), parameter :: id_c_random_bt1=mod_id_random + 24
+  integer(int32), parameter :: id_c_random_wb1=mod_id_random + 25
+  integer(int32), parameter :: id_c_random_ubt1=mod_id_random + 26
+  integer(int32), parameter :: id_c_random_wbv1=mod_id_random + 27
+  
   type(routine_info), parameter :: info_d_random_bc=routine_info(id_d_random_bc, &
        'd_random_bc', &
        [ character(len=error_message_length) :: 'n < 1', &
@@ -711,36 +726,69 @@ module mod_error_id
        [ character(len=error_message_length) :: 'n < 1', &
        'lbw > lbwmax', 'ubw > ubwmax'])
 
-  type(routine_info), parameter :: info_d_random_ub=routine_info(id_d_random_ub, &
-       'd_random_ub', &
+  type(routine_info), parameter :: info_d_random_ub0=routine_info(id_d_random_ub0, &
+       'd_random_ub0', &
        [ character(len=error_message_length) :: 'n < 1', &
        'lbw > lbwmax', 'ubw > ubwmax'])
 
-  type(routine_info), parameter :: info_d_random_bv=routine_info(id_d_random_bv, &
-       'd_random_bv', &
+  type(routine_info), parameter :: info_d_random_bv0=routine_info(id_d_random_bv0, &
+       'd_random_bv0', &
        [ character(len=error_message_length) :: 'n < 1', &
        'lbw > lbwmax', 'ubw > ubwmax'])
 
-  type(routine_info), parameter :: info_d_random_bt=routine_info(id_d_random_bt, &
-       'd_random_bt', &
+  type(routine_info), parameter :: info_d_random_bt0=routine_info(id_d_random_bt0, &
+       'd_random_bt0', &
        [ character(len=error_message_length) :: 'n < 1', &
        'lbw > lbwmax', 'ubw > ubwmax'])
 
-  type(routine_info), parameter :: info_d_random_wb=routine_info(id_d_random_wb, &
-       'd_random_wb', &
+  type(routine_info), parameter :: info_d_random_wb0=routine_info(id_d_random_wb0, &
+       'd_random_wb0', &
        [ character(len=error_message_length) :: 'n < 1', &
        'lbw > lbwmax', 'ubw > ubwmax'])
 
-  type(routine_info), parameter :: info_d_random_ubt=routine_info(id_d_random_ubt, &
-       'd_random_ubt', &
+  type(routine_info), parameter :: info_d_random_ubt0=routine_info(id_d_random_ubt0, &
+       'd_random_ubt0', &
        [ character(len=error_message_length) :: 'n < 1', &
        'lbw > lbwmax', 'ubw > ubwmax'])
   
-  type(routine_info), parameter :: info_d_random_wbv=routine_info(id_d_random_wbv, &
-       'd_random_wbv', &
+  type(routine_info), parameter :: info_d_random_wbv0=routine_info(id_d_random_wbv0, &
+       'd_random_wbv0', &
        [ character(len=error_message_length) :: 'n < 1', &
        'lbw > lbwmax', 'ubw > ubwmax'])
 
+  ! array lbw ubw
+  type(routine_info), parameter :: info_d_random_ub1=routine_info(id_d_random_ub1, &
+       'd_random_ub1', &
+       [ character(len=error_message_length) :: 'n < 1', &
+       'lbw > lbwmax', 'ubw > ubwmax'])
+
+  type(routine_info), parameter :: info_d_random_bv1=routine_info(id_d_random_bv1, &
+       'd_random_bv1', &
+       [ character(len=error_message_length) :: 'n < 1', &
+       'lbw > lbwmax', 'ubw > ubwmax'])
+
+  type(routine_info), parameter :: info_d_random_bt1=routine_info(id_d_random_bt1, &
+       'd_random_bt1', &
+       [ character(len=error_message_length) :: 'n < 1', &
+       'lbw > lbwmax', 'ubw > ubwmax'])
+
+  type(routine_info), parameter :: info_d_random_wb1=routine_info(id_d_random_wb1, &
+       'd_random_wb1', &
+       [ character(len=error_message_length) :: 'n < 1', &
+       'lbw > lbwmax', 'ubw > ubwmax'])
+
+  type(routine_info), parameter :: info_d_random_ubt1=routine_info(id_d_random_ubt1, &
+       'd_random_ubt1', &
+       [ character(len=error_message_length) :: 'n < 1', &
+       'lbw > lbwmax', 'ubw > ubwmax'])
+  
+  type(routine_info), parameter :: info_d_random_wbv1=routine_info(id_d_random_wbv1, &
+       'd_random_wbv1', &
+       [ character(len=error_message_length) :: 'n < 1', &
+       'lbw > lbwmax', 'ubw > ubwmax'])
+
+  ! complex
+  
   type(routine_info), parameter :: info_c_random_bc=routine_info(id_c_random_bc, &
        'c_random_bc', &
        [ character(len=error_message_length) :: 'n < 1', &
@@ -751,33 +799,65 @@ module mod_error_id
        [ character(len=error_message_length) :: 'n < 1', &
        'lbw > lbwmax', 'ubw > ubwmax'])
 
-  type(routine_info), parameter :: info_c_random_ub=routine_info(id_c_random_ub, &
-       'c_random_ub', &
+  type(routine_info), parameter :: info_c_random_ub0=routine_info(id_c_random_ub0, &
+       'c_random_ub0', &
        [ character(len=error_message_length) :: 'n < 1', &
        'lbw > lbwmax', 'ubw > ubwmax'])
 
-  type(routine_info), parameter :: info_c_random_bv=routine_info(id_c_random_bv, &
-       'c_random_bv', &
+  type(routine_info), parameter :: info_c_random_bv0=routine_info(id_c_random_bv0, &
+       'c_random_bv0', &
        [ character(len=error_message_length) :: 'n < 1', &
        'lbw > lbwmax', 'ubw > ubwmax'])
 
-  type(routine_info), parameter :: info_c_random_bt=routine_info(id_c_random_bt, &
-       'c_random_bt', &
+  type(routine_info), parameter :: info_c_random_bt0=routine_info(id_c_random_bt0, &
+       'c_random_bt0', &
        [ character(len=error_message_length) :: 'n < 1', &
        'lbw > lbwmax', 'ubw > ubwmax'])
 
-  type(routine_info), parameter :: info_c_random_wb=routine_info(id_c_random_wb, &
-       'c_random_wb', &
+  type(routine_info), parameter :: info_c_random_wb0=routine_info(id_c_random_wb0, &
+       'c_random_wb0', &
        [ character(len=error_message_length) :: 'n < 1', &
        'lbw > lbwmax', 'ubw > ubwmax'])
 
-  type(routine_info), parameter :: info_c_random_ubt=routine_info(id_c_random_ubt, &
-       'c_random_ubt', &
+  type(routine_info), parameter :: info_c_random_ubt0=routine_info(id_c_random_ubt0, &
+       'c_random_ubt0', &
        [ character(len=error_message_length) :: 'n < 1', &
        'lbw > lbwmax', 'ubw > ubwmax'])
   
-  type(routine_info), parameter :: info_c_random_wbv=routine_info(id_c_random_wbv, &
-       'c_random_wbv', &
+  type(routine_info), parameter :: info_c_random_wbv0=routine_info(id_c_random_wbv0, &
+       'c_random_wbv0', &
+       [ character(len=error_message_length) :: 'n < 1', &
+       'lbw > lbwmax', 'ubw > ubwmax'])
+
+  ! array versions
+  
+  type(routine_info), parameter :: info_c_random_ub1=routine_info(id_c_random_ub1, &
+       'c_random_ub1', &
+       [ character(len=error_message_length) :: 'n < 1', &
+       'lbw > lbwmax', 'ubw > ubwmax'])
+
+  type(routine_info), parameter :: info_c_random_bv1=routine_info(id_c_random_bv1, &
+       'c_random_bv1', &
+       [ character(len=error_message_length) :: 'n < 1', &
+       'lbw > lbwmax', 'ubw > ubwmax'])
+
+  type(routine_info), parameter :: info_c_random_bt1=routine_info(id_c_random_bt1, &
+       'c_random_bt1', &
+       [ character(len=error_message_length) :: 'n < 1', &
+       'lbw > lbwmax', 'ubw > ubwmax'])
+
+  type(routine_info), parameter :: info_c_random_wb1=routine_info(id_c_random_wb1, &
+       'c_random_wb1', &
+       [ character(len=error_message_length) :: 'n < 1', &
+       'lbw > lbwmax', 'ubw > ubwmax'])
+
+  type(routine_info), parameter :: info_c_random_ubt1=routine_info(id_c_random_ubt1, &
+       'c_random_ubt1', &
+       [ character(len=error_message_length) :: 'n < 1', &
+       'lbw > lbwmax', 'ubw > ubwmax'])
+  
+  type(routine_info), parameter :: info_c_random_wbv1=routine_info(id_c_random_wbv1, &
+       'c_random_wbv1', &
        [ character(len=error_message_length) :: 'n < 1', &
        'lbw > lbwmax', 'ubw > ubwmax'])
   
@@ -1009,21 +1089,35 @@ contains
 
        info_index(info_d_random_bc%routine_id)=info_d_random_bc
        info_index(info_d_random_br%routine_id)=info_d_random_br
-       info_index(info_d_random_ub%routine_id)=info_d_random_ub
-       info_index(info_d_random_bv%routine_id)=info_d_random_bv
-       info_index(info_d_random_bt%routine_id)=info_d_random_bt
-       info_index(info_d_random_wb%routine_id)=info_d_random_wb
-       info_index(info_d_random_ubt%routine_id)=info_d_random_ubt
-       info_index(info_d_random_wbv%routine_id)=info_d_random_wbv
+       info_index(info_d_random_ub0%routine_id)=info_d_random_ub0
+       info_index(info_d_random_bv0%routine_id)=info_d_random_bv0
+       info_index(info_d_random_bt0%routine_id)=info_d_random_bt0
+       info_index(info_d_random_wb0%routine_id)=info_d_random_wb0
+       info_index(info_d_random_ubt0%routine_id)=info_d_random_ubt0
+       info_index(info_d_random_wbv0%routine_id)=info_d_random_wbv0
 
+       info_index(info_d_random_ub1%routine_id)=info_d_random_ub1
+       info_index(info_d_random_bv1%routine_id)=info_d_random_bv1
+       info_index(info_d_random_bt1%routine_id)=info_d_random_bt1
+       info_index(info_d_random_wb1%routine_id)=info_d_random_wb1
+       info_index(info_d_random_ubt1%routine_id)=info_d_random_ubt1
+       info_index(info_d_random_wbv1%routine_id)=info_d_random_wbv1
+       
        info_index(info_c_random_bc%routine_id)=info_c_random_bc
        info_index(info_c_random_br%routine_id)=info_c_random_br
-       info_index(info_c_random_ub%routine_id)=info_c_random_ub
-       info_index(info_c_random_bv%routine_id)=info_c_random_bv
-       info_index(info_c_random_bt%routine_id)=info_c_random_bt
-       info_index(info_c_random_wb%routine_id)=info_c_random_wb
-       info_index(info_c_random_ubt%routine_id)=info_c_random_ubt
-       info_index(info_c_random_wbv%routine_id)=info_c_random_wbv
+       info_index(info_c_random_ub0%routine_id)=info_c_random_ub0
+       info_index(info_c_random_bv0%routine_id)=info_c_random_bv0
+       info_index(info_c_random_bt0%routine_id)=info_c_random_bt0
+       info_index(info_c_random_wb0%routine_id)=info_c_random_wb0
+       info_index(info_c_random_ubt0%routine_id)=info_c_random_ubt0
+       info_index(info_c_random_wbv0%routine_id)=info_c_random_wbv0
+
+       info_index(info_c_random_ub1%routine_id)=info_c_random_ub1
+       info_index(info_c_random_bv1%routine_id)=info_c_random_bv1
+       info_index(info_c_random_bt1%routine_id)=info_c_random_bt1
+       info_index(info_c_random_wb1%routine_id)=info_c_random_wb1
+       info_index(info_c_random_ubt1%routine_id)=info_c_random_ubt1
+       info_index(info_c_random_wbv1%routine_id)=info_c_random_wbv1
     end if
   end subroutine initialize_errors
 
