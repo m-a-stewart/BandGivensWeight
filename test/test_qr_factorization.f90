@@ -73,7 +73,7 @@ program test_qr_factorization
   a0_d = a_d
   swub_d=qr_of(bv_d,error)
   a_d = general_of(swub_d%ub,error)
-  call sweeps_times_general(swub_d%sw, a_d)
+  a_d = swub_d%sw * a_d
   test_name = "Random Real QR Factorization"
   call d_output_result_lower_upper(test_name,a0_d,a_d,0, &
        swub_d%ub%lbw, ubwa+lbwa,swub_d%ub%ubw,t0,t1,tol2,error)
@@ -117,7 +117,7 @@ program test_qr_factorization
   a0_c = a_c
   swub_c=qr_of(bv_c)
   a_c(1:na,1:na) = general_of(swub_c%ub)
-  call sweeps_times_general(swub_c%sw, a_c)
+  a_c=swub_c%sw * a_c
   test_name = "Random Complex QR Factorization"
   call c_output_result_lower_upper(test_name,a0_c,a_c,0, &
        swub_c%ub%lbw, ubwa+lbwa,swub_c%ub%ubw,t0,t1,tol2,error)

@@ -16,6 +16,13 @@ module mod_sweeps
   public :: get_maxind, d_get_maxind, c_get_maxind, &
        get_minind, d_get_minind, c_get_minind
 
+  public :: d_sweeps_general_product_of, c_sweeps_general_product_of, &
+       d_general_sweeps_product_of, c_general_sweeps_product_of, &
+       d_v_sweeps_general_product_of, c_v_sweeps_general_product_of, &
+       d_v_general_sweeps_product_of, c_v_general_sweeps_product_of, operator(*)
+
+  public :: trp, d_trp_sweeps, c_trp_sweeps
+
   public :: get_maxord, d_get_maxord, c_get_maxord
 
   public :: get_n, d_get_n_sweeps, c_get_n_sweeps
@@ -64,6 +71,7 @@ module mod_sweeps
      real(kind=dp), allocatable, dimension(:,:) :: cs, ss
      integer(kind=int32), allocatable, dimension(:) :: numrots
      integer(kind=int32), allocatable, dimension(:,:) :: js
+     logical :: trp
   end type d_sweeps
 
   type c_sweeps
@@ -73,6 +81,7 @@ module mod_sweeps
      complex(kind=dp), allocatable, dimension(:,:) :: ss
      integer(kind=int32), allocatable, dimension(:) :: numrots
      integer(kind=int32), allocatable, dimension(:,:) :: js
+     logical :: trp
   end type c_sweeps
 
   interface get_maxind
@@ -94,6 +103,15 @@ module mod_sweeps
   interface deallocate_sweeps
      module procedure d_deallocate_sweeps, c_deallocate_sweeps
   end interface deallocate_sweeps
+
+  interface trp
+     module procedure d_trp_sweeps, c_trp_sweeps
+  end interface trp
+
+  interface operator (*)
+     module procedure d_sweeps_general_product_of, c_sweeps_general_product_of, &
+          d_general_sweeps_product_of, c_general_sweeps_product_of
+  end interface operator (*)
 
   interface sweeps_times_general
      module procedure d_sweeps_times_general, c_sweeps_times_general, &
@@ -165,6 +183,7 @@ contains
     sw%left=0; sw%right=-1; sw%inc=1; sw%ord=-1
     sw%type=-1
     sw%cs=0.0_dp; sw%ss=0.0_dp
+    sw%trp=.false.
   end function d_new_sweeps
 
   type(c_sweeps) function c_new_sweeps(n,minind, maxind, maxord) result(sw)
@@ -175,6 +194,7 @@ contains
     sw%left=0; sw%right=-1; sw%inc=1; sw%ord=-1
     sw%type=-1
     sw%cs=0.0_dp; sw%ss=(0.0_dp,0.0_dp)
+    sw%trp=.false.
   end function c_new_sweeps
 
   subroutine d_deallocate_sweeps(sw)
@@ -231,6 +251,136 @@ contains
 
   ! Multiply routines
 
+  function d_sweeps_general_product_of(sw,a) result(b)
+    real(kind=dp), allocatable, dimension(:,:) :: b
+    real(kind=dp), dimension(:,:), intent(in) :: a
+    type(d_sweeps), intent(in) :: sw
+
+    allocate(b(size(a,1),size(a,2)))
+    b=a
+    if (sw%trp) then
+       call d_trp_sweeps_times_general(sw,b)
+    else
+       call d_sweeps_times_general(sw,b)
+    end if
+  end function d_sweeps_general_product_of
+
+  function c_sweeps_general_product_of(sw,a) result(b)
+    complex(kind=dp), allocatable, dimension(:,:) :: b
+    complex(kind=dp), dimension(:,:), intent(in) :: a
+    type(c_sweeps), intent(in) :: sw
+
+    allocate(b(size(a,1),size(a,2)))
+    b=a
+    if (sw%trp) then
+       call c_trp_sweeps_times_general(sw,b)
+    else
+       call c_sweeps_times_general(sw,b)
+    end if
+  end function c_sweeps_general_product_of
+
+  function d_general_sweeps_product_of(a,sw) result(b)
+    real(kind=dp), allocatable, dimension(:,:) :: b
+    real(kind=dp), dimension(:,:), intent(in) :: a
+    type(d_sweeps), intent(in) :: sw
+
+    allocate(b(size(a,1),size(a,2)))
+    b=a
+    if (sw%trp) then
+       call d_general_times_trp_sweeps(b,sw)
+    else
+       call d_general_times_sweeps(b,sw)
+    end if
+  end function d_general_sweeps_product_of
+
+  function c_general_sweeps_product_of(a,sw) result(b)
+    complex(kind=dp), allocatable, dimension(:,:) :: b
+    complex(kind=dp), dimension(:,:), intent(in) :: a
+    type(c_sweeps), intent(in) :: sw
+
+    allocate(b(size(a,1),size(a,2)))
+    b=a
+    if (sw%trp) then
+       call c_general_times_trp_sweeps(b,sw)
+    else
+       call c_general_times_sweeps(b,sw)
+    end if
+  end function c_general_sweeps_product_of
+
+  ! vectors
+
+  function d_v_sweeps_general_product_of(sw,a) result(b)
+    real(kind=dp), allocatable, dimension(:) :: b
+    real(kind=dp), dimension(:), intent(in) :: a
+    type(d_sweeps), intent(in) :: sw
+
+    allocate(b(size(a)))
+    b=a
+    if (sw%trp) then
+       call d_v_trp_sweeps_times_general(sw,b)
+    else
+       call d_v_sweeps_times_general(sw,b)
+    end if
+  end function d_v_sweeps_general_product_of
+
+  function c_v_sweeps_general_product_of(sw,a) result(b)
+    complex(kind=dp), allocatable, dimension(:) :: b
+    complex(kind=dp), dimension(:), intent(in) :: a
+    type(c_sweeps), intent(in) :: sw
+
+    allocate(b(size(a)))
+    b=a
+    if (sw%trp) then
+       call c_v_trp_sweeps_times_general(sw,b)
+    else
+       call c_v_sweeps_times_general(sw,b)
+    end if
+  end function c_v_sweeps_general_product_of
+
+  function d_v_general_sweeps_product_of(a,sw) result(b)
+    real(kind=dp), allocatable, dimension(:) :: b
+    real(kind=dp), dimension(:), intent(in) :: a
+    type(d_sweeps), intent(in) :: sw
+
+    allocate(b(size(a)))
+    b=a
+    if (sw%trp) then
+       call d_v_general_times_trp_sweeps(b,sw)
+    else
+       call d_v_general_times_sweeps(b,sw)
+    end if
+  end function d_v_general_sweeps_product_of
+
+  function c_v_general_sweeps_product_of(a,sw) result(b)
+    complex(kind=dp), allocatable, dimension(:) :: b
+    complex(kind=dp), dimension(:), intent(in) :: a
+    type(c_sweeps), intent(in) :: sw
+
+    allocate(b(size(a)))
+    b=a
+    if (sw%trp) then
+       call c_v_general_times_trp_sweeps(b,sw)
+    else
+       call c_v_general_times_sweeps(b,sw)
+    end if
+  end function c_v_general_sweeps_product_of
+
+  function d_trp_sweeps(swa) result(swb)
+    type(d_sweeps), allocatable :: swb
+    type(d_sweeps), intent(in) :: swa
+
+    swb=swa
+    swb%trp=.not. swb%trp
+  end function d_trp_sweeps
+
+  function c_trp_sweeps(swa) result(swb)
+    type(c_sweeps), allocatable :: swb
+    type(c_sweeps), intent(in) :: swa
+
+    swb=swa
+    swb%trp=.not. swb%trp
+  end function c_trp_sweeps
+  
   subroutine d_sweeps_times_general(sw,a)
     type(d_sweeps) :: sw
     real(kind=dp), dimension(:,:), intent(inout) :: a
