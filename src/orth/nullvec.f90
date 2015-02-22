@@ -39,7 +39,9 @@ contains
     real(kind=dp), dimension(size(x)) :: y
     type(routine_info), parameter :: info=info_f_d_lower_left_nullvec
     !
-    call clear_error(error)
+    if (failure(error)) then
+       return
+    end if
     call push_id(info, error)
     
     n=size(l,1)
@@ -116,7 +118,9 @@ contains
     type(routine_info), parameter :: info=info_f_c_lower_left_nullvec
     !
     n=size(l,1)
-    call clear_error(error)
+    if (failure(error)) then
+       return
+    end if
     call push_id(info, error)
 
     x=(0.0_dp, 0.0_dp)
@@ -192,7 +196,9 @@ contains
     type(routine_info), parameter :: info=info_f_d_lower_right_nullvec
     !
     n=size(l,1)
-    call clear_error(error)
+    if (failure(error)) then
+       return
+    end if
     call push_id(info, error)
     x=0.0_dp
     y=0.0_dp
@@ -266,7 +272,9 @@ contains
     type(routine_info), parameter :: info=info_f_c_lower_right_nullvec
     !
     n=size(l,1)
-    call clear_error(error)
+    if (failure(error)) then
+       return
+    end if
     call push_id(info, error)
     x=(0.0_dp, 0.0_dp)
     y=(0.0_dp, 0.0_dp)

@@ -41,7 +41,9 @@ contains
     type(routine_info), parameter :: info=info_d_ubt_of_general
     integer(kind=int32) :: n
 
-    call clear_error(error)
+    if (failure(error)) then
+       return
+    end if
     call push_id(info, error)
 
     n=size(a,1)
@@ -71,7 +73,9 @@ contains
     real(kind=dp), dimension(lbwmax,n) :: csu0, ssu0
     type(routine_info), parameter :: info=info_f_d_general_ubt
 
-    call clear_error(error)
+    if (failure(error)) then
+       return
+    end if
     call push_id(info, error)
 
     call f_d_general_ub(a,n,ubws,ubwmax,numrotsu,jsu,csu,ssu,tol,error)
@@ -113,7 +117,9 @@ contains
     integer(kind=int32), dimension(n) :: lbws, ubws
     type(routine_info), parameter :: info=info_f_d_general_to_ubt
 
-    call clear_error(error)
+    if (failure(error)) then
+       return
+    end if
     call push_id(info, error)
 
     if (n == 1) then
@@ -158,7 +164,9 @@ contains
 
     real(kind=dp), intent(in) :: tol
 
-    call clear_error(error)
+    if (failure(error)) then
+       return
+    end if
     call push_id(info, error)
     
     if (size(a,1) < 1) then
@@ -183,7 +191,9 @@ contains
     type(routine_info), parameter :: info=info_c_ubt_of_general
     integer(kind=int32) :: n
 
-    call clear_error(error)
+    if (failure(error)) then
+       return
+    end if
     call push_id(info, error)
 
     n=size(a,1)
@@ -217,7 +227,9 @@ contains
     complex(kind=dp), dimension(lbwmax,n) :: ssu0
     type(routine_info), parameter :: info=info_f_c_general_ubt
 
-    call clear_error(error)
+    if (failure(error)) then
+       return
+    end if
     call push_id(info, error)
     
     call f_c_general_ub(a,n,ubws,ubwmax,numrotsu,jsu,csu,ssu,tol,error)
@@ -264,7 +276,9 @@ contains
     integer(kind=int32), dimension(n) :: lbws, ubws
     type(routine_info), parameter :: info=info_f_c_general_to_ubt
 
-    call clear_error(error)
+    if (failure(error)) then
+       return
+    end if
     call push_id(info, error)
 
     if (n == 1) then
@@ -306,7 +320,9 @@ contains
     real(kind=dp), intent(in) :: tol
     type(routine_info), parameter :: info=info_c_general_to_ubt
 
-    call clear_error(error)
+    if (failure(error)) then
+       return
+    end if
     call push_id(info, error)
 
     if (size(a,1) < 1) then

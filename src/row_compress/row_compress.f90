@@ -32,7 +32,9 @@ contains
     integer(kind=int32) :: n, lbw
     lbw=ubt%lbw
     n=get_n(ubt)
-    call clear_error(error)
+    if (failure(error)) then
+       return
+    end if
     call push_id(info, error)
     if (n /= get_n(bv) .or. n /= get_n(sw)) then
        call set_error(1, info, error); return
@@ -183,7 +185,9 @@ contains
     integer(kind=int32) :: n, lbw
     lbw=ubt%lbw
     n=get_n(ubt)
-    call clear_error(error)
+    if (failure(error)) then
+       return
+    end if
     call push_id(info, error)
     
     if (n /= get_n(bv) .or. n /= get_n(sw)) then

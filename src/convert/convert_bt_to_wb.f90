@@ -34,7 +34,9 @@ contains
     type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_d_convert_bt_to_wb
     
-    call clear_error(error)
+    if (failure(error)) then
+       return
+    end if
     call push_id(info, error)
 
     if (get_n(wb) < 1) then
@@ -132,7 +134,9 @@ contains
     type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_c_convert_bt_to_wb
     
-    call clear_error(error)
+    if (failure(error)) then
+       return
+    end if
     call push_id(info, error)
     
     if (get_n(wb) < 1) then

@@ -35,7 +35,9 @@ contains
     type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_d_convert_wbv_to_ubt
 
-    call clear_error(error)
+    if (failure(error)) then
+       return
+    end if
     call push_id(info, error)
     
     if (get_n(wbv) < 1) then
@@ -169,7 +171,9 @@ contains
     type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_c_convert_wbv_to_ubt
 
-    call clear_error(error)
+    if (failure(error)) then
+       return
+    end if
     call push_id(info, error)
 
     if (get_n(wbv) < 1) then

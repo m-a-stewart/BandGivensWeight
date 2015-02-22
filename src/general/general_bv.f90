@@ -44,7 +44,9 @@ contains
     type(routine_info), parameter :: info=info_d_bv_of_general
     integer(kind=int32) :: n
 
-    call clear_error(error)
+    if (failure(error)) then
+       return
+    end if
     call push_id(info, error)
 
     n=size(a,1)
@@ -70,7 +72,9 @@ contains
     integer(kind=int32), intent(in) :: lbw
     type(routine_info), parameter :: info=info_d_general_to_bv
 
-    call clear_error(error)
+    if (failure(error)) then
+       return
+    end if
     call push_id(info, error)
     
     if (size(a,1) < 1) then
@@ -108,7 +112,9 @@ contains
     integer(kind=int32), dimension(n) :: ubws
     type(routine_info), parameter :: info=info_f_d_general_to_bv
     !
-    call clear_error(error)
+    if (failure(error)) then
+       return
+    end if
     call push_id(info, error)
 
     if (n == 1) then
@@ -156,7 +162,9 @@ contains
     type(routine_info), parameter :: info=info_f_d_general_bv
     type(error_info) :: errornv
     !
-    call clear_error(error)
+    if (failure(error)) then
+       return
+    end if
     call push_id(info, error)
     
     q=0.0_dp; numrotsv=0;
@@ -470,7 +478,9 @@ contains
     type(routine_info), parameter :: info=info_c_bv_of_general
     integer(kind=int32) :: n
 
-    call clear_error(error)
+    if (failure(error)) then
+       return
+    end if
     call push_id(info, error)
 
     n=size(a,1)
@@ -490,7 +500,9 @@ contains
     integer(kind=int32), intent(in) :: lbw
     type(routine_info), parameter :: info=info_c_general_to_bv
     
-    call clear_error(error)
+    if (failure(error)) then
+       return
+    end if
     call push_id(info, error)
     !
     if (size(a,1) < 1) then
@@ -527,7 +539,9 @@ contains
     type(routine_info), parameter :: info=info_f_c_general_to_bv
     !
 
-    call clear_error(error)
+    if (failure(error)) then
+       return
+    end if
     call push_id(info, error)
 
     if (n == 1) then
@@ -575,7 +589,9 @@ contains
     q=(0.0_dp, 0.0_dp); numrotsv=0;
     ssv=(0.0_dp, 0.0_dp); csv=0.0_dp; ksv=0
     ubws=0
-    call clear_error(error)
+    if (failure(error)) then
+       return
+    end if
     call push_id(info, error)
 
     nrma = maxabs(a)*sqrt(real(n))

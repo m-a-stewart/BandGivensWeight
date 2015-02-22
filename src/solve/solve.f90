@@ -59,7 +59,9 @@ contains
 
     integer(kind=int32) :: n
 
-    call clear_error(error)
+    if (failure(error)) then
+       return
+    end if
     call push_id(info, error)
 
     n=size(c,1)
@@ -89,7 +91,9 @@ contains
 
     integer(kind=int32) :: n
 
-    call clear_error(error)
+    if (failure(error)) then
+       return
+    end if
     call push_id(info, error)
 
     n=size(c)
@@ -197,7 +201,9 @@ contains
     type(routine_info), parameter :: info=info_c_back_solve_ub
     integer(kind=int32) :: n
 
-    call clear_error(error)
+    if (failure(error)) then
+       return
+    end if
     call push_id(info, error)
     n=size(c,1)
     if (get_n(ub) /= n) then
@@ -226,7 +232,9 @@ contains
 
     integer(kind=int32) :: n
 
-    call clear_error(error)
+    if (failure(error)) then
+       return
+    end if
     call push_id(info, error)
     n=size(c)
     if (get_n(ub) /= n) then
@@ -347,7 +355,9 @@ contains
 
     integer(kind=int32) :: n
 
-    call clear_error(error)
+    if (failure(error)) then
+       return
+    end if
     call push_id(info, error)
 
     n=size(c,2)
@@ -416,7 +426,9 @@ contains
     type(routine_info), parameter :: info=info_d_v_forward_solve_bv
     integer(kind=int32) :: n
 
-    call clear_error(error)
+    if (failure(error)) then
+       return
+    end if
     call push_id(info, error)
     n=size(c)
     if (get_n(bv) /= n) then
@@ -485,7 +497,9 @@ contains
 
     integer(kind=int32) :: n
     n=size(c,2)
-    call clear_error(error)
+    if (failure(error)) then
+       return
+    end if
     call push_id(info, error)
     if (get_n(bv) /= n) then
        call set_error(1, info, error); return
@@ -554,7 +568,9 @@ contains
 
     integer(kind=int32) :: n
     n=size(c)
-    call clear_error(error)
+    if (failure(error)) then
+       return
+    end if
     call push_id(info, error)
     if (get_n(bv) /= n) then
        call set_error(1, info, error); return
