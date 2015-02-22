@@ -5,12 +5,13 @@ program test_general_ub
   real(kind=dp) :: t0, t1
   type(error_info) :: error
   integer(kind=int32) :: na, lbwa, ubwa, j
-  real(kind=dp), parameter :: tol=1e-14
+  real(kind=dp), parameter :: tol=1e-14, c=1.5
   !
   real(kind=dp), dimension(:,:), allocatable :: a_d, a0_d, a1_d
   complex(kind=dp), dimension(:,:), allocatable :: a_c, a0_c, a1_c
   type(d_ub), allocatable :: ub_d
   type(c_ub), allocatable :: ub_c
+  
 
   call initialize_errors
 
@@ -31,7 +32,7 @@ program test_general_ub
   call cpu_time(t1)
   a0_d = general_of(ub_d,error)
   test_name="Random Real UB;"  
-  call d_output_result_upper(test_name,a0_d,a1_d,ubwa,ub_d%ubw,t0,t0,tol,error)
+  call d_output_result_upper(test_name,a0_d,a1_d,ubwa,ub_d%ubw,t0,t1,c*tol,error)
 
   na=50
   lbwa=3; ubwa=13
@@ -44,7 +45,7 @@ program test_general_ub
   a0_d = general_of(ub_d,error)
   call cpu_time(t1)
   test_name="Random Real Square Termination UB;"  
-  call d_output_result_upper(test_name,a0_d,a1_d,ubwa,ub_d%ubw,t0,t0,tol,error)
+  call d_output_result_upper(test_name,a0_d,a1_d,ubwa,ub_d%ubw,t0,t1,c*tol,error)
   deallocate(ub_d)
 
   !
@@ -66,7 +67,7 @@ program test_general_ub
   call cpu_time(t1)
   a0_c=general_of(ub_c,error)
   test_name="Random Complex UB;"  
-  call c_output_result_upper(test_name,a0_c,a1_c,ubwa,ub_c%ubw,t0,t0,tol,error)
+  call c_output_result_upper(test_name,a0_c,a1_c,ubwa,ub_c%ubw,t0,t1,c*tol,error)
 
   na=50
   lbwa=3; ubwa=13
@@ -79,7 +80,7 @@ program test_general_ub
   call cpu_time(t1)
   a0_c = general_of(ub_c,error)
   test_name="Random Complex Square Termination UB;"  
-  call c_output_result_upper(test_name,a0_c,a1_c,ubwa,ub_c%ubw,t0,t0,tol,error)
+  call c_output_result_upper(test_name,a0_c,a1_c,ubwa,ub_c%ubw,t0,t1,c*tol,error)
   print *
 
 end program test_general_ub

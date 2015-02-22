@@ -5,7 +5,7 @@ program test_general_bv
   real(kind=dp) :: t0, t1
   type(error_info) :: error
   integer(kind=int32) :: na, lbwa, ubwa, j
-  real(kind=dp), parameter :: tol=1e-14
+  real(kind=dp), parameter :: tol=1e-14, c=1.5
   !
   real(kind=dp), dimension(:,:), allocatable :: a_d, a0_d, a1_d
   complex(kind=dp), dimension(:,:), allocatable :: a_c, a0_c, a1_c
@@ -30,7 +30,7 @@ program test_general_bv
   call cpu_time(t1)
   a0_d=general_of(bv_d,error)
   test_name="Random Real BV;"  
-  call d_output_result_upper(test_name,a0_d,a1_d,ubwa,bv_d%ubw,t0,t0,tol,error)
+  call d_output_result_upper(test_name,a0_d,a1_d,ubwa,bv_d%ubw,t0,t1,c*tol,error)
 
   na=50
   lbwa=3; ubwa=13
@@ -43,7 +43,7 @@ program test_general_bv
   call cpu_time(t1)
   a0_d=general_of(bv_d, error)
   test_name="Random Real Square Termination BV;"  
-  call d_output_result_upper(test_name,a0_d,a1_d,ubwa,bv_d%ubw,t0,t0,tol,error)
+  call d_output_result_upper(test_name,a0_d,a1_d,ubwa,bv_d%ubw,t0,t1,c*tol,error)
   deallocate(bv_d)
 
   print *
@@ -61,7 +61,7 @@ program test_general_bv
   call cpu_time(t1)
   a0_c=general_of(bv_c)
   test_name="Random Complex BV;"  
-  call c_output_result_upper(test_name,a0_c,a1_c,ubwa,bv_c%ubw,t0,t0,tol,error)
+  call c_output_result_upper(test_name,a0_c,a1_c,ubwa,bv_c%ubw,t0,t1,c*tol,error)
   deallocate(bv_c)
 
   na=50
@@ -75,6 +75,6 @@ program test_general_bv
   call cpu_time(t1)
   a0_c=general_of(bv_c,error)
   test_name="Random Complex Square Termination BV;"  
-  call c_output_result_upper(test_name,a0_c,a1_c,ubwa,bv_c%ubw,t0,t0,tol,error)
+  call c_output_result_upper(test_name,a0_c,a1_c,ubwa,bv_c%ubw,t0,t1,c*tol,error)
 
 end program test_general_bv

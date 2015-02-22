@@ -1,38 +1,19 @@
 program test_general_bt
+
   use mod_orth_rank
   use mod_test_data
   implicit none
   real(kind=dp) :: t0, t1
   type(error_info) :: error
-  integer(kind=int32), parameter :: n=50, rmax=13, lbwmax=rmax+5, ubw=2, ubwmax=10
-  integer(kind=int32) :: lbwa, ubwa, na
-  real(kind=dp), parameter :: tol=1e-14, tol1=1e-14, tol2=1e-10
+  integer(kind=int32) :: na, lbwa, ubwa, j
+  real(kind=dp), parameter :: tol=1e-14, c=1.5
   !
-  real(kind=dp), dimension(n,n) :: a, a0, a1
-  real(kind=dp), dimension(n,rmax) :: u, u0
-  real(kind=dp), dimension(rmax,n) :: v, v0
-  real(kind=dp), dimension(n) :: d
-  complex(kind=dp), dimension(n,n) :: a_c, a0_c, a1_c
-  complex(kind=dp), dimension(n,rmax) :: u_c, u0_c
-  complex(kind=dp), dimension(rmax,n) :: v_c, v0_c
-  complex(kind=dp), dimension(n) :: d_c
+  real(kind=dp), dimension(:,:), allocatable :: a_d, a0_d, a1_d
+  complex(kind=dp), dimension(:,:), allocatable :: a_c, a0_c, a1_c
   type(d_bt), allocatable :: bt_d
   type(c_bt), allocatable :: bt_c
 
   call initialize_errors
-
-  bt_d=d_new_bt(n,lbwmax,ubwmax)
-  bt_c=c_new_bt(n,lbwmax,ubwmax)
-
-  call random_seed
-  call random_matrix(u)
-  call random_matrix(v)
-  call random_matrix(d)
-  u0=u; v0=v
-  call random_matrix(u_c)
-  call random_matrix(v_c)
-  call random_matrix(d_c)
-  u0_c=u_c; v0_c=v_c
 
   ! test one
   print *
@@ -40,52 +21,67 @@ program test_general_bt
   print *
   print *, "Real BT Decomposition Tests"
   print *
-  call d_assemble_lower(a,u,v,d,ubw)
-  a0=a
-  call cpu_time(t0)
-  call general_to_bt(a,bt_d,ubw,tol,error)
-  call cpu_time(t1)
-  call bt_to_general(bt_d,a1,error)
-  test_name="Real BT;"
-  call d_output_result_lower(test_name,a0,a1,rmax,bt_d%lbw,t0,t0,tol2,error)
-  deallocate(bt_d)
 
   na=40
-  lbwa=3; ubwa=5
-  bt_d=d_random_bt(na,lbwa,ubwa)
-  call bt_to_general(bt_d,a(1:na,1:na))
-  a1(1:na,1:na)=a(1:na,1:na)
-  call general_to_bt(a(1:na,1:na),bt_d,ubwa,tol)
-  call bt_to_general(bt_d,a0(1:na,1:na))
+  lbwa=5; ubwa=3
+  bt_d=d_random_bt(na,lbwa,ubwa,error=error)
+  a_d=general_of(bt_d,error)
+  a1_d=a_d
+  call cpu_time(t0)
+  bt_d=bt_of_general(a_d,ubwa,lbwa+1,ubwa,tol,error)
+  call cpu_time(t1)
+  a0_d = general_of(bt_d,error)
   test_name="Random Real BT;"  
-  call d_output_result_upper(test_name,a0(1:na,1:na),a1(1:na,1:na),lbwa,bt_d%lbw,t0,t0,tol2,error)
+  call d_output_result_lower(test_name,a0_d,a1_d,lbwa,bt_d%lbw,t0,t1,c*tol,error)
+
+  na=50
+  lbwa=13; ubwa=3
+  bt_d=d_random_bt(na,(/ (lbwa-1, j=1,na-lbwa), (lbwa, j=na-lbwa+1,na) /), &
+       (/ (ubwa, j=1,na) /), error=error )
+  a_d=general_of(bt_d,error)
+  a1_d=a_d
+  bt_d=bt_of_general(a_d,ubwa,lbwa+1,ubwa,tol,error)
+  call cpu_time(t0)
+  a0_d = general_of(bt_d,error)
+  call cpu_time(t1)
+  test_name="Random Real Square Termination BT;"  
+  call d_output_result_lower(test_name,a0_d,a1_d,lbwa,bt_d%lbw,t0,t1,c*tol,error)
   deallocate(bt_d)
 
+  !
+  ! Complex BT test
+  !
   print *
   print *, "--------------------------------"
   print *
   print *, "Complex BT Decomposition Tests"
   print *
-  call c_assemble_lower(a_c,u_c,v_c,d_c,ubw)
-  a0_c=a_c
-  call cpu_time(t0)
-  call general_to_bt(a_c,bt_c,ubw,tol,error)
-  call cpu_time(t1)
-  call bt_to_general(bt_c,a1_c,error)
-  test_name="Complex BT;"
-  call c_output_result_lower(test_name,a0_c,a1_c,rmax,bt_c%lbw,t0,t0,tol2,error)
-  deallocate(bt_c)
 
   na=40
-  lbwa=3; ubwa=5
-  bt_c=c_random_bt(na,lbwa,ubwa)
-  call bt_to_general(bt_c,a_c(1:na,1:na))
-  a1_c(1:na,1:na)=a_c(1:na,1:na)
-  call general_to_bt(a_c(1:na,1:na),bt_c,ubwa,tol)
-  call bt_to_general(bt_c,a0_c(1:na,1:na))
+  lbwa=5; ubwa=3
+  bt_c=c_random_bt(na,lbwa,ubwa,error=error)
+  a_c=general_of(bt_c,error)
+  a1_c=a_c
+  call cpu_time(t0)
+  bt_c=bt_of_general(a_c, ubwa, lbwa+1, ubwa, tol,error)
+  call cpu_time(t1)
+  a0_c=general_of(bt_c,error)
   test_name="Random Complex BT;"  
-  call c_output_result_upper(test_name,a0_c(1:na,1:na),a1_c(1:na,1:na), &
-       lbwa,bt_c%lbw,t0,t0,tol2,error)
-  deallocate(bt_c)
+  call c_output_result_lower(test_name,a0_c,a1_c,lbwa,bt_c%lbw,t0,t1,c*tol,error)
 
+  na=50
+  lbwa=13; ubwa=3
+  bt_c=c_random_bt(na,(/ (lbwa-1, j=1,na-lbwa), (lbwa, j=na-lbwa+1,na) /), &
+       (/ (ubwa, j=1,na) /), error=error )
+  a_c=general_of(bt_c,error)
+  a1_c=a_c
+  call cpu_time(t0)
+  bt_c=bt_of_general(a_c,ubwa,lbwa+1,ubwa,tol,error)
+  call cpu_time(t1)
+  a0_c = general_of(bt_c,error)
+  test_name="Random Complex Square Termination BT;"  
+  call c_output_result_lower(test_name,a0_c,a1_c,lbwa,bt_c%lbw,t0,t1,c*tol,error)
+  print *
+
+  
 end program test_general_bt
