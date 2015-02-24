@@ -8,7 +8,8 @@ module mod_convert_bv_to_ub
 
   private
   public :: convert_bv_to_ub, d_convert_bv_to_ub, c_convert_bv_to_ub, &
-       f_convert_bv_to_ub, f_d_convert_bv_to_ub, f_c_convert_bv_to_ub
+       f_convert_bv_to_ub, f_d_convert_bv_to_ub, f_c_convert_bv_to_ub, &
+       d_ub_of_bv, c_ub_of_bv, ub
 
   interface convert_bv_to_ub
      module procedure d_convert_bv_to_ub, c_convert_bv_to_ub
@@ -18,7 +19,33 @@ module mod_convert_bv_to_ub
      module procedure f_d_convert_bv_to_ub, f_c_convert_bv_to_ub
   end interface f_convert_bv_to_ub
 
+  interface ub
+     module procedure d_ub_of_bv, c_ub_of_bv
+  end interface ub
+
 contains
+
+  function d_ub_of_bv(bv,error) result(ub)
+    type(d_ub) :: ub
+    type(d_bv), intent(in) :: bv
+    type(error_info), intent(inout), optional :: error
+
+    type(d_bv), allocatable :: bv1
+    type(routine_info), parameter :: info=info_d_ub_of_bv
+
+    if (failure(error)) then
+       return
+    end if
+    call push_id(info, error)
+    
+    ub=d_new_ub(get_n(bv), bv%lbw, bv%ubw)
+    bv1=d_new_bv(get_n(bv),bv%lbw,  bv%ubw+1)
+    call copy(bv,bv1)
+    call d_convert_bv_to_ub(bv1,ub,error)
+
+    call pop_id(error)
+  end function d_ub_of_bv
+
 
   ! Errors:
   ! 0: no error
@@ -109,6 +136,27 @@ contains
     end do
     call br_to_bc(b_bv,b_ub,lbw,ubw)
   end subroutine f_d_convert_bv_to_ub
+
+  function c_ub_of_bv(bv,error) result(ub)
+    type(c_ub) :: ub
+    type(c_bv), intent(in) :: bv
+    type(error_info), intent(inout), optional :: error
+
+    type(c_bv), allocatable :: bv1
+    type(routine_info), parameter :: info=info_c_ub_of_bv
+
+    if (failure(error)) then
+       return
+    end if
+    call push_id(info, error)
+    
+    ub=c_new_ub(get_n(bv), bv%lbw, bv%ubw)
+    bv1=c_new_bv(get_n(bv),bv%lbw,  bv%ubw+1)
+    call copy(bv,bv1)
+    call c_convert_bv_to_ub(bv1,ub,error)
+
+    call pop_id(error)
+  end function c_ub_of_bv
 
   subroutine c_convert_bv_to_ub(bv, ub, error)
     type(c_bv) :: bv

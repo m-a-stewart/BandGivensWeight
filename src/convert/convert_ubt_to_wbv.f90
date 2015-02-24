@@ -10,7 +10,8 @@ module mod_convert_ubt_to_wbv
   private
 
   public :: convert_ubt_to_wbv, d_convert_ubt_to_wbv, c_convert_ubt_to_wbv, &
-       f_convert_ubt_to_wbv, f_d_convert_ubt_to_wbv, f_c_convert_ubt_to_wbv
+       f_convert_ubt_to_wbv, f_d_convert_ubt_to_wbv, f_c_convert_ubt_to_wbv, &
+       d_wbv_of_ubt, c_wbv_of_ubt, wbv       
 
   interface convert_ubt_to_wbv
      module procedure d_convert_ubt_to_wbv, c_convert_ubt_to_wbv
@@ -20,7 +21,33 @@ module mod_convert_ubt_to_wbv
      module procedure f_d_convert_ubt_to_wbv, f_c_convert_ubt_to_wbv
   end interface f_convert_ubt_to_wbv
 
+  interface wbv
+     module procedure d_wbv_of_ubt, c_wbv_of_ubt
+  end interface wbv
+
 contains
+
+  function d_wbv_of_ubt(ubt,error) result(wbv)
+    type(d_wbv) :: wbv
+    type(d_ubt), intent(in) :: ubt
+    type(error_info), intent(inout), optional :: error
+
+    type(d_ubt), allocatable :: ubt1
+    type(routine_info), parameter :: info=info_d_wbv_of_ubt
+
+    if (failure(error)) then
+       return
+    end if
+    call push_id(info, error)
+    
+    wbv=d_new_wbv(get_n(ubt), ubt%lbw, ubt%ubw)
+    ubt1=d_new_ubt(get_n(ubt),ubt%lbw+1,  ubt%ubw+1)
+    call copy(ubt,ubt1)
+    call d_convert_ubt_to_wbv(ubt1,wbv,error)
+
+    call pop_id(error)
+  end function d_wbv_of_ubt
+
 
   ! Errors:
   ! 0: no error
@@ -157,7 +184,27 @@ contains
     call bc_to_br(b_ubt, b_wbv, lbw, ubw)
   end subroutine f_d_convert_ubt_to_wbv
 
+  function c_wbv_of_ubt(ubt,error) result(wbv)
+    type(c_wbv) :: wbv
+    type(c_ubt), intent(in) :: ubt
+    type(error_info), intent(inout), optional :: error
 
+    type(c_ubt), allocatable :: ubt1
+    type(routine_info), parameter :: info=info_c_wbv_of_ubt
+
+    if (failure(error)) then
+       return
+    end if
+    call push_id(info, error)
+    
+    wbv=c_new_wbv(get_n(ubt), ubt%lbw, ubt%ubw)
+    ubt1=c_new_ubt(get_n(ubt),ubt%lbw+1,  ubt%ubw+1)
+    call copy(ubt,ubt1)
+    call c_convert_ubt_to_wbv(ubt1,wbv,error)
+
+    call pop_id(error)
+  end function c_wbv_of_ubt
+  
   ! Errors:
   ! 0: no error
   ! 1: n<1

@@ -26,7 +26,7 @@ program test_general_bv
   a_d=general_of(bv_d,error)
   a1_d=a_d
   call cpu_time(t0)
-  bv_d=bv_of_general(a_d,lbwa,lbwa,ubwa+1,tol,error)
+  bv_d=bv(a_d,lbwa,lbwa,ubwa+1,tol,error)
   call cpu_time(t1)
   a0_d=general_of(bv_d,error)
   test_name="Random Real BV;"  
@@ -39,7 +39,7 @@ program test_general_bv
   a_d=general_of(bv_d, error)
   a1_d=a_d
   call cpu_time(t0)
-  bv_d=bv_of_general(a_d,lbwa,lbwa,ubwa+1,tol, error)
+  bv_d=bv(a_d,lbwa,lbwa,ubwa+1,tol, error)
   call cpu_time(t1)
   a0_d=general_of(bv_d, error)
   test_name="Random Real Square Termination BV;"  
@@ -57,7 +57,7 @@ program test_general_bv
   a_c=general_of(bv_c,error)
   a1_c=a_c
   call cpu_time(t0)
-  bv_c=bv_of_general(a_c,lbwa,lbwa,ubwa+1,tol,error)
+  bv_c=bv(a_c,lbwa,lbwa,ubwa+1,tol,error)
   call cpu_time(t1)
   a0_c=general_of(bv_c)
   test_name="Random Complex BV;"  
@@ -71,7 +71,7 @@ program test_general_bv
   a_c=general_of(bv_c, error)
   a1_c=a_c
   call cpu_time(t0)
-  bv_c=bv_of_general(a_c,lbwa,lbwa,ubwa+1,tol,error)
+  bv_c=bv(a_c,lbwa,lbwa,ubwa+1,tol,error)
   call cpu_time(t1)
   a0_c=general_of(bv_c,error)
   test_name="Random Complex Square Termination BV;"  

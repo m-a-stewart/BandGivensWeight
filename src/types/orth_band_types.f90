@@ -477,7 +477,7 @@ contains
     ub2%n=ub1%n
     ub2%lbw=ub1%lbw
     ub2%ubw=ub1%ubw
-    if ( ub2%ubwmax < ub1%ubwmax .or. ub2%ubwmax < ub1%ubwmax .or. &
+    if ( ub2%ubwmax < ub1%ubw .or. ub2%lbwmax < ub1%lbw .or. &
          size(ub2%bc,2) /= ub1%n ) then
        deallocate(ub2%bc, ub2%jsu, ub2%numrotsu, ub2%csu,ub2%ssu)
        allocate(ub2%bc(ub1%lbwmax+ub1%ubwmax+1,ub1%n), ub2%csu(ub1%ubwmax,ub1%n), &
@@ -498,7 +498,7 @@ contains
     ub2%n=ub1%n
     ub2%lbw=ub1%lbw
     ub2%ubw=ub1%ubw
-    if ( ub2%ubwmax < ub1%ubwmax .or. ub2%ubwmax < ub1%ubwmax .or. &
+    if ( ub2%ubwmax < ub1%ubw .or. ub2%lbwmax < ub1%lbw .or. &
          size(ub2%bc,2) /= ub1%n ) then
        deallocate(ub2%bc, ub2%jsu, ub2%numrotsu, ub2%csu, ub2%ssu)
        allocate(ub2%bc(ub1%lbwmax+ub1%ubwmax+1,ub1%n), ub2%csu(ub1%ubwmax,ub1%n), &
@@ -519,7 +519,7 @@ contains
     bt2%n=bt1%n
     bt2%lbw=bt1%lbw
     bt2%ubw=bt1%ubw
-    if ( bt2%ubwmax < bt1%ubwmax .or. bt2%ubwmax < bt1%ubwmax .or. &
+    if ( bt2%ubwmax < bt1%ubw .or. bt2%lbwmax < bt1%lbw .or. &
          size(bt2%br,1) /= bt1%n ) then
        deallocate(bt2%br, bt2%kst, bt2%numrotst, bt2%cst, bt2%sst)
        allocate(bt2%br(bt1%n,bt1%lbwmax+bt1%ubwmax+1), &
@@ -542,7 +542,7 @@ contains
     bt2%n=bt1%n
     bt2%lbw=bt1%lbw
     bt2%ubw=bt1%ubw
-    if ( bt2%ubwmax < bt1%ubwmax .or. bt2%ubwmax < bt1%ubwmax .or. &
+    if ( bt2%ubwmax < bt1%ubw .or. bt2%lbwmax < bt1%lbw .or. &
          size(bt2%br,1) /= bt1%n ) then
        deallocate(bt2%br, bt2%kst, bt2%numrotst, bt2%cst, bt2%sst)
        allocate(bt2%br(bt1%n,bt1%lbwmax+bt1%ubwmax+1), &
@@ -565,7 +565,7 @@ contains
     ubt2%n=ubt1%n
     ubt2%lbw=ubt1%lbw
     ubt2%ubw=ubt1%ubw
-    if ( ubt2%ubwmax < ubt1%ubwmax .or. ubt2%ubwmax < ubt1%ubwmax .or. &
+    if ( ubt2%ubwmax < ubt1%ubw .or. ubt2%lbwmax < ubt1%lbw .or. &
          size(ubt2%bc,2) /= ubt1%n ) then
        deallocate(ubt2%bc, ubt2%jsu, ubt2%numrotsu, ubt2%csu,ubt2%ssu, &
             ubt2%kst, ubt2%numrotst, ubt2%cst, ubt2%sst)
@@ -595,7 +595,7 @@ contains
     ubt2%n=ubt1%n
     ubt2%lbw=ubt1%lbw
     ubt2%ubw=ubt1%ubw
-    if ( ubt2%ubwmax < ubt1%ubwmax .or. ubt2%ubwmax < ubt1%ubwmax .or. &
+    if ( ubt2%ubwmax < ubt1%ubw .or. ubt2%lbwmax < ubt1%lbw .or. &
          size(ubt2%bc,2) /= ubt1%n ) then
        deallocate(ubt2%bc, ubt2%jsu, ubt2%numrotsu, ubt2%csu,ubt2%ssu, &
             ubt2%kst, ubt2%numrotst, ubt2%cst, ubt2%sst)
@@ -625,7 +625,7 @@ contains
     bv2%n=bv1%n
     bv2%lbw=bv1%lbw
     bv2%ubw=bv1%ubw
-    if ( bv2%ubwmax < bv1%ubwmax .or. bv2%ubwmax < bv1%ubwmax .or. &
+    if ( bv2%ubwmax < bv1%ubw .or. bv2%lbwmax < bv1%lbw .or. &
          size(bv2%br,1) /= bv1%n ) then
        deallocate(bv2%br, bv2%ksv, bv2%numrotsv, bv2%csv, bv2%ssv)
        allocate(bv2%br(bv1%n,bv1%lbwmax+bv1%ubwmax+1), bv2%csv(bv1%n,bv1%ubwmax), &
@@ -646,7 +646,7 @@ contains
     wb2%n=wb1%n
     wb2%lbw=wb1%lbw
     wb2%ubw=wb1%ubw
-    if ( wb2%ubwmax < wb1%ubwmax .or. wb2%ubwmax < wb1%ubwmax .or. &
+    if ( wb2%ubwmax < wb1%ubw .or. wb2%lbwmax < wb1%lbw .or. &
          size(wb2%bc,2) /= wb1%n ) then
        deallocate(wb2%bc, wb2%jsw, wb2%numrotsw, wb2%csw, wb2%ssw)
        allocate(wb2%bc(wb1%lbwmax+wb1%ubwmax+1,wb1%n), &
@@ -659,7 +659,7 @@ contains
     wb2%numrotsw=wb1%numrotsw
     wb2%csw(1:wb1%lbw,:)=wb1%csw(1:wb1%lbw,:)
     wb2%ssw(1:wb1%lbw,:)=wb1%ssw(1:wb1%lbw,:)
-    wb2%jsw(1:wb1%lbw,:)=wb1%jsw(1:wb1%ubw,:)
+    wb2%jsw(1:wb1%lbw,:)=wb1%jsw(1:wb1%lbw,:)
   end subroutine d_copy_wb
 
   subroutine d_copy_wbv(wbv1,wbv2)
@@ -668,7 +668,7 @@ contains
     wbv2%n=wbv1%n
     wbv2%lbw=wbv1%lbw
     wbv2%ubw=wbv1%ubw
-    if ( wbv2%ubwmax < wbv1%ubwmax .or. wbv2%ubwmax < wbv1%ubwmax .or. &
+    if ( wbv2%ubwmax < wbv1%ubw .or. wbv2%lbwmax < wbv1%lbw .or. &
          size(wbv2%br,1) /= wbv1%n ) then
        deallocate(wbv2%br, wbv2%ksv, wbv2%numrotsv, wbv2%csv, wbv2%ssv, &
             wbv2%jsw, wbv2%numrotsw, wbv2%csw, wbv2%ssw)
@@ -689,7 +689,7 @@ contains
     wbv2%numrotsw=wbv1%numrotsw
     wbv2%csw(1:wbv1%lbw,:)=wbv1%csw(1:wbv1%lbw,:)
     wbv2%ssw(1:wbv1%lbw,:)=wbv1%ssw(1:wbv1%lbw,:)
-    wbv2%jsw(1:wbv1%lbw,:)=wbv1%jsw(1:wbv1%ubw,:)
+    wbv2%jsw(1:wbv1%lbw,:)=wbv1%jsw(1:wbv1%lbw,:)
   end subroutine d_copy_wbv
 
   subroutine c_copy_bv(bv1,bv2)
@@ -699,7 +699,7 @@ contains
     bv2%lbw=bv1%lbw
     bv2%ubw=bv1%ubw
 
-    if ( bv2%ubwmax < bv1%ubwmax .or. bv2%ubwmax < bv1%ubwmax .or. &
+    if ( bv2%ubwmax < bv1%ubw .or. bv2%lbwmax < bv1%lbw .or. &
          size(bv2%br,1) /= bv1%n ) then
        deallocate(bv2%br, bv2%ksv, bv2%numrotsv, bv2%csv, bv2%ssv)
        allocate(bv2%br(bv1%n,bv1%lbwmax+bv1%ubwmax+1), bv2%csv(bv1%n,bv1%ubwmax), &
@@ -720,7 +720,7 @@ contains
     wb2%n=wb1%n
     wb2%lbw=wb1%lbw
     wb2%ubw=wb1%ubw
-    if ( wb2%ubwmax < wb1%ubwmax .or. wb2%ubwmax < wb1%ubwmax .or. &
+    if ( wb2%ubwmax < wb1%ubw .or. wb2%lbwmax < wb1%lbw .or. &
          size(wb2%bc,2) /= wb1%n ) then
        deallocate(wb2%bc, wb2%jsw, wb2%numrotsw, wb2%csw, wb2%ssw)
        allocate(wb2%bc(wb1%lbwmax+wb1%ubwmax+1,wb1%n), &
@@ -733,7 +733,7 @@ contains
     wb2%numrotsw=wb1%numrotsw
     wb2%csw(1:wb1%lbw,:)=wb1%csw(1:wb1%lbw,:)
     wb2%ssw(1:wb1%lbw,:)=wb1%ssw(1:wb1%lbw,:)
-    wb2%jsw(1:wb1%lbw,:)=wb1%jsw(1:wb1%ubw,:)
+    wb2%jsw(1:wb1%lbw,:)=wb1%jsw(1:wb1%lbw,:)
   end subroutine c_copy_wb
 
   subroutine c_copy_wbv(wbv1,wbv2)
@@ -742,7 +742,7 @@ contains
     wbv2%n=wbv1%n
     wbv2%lbw=wbv1%lbw
     wbv2%ubw=wbv1%ubw
-    if ( wbv2%ubwmax < wbv1%ubwmax .or. wbv2%ubwmax < wbv1%ubwmax .or. &
+    if ( wbv2%ubwmax < wbv1%ubw .or. wbv2%lbwmax < wbv1%lbw .or. &
          size(wbv2%br,1) /= wbv1%n ) then
        deallocate(wbv2%br, wbv2%ksv, wbv2%numrotsv, wbv2%csv, wbv2%ssv, &
             wbv2%jsw, wbv2%numrotsw, wbv2%csw, wbv2%ssw)
@@ -763,7 +763,7 @@ contains
     wbv2%numrotsw=wbv1%numrotsw
     wbv2%csw(1:wbv1%lbw,:)=wbv1%csw(1:wbv1%lbw,:)
     wbv2%ssw(1:wbv1%lbw,:)=wbv1%ssw(1:wbv1%lbw,:)
-    wbv2%jsw(1:wbv1%lbw,:)=wbv1%jsw(1:wbv1%ubw,:)
+    wbv2%jsw(1:wbv1%lbw,:)=wbv1%jsw(1:wbv1%lbw,:)
   end subroutine c_copy_wbv
 
   subroutine d_truncate_profile_ub(ub,lower,upper)

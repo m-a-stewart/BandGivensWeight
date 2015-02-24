@@ -10,7 +10,8 @@ module mod_convert_wbv_to_ubt
   private
 
   public :: convert_wbv_to_ubt, d_convert_wbv_to_ubt, c_convert_wbv_to_ubt, &
-       f_convert_wbv_to_ubt, f_d_convert_wbv_to_ubt, f_c_convert_wbv_to_ubt
+       f_convert_wbv_to_ubt, f_d_convert_wbv_to_ubt, f_c_convert_wbv_to_ubt, &
+       d_ubt_of_wbv, c_ubt_of_wbv, ubt
 
   interface convert_wbv_to_ubt
      module procedure d_convert_wbv_to_ubt, c_convert_wbv_to_ubt
@@ -20,7 +21,33 @@ module mod_convert_wbv_to_ubt
      module procedure f_d_convert_wbv_to_ubt, f_c_convert_wbv_to_ubt
   end interface f_convert_wbv_to_ubt
 
+  interface ubt
+     module procedure d_ubt_of_wbv, c_ubt_of_wbv
+  end interface ubt
+
 contains
+
+  function d_ubt_of_wbv(wbv,error) result(ubt)
+    type(d_ubt) :: ubt
+    type(d_wbv), intent(in) :: wbv
+    type(error_info), intent(inout), optional :: error
+
+    type(d_wbv), allocatable :: wbv1
+    type(routine_info), parameter :: info=info_d_ubt_of_wbv
+
+    if (failure(error)) then
+       return
+    end if
+    call push_id(info, error)
+    
+    ubt=d_new_ubt(get_n(wbv), wbv%lbw, wbv%ubw)
+    wbv1=d_new_wbv(get_n(wbv),wbv%lbw+1,  wbv%ubw+1)
+    call copy(wbv,wbv1)
+    call d_convert_wbv_to_ubt(wbv1,ubt,error)
+
+    call pop_id(error)
+  end function d_ubt_of_wbv
+
 
   ! Errors:
   ! 0: no error
@@ -157,6 +184,28 @@ contains
     end if
     call br_to_bc(b_wbv,b_ubt,lbw,ubw)
   end subroutine f_d_convert_wbv_to_ubt
+
+  function c_ubt_of_wbv(wbv,error) result(ubt)
+    type(c_ubt) :: ubt
+    type(c_wbv), intent(in) :: wbv
+    type(error_info), intent(inout), optional :: error
+
+    type(c_wbv), allocatable :: wbv1
+    type(routine_info), parameter :: info=info_c_ubt_of_wbv
+
+    if (failure(error)) then
+       return
+    end if
+    call push_id(info, error)
+    
+    ubt=c_new_ubt(get_n(wbv), wbv%lbw, wbv%ubw)
+    wbv1=c_new_wbv(get_n(wbv),wbv%lbw+1,  wbv%ubw+1)
+    call copy(wbv,wbv1)
+    call c_convert_wbv_to_ubt(wbv1,ubt,error)
+
+    call pop_id(error)
+  end function c_ubt_of_wbv
+  
 
   ! Errors:
   ! 0: no error

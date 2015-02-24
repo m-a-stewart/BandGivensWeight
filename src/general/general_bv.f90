@@ -15,11 +15,15 @@ module mod_general_bv
   public :: general_to_bv, d_general_to_bv, c_general_to_bv, &
        f_general_to_bv, f_d_general_to_bv, f_c_general_to_bv, &
        f_general_bv, f_d_general_bv, f_c_general_bv, &
-       d_bv_of_general, c_bv_of_general, bv_of_general
+       d_bv_of_general, c_bv_of_general, bv_of_general, bv
 
   interface bv_of_general
      module procedure d_bv_of_general, c_bv_of_general
   end interface bv_of_general
+
+  interface bv
+     module procedure d_bv_of_general, c_bv_of_general
+  end interface bv
 
   interface general_to_bv
      module procedure d_general_to_bv, c_general_to_bv

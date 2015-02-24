@@ -10,7 +10,8 @@ module mod_convert_ub_to_bv
   private
 
   public :: convert_ub_to_bv, d_convert_ub_to_bv, c_convert_ub_to_bv, &
-       f_convert_ub_to_bv, f_d_convert_ub_to_bv, f_c_convert_ub_to_bv
+       f_convert_ub_to_bv, f_d_convert_ub_to_bv, f_c_convert_ub_to_bv, &
+       d_bv_of_ub, c_bv_of_ub, bv
 
   interface convert_ub_to_bv
      module procedure d_convert_ub_to_bv, c_convert_ub_to_bv
@@ -20,7 +21,32 @@ module mod_convert_ub_to_bv
      module procedure f_d_convert_ub_to_bv, f_c_convert_ub_to_bv
   end interface f_convert_ub_to_bv
 
+  interface bv
+     module procedure d_bv_of_ub, c_bv_of_ub
+  end interface bv
+
 contains
+
+  function d_bv_of_ub(ub,error) result(bv)
+    type(d_bv) :: bv
+    type(d_ub), intent(in) :: ub
+    type(error_info), intent(inout), optional :: error
+
+    type(d_ub), allocatable :: ub1
+    type(routine_info), parameter :: info=info_d_bv_of_ub
+
+    if (failure(error)) then
+       return
+    end if
+    call push_id(info, error)
+    
+    bv=d_new_bv(get_n(ub), ub%lbw, ub%ubw)
+    ub1=d_new_ub(get_n(ub),ub%lbw,  ub%ubw+1)
+    call copy(ub,ub1)
+    call d_convert_ub_to_bv(ub1,bv,error)
+
+    call pop_id(error)
+  end function d_bv_of_ub
 
   ! Errors:
   ! 0: no error
@@ -43,6 +69,8 @@ contains
        call set_error(1, info, error); return
     end if
     if (get_ubwmax(ub) < ub%ubw+1 .and. ub%ubw < get_n(ub)-1) then
+       print *, ub%ubw
+       print *, get_ubwmax(ub)
        call set_error(2, info, error); return
     end if
     if (get_lbwmax(bv) < ub%lbw .or. get_ubwmax(bv) < ub%ubw) then
@@ -115,6 +143,27 @@ contains
     call bc_to_br(b_ub, b_bv, lbw, ubw)
   end subroutine f_d_convert_ub_to_bv
 
+  function c_bv_of_ub(ub,error) result(bv)
+    type(c_bv) :: bv
+    type(c_ub), intent(in) :: ub
+    type(error_info), intent(inout), optional :: error
+
+    type(c_ub), allocatable :: ub1
+    type(routine_info), parameter :: info=info_c_bv_of_ub
+
+    if (failure(error)) then
+       return
+    end if
+    call push_id(info, error)
+    
+    bv=c_new_bv(get_n(ub), ub%lbw, ub%ubw)
+    ub1=c_new_ub(get_n(ub),ub%lbw,  ub%ubw+1)
+    call copy(ub,ub1)
+    call c_convert_ub_to_bv(ub1,bv,error)
+    deallocate(ub1)
+    call pop_id(error)
+  end function c_bv_of_ub
+
   subroutine c_convert_ub_to_bv(ub, bv, error)
     type(c_ub) :: ub
     type(c_bv) :: bv
@@ -145,9 +194,8 @@ contains
   end subroutine c_convert_ub_to_bv
 
   subroutine f_c_convert_ub_to_bv(b_ub, n, lbw, ubw, lbwmax_ub, ubwmax_ub, numrotsu, &
-       jsu, csu, ssu, b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, &
-       ssv)
-    complex(kind=dp), dimension(lbwmax_ub+ubwmax_bv+1,n), intent(inout) :: b_ub
+       jsu, csu, ssu, b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, ssv)
+    complex(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(inout) :: b_ub
     integer(kind=int32), intent(in) :: n, lbw, ubw, lbwmax_ub, ubwmax_ub, lbwmax_bv, ubwmax_bv
     integer(kind=int32), dimension(n), intent(in) :: numrotsu
     integer(kind=int32), dimension(ubwmax_ub,n), intent(in) :: jsu
@@ -166,16 +214,15 @@ contains
     logical :: full_ubw
 
     b_bv(:,1:lbw+ubw+1)=(0.0_dp,0.0_dp); numrotsv=0
-    ssv(:,1:ubw)=(0.0_dp, 0.0_dp); csv(:,1:ubw)=0.0_dp
+    ssv(:,1:ubw)=(0.0_dp,0.0_dp); csv(:,1:ubw)=0.0_dp
     ksv(:,1:ubw)=0
     lbw_bv=lbw; ubw_bv=ubw
-
     if (n == 1) then
        b_bv(1,1)=b_ub(1,1);
        lbw_bv=0; ubw_bv=0; numrotsv=0; return
     end if
     ! must allow for temporary fill-in
-    ubw1=ubw+1; lbw1=lbw
+    lbw1=lbw
     if (ubw < n-1) then
        ubw1=ubw+1
        call shift(b_ub,1,0)
@@ -184,7 +231,7 @@ contains
        ubw1=ubw
        full_ubw=.true.
     end if
-    do k=1,n-2 ! trailing principal submatrix
+    do k=1,n-2 ! size of trailing principal submatrix
        do j=1,numrotsu(n-k)
           rot%cosine=csu(j,n-k); rot%sine=ssu(j,n-k)
           call rotation_times_tbc(rot,b_ub,n,lbw1,ubw1,n-k,0,jsu(j,n-k))
@@ -199,6 +246,7 @@ contains
           call tbc_times_rotation(b_ub,n,lbw1,ubw1,0,k+1,rot,j-1)
        end do
     end do
+    ! Store the results in b_bv
     if (.not. full_ubw) then
        call shift(b_ub,-1,0)
     end if

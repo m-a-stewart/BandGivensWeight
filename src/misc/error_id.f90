@@ -29,7 +29,7 @@ module mod_error_id
 
   type(routine_info), dimension(:), allocatable :: info_index
 
-  ! src/assemble/assemble.f90, 0000s
+  ! src/assemble/assemble.f90, 0000
   integer(int32), parameter :: mod_id_assemble=0
   integer(int32), parameter :: id_d_ub_to_general=mod_id_assemble + 1
   integer(int32), parameter :: id_f_d_ub_to_general=mod_id_assemble + 0002
@@ -145,107 +145,165 @@ module mod_error_id
   type(routine_info), parameter :: info_c_general_of_wbv=routine_info(id_c_general_of_wbv, &
        'c_general_of_wbv', [ character(len=error_message_length) :: '' ] )
 
-  ! src/convert/convert_bv_to_ub, 0100s
+  ! src/convert/convert_bv_to_ub, 0100
   integer(int32), parameter :: mod_id_convert_bv_to_ub=100
   integer(int32), parameter :: id_d_convert_bv_to_ub=mod_id_convert_bv_to_ub+0
-  integer(int32), parameter :: id_f_d_convert_bv_to_ub=mod_id_convert_bv_to_ub+2
+  integer(int32), parameter :: id_f_d_convert_bv_to_ub=mod_id_convert_bv_to_ub+1
+  integer(int32), parameter :: id_d_ub_of_bv=mod_id_convert_bv_to_ub+2
   integer(int32), parameter :: id_c_convert_bv_to_ub=mod_id_convert_bv_to_ub+3
   integer(int32), parameter :: id_f_c_convert_bv_to_ub=mod_id_convert_bv_to_ub+4
+  integer(int32), parameter :: id_c_ub_of_bv=mod_id_convert_bv_to_ub+5
 
   type(routine_info), parameter :: info_d_convert_bv_to_ub=routine_info(id_d_convert_bv_to_ub, &
        'd_convert_bv_to_ub', &
        [ character(len=error_message_length) :: 'n<1', 'Insufficient storage in bv.', &
        'Insufficient Storage in ub.', 'ub%n /= bv%n' ] )
 
+  type(routine_info), parameter :: info_d_ub_of_bv=routine_info(id_d_ub_of_bv, &
+       'd_ub_of_bv', &
+       [ character(len=error_message_length) :: '' ] )
+
   type(routine_info), parameter :: info_c_convert_bv_to_ub=routine_info(id_c_convert_bv_to_ub, &
        'c_convert_bv_to_ub', &
        [ character(len=error_message_length) :: 'n<1', 'Insufficient storage in bv.', &
        'Insufficient Storage in ub.', 'ub%n /= bv%n' ] )
 
-  ! src/convert/convert_ub_to_bv, 200s
+  type(routine_info), parameter :: info_c_ub_of_bv=routine_info(id_c_ub_of_bv, &
+       'c_ub_of_bv', &
+       [ character(len=error_message_length) :: '' ] )
+
+  ! src/convert/convert_ub_to_bv, 200
   integer(int32), parameter :: mod_id_convert_ub_to_bv=200
   integer(int32), parameter :: id_d_convert_ub_to_bv=mod_id_convert_ub_to_bv + 0
   integer(int32), parameter :: id_f_d_convert_ub_to_bv=mod_id_convert_ub_to_bv + 1
-  integer(int32), parameter :: id_c_convert_ub_to_bv=mod_id_convert_ub_to_bv + 2
-  integer(int32), parameter :: id_f_c_convert_ub_to_bv=mod_id_convert_ub_to_bv + 3
+  integer(int32), parameter :: id_d_bv_of_ub=mod_id_convert_ub_to_bv + 2
+  integer(int32), parameter :: id_c_convert_ub_to_bv=mod_id_convert_ub_to_bv + 3
+  integer(int32), parameter :: id_f_c_convert_ub_to_bv=mod_id_convert_ub_to_bv + 4
+  integer(int32), parameter :: id_c_bv_of_ub=mod_id_convert_ub_to_bv + 5
 
   type(routine_info), parameter :: info_d_convert_ub_to_bv=routine_info(id_d_convert_ub_to_bv, &
        'd_convert_ub_to_bv', &
        [ character(len=error_message_length) :: 'n<1', 'Insufficient storage in ub', &
        'Insufficient storage in bv.', 'ub%n /= bv%n' ] )
 
+  type(routine_info), parameter :: info_d_bv_of_ub=routine_info(id_d_bv_of_ub, &
+       'd_bv_of_ub', [ character(len=error_message_length) :: '' ] )
+  
   type(routine_info), parameter :: info_c_convert_ub_to_bv=routine_info(id_c_convert_ub_to_bv, &
        'c_convert_ub_to_bv', &
        [ character(len=error_message_length) :: 'Insufficient storage in ub', &
        'Insufficient storage in bv.', 'ub%n /= bv%n' ] )
 
+  type(routine_info), parameter :: info_c_bv_of_ub=routine_info(id_c_bv_of_ub, &
+       'c_bv_of_ub', [ character(len=error_message_length) :: '' ] )
+
   ! src/convert/convert_wb_to_bt, 300
   integer(int32), parameter :: mod_id_convert_wb_to_bt=300
   integer(int32), parameter :: id_d_convert_wb_to_bt=mod_id_convert_wb_to_bt + 0
   integer(int32), parameter :: id_f_d_convert_wb_to_bt=mod_id_convert_wb_to_bt + 1
-  integer(int32), parameter :: id_c_convert_wb_to_bt=mod_id_convert_wb_to_bt + 2
-  integer(int32), parameter :: id_f_c_convert_wb_to_bt=mod_id_convert_wb_to_bt + 3
+  integer(int32), parameter :: id_d_bt_of_wb=mod_id_convert_wb_to_bt + 2
+  integer(int32), parameter :: id_c_convert_wb_to_bt=mod_id_convert_wb_to_bt + 3
+  integer(int32), parameter :: id_f_c_convert_wb_to_bt=mod_id_convert_wb_to_bt + 4
+  integer(int32), parameter :: id_c_bt_of_wb=mod_id_convert_wb_to_bt + 5
 
   type(routine_info), parameter :: info_d_convert_wb_to_bt=routine_info(id_d_convert_wb_to_bt, &
        'd_convert_wb_to_bt', &
        [ character(len=error_message_length) :: 'n<1', 'Insufficient storage in wb.', &
        'Insufficient Storage in bt.', 'bt%n /= wb%n' ] )
 
+  type(routine_info), parameter :: info_d_bt_of_wb=routine_info(id_d_bt_of_wb, &
+       'd_bt_of_wb', &
+       [ character(len=error_message_length) :: '' ] )
+
   type(routine_info), parameter :: info_c_convert_wb_to_bt=routine_info(id_c_convert_wb_to_bt, &
        'c_convert_wb_to_bt', &
        [ character(len=error_message_length) :: 'n<1', 'Insufficient storage in wb.', &
        'Insufficient Storage in bt.', 'bt%n /= wb%n' ] )
 
+  type(routine_info), parameter :: info_c_bt_of_wb=routine_info(id_c_bt_of_wb, &
+       'c_bt_of_wb', &
+       [ character(len=error_message_length) :: '' ] )
+
   ! src/convert/convert_bt_to_wb, 400
   integer(int32), parameter :: mod_id_convert_bt_to_wb=400
   integer(int32), parameter :: id_d_convert_bt_to_wb=mod_id_convert_bt_to_wb + 0
   integer(int32), parameter :: id_f_d_convert_bt_to_wb=mod_id_convert_bt_to_wb + 1
-  integer(int32), parameter :: id_c_convert_bt_to_wb=mod_id_convert_bt_to_wb + 2
-  integer(int32), parameter :: id_f_c_convert_bt_to_wb=mod_id_convert_bt_to_wb + 3
-
+  integer(int32), parameter :: id_d_wb_of_bt=mod_id_convert_bt_to_wb + 2
+  integer(int32), parameter :: id_c_convert_bt_to_wb=mod_id_convert_bt_to_wb + 3
+  integer(int32), parameter :: id_f_c_convert_bt_to_wb=mod_id_convert_bt_to_wb + 4
+  integer(int32), parameter :: id_c_wb_of_bt=mod_id_convert_bt_to_wb + 5
+  
   type(routine_info), parameter :: info_d_convert_bt_to_wb=routine_info(id_d_convert_bt_to_wb, &
        'd_convert_bt_to_wb', &
        [ character(len=error_message_length) :: 'n<1', 'Insufficient storage in bt.', &
        'Insufficient Storage in wb.', 'wb%n /= bt%n' ] )
 
+  type(routine_info), parameter :: info_d_wb_of_bt=routine_info(id_d_wb_of_bt, &
+       'd_wb_of_bt', &
+       [ character(len=error_message_length) :: '' ] )
+  
   type(routine_info), parameter :: info_c_convert_bt_to_wb=routine_info(id_c_convert_bt_to_wb, &
        'c_convert_bt_to_wb', &
        [ character(len=error_message_length) :: 'n<1', 'Insufficient storage in bt.', &
        'Insufficient Storage in wb.', 'wb%n /= bt%n' ] )
 
+  type(routine_info), parameter :: info_c_wb_of_bt=routine_info(id_c_wb_of_bt, &
+       'c_wb_of_bt', &
+       [ character(len=error_message_length) :: '' ] )
+
   ! src/convert/convert_wbv_to_ubt, 500
   integer(int32), parameter :: mod_id_convert_wbv_to_ubt=500
   integer(int32), parameter :: id_d_convert_wbv_to_ubt=mod_id_convert_wbv_to_ubt + 0
   integer(int32), parameter :: id_f_d_convert_wbv_to_ubt=mod_id_convert_wbv_to_ubt + 1
-  integer(int32), parameter :: id_c_convert_wbv_to_ubt=mod_id_convert_wbv_to_ubt + 2
-  integer(int32), parameter :: id_f_c_convert_wbv_to_ubt=mod_id_convert_wbv_to_ubt + 3
+  integer(int32), parameter :: id_d_ubt_of_wbv=mod_id_convert_wbv_to_ubt + 2
+  integer(int32), parameter :: id_c_convert_wbv_to_ubt=mod_id_convert_wbv_to_ubt + 3
+  integer(int32), parameter :: id_f_c_convert_wbv_to_ubt=mod_id_convert_wbv_to_ubt + 4
+  integer(int32), parameter :: id_c_ubt_of_wbv=mod_id_convert_wbv_to_ubt + 5
 
   type(routine_info), parameter :: info_d_convert_wbv_to_ubt=routine_info(id_d_convert_wbv_to_ubt, &
        'd_convert_wbv_to_ubt', &
        [ character(len=error_message_length) :: 'n<1', 'Insufficient storage in wbv', &
        'Insufficient storage in ubt.', 'wbv%n /= ubt%n' ] )
 
+  type(routine_info), parameter :: info_d_ubt_of_wbv=routine_info(id_d_ubt_of_wbv, &
+       'd_ubt_of_wbv', &
+       [ character(len=error_message_length) :: '' ] )
+  
   type(routine_info), parameter :: info_c_convert_wbv_to_ubt=routine_info(id_c_convert_wbv_to_ubt, &
        'c_convert_wbv_to_ubt', &
        [ character(len=error_message_length) :: 'Insufficient storage in wbv', &
        'Insufficient storage in ubt.', 'wbv%n /= ubt%n' ] )
 
+  type(routine_info), parameter :: info_c_ubt_of_wbv=routine_info(id_c_ubt_of_wbv, &
+       'c_ubt_of_wbv', &
+       [ character(len=error_message_length) :: '' ] )
+
   ! src/convert/convert_ubt_to_wbv, 600
   integer(int32), parameter :: mod_id_convert_ubt_to_wbv=600
   integer(int32), parameter :: id_d_convert_ubt_to_wbv=mod_id_convert_ubt_to_wbv + 0
   integer(int32), parameter :: id_f_d_convert_ubt_to_wbv=mod_id_convert_ubt_to_wbv + 1
-  integer(int32), parameter :: id_c_convert_ubt_to_wbv=mod_id_convert_ubt_to_wbv + 2
-  integer(int32), parameter :: id_f_c_convert_ubt_to_wbv=mod_id_convert_ubt_to_wbv + 3
-
+  integer(int32), parameter :: id_d_wbv_of_ubt=mod_id_convert_ubt_to_wbv + 2
+  integer(int32), parameter :: id_c_convert_ubt_to_wbv=mod_id_convert_ubt_to_wbv + 3
+  integer(int32), parameter :: id_f_c_convert_ubt_to_wbv=mod_id_convert_ubt_to_wbv + 4
+  integer(int32), parameter :: id_c_wbv_of_ubt=mod_id_convert_ubt_to_wbv + 5
+  
   type(routine_info), parameter :: info_d_convert_ubt_to_wbv=routine_info(id_d_convert_ubt_to_wbv, &
        'd_convert_ubt_to_wbv', &
        [ character(len=error_message_length) :: 'n<1', 'Insufficient storage in ubt', &
        'Insufficient storage in wbv.', 'ubt%n /= wbv%n' ] )
 
+  type(routine_info), parameter :: info_d_wbv_of_ubt=routine_info(id_d_wbv_of_ubt, &
+       'd_wbv_of_ubt', &
+       [ character(len=error_message_length) :: '' ] )
+  
   type(routine_info), parameter :: info_c_convert_ubt_to_wbv=routine_info(id_c_convert_ubt_to_wbv, &
        'c_convert_ubt_to_wbv', &
        [ character(len=error_message_length) :: 'Insufficient storage in ubt', &
        'Insufficient storage in wbv.', 'ubt%n /= wbv%n' ] )
+
+  type(routine_info), parameter :: info_c_wbv_of_ubt=routine_info(id_c_wbv_of_ubt, &
+       'c_wbv_of_ubt', &
+       [ character(len=error_message_length) :: '' ] )
 
   ! src/general/general_bv, 700
   integer(int32), parameter :: mod_id_general_bv=700
@@ -385,7 +443,7 @@ module mod_error_id
        [ character(len=error_message_length) :: 'Insufficient general bandwidth.' ])
 
 
-  ! /src/general/general_wb 140s
+  ! /src/general/general_wb 1000
   integer(int32), parameter :: mod_id_general_wb=1000
   integer(int32), parameter :: id_d_wb_of_general=mod_id_general_wb + 0
   integer(int32), parameter :: id_d_general_to_wb=mod_id_general_wb + 1
@@ -524,7 +582,7 @@ module mod_error_id
        'f_c_general_wbv', &
        [ character(len=error_message_length) :: '' ])
 
-  ! src/orth/gs 170s
+  ! src/orth/gs 1300
   integer(int32), parameter :: mod_id_gs=1300
   integer(int32), parameter :: id_d_extend_gs_rows=mod_id_gs + 0
   integer(int32), parameter :: id_c_extend_gs_rows=mod_id_gs + 1
@@ -594,7 +652,7 @@ module mod_error_id
        'Not enough stroage for sweeps', 'Maxind or Minind out of bounds for sweeps.', &
        'Insufficient storage in bv', 'Insufficient storage in ub' ])
 
-  ! src/solve/back_solve 210s and 220s
+  ! src/solve/back_solve 1600
   integer(int32), parameter :: mod_id_back_solve=1600
   integer(int32), parameter :: id_d_back_solve_ub=mod_id_back_solve + 0
   integer(int32), parameter :: id_f_d_back_solve_ub=mod_id_back_solve + 1
@@ -974,27 +1032,39 @@ contains
 
        ! convert_bv_to_ub
        info_index(info_d_convert_bv_to_ub%routine_id)=info_d_convert_bv_to_ub
-       info_index(info_c_convert_bv_to_ub%routine_id)=info_c_convert_bv_to_ub       
+       info_index(info_d_ub_of_bv%routine_id)=info_d_ub_of_bv
+       info_index(info_c_convert_bv_to_ub%routine_id)=info_c_convert_bv_to_ub
+       info_index(info_c_ub_of_bv%routine_id)=info_c_ub_of_bv
 
        ! convert_ub_to_bv
        info_index(info_d_convert_ub_to_bv%routine_id)=info_d_convert_ub_to_bv
+       info_index(info_d_bv_of_ub%routine_id)=info_d_bv_of_ub
        info_index(info_c_convert_ub_to_bv%routine_id)=info_c_convert_ub_to_bv
+       info_index(info_c_bv_of_ub%routine_id)=info_c_bv_of_ub
        
        ! convert_wb_to_bt
        info_index(info_d_convert_wb_to_bt%routine_id)=info_d_convert_wb_to_bt
-       info_index(info_c_convert_wb_to_bt%routine_id)=info_c_convert_wb_to_bt       
+       info_index(info_d_bt_of_wb%routine_id)=info_d_bt_of_wb
+       info_index(info_c_convert_wb_to_bt%routine_id)=info_c_convert_wb_to_bt
+       info_index(info_c_bt_of_wb%routine_id)=info_c_bt_of_wb
 
        ! convert_bt_to_wb
        info_index(info_d_convert_bt_to_wb%routine_id)=info_d_convert_bt_to_wb
+       info_index(info_d_wb_of_bt%routine_id)=info_d_wb_of_bt
        info_index(info_c_convert_bt_to_wb%routine_id)=info_c_convert_bt_to_wb
+       info_index(info_c_wb_of_bt%routine_id)=info_c_wb_of_bt
 
        ! convert_wbv_to_ubt
        info_index(info_d_convert_wbv_to_ubt%routine_id)=info_d_convert_wbv_to_ubt
+       info_index(info_d_ubt_of_wbv%routine_id)=info_d_ubt_of_wbv
        info_index(info_c_convert_wbv_to_ubt%routine_id)=info_c_convert_wbv_to_ubt
-
+       info_index(info_c_ubt_of_wbv%routine_id)=info_c_ubt_of_wbv
+       
        ! convert_ubt_to_wbv
        info_index(info_d_convert_ubt_to_wbv%routine_id)=info_d_convert_ubt_to_wbv
+       info_index(info_d_wbv_of_ubt%routine_id)=info_d_wbv_of_ubt
        info_index(info_c_convert_ubt_to_wbv%routine_id)=info_c_convert_ubt_to_wbv
+       info_index(info_c_wbv_of_ubt%routine_id)=info_c_wbv_of_ubt
        
        ! general_bv
 

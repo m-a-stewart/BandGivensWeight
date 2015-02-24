@@ -2,394 +2,282 @@ program test_convert_ubt_and_wbv
   use mod_orth_rank
   use mod_test_data
   implicit none
-
   !
   ! Note: This does not cover large rank cases (e.g. ubw=n-1).
   !
 
   real(kind=dp) :: t0, t1
-  integer(kind=int32) :: na
+  integer(kind=int32) :: na, ubwa, lbwa
   type(error_info) :: error
-  integer, parameter :: n=50, rmaxl=13, lbwmax=rmaxl+5, rmaxu=11, ubwmax=rmaxu+5
-  real(kind=dp), parameter :: tol=1e-14, tol1=1e-14, tol2=1e-10
+  real(kind=dp), parameter :: tol=1e-15, c=2.0
   !
-  real(kind=dp), dimension(n,n) :: a, a0, a1
-  real(kind=dp), dimension(n,rmaxl) :: ul, ul0
-  real(kind=dp), dimension(n,rmaxu) :: uu, uu0
-  real(kind=dp), dimension(rmaxl,n) :: vl, vl0
-  real(kind=dp), dimension(rmaxu,n) :: vu, vu0 
-  real(kind=dp), dimension(n) :: d
-  complex(kind=dp), dimension(n,n) :: a_c, a0_c, a1_c
-  complex(kind=dp), dimension(n,rmaxl) :: ul_c, ul0_c
-  complex(kind=dp), dimension(n,rmaxu) :: uu_c, uu0_c
-  complex(kind=dp), dimension(rmaxl,n) :: vl_c, vl0_c
-  complex(kind=dp), dimension(rmaxu,n) :: vu_c, vu0_c
-  complex(kind=dp), dimension(n) :: d_c
+  real(kind=dp), dimension(:,:), allocatable :: a0_d, a1_d
+  complex(kind=dp), dimension(:,:), allocatable :: a0_c, a1_c
 
-  type(d_ubt), allocatable :: ubt_d, ubt_na_d
-  type(c_ubt), allocatable :: ubt_c, ubt_na_c
-  type(d_wbv), allocatable :: wbv_d, wbv_na_d
-  type(c_wbv), allocatable :: wbv_c, wbv_na_c
+  type(d_wbv), allocatable :: wbv_d
+  type(c_wbv), allocatable :: wbv_c
+  type(d_ubt), allocatable :: ubt_d
+  type(c_ubt), allocatable :: ubt_c
 
   call initialize_errors
 
-  ubt_d=d_new_ubt(n,lbwmax,ubwmax)
-  ubt_c=c_new_ubt(n,lbwmax,ubwmax)
-  wbv_d=d_new_wbv(n,lbwmax,ubwmax)
-  wbv_c=c_new_wbv(n,lbwmax,ubwmax)
-
-  ! real
-  call random_seed
-  call random_matrix(ul)
-  call random_matrix(vl)
-  call random_matrix(uu)
-  call random_matrix(vu)
-  call random_matrix(d)
-  ul0=ul; vl0=vl
-  uu0=uu; vu0=vu
-  call random_matrix(ul_c)
-  call random_matrix(vl_c)
-  call random_matrix(uu_c)
-  call random_matrix(vu_c)
-  call random_matrix(d_c)
-  ul0_c=ul_c; vl0_c=vl_c
-  uu0_c=uu_c; vu0_c=vu_c
   print *
   print *, "--------------------------------"
   print *
-  print *, "Real UBT and WBV Conversion Tests:"
+  print *, "Real WBV and UBT Conversion Tests:"
   print *
-  ! ubt to wbv
-  call d_assemble_general(a,ul,vl,uu,vu,d)
-  a0=a
-  call general_to_ubt(a,ubt_d,tol,error)
+  na=40
+  lbwa=5; ubwa=3
+  wbv_d=d_random_wbv(na,lbwa,ubwa,error=error)
+  a0_d=general_of(wbv_d,error)
   call cpu_time(t0)
-  call convert_ubt_to_wbv(ubt_d, wbv_d, error)
+  ubt_d=ubt(wbv_d,error)
   call cpu_time(t1)
-  call wbv_to_general(wbv_d,a1,error)
-  test_name = "Real UBT to WBV;"
-  call d_output_result_lower_upper(test_name,a0,a1,rmaxl,wbv_d%lbw, &
-       rmaxu,wbv_d%ubw,t0,t1,tol2,error)
+  a1_d=general_of(ubt_d,error)
+  test_name = "Real WBV to UBT, n=40;"
+  call d_output_result_lower_upper(test_name,a0_d,a1_d,lbwa,ubt_d%lbw, &
+       ubwa, ubt_d%ubw, t0,t1,c*tol,error)
+
+  na=1
+  lbwa=0; ubwa=0
+  wbv_d=d_random_wbv(na,lbwa,ubwa,error=error)
+  a0_d=general_of(wbv_d,error)
+  call cpu_time(t0)
+  ubt_d=ubt(wbv_d,error)
+  call cpu_time(t1)
+  a1_d=general_of(ubt_d,error)
+  test_name = "Real WBV to UBT, n=1;"
+  call d_output_result_lower_upper(test_name,a0_d,a1_d,lbwa,ubt_d%lbw, &
+       ubwa, ubt_d%ubw, t0,t1,c*tol,error)
+
+
+  na=2
+  lbwa=1; ubwa=1
+  wbv_d=d_random_wbv(na,lbwa,ubwa,error=error)
+  a0_d=general_of(wbv_d,error)
+  call cpu_time(t0)
+  ubt_d=ubt(wbv_d,error)
+  call cpu_time(t1)
+  a1_d=general_of(ubt_d,error)
+  test_name = "Real WBV to UBT, n=2;"
+  call d_output_result_lower_upper(test_name,a0_d,a1_d,lbwa,ubt_d%lbw, &
+       ubwa, ubt_d%ubw, t0,t1,c*tol,error)
+
   
-  na=1
-  ubt_na_d=d_new_ubt(na,lbwmax,ubwmax)
-  wbv_na_d=d_new_wbv(na,lbwmax,ubwmax)
-  ul=ul0; vl=vl0
-  uu=uu0; vu=vu0
-  call d_assemble_general(a(1:na,1:na),ul(1:na,:),vl(:,1:na),uu(1:na,:),vu(:,1:na),d(1:na))
-  a0(1:na,1:na)=a(1:na,1:na)
-  call general_to_ubt(a(1:na,1:na),ubt_na_d,tol1,error)
-  call cpu_time(t0)
-  call convert_ubt_to_wbv(ubt_na_d, wbv_na_d,error)
-  call cpu_time(t1)
-  call wbv_to_general(wbv_na_d,a1(1:na,1:na),error)
-  test_name = "Real UBT to WBV (n=1);"
-  call d_output_result_lower_upper(test_name,a0(1:na,1:na),a1(1:na,1:na),0,wbv_na_d%lbw,0, &
-       wbv_na_d%ubw,t0,t1,tol2,error)
-  deallocate(ubt_na_d,wbv_na_d)
-
-  na=2
-  ubt_na_d=d_new_ubt(na,lbwmax,ubwmax)
-  wbv_na_d=d_new_wbv(na,lbwmax,ubwmax)
-  ul=ul0; vl=vl0
-  uu=uu0; vu=vu0
-  call d_assemble_general(a(1:na,1:na),ul(1:na,:),vl(:,1:na),uu(1:na,:),vu(:,1:na),d(1:na))
-  a0(1:na,1:na)=a(1:na,1:na)
-  call general_to_ubt(a(1:na,1:na),ubt_na_d,tol1,error)
-  call cpu_time(t0)
-  call convert_ubt_to_wbv(ubt_na_d, wbv_na_d,error)
-  call cpu_time(t1)
-  call wbv_to_general(wbv_na_d,a1(1:na,1:na),error)
-  test_name = "Real UBT to WBV (n=2);"
-  call d_output_result_lower_upper(test_name,a0(1:na,1:na),a1(1:na,1:na),1,wbv_na_d%lbw,1, &
-       wbv_na_d%ubw,t0,t1,tol2,error)
-  deallocate(ubt_na_d,wbv_na_d)
-
   na=3
-  ubt_na_d=d_new_ubt(na,lbwmax,ubwmax)
-  wbv_na_d=d_new_wbv(na,lbwmax,ubwmax)
-  ul=ul0; vl=vl0
-  uu=uu0; vu=vu0
-  call d_assemble_general(a(1:na,1:na),ul(1:na,:),vl(:,1:na),uu(1:na,:),vu(:,1:na),d(1:na))
-  a0(1:na,1:na)=a(1:na,1:na)
-  call general_to_ubt(a(1:na,1:na),ubt_na_d,tol1,error)
+  lbwa=1; ubwa=1
+  wbv_d=d_random_wbv(na,lbwa,ubwa,error=error)
+  a0_d=general_of(wbv_d,error)
   call cpu_time(t0)
-  call convert_ubt_to_wbv(ubt_na_d, wbv_na_d,error)
+  ubt_d=ubt(wbv_d,error)
   call cpu_time(t1)
-  call wbv_to_general(wbv_na_d,a1(1:na,1:na),error)
-  test_name = "Real UBT to WBV (n=3);"
-  call d_output_result_lower_upper(test_name,a0(1:na,1:na),a1(1:na,1:na),1,wbv_na_d%lbw,1, &
-       wbv_na_d%ubw,t0,t1,tol2,error)
-  deallocate(ubt_na_d,wbv_na_d)
+  a1_d=general_of(ubt_d,error)
+  test_name = "Real WBV to UBT, n=3;"
+  call d_output_result_lower_upper(test_name,a0_d,a1_d,lbwa,ubt_d%lbw, &
+       ubwa, ubt_d%ubw, t0,t1,c*tol,error)
+
 
   na=4
-  ubt_na_d=d_new_ubt(na,lbwmax,ubwmax)
-  wbv_na_d=d_new_wbv(na,lbwmax,ubwmax)
-  ul=ul0; vl=vl0
-  uu=uu0; vu=vu0
-  call d_assemble_general(a(1:na,1:na),ul(1:na,:),vl(:,1:na),uu(1:na,:),vu(:,1:na),d(1:na))
-  a0(1:na,1:na)=a(1:na,1:na)
-  call general_to_ubt(a(1:na,1:na),ubt_na_d,tol1,error)
+  lbwa=2; ubwa=2
+  wbv_d=d_random_wbv(na,lbwa,ubwa,error=error)
+  a0_d=general_of(wbv_d,error)
   call cpu_time(t0)
-  call convert_ubt_to_wbv(ubt_na_d, wbv_na_d,error)
+  ubt_d=ubt(wbv_d,error)
   call cpu_time(t1)
-  call wbv_to_general(wbv_na_d,a1(1:na,1:na),error)
-  test_name = "Real UBT to WBV (n=2);"
-  call d_output_result_lower_upper(test_name,a0(1:na,1:na),a1(1:na,1:na),2,wbv_na_d%lbw,2, &
-       wbv_na_d%ubw,t0,t1,tol2,error)
-  deallocate(ubt_na_d,wbv_na_d)
-
-  ! wbv to ubt
-  ul=ul0; vl=vl0
-  uu=uu0; vu=vu0
-  call d_assemble_general(a,ul,vl,uu,vu,d)
-  a0=a
-  call general_to_wbv(a,wbv_d,tol,error)
+  a1_d=general_of(ubt_d,error)
+  test_name = "Real WBV to UBT, n=4;"
+  call d_output_result_lower_upper(test_name,a0_d,a1_d,lbwa,ubt_d%lbw, &
+       ubwa, ubt_d%ubw, t0,t1,c*tol,error)
+  print *
+  
+  na=40
+  lbwa=5; ubwa=3
+  ubt_d=d_random_ubt(na,lbwa,ubwa,error=error)
+  a0_d=general_of(ubt_d,error)
   call cpu_time(t0)
-  call convert_wbv_to_ubt(wbv_d, ubt_d, error)
+  wbv_d=wbv(ubt_d,error)
   call cpu_time(t1)
-  call ubt_to_general(ubt_d,a1,error)
-  test_name = "Real WBV to UBT;"
-  call d_output_result_lower_upper(test_name,a0,a1,rmaxl,ubt_d%lbw, &
-       rmaxu,ubt_d%ubw,t0,t1,tol2,error)
+  a1_d=general_of(wbv_d,error)
+  test_name = "Real UBT to WBV, n=40;"
+  call d_output_result_lower_upper(test_name,a0_d,a1_d,lbwa,wbv_d%lbw, &
+       ubwa, wbv_d%ubw, t0,t1,c*tol,error)
 
   na=1
-  ubt_na_d=d_new_ubt(na,lbwmax,ubwmax)
-  wbv_na_d=d_new_wbv(na,lbwmax,ubwmax)
-  ul=ul0; vl=vl0
-  uu=uu0; vu=vu0
-  call d_assemble_general(a(1:na,1:na),ul(1:na,:),vl(:,1:na),uu(1:na,:),vu(:,1:na),d(1:na))
-  a0(1:na,1:na)=a(1:na,1:na)
-  call general_to_wbv(a(1:na,1:na),wbv_na_d,tol1,error)
+  lbwa=0; ubwa=0
+  ubt_d=d_random_ubt(na,lbwa,ubwa,error=error)
+  a0_d=general_of(ubt_d,error)
   call cpu_time(t0)
-  call convert_wbv_to_ubt(wbv_na_d, ubt_na_d,error)
+  wbv_d=wbv(ubt_d,error)
   call cpu_time(t1)
-  call ubt_to_general(ubt_na_d,a1(1:na,1:na),error)
-  test_name = "Real WBV to UBT (n=1);"
-  call d_output_result_lower_upper(test_name,a0(1:na,1:na),a1(1:na,1:na),0,ubt_na_d%lbw,0, &
-       ubt_na_d%ubw,t0,t1,tol2,error)
-  deallocate(ubt_na_d,wbv_na_d)
+  a1_d=general_of(wbv_d,error)
+  test_name = "Real UBT to WBV, n=1;"
+  call d_output_result_lower_upper(test_name,a0_d,a1_d,lbwa,wbv_d%lbw, &
+       ubwa, wbv_d%ubw, t0,t1,c*tol,error)
+
 
   na=2
-  ubt_na_d=d_new_ubt(na,lbwmax,ubwmax)
-  wbv_na_d=d_new_wbv(na,lbwmax,ubwmax)
-  ul=ul0; vl=vl0
-  uu=uu0; vu=vu0
-  call d_assemble_general(a(1:na,1:na),ul(1:na,:),vl(:,1:na),uu(1:na,:),vu(:,1:na),d(1:na))
-  a0(1:na,1:na)=a(1:na,1:na)
-  call general_to_wbv(a(1:na,1:na),wbv_na_d,tol1,error)
+  lbwa=1; ubwa=1
+  ubt_d=d_random_ubt(na,lbwa,ubwa,error=error)
+  a0_d=general_of(ubt_d,error)
   call cpu_time(t0)
-  call convert_wbv_to_ubt(wbv_na_d, ubt_na_d,error)
+  wbv_d=wbv(ubt_d,error)
   call cpu_time(t1)
-  call ubt_to_general(ubt_na_d,a1(1:na,1:na),error)
-  test_name = "Real WBV to UBT (n=2);"
-  call d_output_result_lower_upper(test_name,a0(1:na,1:na),a1(1:na,1:na),1,ubt_na_d%lbw,1, &
-       ubt_na_d%ubw,t0,t1,tol2,error)
-  deallocate(ubt_na_d,wbv_na_d)
+  a1_d=general_of(wbv_d,error)
+  test_name = "Real UBT to WBV, n=2;"
+  call d_output_result_lower_upper(test_name,a0_d,a1_d,lbwa,wbv_d%lbw, &
+       ubwa, wbv_d%ubw, t0,t1,c*tol,error)
+
 
   na=3
-  ubt_na_d=d_new_ubt(na,lbwmax,ubwmax)
-  wbv_na_d=d_new_wbv(na,lbwmax,ubwmax)
-  ul=ul0; vl=vl0
-  uu=uu0; vu=vu0
-  call d_assemble_general(a(1:na,1:na),ul(1:na,:),vl(:,1:na),uu(1:na,:),vu(:,1:na),d(1:na))
-  a0(1:na,1:na)=a(1:na,1:na)
-  call general_to_wbv(a(1:na,1:na),wbv_na_d,tol1,error)
+  lbwa=1; ubwa=1
+  ubt_d=d_random_ubt(na,lbwa,ubwa,error=error)
+  a0_d=general_of(ubt_d,error)
   call cpu_time(t0)
-  call convert_wbv_to_ubt(wbv_na_d, ubt_na_d,error)
+  wbv_d=wbv(ubt_d,error)
   call cpu_time(t1)
-  call ubt_to_general(ubt_na_d,a1(1:na,1:na),error)
-  test_name = "Real WBV to UBT (n=3);"
-  call d_output_result_lower_upper(test_name,a0(1:na,1:na),a1(1:na,1:na),1,ubt_na_d%lbw,1, &
-       ubt_na_d%ubw,t0,t1,tol2,error)
-  deallocate(ubt_na_d,wbv_na_d)
+  a1_d=general_of(wbv_d,error)
+  test_name = "Real UBT to WBV, n=3;"
+  call d_output_result_lower_upper(test_name,a0_d,a1_d,lbwa,wbv_d%lbw, &
+       ubwa, wbv_d%ubw, t0,t1,c*tol,error)
 
   na=4
-  ubt_na_d=d_new_ubt(na,lbwmax,ubwmax)
-  wbv_na_d=d_new_wbv(na,lbwmax,ubwmax)
-  ul=ul0; vl=vl0
-  uu=uu0; vu=vu0
-  call d_assemble_general(a(1:na,1:na),ul(1:na,:),vl(:,1:na),uu(1:na,:),vu(:,1:na),d(1:na))
-  a0(1:na,1:na)=a(1:na,1:na)
-  call general_to_wbv(a(1:na,1:na),wbv_na_d,tol1,error)
+  lbwa=2; ubwa=2
+  ubt_d=d_random_ubt(na,lbwa,ubwa,error=error)
+  a0_d=general_of(ubt_d,error)
   call cpu_time(t0)
-  call convert_wbv_to_ubt(wbv_na_d, ubt_na_d,error)
+  wbv_d=wbv(ubt_d,error)
   call cpu_time(t1)
-  call ubt_to_general(ubt_na_d,a1(1:na,1:na),error)
-  test_name = "Real WBV to UBT (n=4);"
-  call d_output_result_lower_upper(test_name,a0(1:na,1:na),a1(1:na,1:na),2,ubt_na_d%lbw,2, &
-       ubt_na_d%ubw,t0,t1,tol2,error)
-  deallocate(ubt_na_d,wbv_na_d)
+  a1_d=general_of(wbv_d,error)
+  test_name = "Real UBT to WBV, n=4;"
+  call d_output_result_lower_upper(test_name,a0_d,a1_d,lbwa,wbv_d%lbw, &
+       ubwa, wbv_d%ubw, t0,t1,c*tol,error)
 
   print *
   print *, "--------------------------------"
   print *
-  print *, "Complex UBT and WBV Conversion Tests:"
+  print *, "Complex WBV and UBT Conversion Tests:"
   print *
 
-  call c_assemble_general(a_c,ul_c,vl_c,uu_c,vu_c,d_c)
-  a0_c=a_c
-  call general_to_ubt(a_c,ubt_c,tol,error)
+  na=40
+  lbwa=5; ubwa=3
+  wbv_c=c_random_wbv(na,lbwa,ubwa,error=error)
+  a0_c=general_of(wbv_c,error)
   call cpu_time(t0)
-  call convert_ubt_to_wbv(ubt_c, wbv_c, error)
+  ubt_c=ubt(wbv_c,error)
   call cpu_time(t1)
-  call wbv_to_general(wbv_c,a1_c,error)
-  test_name = "Complex UBT to WBV;"
-  call c_output_result_lower_upper(test_name,a0_c,a1_c,rmaxl,wbv_c%lbw, &
-       rmaxu,wbv_c%ubw,t0,t1,tol2,error)
+  a1_c=general_of(ubt_c,error)
+  test_name = "Complex WBV to UBT, n=40;"
+  call c_output_result_lower_upper(test_name,a0_c,a1_c,lbwa,ubt_c%lbw, &
+       ubwa, ubt_c%ubw, t0,t1,c*tol,error)
+
+  na=1
+  lbwa=0; ubwa=0
+  wbv_c=c_random_wbv(na,lbwa,ubwa,error=error)
+  a0_c=general_of(wbv_c,error)
+  call cpu_time(t0)
+  ubt_c=ubt(wbv_c,error)
+  call cpu_time(t1)
+  a1_c=general_of(ubt_c,error)
+  test_name = "Complex WBV to UBT, n=1;"
+  call c_output_result_lower_upper(test_name,a0_c,a1_c,lbwa,ubt_c%lbw, &
+       ubwa, ubt_c%ubw, t0,t1,c*tol,error)
+
+  na=2
+  lbwa=1; ubwa=1
+  wbv_c=c_random_wbv(na,lbwa,ubwa,error=error)
+  a0_c=general_of(wbv_c,error)
+  call cpu_time(t0)
+  ubt_c=ubt(wbv_c,error)
+  call cpu_time(t1)
+  a1_c=general_of(ubt_c,error)
+  test_name = "Complex WBV to UBT, n=2;"
+  call c_output_result_lower_upper(test_name,a0_c,a1_c,lbwa,ubt_c%lbw, &
+       ubwa, ubt_c%ubw, t0,t1,c*tol,error)
   
-  na=1
-  ubt_na_c=c_new_ubt(na,lbwmax,ubwmax)
-  wbv_na_c=c_new_wbv(na,lbwmax,ubwmax)
-  ul_c=ul0_c; vl_c=vl0_c
-  uu_c=uu0_c; vu_c=vu0_c
-  call c_assemble_general(a_c(1:na,1:na),ul_c(1:na,:),vl_c(:,1:na),uu_c(1:na,:),vu_c(:,1:na),&
-       d_c(1:na))
-  a0_c(1:na,1:na)=a_c(1:na,1:na)
-  call general_to_ubt(a_c(1:na,1:na),ubt_na_c,tol1,error)
-  call cpu_time(t0)
-  call convert_ubt_to_wbv(ubt_na_c, wbv_na_c,error)
-  call cpu_time(t1)
-  call wbv_to_general(wbv_na_c,a1_c(1:na,1:na),error)
-  test_name = "Complex UBT to WBV (n=1);"
-  call c_output_result_lower_upper(test_name,a0_c(1:na,1:na),a1_c(1:na,1:na),0,wbv_na_c%lbw,0, &
-       wbv_na_c%ubw,t0,t1,tol2,error)
-  deallocate(ubt_na_c,wbv_na_c)
-
-  na=2
-  ubt_na_c=c_new_ubt(na,lbwmax,ubwmax)
-  wbv_na_c=c_new_wbv(na,lbwmax,ubwmax)
-  ul_c=ul0_c; vl_c=vl0_c
-  uu_c=uu0_c; vu_c=vu0_c
-  call c_assemble_general(a_c(1:na,1:na),ul_c(1:na,:),vl_c(:,1:na),uu_c(1:na,:),vu_c(:,1:na),&
-       d_c(1:na))
-  a0_c(1:na,1:na)=a_c(1:na,1:na)
-  call general_to_ubt(a_c(1:na,1:na),ubt_na_c,tol1,error)
-  call cpu_time(t0)
-  call convert_ubt_to_wbv(ubt_na_c, wbv_na_c,error)
-  call cpu_time(t1)
-  call wbv_to_general(wbv_na_c,a1_c(1:na,1:na),error)
-  test_name = "Complex UBT to WBV (n=2);"
-  call c_output_result_lower_upper(test_name,a0_c(1:na,1:na),a1_c(1:na,1:na),1,wbv_na_c%lbw,1, &
-       wbv_na_c%ubw,t0,t1,tol2,error)
-  deallocate(ubt_na_c,wbv_na_c)
-
   na=3
-  ubt_na_c=c_new_ubt(na,lbwmax,ubwmax)
-  wbv_na_c=c_new_wbv(na,lbwmax,ubwmax)
-  ul_c=ul0_c; vl_c=vl0_c
-  uu_c=uu0_c; vu_c=vu0_c
-  call c_assemble_general(a_c(1:na,1:na),ul_c(1:na,:),vl_c(:,1:na),uu_c(1:na,:),vu_c(:,1:na),&
-       d_c(1:na))
-  a0_c(1:na,1:na)=a_c(1:na,1:na)
-  call general_to_ubt(a_c(1:na,1:na),ubt_na_c,tol1,error)
+  lbwa=1; ubwa=1
+  wbv_c=c_random_wbv(na,lbwa,ubwa,error=error)
+  a0_c=general_of(wbv_c,error)
   call cpu_time(t0)
-  call convert_ubt_to_wbv(ubt_na_c, wbv_na_c,error)
+  ubt_c=ubt(wbv_c,error)
   call cpu_time(t1)
-  call wbv_to_general(wbv_na_c,a1_c(1:na,1:na),error)
-  test_name = "Complex UBT to WBV (n=3);"
-  call c_output_result_lower_upper(test_name,a0_c(1:na,1:na),a1_c(1:na,1:na),1,wbv_na_c%lbw,1, &
-       wbv_na_c%ubw,t0,t1,tol2,error)
-  deallocate(ubt_na_c,wbv_na_c)
+  a1_c=general_of(ubt_c,error)
+  test_name = "Complex WBV to UBT, n=3;"
+  call c_output_result_lower_upper(test_name,a0_c,a1_c,lbwa,ubt_c%lbw, &
+       ubwa, ubt_c%ubw, t0,t1,c*tol,error)
 
   na=4
-  ubt_na_c=c_new_ubt(na,lbwmax,ubwmax)
-  wbv_na_c=c_new_wbv(na,lbwmax,ubwmax)
-  ul_c=ul0_c; vl_c=vl0_c
-  uu_c=uu0_c; vu_c=vu0_c
-  call c_assemble_general(a_c(1:na,1:na),ul_c(1:na,:),vl_c(:,1:na),uu_c(1:na,:),vu_c(:,1:na),&
-       d_c(1:na))
-  a0_c(1:na,1:na)=a_c(1:na,1:na)
-  call general_to_ubt(a_c(1:na,1:na),ubt_na_c,tol1,error)
+  lbwa=2; ubwa=2
+  wbv_c=c_random_wbv(na,lbwa,ubwa,error=error)
+  a0_c=general_of(wbv_c,error)
   call cpu_time(t0)
-  call convert_ubt_to_wbv(ubt_na_c, wbv_na_c,error)
+  ubt_c=ubt(wbv_c,error)
   call cpu_time(t1)
-  call wbv_to_general(wbv_na_c,a1_c(1:na,1:na),error)
-  test_name = "Complex UBT to WBV (n=4);"
-  call c_output_result_lower_upper(test_name,a0_c(1:na,1:na),a1_c(1:na,1:na),2,wbv_na_c%lbw,2, &
-       wbv_na_c%ubw,t0,t1,tol2,error)
-  deallocate(ubt_na_c,wbv_na_c)
-
-  ! wbv to ubt
-  ul_c=ul0_c; vl_c=vl0_c
-  uu_c=uu0_c; vu_c=vu0_c
-  call c_assemble_general(a_c,ul_c,vl_c,uu_c,vu_c,d_c)
-  a0_c=a_c
-  call general_to_wbv(a_c,wbv_c,tol,error)
+  a1_c=general_of(ubt_c,error)
+  test_name = "Complex WBV to UBT, n=4;"
+  call c_output_result_lower_upper(test_name,a0_c,a1_c,lbwa,ubt_c%lbw, &
+       ubwa, ubt_c%ubw, t0,t1,c*tol,error)
+  print *
+  
+  na=40
+  lbwa=5; ubwa=3
+  ubt_c=c_random_ubt(na,lbwa,ubwa,error=error)
+  a0_c=general_of(ubt_c,error)
   call cpu_time(t0)
-  call convert_wbv_to_ubt(wbv_c, ubt_c, error)
+  wbv_c=wbv(ubt_c,error)
   call cpu_time(t1)
-  call ubt_to_general(ubt_c,a1_c,error)
-  test_name = "Complex WBV to UBT;"
-  call c_output_result_lower_upper(test_name,a0_c,a1_c,rmaxl,ubt_c%lbw, &
-       rmaxu,ubt_c%ubw,t0,t1,tol2,error)
+  a1_c=general_of(wbv_c,error)
+  test_name = "Complex UBT to WBV, n=40;"
+  call c_output_result_lower_upper(test_name,a0_c,a1_c,lbwa,wbv_c%lbw, &
+       ubwa,wbv_c%ubw,t0,t1,c*tol,error)
 
   na=1
-  ubt_na_c=c_new_ubt(na,lbwmax,ubwmax)
-  wbv_na_c=c_new_wbv(na,lbwmax,ubwmax)
-  ul_c=ul0_c; vl_c=vl0_c
-  uu_c=uu0_c; vu_c=vu0_c
-  call c_assemble_general(a_c(1:na,1:na),ul_c(1:na,:),vl_c(:,1:na),uu_c(1:na,:),vu_c(:,1:na),d_c(1:na))
-  a0_c(1:na,1:na)=a_c(1:na,1:na)
-  call general_to_wbv(a_c(1:na,1:na),wbv_na_c,tol1,error)
+  lbwa=0; ubwa=0
+  ubt_c=c_random_ubt(na,lbwa,ubwa,error=error)
+  a0_c=general_of(ubt_c,error)
   call cpu_time(t0)
-  call convert_wbv_to_ubt(wbv_na_c, ubt_na_c,error)
+  wbv_c=wbv(ubt_c,error)
   call cpu_time(t1)
-  call ubt_to_general(ubt_na_c,a1_c(1:na,1:na),error)
-  test_name = "Complex WBV to UBT (n=1);"
-  call c_output_result_lower_upper(test_name,a0_c(1:na,1:na),a1_c(1:na,1:na),0,ubt_na_c%lbw,0, &
-       ubt_na_c%ubw,t0,t1,tol2,error)
-  deallocate(ubt_na_c,wbv_na_c)
+  a1_c=general_of(wbv_c,error)
+  test_name = "Complex UBT to WBV, n=1;"
+  call c_output_result_lower_upper(test_name,a0_c,a1_c,lbwa,wbv_c%lbw, &
+       ubwa,wbv_c%ubw,t0,t1,c*tol,error)
 
   na=2
-  ubt_na_c=c_new_ubt(na,lbwmax,ubwmax)
-  wbv_na_c=c_new_wbv(na,lbwmax,ubwmax)
-  ul_c=ul0_c; vl_c=vl0_c
-  uu_c=uu0_c; vu_c=vu0_c
-  call c_assemble_general(a_c(1:na,1:na),ul_c(1:na,:),vl_c(:,1:na),uu_c(1:na,:),vu_c(:,1:na),d_c(1:na))
-  a0_c(1:na,1:na)=a_c(1:na,1:na)
-  call general_to_wbv(a_c(1:na,1:na),wbv_na_c,tol1,error)
+  lbwa=1; ubwa=1
+  ubt_c=c_random_ubt(na,lbwa,ubwa,error=error)
+  a0_c=general_of(ubt_c,error)
   call cpu_time(t0)
-  call convert_wbv_to_ubt(wbv_na_c, ubt_na_c,error)
+  wbv_c=wbv(ubt_c,error)
   call cpu_time(t1)
-  call ubt_to_general(ubt_na_c,a1_c(1:na,1:na),error)
-  test_name = "Complex WBV to UBT (n=2);"
-  call c_output_result_lower_upper(test_name,a0_c(1:na,1:na),a1_c(1:na,1:na),1,ubt_na_c%lbw,1, &
-       ubt_na_c%ubw,t0,t1,tol2,error)
-  deallocate(ubt_na_c,wbv_na_c)
+  a1_c=general_of(wbv_c,error)
+  test_name = "Complex UBT to WBV, n=2;"
+  call c_output_result_lower_upper(test_name,a0_c,a1_c,lbwa,wbv_c%lbw, &
+       ubwa,wbv_c%ubw,t0,t1,c*tol,error)
 
   na=3
-  ubt_na_c=c_new_ubt(na,lbwmax,ubwmax)
-  wbv_na_c=c_new_wbv(na,lbwmax,ubwmax)
-  ul_c=ul0_c; vl_c=vl0_c
-  uu_c=uu0_c; vu_c=vu0_c
-  call c_assemble_general(a_c(1:na,1:na),ul_c(1:na,:),vl_c(:,1:na),uu_c(1:na,:),vu_c(:,1:na),d_c(1:na))
-  a0_c(1:na,1:na)=a_c(1:na,1:na)
-  call general_to_wbv(a_c(1:na,1:na),wbv_na_c,tol1,error)
+  lbwa=1; ubwa=1
+  ubt_c=c_random_ubt(na,lbwa,ubwa,error=error)
+  a0_c=general_of(ubt_c,error)
   call cpu_time(t0)
-  call convert_wbv_to_ubt(wbv_na_c, ubt_na_c,error)
+  wbv_c=wbv(ubt_c,error)
   call cpu_time(t1)
-  call ubt_to_general(ubt_na_c,a1_c(1:na,1:na),error)
-  test_name = "Complex WBV to UBT (n=3);"
-  call c_output_result_lower_upper(test_name,a0_c(1:na,1:na),a1_c(1:na,1:na),1,ubt_na_c%lbw,1, &
-       ubt_na_c%ubw,t0,t1,tol2,error)
-  deallocate(ubt_na_c,wbv_na_c)
+  a1_c=general_of(wbv_c,error)
+  test_name = "Complex UBT to WBV, n=3;"
+  call c_output_result_lower_upper(test_name,a0_c,a1_c,lbwa,wbv_c%lbw, &
+       ubwa,wbv_c%ubw,t0,t1,c*tol,error)
 
   na=4
-  ubt_na_c=c_new_ubt(na,lbwmax,ubwmax)
-  wbv_na_c=c_new_wbv(na,lbwmax,ubwmax)
-  ul_c=ul0_c; vl_c=vl0_c
-  uu_c=uu0_c; vu_c=vu0_c
-  call c_assemble_general(a_c(1:na,1:na),ul_c(1:na,:),vl_c(:,1:na),uu_c(1:na,:),vu_c(:,1:na),d_c(1:na))
-  a0_c(1:na,1:na)=a_c(1:na,1:na)
-  call general_to_wbv(a_c(1:na,1:na),wbv_na_c,tol1,error)
+  lbwa=2; ubwa=2
+  ubt_c=c_random_ubt(na,lbwa,ubwa,error=error)
+  a0_c=general_of(ubt_c,error)
   call cpu_time(t0)
-  call convert_wbv_to_ubt(wbv_na_c, ubt_na_c,error)
+  wbv_c=wbv(ubt_c,error)
   call cpu_time(t1)
-  call ubt_to_general(ubt_na_c,a1_c(1:na,1:na),error)
-  test_name = "Complex WBV to UBT (n=4);"
-  call c_output_result_lower_upper(test_name,a0_c(1:na,1:na),a1_c(1:na,1:na),2,ubt_na_c%lbw,2, &
-       ubt_na_c%ubw,t0,t1,tol2,error)
-  deallocate(ubt_na_c,wbv_na_c)
+  a1_c=general_of(wbv_c,error)
+  test_name = "Complex UBT to WBV, n=4;"
+  call c_output_result_lower_upper(test_name,a0_c,a1_c,lbwa,wbv_c%lbw, &
+       ubwa,wbv_c%ubw,t0,t1,c*tol,error)
+
 
 end program test_convert_ubt_and_wbv

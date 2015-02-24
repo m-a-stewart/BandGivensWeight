@@ -9,7 +9,8 @@ module mod_convert_wb_to_bt
   private
 
   public :: convert_wb_to_bt, d_convert_wb_to_bt, c_convert_wb_to_bt, &
-       f_convert_wb_to_bt, f_d_convert_wb_to_bt, f_c_convert_wb_to_bt
+       f_convert_wb_to_bt, f_d_convert_wb_to_bt, f_c_convert_wb_to_bt, &
+       d_bt_of_wb, c_bt_of_wb, bt
 
   interface convert_wb_to_bt
      module procedure d_convert_wb_to_bt, c_convert_wb_to_bt
@@ -19,7 +20,33 @@ module mod_convert_wb_to_bt
      module procedure f_d_convert_wb_to_bt, f_c_convert_wb_to_bt
   end interface f_convert_wb_to_bt
 
+  interface bt
+     module procedure d_bt_of_wb, c_bt_of_wb
+  end interface bt
+
 contains
+
+  function d_bt_of_wb(wb,error) result(bt)
+    type(d_bt) :: bt
+    type(d_wb), intent(in) :: wb
+    type(error_info), intent(inout), optional :: error
+
+    type(d_wb), allocatable :: wb1
+    type(routine_info), parameter :: info=info_d_bt_of_wb
+
+    if (failure(error)) then
+       return
+    end if
+    call push_id(info, error)
+    
+    bt=d_new_bt(get_n(wb), wb%lbw, wb%ubw)
+    wb1=d_new_wb(get_n(wb),wb%lbw+1,  wb%ubw)
+    call copy(wb,wb1)
+    call d_convert_wb_to_bt(wb1,bt,error)
+
+    call pop_id(error)
+  end function d_bt_of_wb
+  
 
   ! Errors:
   ! 0: no error
@@ -113,6 +140,26 @@ contains
     call bc_to_br(b_wb,b_bt,lbw,ubw)
   end subroutine f_d_convert_wb_to_bt
 
+  function c_bt_of_wb(wb,error) result(bt)
+    type(c_bt) :: bt
+    type(c_wb), intent(in) :: wb
+    type(error_info), intent(inout), optional :: error
+
+    type(c_wb), allocatable :: wb1
+    type(routine_info), parameter :: info=info_c_bt_of_wb
+
+    if (failure(error)) then
+       return
+    end if
+    call push_id(info, error)
+    
+    bt=c_new_bt(get_n(wb), wb%lbw, wb%ubw)
+    wb1=c_new_wb(get_n(wb),wb%lbw+1,  wb%ubw)
+    call copy(wb,wb1)
+    call c_convert_wb_to_bt(wb1,bt,error)
+
+    call pop_id(error)
+  end function c_bt_of_wb
 
   ! Errors:
   ! 0: no error
