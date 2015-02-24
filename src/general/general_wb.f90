@@ -11,12 +11,16 @@ module mod_general_wb
   public :: f_general_wb, f_d_general_wb, f_c_general_wb, &
        f_general_to_wb, f_d_general_to_wb, f_c_general_to_wb, &
        general_to_wb, d_general_to_wb, c_general_to_wb, &
-       d_wb_of_general, c_wb_of_general, wb_of_general
+       d_wb_of_general, c_wb_of_general, wb_of_general, wb
 
   interface wb_of_general
      module procedure d_wb_of_general, c_wb_of_general
   end interface wb_of_general
 
+  interface wb
+     module procedure d_wb_of_general, c_wb_of_general
+  end interface wb
+  
   interface f_general_wb
      module procedure f_d_general_wb, f_c_general_wb
   end interface f_general_wb

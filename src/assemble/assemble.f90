@@ -26,8 +26,7 @@ module mod_assemble
        wbv_to_general, d_wbv_to_general, c_wbv_to_general, &
        d_general_of_wbv, c_general_of_wbv, &
        f_wbv_to_general, f_d_wbv_to_general, f_c_wbv_to_general, &
-       general_of, to_general
-  
+       general, to_general
 
   interface to_general
      module procedure d_ub_to_general, c_ub_to_general, d_bt_to_general, c_bt_to_general, &
@@ -35,11 +34,11 @@ module mod_assemble
           d_wb_to_general, c_wb_to_general, d_wbv_to_general, c_wbv_to_general
   end interface to_general
 
-  interface general_of
+  interface general
      module procedure d_general_of_ub, c_general_of_ub, d_general_of_bt, c_general_of_bt, &
           d_general_of_ubt, c_general_of_ubt, d_general_of_bv, c_general_of_bv, &
           d_general_of_wb, c_general_of_wb, d_general_of_wbv, c_general_of_wbv
-  end interface general_of
+  end interface general
 
   interface ub_to_general
      module procedure d_ub_to_general, c_ub_to_general

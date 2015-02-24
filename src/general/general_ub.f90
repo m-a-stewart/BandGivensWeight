@@ -15,12 +15,16 @@ module mod_general_ub
   public :: general_to_ub, d_general_to_ub, c_general_to_ub, &
        f_general_to_ub, f_d_general_to_ub, f_c_general_to_ub, &
        f_general_ub, f_d_general_ub, f_c_general_ub, &
-       d_ub_of_general, c_ub_of_general, ub_of_general
+       d_ub_of_general, c_ub_of_general, ub_of_general, ub
 
   interface ub_of_general
      module procedure d_ub_of_general, c_ub_of_general
   end interface ub_of_general
 
+  interface ub
+     module procedure d_ub_of_general, c_ub_of_general
+  end interface ub
+  
   interface general_to_ub
      module procedure d_general_to_ub, c_general_to_ub
   end interface general_to_ub

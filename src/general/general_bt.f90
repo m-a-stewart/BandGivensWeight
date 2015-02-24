@@ -12,12 +12,16 @@ module mod_general_bt
   public :: f_general_bt, f_d_general_bt, f_c_general_bt, &
        f_general_to_bt, f_d_general_to_bt, f_c_general_to_bt, &
        general_to_bt, d_general_to_bt, c_general_to_bt, &
-       d_bt_of_general, c_bt_of_general, bt_of_general
+       d_bt_of_general, c_bt_of_general, bt_of_general, bt
 
   interface bt_of_general
      module procedure d_bt_of_general, c_bt_of_general
   end interface bt_of_general
 
+  interface bt
+     module procedure d_bt_of_general, c_bt_of_general
+  end interface bt
+  
   interface f_general_bt
      module procedure f_d_general_bt, f_c_general_bt
   end interface f_general_bt

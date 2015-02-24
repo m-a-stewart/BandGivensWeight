@@ -24,25 +24,25 @@ program test_general_wbv
   na=40
   lbwa=5; ubwa=3
   wbv_d=d_random_wbv(na,lbwa,ubwa,error=error)
-  a_d=general_of(wbv_d,error)
+  a_d=general(wbv_d,error)
   a1_d=a_d
   call cpu_time(t0)
-  wbv_d=wbv_of_general(a_d,lbwa+1,ubwa+1,tol,error)
+  wbv_d=wbv(a_d,lbwa+1,ubwa+1,tol,error)
   call cpu_time(t1)
-  a0_d = general_of(wbv_d,error)
+  a0_d = general(wbv_d,error)
   test_name="Random Real WBV;"  
   call d_output_result_lower_upper(test_name,a0_d,a1_d,lbwa,wbv_d%lbw,&
        ubwa,wbv_d%ubw,t0,t1,c*tol,error)
 
   na=50
   lbwa=13; ubwa=3
-  wbv_d=d_random_wbv(na,(/ (lbwa-1, j=1,na-lbwa-1), (lbwa, j=na-lbwa,na) /), &
-       (/ (ubwa, j=1,na) /), error=error )
-  a_d=general_of(wbv_d,error)
+  wbv_d=d_random_wbv(na,[ (lbwa-1, j=1,na-lbwa-1), (lbwa, j=na-lbwa,na) ], &
+       [ (ubwa, j=1,na) ], error=error )
+  a_d=general(wbv_d,error)
   a1_d=a_d
-  wbv_d=wbv_of_general(a_d,lbwa+1,ubwa+1,tol,error)
+  wbv_d=wbv(a_d,lbwa+1,ubwa+1,tol,error)
   call cpu_time(t0)
-  a0_d = general_of(wbv_d,error)
+  a0_d = general(wbv_d,error)
   call cpu_time(t1)
   test_name="Random Real Square Termination WBV;"  
   call d_output_result_lower_upper(test_name,a0_d,a1_d,lbwa,wbv_d%lbw,&
@@ -60,26 +60,26 @@ program test_general_wbv
   na=40
   lbwa=5; ubwa=3
   wbv_c=c_random_wbv(na,lbwa,ubwa,error=error)
-  a_c=general_of(wbv_c,error)
+  a_c=general(wbv_c,error)
   a1_c=a_c
   call cpu_time(t0)
-  wbv_c=wbv_of_general(a_c, lbwa+1, ubwa+1, tol,error)
+  wbv_c=wbv(a_c, lbwa+1, ubwa+1, tol,error)
   call cpu_time(t1)
-  a0_c=general_of(wbv_c,error)
+  a0_c=general(wbv_c,error)
   test_name="Random Complex WBV;"  
   call c_output_result_lower_upper(test_name,a0_c,a1_c,lbwa,wbv_c%lbw, &
        ubwa,wbv_d%ubw,t0,t1,c*tol,error)
 
   na=50
   lbwa=13; ubwa=3
-  wbv_c=c_random_wbv(na,(/ (lbwa-1, j=1,na-lbwa-1), (lbwa, j=na-lbwa,na) /), &
-       (/ (ubwa, j=1,na) /), error=error )
-  a_c=general_of(wbv_c,error)
+  wbv_c=c_random_wbv(na,[ (lbwa-1, j=1,na-lbwa-1), (lbwa, j=na-lbwa,na) ], &
+       [ (ubwa, j=1,na) ], error=error )
+  a_c=general(wbv_c,error)
   a1_c=a_c
   call cpu_time(t0)
-  wbv_c=wbv_of_general(a_c,lbwa+1,ubwa+1,tol,error)
+  wbv_c=wbv(a_c,lbwa+1,ubwa+1,tol,error)
   call cpu_time(t1)
-  a0_c = general_of(wbv_c,error)
+  a0_c = general(wbv_c,error)
   test_name="Random Complex Square Termination WBV;"  
   call c_output_result_lower_upper(test_name,a0_c,a1_c,lbwa,wbv_c%lbw, &
        ubwa,wbv_d%ubw,t0,t1,c*tol,error)

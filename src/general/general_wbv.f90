@@ -12,11 +12,15 @@ module mod_general_wbv
   public :: f_general_wbv, f_d_general_wbv, f_c_general_wbv, &
        f_general_to_wbv, f_d_general_to_wbv, f_c_general_to_wbv, &
        general_to_wbv, d_general_to_wbv, c_general_to_wbv, &
-       d_wbv_of_general, c_wbv_of_general, wbv_of_general
+       d_wbv_of_general, c_wbv_of_general, wbv_of_general, wbv
 
   interface wbv_of_general
      module procedure d_wbv_of_general, c_wbv_of_general
   end interface wbv_of_general
+
+  interface wbv
+     module procedure d_wbv_of_general, c_wbv_of_general     
+  end interface wbv
   
   interface f_general_wbv
      module procedure f_d_general_wbv, f_c_general_wbv

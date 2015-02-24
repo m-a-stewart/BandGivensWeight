@@ -12,12 +12,16 @@ module mod_general_ubt
   public :: f_general_ubt, f_d_general_ubt, f_c_general_ubt, &
        f_general_to_ubt, f_d_general_to_ubt, f_c_general_to_ubt, &
        general_to_ubt, d_general_to_ubt, c_general_to_ubt, &
-       d_ubt_of_general, c_ubt_of_general, ubt_of_general
+       d_ubt_of_general, c_ubt_of_general, ubt_of_general, ubt
 
   interface ubt_of_general
      module procedure d_ubt_of_general, c_ubt_of_general
   end interface ubt_of_general
 
+  interface ubt
+     module procedure d_ubt_of_general, c_ubt_of_general
+  end interface ubt
+  
   interface f_general_ubt
      module procedure f_d_general_ubt, f_c_general_ubt
   end interface f_general_ubt
