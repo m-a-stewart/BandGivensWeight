@@ -652,16 +652,25 @@ module mod_error_id
        'Not enough stroage for sweeps', 'Maxind or Minind out of bounds for sweeps.', &
        'Insufficient storage in bv', 'Insufficient storage in ub' ])
 
-  ! src/solve/back_solve 1600
-  integer(int32), parameter :: mod_id_back_solve=1600
-  integer(int32), parameter :: id_d_back_solve_ub=mod_id_back_solve + 0
-  integer(int32), parameter :: id_f_d_back_solve_ub=mod_id_back_solve + 1
-  integer(int32), parameter :: id_c_back_solve_ub=mod_id_back_solve + 2
-  integer(int32), parameter :: id_f_c_back_solve_ub=mod_id_back_solve + 3
-  integer(int32), parameter :: id_d_v_back_solve_ub=mod_id_back_solve + 4
-  integer(int32), parameter :: id_f_d_v_back_solve_ub=mod_id_back_solve + 5
-  integer(int32), parameter :: id_c_v_back_solve_ub=mod_id_back_solve + 6
-  integer(int32), parameter :: id_f_c_v_back_solve_ub=mod_id_back_solve + 7
+  ! src/solve/solve 1600
+  integer(int32), parameter :: mod_id_solve=1600
+  integer(int32), parameter :: id_d_solve_ub=mod_id_solve + 0
+  integer(int32), parameter :: id_d_back_solve_ub=mod_id_solve + 1
+  integer(int32), parameter :: id_f_d_back_solve_ub=mod_id_solve + 2
+  integer(int32), parameter :: id_c_solve_ub=mod_id_solve + 3
+  integer(int32), parameter :: id_c_back_solve_ub=mod_id_solve + 4
+  integer(int32), parameter :: id_f_c_back_solve_ub=mod_id_solve + 5
+  integer(int32), parameter :: id_d_v_solve_ub=mod_id_solve + 6
+  integer(int32), parameter :: id_d_v_back_solve_ub=mod_id_solve + 7
+  integer(int32), parameter :: id_f_d_v_back_solve_ub=mod_id_solve + 8
+  integer(int32), parameter :: id_c_v_solve_ub=mod_id_solve + 9
+  integer(int32), parameter :: id_c_v_back_solve_ub=mod_id_solve + 10
+  integer(int32), parameter :: id_f_c_v_back_solve_ub=mod_id_solve + 11
+
+  type(routine_info), parameter :: info_d_solve_ub= &
+       routine_info(id_d_solve_ub, &
+       'd_solve_ub', &
+       [ character(len=error_message_length) :: '' ])
 
   type(routine_info), parameter :: info_d_back_solve_ub= &
        routine_info(id_d_back_solve_ub, &
@@ -669,11 +678,21 @@ module mod_error_id
        [ character(len=error_message_length) :: 'ub%n /= size(c,1)', 'ub%lbw /= 0', 'n < 1', &
        'x is not the same size as c.' ])
 
+  type(routine_info), parameter :: info_c_solve_ub= &
+       routine_info(id_c_solve_ub, &
+       'd_solve_ub', &
+       [ character(len=error_message_length) :: '' ])
+
   type(routine_info), parameter :: info_c_back_solve_ub= &
        routine_info(id_c_back_solve_ub, &
        'd_back_solve_ub', &
        [ character(len=error_message_length) :: 'ub%n /= size(c,1)', 'ub%lbw /= 0', 'n < 1', &
        'x is not the same size as c.' ])
+
+  type(routine_info), parameter :: info_d_v_solve_ub= &
+       routine_info(id_d_v_solve_ub, &
+       'd_v_solve_ub', &
+       [ character(len=error_message_length) :: '' ])
 
   type(routine_info), parameter :: info_d_v_back_solve_ub= &
        routine_info(id_d_v_back_solve_ub, &
@@ -681,20 +700,34 @@ module mod_error_id
        [ character(len=error_message_length) :: 'ub%n /= size(c)', 'ub%lbw /= 0', 'n < 1', &
        'x is not the same size as c.' ])
 
+  type(routine_info), parameter :: info_c_v_solve_ub= &
+       routine_info(id_c_v_solve_ub, &
+       'd_solve_ub', &
+       [ character(len=error_message_length) :: '' ])
+
   type(routine_info), parameter :: info_c_v_back_solve_ub= &
        routine_info(id_c_v_back_solve_ub, &
        'd_back_solve_ub', &
        [ character(len=error_message_length) :: 'ub%n /= size(c)', 'ub%lbw /= 0', 'n < 1', &
        'x is not the same size as c.' ])
 
-  integer(int32), parameter :: id_d_forward_solve_bv=mod_id_back_solve + 8
-  integer(int32), parameter :: id_f_d_forward_solve_bv=mod_id_back_solve + 9
-  integer(int32), parameter :: id_d_v_forward_solve_bv=mod_id_back_solve + 10
-  integer(int32), parameter :: id_f_d_v_forward_solve_bv=mod_id_back_solve + 11
-  integer(int32), parameter :: id_c_forward_solve_bv=mod_id_back_solve + 12
-  integer(int32), parameter :: id_f_c_forward_solve_bv=mod_id_back_solve + 13
-  integer(int32), parameter :: id_c_v_forward_solve_bv=mod_id_back_solve + 14
-  integer(int32), parameter :: id_f_c_v_forward_solve_bv=mod_id_back_solve + 15
+  integer(int32), parameter :: id_d_solve_bv=mod_id_solve + 12
+  integer(int32), parameter :: id_d_forward_solve_bv=mod_id_solve + 13
+  integer(int32), parameter :: id_f_d_forward_solve_bv=mod_id_solve + 14
+  integer(int32), parameter :: id_d_v_solve_bv=mod_id_solve + 15
+  integer(int32), parameter :: id_d_v_forward_solve_bv=mod_id_solve + 16
+  integer(int32), parameter :: id_f_d_v_forward_solve_bv=mod_id_solve + 17
+  integer(int32), parameter :: id_c_solve_bv=mod_id_solve + 18
+  integer(int32), parameter :: id_c_forward_solve_bv=mod_id_solve + 19
+  integer(int32), parameter :: id_f_c_forward_solve_bv=mod_id_solve + 20
+  integer(int32), parameter :: id_c_v_solve_bv=mod_id_solve + 21
+  integer(int32), parameter :: id_c_v_forward_solve_bv=mod_id_solve + 22
+  integer(int32), parameter :: id_f_c_v_forward_solve_bv=mod_id_solve + 23
+
+  type(routine_info), parameter :: info_d_solve_bv= &
+       routine_info(id_d_solve_bv, &
+       'd_solve_bv', &
+       [ character(len=error_message_length) :: '' ])
 
   type(routine_info), parameter :: info_d_forward_solve_bv= &
        routine_info(id_d_forward_solve_bv, &
@@ -702,17 +735,32 @@ module mod_error_id
        [ character(len=error_message_length) :: 'bv%n /= size(c,2)', 'bv%lbw /= 0', 'n < 1', &
        'x is not the same size as c.' ])
 
+  type(routine_info), parameter :: info_c_solve_bv= &
+       routine_info(id_c_solve_bv, &
+       'd_solve_bv', &
+       [ character(len=error_message_length) :: '' ])
+  
   type(routine_info), parameter :: info_c_forward_solve_bv= &
        routine_info(id_c_forward_solve_bv, &
        'd_forward_solve_bv', &
        [ character(len=error_message_length) :: 'bv%n /= size(c,2)', 'bv%lbw /= 0', 'n < 1', &
        'x is not the same size as c.' ])
 
+  type(routine_info), parameter :: info_d_v_solve_bv= &
+       routine_info(id_d_v_solve_bv, &
+       'd_v_solve_bv', &
+       [ character(len=error_message_length) :: '' ])
+
   type(routine_info), parameter :: info_d_v_forward_solve_bv= &
        routine_info(id_d_v_forward_solve_bv, &
        'd_v_forward_solve_bv', &
        [ character(len=error_message_length) :: 'bv%n /= size(c,2)', 'bv%lbw /= 0', 'n < 1', &
        'x is not the same size as c.' ])
+
+  type(routine_info), parameter :: info_c_v_solve_bv= &
+       routine_info(id_c_v_solve_bv, &
+       'd_solve_bv', &
+       [ character(len=error_message_length) :: '' ])
 
   type(routine_info), parameter :: info_c_v_forward_solve_bv= &
        routine_info(id_c_v_forward_solve_bv, &
@@ -1147,15 +1195,23 @@ contains
        info_index(info_c_qr_bv_to_ub%routine_id)=info_c_qr_bv_to_ub
        info_index(info_c_qr_of%routine_id)=info_c_qr_of
        
-       ! back_solve
+       ! solve
+       info_index(info_d_solve_ub%routine_id)=info_d_solve_ub
        info_index(info_d_back_solve_ub%routine_id)=info_d_back_solve_ub
+       info_index(info_c_solve_ub%routine_id)=info_c_solve_ub       
        info_index(info_c_back_solve_ub%routine_id)=info_c_back_solve_ub
+       info_index(info_d_v_solve_ub%routine_id)=info_d_v_solve_ub
        info_index(info_d_v_back_solve_ub%routine_id)=info_d_v_back_solve_ub
+       info_index(info_c_v_solve_ub%routine_id)=info_c_v_solve_ub
        info_index(info_c_v_back_solve_ub%routine_id)=info_c_v_back_solve_ub
 
+       info_index(info_d_solve_bv%routine_id)=info_d_solve_bv
        info_index(info_d_forward_solve_bv%routine_id)=info_d_forward_solve_bv
+       info_index(info_c_solve_bv%routine_id)=info_c_solve_bv       
        info_index(info_c_forward_solve_bv%routine_id)=info_c_forward_solve_bv
+       info_index(info_d_v_solve_bv%routine_id)=info_d_v_solve_bv
        info_index(info_d_v_forward_solve_bv%routine_id)=info_d_v_forward_solve_bv
+       info_index(info_c_v_solve_bv%routine_id)=info_c_v_solve_bv
        info_index(info_c_v_forward_solve_bv%routine_id)=info_c_v_forward_solve_bv
 
        ! row_compress

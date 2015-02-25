@@ -11,12 +11,19 @@ module mod_solve
   public :: back_solve_ub, d_back_solve_ub, c_back_solve_ub, &
           d_v_back_solve_ub, c_v_back_solve_ub, &
           f_back_solve_ub, f_d_back_solve_ub, f_c_back_solve_ub, &
-          f_d_v_back_solve_ub, f_c_v_back_solve_ub
+          f_d_v_back_solve_ub, f_c_v_back_solve_ub, &
+          d_solve_ub, d_v_solve_ub, c_solve_ub, c_v_solve_ub
 
   public :: forward_solve_bv, d_forward_solve_bv, c_forward_solve_bv, &
           d_v_forward_solve_bv, c_v_forward_solve_bv, &
           f_forward_solve_bv, f_d_forward_solve_bv, f_c_forward_solve_bv, &
-          f_d_v_forward_solve_bv, f_c_v_forward_solve_bv
+          f_d_v_forward_solve_bv, f_c_v_forward_solve_bv, &
+          d_solve_bv, d_v_solve_bv, c_solve_bv, c_v_solve_bv, solve
+
+  interface solve
+     module procedure d_solve_ub, d_v_solve_ub, c_solve_ub, c_v_solve_ub, &
+          d_solve_bv, d_v_solve_bv, c_solve_bv, c_v_solve_bv
+  end interface solve
 
   interface back_solve_ub
      module procedure d_back_solve_ub, c_back_solve_ub, &
@@ -40,6 +47,30 @@ module mod_solve
 
 contains
 
+  function d_solve_ub(ub,c,error) result(x)
+    real(kind=dp), dimension(:,:), allocatable :: x
+    real(kind=dp), dimension(:,:), intent(in) :: c
+    type(d_ub), intent(in) :: ub
+    type(error_info), intent(inout), optional :: error
+
+    real(kind=dp), dimension(:,:), allocatable :: c1
+    type(routine_info), parameter :: info=info_d_solve_ub
+
+    if (failure(error)) then
+       return
+    end if
+    call push_id(info,error)
+
+    c1=c
+    allocate(x(size(c,1),size(c,2)))
+    call d_back_solve_ub(ub,x,c1,error)
+    deallocate(c1)
+    
+    call pop_id(error)
+
+  end function d_solve_ub
+
+  
   ! Back solve routines.
   ! ub should represent an upper triangular matrix.  Solve ub*x=c.
   ! c is overwritten.
@@ -51,7 +82,7 @@ contains
   ! 3: n < 1
   ! 4: size(x,1) /= n or size(x,2) /= size(c,2)
   subroutine d_back_solve_ub(ub,x,c,error)
-    type(d_ub) :: ub
+    type(d_ub), intent(in) :: ub
     real(kind=dp), dimension(:,:), intent(inout) :: c
     real(kind=dp), dimension(:,:), intent(out) :: x
     type(error_info), intent(inout), optional :: error
@@ -82,8 +113,31 @@ contains
     call pop_id(error)
   end subroutine d_back_solve_ub
 
+  function d_v_solve_ub(ub,c,error) result(x)
+    real(kind=dp), dimension(:), allocatable :: x
+    real(kind=dp), dimension(:), intent(in) :: c
+    type(d_ub), intent(in) :: ub
+    type(error_info), intent(inout), optional :: error
+
+    real(kind=dp), dimension(:), allocatable :: c1
+    type(routine_info), parameter :: info=info_d_v_solve_ub
+
+    if (failure(error)) then
+       return
+    end if
+    call push_id(info,error)
+
+    c1=c
+    allocate(x(size(c)))
+    call d_v_back_solve_ub(ub,x,c1,error)
+    deallocate(c1)
+    
+    call pop_id(error)
+
+  end function d_v_solve_ub
+
   subroutine d_v_back_solve_ub(ub,x,c,error)
-    type(d_ub) :: ub
+    type(d_ub), intent(in) :: ub
     real(kind=dp), dimension(:), intent(inout) :: c
     real(kind=dp), dimension(:), intent(out) :: x
     type(error_info), intent(inout), optional :: error
@@ -193,8 +247,31 @@ contains
     end do
   end subroutine f_d_v_back_solve_ub
 
+  function c_solve_ub(ub,c,error) result(x)
+    complex(kind=dp), dimension(:,:), allocatable :: x
+    complex(kind=dp), dimension(:,:), intent(in) :: c
+    type(c_ub), intent(in) :: ub
+    type(error_info), intent(inout), optional :: error
+
+    complex(kind=dp), dimension(:,:), allocatable :: c1
+    type(routine_info), parameter :: info=info_c_solve_ub
+
+    if (failure(error)) then
+       return
+    end if
+    call push_id(info,error)
+
+    c1=c
+    allocate(x(size(c,1),size(c,2)))
+    call c_back_solve_ub(ub,x,c1,error)
+    deallocate(c1)
+    
+    call pop_id(error)
+
+  end function c_solve_ub
+
   subroutine c_back_solve_ub(ub,x,c,error)
-    type(c_ub) :: ub
+    type(c_ub), intent(in) :: ub
     complex(kind=dp), dimension(:,:), intent(inout) :: c
     complex(kind=dp), dimension(:,:), intent(out) :: x
     type(error_info), intent(inout), optional :: error
@@ -223,8 +300,31 @@ contains
     call pop_id(error)
   end subroutine c_back_solve_ub
 
+  function c_v_solve_ub(ub,c,error) result(x)
+    complex(kind=dp), dimension(:), allocatable :: x
+    complex(kind=dp), dimension(:), intent(in) :: c
+    type(c_ub), intent(in) :: ub
+    type(error_info), intent(inout), optional :: error
+
+    complex(kind=dp), dimension(:), allocatable :: c1
+    type(routine_info), parameter :: info=info_c_v_solve_ub
+
+    if (failure(error)) then
+       return
+    end if
+    call push_id(info,error)
+
+    c1=c
+    allocate(x(size(c)))
+    call c_v_back_solve_ub(ub,x,c1,error)
+    deallocate(c1)
+    
+    call pop_id(error)
+
+  end function c_v_solve_ub
+
   subroutine c_v_back_solve_ub(ub,x,c,error)
-    type(c_ub) :: ub
+    type(c_ub), intent(in) :: ub
     complex(kind=dp), dimension(:), intent(inout) :: c
     complex(kind=dp), dimension(:), intent(out) :: x
     type(error_info), intent(inout), optional :: error
@@ -337,8 +437,29 @@ contains
 
 
   ! Forward solve:
-  ! bv should represent an upper triangular matrix.  Solve x^T*ub=c^T.
+  ! bv should represent an upper triangular matrix.  Solve x^T*bv=c^T.
   ! c is overwritten.
+
+  function d_solve_bv(bv,c,error) result(x)
+    real(kind=dp), dimension(:,:), allocatable :: x
+    real(kind=dp), dimension(:,:), intent(in) :: c
+    type(d_bv), intent(in) :: bv
+    type(error_info), intent(inout), optional :: error
+
+    real(kind=dp), dimension(:,:), allocatable :: c1
+    type(routine_info), parameter :: info=info_d_solve_bv
+
+    if (failure(error)) return
+    call push_id(info,error)
+
+    c1=c
+    allocate(x(size(c,1),size(c,2)))
+    call d_forward_solve_bv(x,bv,c1,error)
+    deallocate(c1)
+    
+    call pop_id(error)
+
+  end function d_solve_bv
 
   ! Errors
   ! 0: no error
@@ -347,7 +468,7 @@ contains
   ! 3: n < 1
   ! 4: size(x,1) /= n or size(x,2) /= size(c,2)
   subroutine d_forward_solve_bv(x,bv,c,error)
-    type(d_bv) :: bv
+    type(d_bv), intent(in) :: bv
     real(kind=dp), dimension(:,:), intent(inout) :: c
     real(kind=dp), dimension(:,:), intent(out) :: x
     type(error_info), intent(inout), optional :: error
@@ -418,18 +539,37 @@ contains
     end do
   end subroutine f_d_forward_solve_bv
 
+  function d_v_solve_bv(bv,c,error) result(x)
+    real(kind=dp), dimension(:), allocatable :: x
+    real(kind=dp), dimension(:), intent(in) :: c
+    type(d_bv), intent(in) :: bv
+    type(error_info), intent(inout), optional :: error
+
+    real(kind=dp), dimension(:), allocatable :: c1
+    type(routine_info), parameter :: info=info_d_v_solve_bv
+
+    if (failure(error)) return
+    call push_id(info,error)
+
+    c1=c
+    allocate(x(size(c)))
+    call d_v_forward_solve_bv(x,bv,c1,error)
+    deallocate(c1)
+    
+    call pop_id(error)
+  end function d_v_solve_bv
+
   subroutine d_v_forward_solve_bv(x,bv,c,error)
-    type(d_bv) :: bv
+    type(d_bv), intent(in) :: bv
     real(kind=dp), dimension(:), intent(inout) :: c
     real(kind=dp), dimension(:), intent(out) :: x
     type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_d_v_forward_solve_bv
     integer(kind=int32) :: n
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
+
     n=size(c)
     if (get_n(bv) /= n) then
        call set_error(1, info, error); return
@@ -488,8 +628,30 @@ contains
 
   ! Complex forward
 
+  function c_solve_bv(bv,c,error) result(x)
+    complex(kind=dp), dimension(:,:), allocatable :: x
+    complex(kind=dp), dimension(:,:), intent(in) :: c
+    type(c_bv), intent(in) :: bv
+    type(error_info), intent(inout), optional :: error
+
+    complex(kind=dp), dimension(:,:), allocatable :: c1
+    type(routine_info), parameter :: info=info_c_solve_bv
+
+    if (failure(error)) return
+    call push_id(info,error)
+
+    c1=c
+    allocate(x(size(c,1),size(c,2)))
+    call c_forward_solve_bv(x,bv,c1,error)
+    deallocate(c1)
+    
+    call pop_id(error)
+
+  end function c_solve_bv
+
+
   subroutine c_forward_solve_bv(x,bv,c,error)
-    type(c_bv) :: bv
+    type(c_bv), intent(in) :: bv
     complex(kind=dp), dimension(:,:), intent(inout) :: c
     complex(kind=dp), dimension(:,:), intent(out) :: x
     type(error_info), intent(inout), optional :: error
@@ -559,8 +721,28 @@ contains
     end do
   end subroutine f_c_forward_solve_bv
 
+  function c_v_solve_bv(bv,c,error) result(x)
+    complex(kind=dp), dimension(:), allocatable :: x
+    complex(kind=dp), dimension(:), intent(in) :: c
+    type(c_bv), intent(in) :: bv
+    type(error_info), intent(inout), optional :: error
+
+    complex(kind=dp), dimension(:), allocatable :: c1
+    type(routine_info), parameter :: info=info_c_v_solve_bv
+
+    if (failure(error)) return
+    call push_id(info,error)
+
+    c1=c
+    allocate(x(size(c)))
+    call c_v_forward_solve_bv(x,bv,c1,error)
+    deallocate(c1)
+    
+    call pop_id(error)
+  end function c_v_solve_bv
+
   subroutine c_v_forward_solve_bv(x,bv,c,error)
-    type(c_bv) :: bv
+    type(c_bv), intent(in) :: bv
     complex(kind=dp), dimension(:), intent(inout) :: c
     complex(kind=dp), dimension(:), intent(out) :: x
     type(error_info), intent(inout), optional :: error

@@ -110,7 +110,9 @@ module mod_sweeps
 
   interface operator (*)
      module procedure d_sweeps_general_product_of, c_sweeps_general_product_of, &
-          d_general_sweeps_product_of, c_general_sweeps_product_of
+          d_general_sweeps_product_of, c_general_sweeps_product_of, &
+          d_v_sweeps_general_product_of, c_v_sweeps_general_product_of, &
+          d_v_general_sweeps_product_of, c_v_general_sweeps_product_of
   end interface operator (*)
 
   interface sweeps_times_general
@@ -256,7 +258,6 @@ contains
     real(kind=dp), dimension(:,:), intent(in) :: a
     type(d_sweeps), intent(in) :: sw
 
-    allocate(b(size(a,1),size(a,2)))
     b=a
     if (sw%trp) then
        call d_trp_sweeps_times_general(sw,b)
@@ -270,7 +271,6 @@ contains
     complex(kind=dp), dimension(:,:), intent(in) :: a
     type(c_sweeps), intent(in) :: sw
 
-    allocate(b(size(a,1),size(a,2)))
     b=a
     if (sw%trp) then
        call c_trp_sweeps_times_general(sw,b)
@@ -284,7 +284,6 @@ contains
     real(kind=dp), dimension(:,:), intent(in) :: a
     type(d_sweeps), intent(in) :: sw
 
-    allocate(b(size(a,1),size(a,2)))
     b=a
     if (sw%trp) then
        call d_general_times_trp_sweeps(b,sw)
@@ -298,7 +297,6 @@ contains
     complex(kind=dp), dimension(:,:), intent(in) :: a
     type(c_sweeps), intent(in) :: sw
 
-    allocate(b(size(a,1),size(a,2)))
     b=a
     if (sw%trp) then
        call c_general_times_trp_sweeps(b,sw)
@@ -314,7 +312,6 @@ contains
     real(kind=dp), dimension(:), intent(in) :: a
     type(d_sweeps), intent(in) :: sw
 
-    allocate(b(size(a)))
     b=a
     if (sw%trp) then
        call d_v_trp_sweeps_times_general(sw,b)
@@ -328,7 +325,6 @@ contains
     complex(kind=dp), dimension(:), intent(in) :: a
     type(c_sweeps), intent(in) :: sw
 
-    allocate(b(size(a)))
     b=a
     if (sw%trp) then
        call c_v_trp_sweeps_times_general(sw,b)
@@ -342,7 +338,6 @@ contains
     real(kind=dp), dimension(:), intent(in) :: a
     type(d_sweeps), intent(in) :: sw
 
-    allocate(b(size(a)))
     b=a
     if (sw%trp) then
        call d_v_general_times_trp_sweeps(b,sw)
@@ -356,7 +351,6 @@ contains
     complex(kind=dp), dimension(:), intent(in) :: a
     type(c_sweeps), intent(in) :: sw
 
-    allocate(b(size(a)))
     b=a
     if (sw%trp) then
        call c_v_general_times_trp_sweeps(b,sw)
