@@ -203,7 +203,7 @@ module mod_orth_band_types
           d_copy_ubt, c_copy_ubt, d_copy_bv, c_copy_bv, d_copy_wb, c_copy_wb, &
           d_copy_wbv, c_copy_wbv
   end interface copy
-
+  
   interface truncate_profile
      module procedure d_truncate_profile_ub, c_truncate_profile_ub, &
           d_truncate_profile_ubt, c_truncate_profile_ubt, &
@@ -247,7 +247,9 @@ contains
 
   subroutine d_deallocate_ub(ub)
     type(d_ub), intent(inout) :: ub
-    deallocate(ub%bc, ub%csu, ub%ssu, ub%jsu, ub%numrotsu)
+    call maybe_deallocate(ub%jsu)
+    call maybe_deallocate(ub%numrotsu)
+    call maybe_deallocate(ub%bc, ub%csu, ub%ssu)
     ub%n=0; ub%lbwmax=0; ub%ubwmax=0
   end subroutine d_deallocate_ub
 
@@ -263,7 +265,10 @@ contains
 
   subroutine c_deallocate_ub(ub)
     type(c_ub), intent(inout) :: ub
-    deallocate(ub%bc, ub%csu, ub%ssu, ub%jsu, ub%numrotsu)
+    call maybe_deallocate(ub%csu)
+    call maybe_deallocate(ub%jsu)
+    call maybe_deallocate(ub%numrotsu)
+    call maybe_deallocate(ub%bc, ub%ssu)
     ub%n=0; ub%lbwmax=0; ub%ubwmax=0
     ub%lbw=0; ub%ubw=0
   end subroutine c_deallocate_ub
@@ -283,7 +288,9 @@ contains
 
   subroutine d_deallocate_bt(bt)
     type(d_bt), intent(inout) :: bt
-    deallocate(bt%br, bt%cst, bt%sst, bt%kst, bt%numrotst)
+    call maybe_deallocate(bt%kst)
+    call maybe_deallocate(bt%numrotst)
+    call maybe_deallocate(bt%br, bt%cst, bt%sst)
     bt%n=0; bt%lbwmax=0; bt%ubwmax=0;
     bt%lbw=0; bt%ubw=0
   end subroutine d_deallocate_bt
@@ -301,7 +308,10 @@ contains
 
   subroutine c_deallocate_bt(bt)
     type(c_bt), intent(inout) :: bt
-    deallocate(bt%br, bt%cst, bt%sst, bt%kst, bt%numrotst)
+    call maybe_deallocate(bt%cst)
+    call maybe_deallocate(bt%kst)
+    call maybe_deallocate(bt%numrotst)
+    call maybe_deallocate(bt%br, bt%sst)
     bt%n=0; bt%lbwmax=0; bt%ubwmax=0;
     bt%lbw=0; bt%ubw=0
   end subroutine c_deallocate_bt
@@ -325,8 +335,9 @@ contains
 
   subroutine d_deallocate_ubt(ubt)
     type(d_ubt), intent(inout) :: ubt
-    deallocate(ubt%bc, ubt%csu, ubt%ssu, ubt%jsu, ubt%numrotsu, &
-         ubt%cst, ubt%sst, ubt%kst, ubt%numrotst)
+    call maybe_deallocate(ubt%jsu, ubt%kst)
+    call maybe_deallocate(ubt%numrotsu, ubt%numrotst)
+    call maybe_deallocate(ubt%bc, ubt%csu, ubt%ssu, ubt%cst, ubt%sst)
     ubt%n=0; ubt%lbwmax=0; ubt%ubwmax=0;
     ubt%lbw=0; ubt%ubw=0
   end subroutine d_deallocate_ubt
@@ -347,8 +358,10 @@ contains
 
   subroutine c_deallocate_ubt(ubt)
     type(c_ubt), intent(inout) :: ubt
-    deallocate(ubt%bc, ubt%csu, ubt%ssu, ubt%jsu, ubt%numrotsu, &
-         ubt%cst, ubt%sst, ubt%kst, ubt%numrotst)
+    call maybe_deallocate(ubt%csu, ubt%cst)
+    call maybe_deallocate(ubt%jsu, ubt%kst)
+    call maybe_deallocate(ubt%numrotsu, ubt%numrotst)
+    call maybe_deallocate(ubt%bc, ubt%ssu, ubt%sst)
     ubt%n=0; ubt%lbwmax=0; ubt%ubwmax=0;
     ubt%lbw=0; ubt%ubw=0
   end subroutine c_deallocate_ubt
@@ -367,7 +380,9 @@ contains
 
   subroutine d_deallocate_bv(bv)
     type(d_bv), intent(inout) :: bv
-    deallocate(bv%br, bv%csv, bv%ssv, bv%ksv, bv%numrotsv)
+    call maybe_deallocate(bv%ksv)
+    call maybe_deallocate(bv%numrotsv)
+    call maybe_deallocate(bv%br, bv%csv, bv%ssv)
     bv%n=0; bv%lbwmax=0; bv%ubwmax=0
     bv%lbw=0; bv%ubw=0
   end subroutine d_deallocate_bv
@@ -384,7 +399,10 @@ contains
 
   subroutine c_deallocate_bv(bv)
     type(c_bv), intent(inout) :: bv
-    deallocate(bv%br, bv%csv, bv%ssv, bv%ksv, bv%numrotsv)
+    call maybe_deallocate(bv%csv)
+    call maybe_deallocate(bv%ksv)
+    call maybe_deallocate(bv%numrotsv)
+    call maybe_deallocate(bv%br, bv%ssv)
     bv%n=0; bv%lbwmax=0; bv%ubwmax=0
     bv%lbw=0; bv%ubw=0
   end subroutine c_deallocate_bv
@@ -403,7 +421,9 @@ contains
 
   subroutine d_deallocate_wb(wb)
     type(d_wb), intent(inout) :: wb
-    deallocate(wb%bc, wb%csw, wb%ssw, wb%jsw, wb%numrotsw)
+    call maybe_deallocate(wb%jsw)
+    call maybe_deallocate(wb%numrotsw)
+    call maybe_deallocate(wb%bc, wb%csw, wb%ssw)
     wb%n=0; wb%lbwmax=0; wb%ubwmax=0
     wb%lbw=0; wb%ubw=0
   end subroutine d_deallocate_wb
@@ -420,7 +440,10 @@ contains
 
   subroutine c_deallocate_wb(wb)
     type(c_wb), intent(inout) :: wb
-    deallocate(wb%bc, wb%csw, wb%ssw, wb%jsw, wb%numrotsw)
+    call maybe_deallocate(wb%csw)
+    call maybe_deallocate(wb%jsw)
+    call maybe_deallocate(wb%numrotsw)
+    call maybe_deallocate(wb%bc, wb%ssw)
     wb%n=0; wb%lbwmax=0; wb%ubwmax=0
     wb%lbw=0; wb%ubw=0
   end subroutine c_deallocate_wb
@@ -442,8 +465,9 @@ contains
 
   subroutine d_deallocate_wbv(wbv)
     type(d_wbv), intent(inout) :: wbv
-    deallocate(wbv%br, wbv%csv, wbv%ssv, wbv%ksv, wbv%numrotsv, &
-         wbv%csw, wbv%ssw, wbv%jsw, wbv%numrotsw)
+    call maybe_deallocate(wbv%ksv, wbv%jsw)
+    call maybe_deallocate(wbv%numrotsv, wbv%numrotsw)
+    call maybe_deallocate(wbv%br, wbv%csv, wbv%ssv, wbv%csw, wbv%ssw)
     wbv%n=0; wbv%lbwmax=0; wbv%ubwmax=0
     wbv%lbw=0; wbv%ubw=0
   end subroutine d_deallocate_wbv
@@ -463,23 +487,26 @@ contains
 
   subroutine c_deallocate_wbv(wbv)
     type(c_wbv), intent(inout) :: wbv
-    deallocate(wbv%br, wbv%csv, wbv%ssv, wbv%ksv, wbv%numrotsv, &
-         wbv%csw, wbv%ssw, wbv%jsw, wbv%numrotsw)
+    call maybe_deallocate(wbv%csv, wbv%csw)
+    call maybe_deallocate(wbv%ksv, wbv%jsw)
+    call maybe_deallocate(wbv%numrotsv, wbv%numrotsw)
+    call maybe_deallocate(wbv%br, wbv%ssv, wbv%ssw)
     wbv%n=0; wbv%lbwmax=0; wbv%ubwmax=0
     wbv%lbw=0; wbv%ubw=0
   end subroutine c_deallocate_wbv
 
   ! copy
 
-  subroutine d_copy_ub(ub1,ub2)
+  subroutine d_copy_ub(ub2,ub1)
     type(d_ub), intent(in) :: ub1
-    type(d_ub) :: ub2
+    type(d_ub), intent(inout) :: ub2
     ub2%n=ub1%n
     ub2%lbw=ub1%lbw
     ub2%ubw=ub1%ubw
     if ( ub2%ubwmax < ub1%ubw .or. ub2%lbwmax < ub1%lbw .or. &
-         size(ub2%bc,2) /= ub1%n ) then
-       deallocate(ub2%bc, ub2%jsu, ub2%numrotsu, ub2%csu,ub2%ssu)
+         size(ub2%bc,2) /= ub1%n .or. not_all_allocated(ub2%bc, ub2%csu, ub2%ssu) .or. &
+         not_all_allocated(ub2%jsu) .or. not_all_allocated(ub2%numrotsu)) then
+       call d_deallocate_ub(ub2)
        allocate(ub2%bc(ub1%lbwmax+ub1%ubwmax+1,ub1%n), ub2%csu(ub1%ubwmax,ub1%n), &
             ub2%ssu(ub1%ubwmax,ub1%n), ub2%jsu(ub1%ubwmax,ub1%n), ub2%numrotsu(ub1%n))
        ub2%lbwmax=ub1%lbwmax
@@ -492,15 +519,17 @@ contains
     ub2%jsu(1:ub1%ubw,:)=ub1%jsu(1:ub1%ubw,:)
   end subroutine d_copy_ub
 
-  subroutine c_copy_ub(ub1,ub2)
+  subroutine c_copy_ub(ub2,ub1)
     type(c_ub), intent(in) :: ub1
-    type(c_ub) :: ub2
+    type(c_ub), intent(inout) :: ub2
     ub2%n=ub1%n
     ub2%lbw=ub1%lbw
     ub2%ubw=ub1%ubw
     if ( ub2%ubwmax < ub1%ubw .or. ub2%lbwmax < ub1%lbw .or. &
-         size(ub2%bc,2) /= ub1%n ) then
-       deallocate(ub2%bc, ub2%jsu, ub2%numrotsu, ub2%csu, ub2%ssu)
+         size(ub2%bc,2) /= ub1%n .or. not_all_allocated(ub2%bc, ub2%ssu) .or. &
+         not_all_allocated(ub2%csu) .or. not_all_allocated(ub2%jsu) .or. &
+         not_all_allocated(ub2%numrotsu)) then
+       call c_deallocate_ub(ub2)
        allocate(ub2%bc(ub1%lbwmax+ub1%ubwmax+1,ub1%n), ub2%csu(ub1%ubwmax,ub1%n), &
             ub2%ssu(ub1%ubwmax,ub1%n), ub2%jsu(ub1%ubwmax,ub1%n), ub2%numrotsu(ub1%n))
        ub2%lbwmax=ub1%lbwmax
@@ -513,15 +542,16 @@ contains
     ub2%jsu(1:ub1%ubw,:)=ub1%jsu(1:ub1%ubw,:)
   end subroutine c_copy_ub
 
-  subroutine d_copy_bt(bt1,bt2)
+  subroutine d_copy_bt(bt2,bt1)
     type(d_bt), intent(in) :: bt1
-    type(d_bt) :: bt2
+    type(d_bt), intent(inout) :: bt2
     bt2%n=bt1%n
     bt2%lbw=bt1%lbw
     bt2%ubw=bt1%ubw
     if ( bt2%ubwmax < bt1%ubw .or. bt2%lbwmax < bt1%lbw .or. &
-         size(bt2%br,1) /= bt1%n ) then
-       deallocate(bt2%br, bt2%kst, bt2%numrotst, bt2%cst, bt2%sst)
+         size(bt2%br,1) /= bt1%n .or. not_all_allocated(bt2%br, bt2%cst, bt2%sst) .or. &
+         not_all_allocated(bt2%kst) .or. not_all_allocated(bt2%numrotst) ) then
+       call d_deallocate_bt(bt2)
        allocate(bt2%br(bt1%n,bt1%lbwmax+bt1%ubwmax+1), &
             bt2%cst(bt1%n, bt1%lbwmax), bt2%sst(bt1%n,bt1%lbwmax), &
             bt2%kst(bt1%n, bt1%lbwmax), bt2%numrotst(bt1%n))
@@ -536,22 +566,23 @@ contains
     bt2%kst(:,1:bt1%lbw)=bt1%kst(:,1:bt1%lbw)
   end subroutine d_copy_bt
 
-  subroutine c_copy_bt(bt1,bt2)
+  subroutine c_copy_bt(bt2,bt1)
     type(c_bt), intent(in) :: bt1
-    type(c_bt) :: bt2
+    type(c_bt), intent(inout) :: bt2
     bt2%n=bt1%n
     bt2%lbw=bt1%lbw
     bt2%ubw=bt1%ubw
     if ( bt2%ubwmax < bt1%ubw .or. bt2%lbwmax < bt1%lbw .or. &
-         size(bt2%br,1) /= bt1%n ) then
-       deallocate(bt2%br, bt2%kst, bt2%numrotst, bt2%cst, bt2%sst)
+         size(bt2%br,1) /= bt1%n .or. not_all_allocated(bt2%br, bt2%sst) .or. &
+         not_all_allocated(bt2%cst) .or. not_all_allocated(bt2%kst) .or. &
+         not_all_allocated(bt2%numrotst) ) then
+       call c_deallocate_bt(bt2)
        allocate(bt2%br(bt1%n,bt1%lbwmax+bt1%ubwmax+1), &
             bt2%cst(bt1%n, bt1%lbwmax), bt2%sst(bt1%n,bt1%lbwmax), &
             bt2%kst(bt1%n, bt1%lbwmax), bt2%numrotst(bt1%n))
        bt2%lbwmax=bt1%lbwmax
        bt2%ubwmax=bt1%ubwmax
     end if
-    
     bt2%br(:,1:bt1%lbw+bt1%ubw+1)=bt1%br(:,1:bt1%lbw+bt1%ubw+1)
     bt2%numrotst=bt1%numrotst
     bt2%cst(:,1:bt1%lbw)=bt1%cst(:,1:bt1%lbw)
@@ -559,16 +590,18 @@ contains
     bt2%kst(:,1:bt1%lbw)=bt1%kst(:,1:bt1%lbw)
   end subroutine c_copy_bt
 
-  subroutine d_copy_ubt(ubt1,ubt2)
+  subroutine d_copy_ubt(ubt2,ubt1)
     type(d_ubt), intent(in) :: ubt1
-    type(d_ubt) :: ubt2
+    type(d_ubt), intent(inout) :: ubt2
     ubt2%n=ubt1%n
     ubt2%lbw=ubt1%lbw
     ubt2%ubw=ubt1%ubw
     if ( ubt2%ubwmax < ubt1%ubw .or. ubt2%lbwmax < ubt1%lbw .or. &
-         size(ubt2%bc,2) /= ubt1%n ) then
-       deallocate(ubt2%bc, ubt2%jsu, ubt2%numrotsu, ubt2%csu,ubt2%ssu, &
-            ubt2%kst, ubt2%numrotst, ubt2%cst, ubt2%sst)
+         size(ubt2%bc,2) /= ubt1%n .or. &
+         not_all_allocated(ubt2%bc, ubt2%csu, ubt2%ssu, ubt2%cst, ubt2%sst) .or. &
+         not_all_allocated(ubt2%jsu, ubt2%kst) .or. &
+         not_all_allocated(ubt2%numrotsu, ubt2%numrotst) ) then
+       call d_deallocate_ubt(ubt2)
        allocate(ubt2%bc(ubt1%lbwmax+ubt1%ubwmax+1,ubt1%n), ubt2%csu(ubt1%ubwmax,ubt1%n), &
             ubt2%ssu(ubt1%ubwmax,ubt1%n), ubt2%jsu(ubt1%ubwmax,ubt1%n), ubt2%numrotsu(ubt1%n), &
             ubt2%cst(ubt1%n, ubt1%lbwmax), ubt2%sst(ubt1%n, ubt1%lbwmax), &
@@ -589,16 +622,19 @@ contains
     ubt2%kst(:,1:ubt1%lbw)=ubt1%kst(:,1:ubt1%lbw)
   end subroutine d_copy_ubt
 
-  subroutine c_copy_ubt(ubt1,ubt2)
+  subroutine c_copy_ubt(ubt2,ubt1)
     type(c_ubt), intent(in) :: ubt1
-    type(c_ubt) :: ubt2
+    type(c_ubt), intent(inout) :: ubt2
     ubt2%n=ubt1%n
     ubt2%lbw=ubt1%lbw
     ubt2%ubw=ubt1%ubw
     if ( ubt2%ubwmax < ubt1%ubw .or. ubt2%lbwmax < ubt1%lbw .or. &
-         size(ubt2%bc,2) /= ubt1%n ) then
-       deallocate(ubt2%bc, ubt2%jsu, ubt2%numrotsu, ubt2%csu,ubt2%ssu, &
-            ubt2%kst, ubt2%numrotst, ubt2%cst, ubt2%sst)
+         size(ubt2%bc,2) /= ubt1%n .or. &
+         not_all_allocated(ubt2%bc, ubt2%ssu, ubt2%sst) .or. &
+         not_all_allocated(ubt2%csu,ubt2%cst) .or. &
+         not_all_allocated(ubt2%jsu, ubt2%kst) .or. &
+         not_all_allocated(ubt2%numrotsu, ubt2%numrotst)) then
+       call c_deallocate_ubt(ubt2)
        allocate(ubt2%bc(ubt1%lbwmax+ubt1%ubwmax+1,ubt1%n), ubt2%csu(ubt1%ubwmax,ubt1%n), &
             ubt2%ssu(ubt1%ubwmax,ubt1%n), ubt2%jsu(ubt1%ubwmax,ubt1%n), ubt2%numrotsu(ubt1%n), &
             ubt2%cst(ubt1%n, ubt1%lbwmax), ubt2%sst(ubt1%n, ubt1%lbwmax), &
@@ -619,15 +655,16 @@ contains
     ubt2%kst(:,1:ubt1%lbw)=ubt1%kst(:,1:ubt1%lbw)
   end subroutine c_copy_ubt
 
-  subroutine d_copy_bv(bv1,bv2)
+  subroutine d_copy_bv(bv2,bv1)
     type(d_bv), intent(in) :: bv1
-    type(d_bv) :: bv2
+    type(d_bv), intent(inout) :: bv2
     bv2%n=bv1%n
     bv2%lbw=bv1%lbw
     bv2%ubw=bv1%ubw
     if ( bv2%ubwmax < bv1%ubw .or. bv2%lbwmax < bv1%lbw .or. &
-         size(bv2%br,1) /= bv1%n ) then
-       deallocate(bv2%br, bv2%ksv, bv2%numrotsv, bv2%csv, bv2%ssv)
+         size(bv2%br,1) /= bv1%n .or. not_all_allocated(bv2%br, bv2%csv, bv2%ssv) .or. &
+         not_all_allocated(bv2%ksv) .or. not_all_allocated(bv2%numrotsv) ) then
+       call d_deallocate_bv(bv2)
        allocate(bv2%br(bv1%n,bv1%lbwmax+bv1%ubwmax+1), bv2%csv(bv1%n,bv1%ubwmax), &
             bv2%ssv(bv1%n,bv1%ubwmax), bv2%ksv(bv1%n,bv1%ubwmax), bv2%numrotsv(bv1%n))
        bv2%lbwmax=bv1%lbwmax
@@ -640,15 +677,16 @@ contains
     bv2%ksv(:,1:bv1%ubw)=bv1%ksv(:,1:bv1%ubw)
   end subroutine d_copy_bv
 
-  subroutine d_copy_wb(wb1,wb2)
+  subroutine d_copy_wb(wb2,wb1)
     type(d_wb), intent(in) :: wb1
-    type(d_wb) :: wb2
+    type(d_wb), intent(inout) :: wb2
     wb2%n=wb1%n
     wb2%lbw=wb1%lbw
     wb2%ubw=wb1%ubw
     if ( wb2%ubwmax < wb1%ubw .or. wb2%lbwmax < wb1%lbw .or. &
-         size(wb2%bc,2) /= wb1%n ) then
-       deallocate(wb2%bc, wb2%jsw, wb2%numrotsw, wb2%csw, wb2%ssw)
+         size(wb2%bc,2) /= wb1%n .or. not_all_allocated(wb2%bc, wb2%csw, wb2%ssw) .or. &
+         not_all_allocated(wb2%jsw) .or. not_all_allocated(wb2%numrotsw) ) then
+       call d_deallocate_wb(wb2)
        allocate(wb2%bc(wb1%lbwmax+wb1%ubwmax+1,wb1%n), &
             wb2%csw(wb1%lbwmax,wb1%n), wb2%ssw(wb1%lbwmax,wb1%n), &
             wb2%jsw(wb1%lbwmax,wb1%n), wb2%numrotsw(wb1%n))
@@ -662,16 +700,18 @@ contains
     wb2%jsw(1:wb1%lbw,:)=wb1%jsw(1:wb1%lbw,:)
   end subroutine d_copy_wb
 
-  subroutine d_copy_wbv(wbv1,wbv2)
+  subroutine d_copy_wbv(wbv2,wbv1)
     type(d_wbv), intent(in) :: wbv1
-    type(d_wbv) :: wbv2
+    type(d_wbv), intent(inout) :: wbv2
     wbv2%n=wbv1%n
     wbv2%lbw=wbv1%lbw
     wbv2%ubw=wbv1%ubw
     if ( wbv2%ubwmax < wbv1%ubw .or. wbv2%lbwmax < wbv1%lbw .or. &
-         size(wbv2%br,1) /= wbv1%n ) then
-       deallocate(wbv2%br, wbv2%ksv, wbv2%numrotsv, wbv2%csv, wbv2%ssv, &
-            wbv2%jsw, wbv2%numrotsw, wbv2%csw, wbv2%ssw)
+         size(wbv2%br,1) /= wbv1%n .or. &
+         not_all_allocated(wbv2%br, wbv2%csw, wbv2%ssw, wbv2%csv, wbv2%ssv) .or. &
+         not_all_allocated(wbv2%jsw, wbv2%ksv) .or. &
+         not_all_allocated(wbv2%numrotsw, wbv2%numrotsv) ) then
+       call d_deallocate_wbv(wbv2)
        allocate(wbv2%br(wbv1%n,wbv1%lbwmax+wbv1%ubwmax+1), wbv2%csv(wbv1%n,wbv1%ubwmax), &
             wbv2%ssv(wbv1%n,wbv1%ubwmax), wbv2%ksv(wbv1%n,wbv1%ubwmax), wbv2%numrotsv(wbv1%n), &
             wbv2%csw(wbv1%lbwmax,wbv1%n), wbv2%ssw(wbv1%lbwmax,wbv1%n), &
@@ -692,16 +732,18 @@ contains
     wbv2%jsw(1:wbv1%lbw,:)=wbv1%jsw(1:wbv1%lbw,:)
   end subroutine d_copy_wbv
 
-  subroutine c_copy_bv(bv1,bv2)
+  subroutine c_copy_bv(bv2,bv1)
     type(c_bv), intent(in) :: bv1
-    type(c_bv) :: bv2
+    type(c_bv), intent(inout) :: bv2
     bv2%n=bv1%n
     bv2%lbw=bv1%lbw
     bv2%ubw=bv1%ubw
 
     if ( bv2%ubwmax < bv1%ubw .or. bv2%lbwmax < bv1%lbw .or. &
-         size(bv2%br,1) /= bv1%n ) then
-       deallocate(bv2%br, bv2%ksv, bv2%numrotsv, bv2%csv, bv2%ssv)
+         size(bv2%br,1) /= bv1%n .or. not_all_allocated(bv2%br, bv2%ssv) .or. &
+         not_all_allocated(bv2%csv) .or. &
+         not_all_allocated(bv2%ksv) .or. not_all_allocated(bv2%numrotsv) ) then
+       call c_deallocate_bv(bv2)
        allocate(bv2%br(bv1%n,bv1%lbwmax+bv1%ubwmax+1), bv2%csv(bv1%n,bv1%ubwmax), &
             bv2%ssv(bv1%n,bv1%ubwmax), bv2%ksv(bv1%n,bv1%ubwmax), bv2%numrotsv(bv1%n))
        bv2%lbwmax=bv1%lbwmax
@@ -714,15 +756,17 @@ contains
     bv2%ksv(:,1:bv1%ubw)=bv1%ksv(:,1:bv1%ubw)
   end subroutine c_copy_bv
 
-  subroutine c_copy_wb(wb1,wb2)
+  subroutine c_copy_wb(wb2,wb1)
     type(c_wb), intent(in) :: wb1
-    type(c_wb) :: wb2
+    type(c_wb), intent(inout) :: wb2
     wb2%n=wb1%n
     wb2%lbw=wb1%lbw
     wb2%ubw=wb1%ubw
     if ( wb2%ubwmax < wb1%ubw .or. wb2%lbwmax < wb1%lbw .or. &
-         size(wb2%bc,2) /= wb1%n ) then
-       deallocate(wb2%bc, wb2%jsw, wb2%numrotsw, wb2%csw, wb2%ssw)
+         size(wb2%bc,2) /= wb1%n .or. not_all_allocated(wb2%bc, wb2%ssw) .or. &
+         not_all_allocated(wb2%csw) .or. &
+         not_all_allocated(wb2%jsw) .or. not_all_allocated(wb2%numrotsw) ) then
+       call c_deallocate_wb(wb2)
        allocate(wb2%bc(wb1%lbwmax+wb1%ubwmax+1,wb1%n), &
             wb2%csw(wb1%lbwmax,wb1%n), wb2%ssw(wb1%lbwmax,wb1%n), &
             wb2%jsw(wb1%lbwmax,wb1%n), wb2%numrotsw(wb1%n))
@@ -736,16 +780,19 @@ contains
     wb2%jsw(1:wb1%lbw,:)=wb1%jsw(1:wb1%lbw,:)
   end subroutine c_copy_wb
 
-  subroutine c_copy_wbv(wbv1,wbv2)
+  subroutine c_copy_wbv(wbv2,wbv1)
     type(c_wbv), intent(in) :: wbv1
-    type(c_wbv) :: wbv2
+    type(c_wbv), intent(inout) :: wbv2
     wbv2%n=wbv1%n
     wbv2%lbw=wbv1%lbw
     wbv2%ubw=wbv1%ubw
     if ( wbv2%ubwmax < wbv1%ubw .or. wbv2%lbwmax < wbv1%lbw .or. &
-         size(wbv2%br,1) /= wbv1%n ) then
-       deallocate(wbv2%br, wbv2%ksv, wbv2%numrotsv, wbv2%csv, wbv2%ssv, &
-            wbv2%jsw, wbv2%numrotsw, wbv2%csw, wbv2%ssw)
+         size(wbv2%br,1) /= wbv1%n .or. &
+         not_all_allocated(wbv2%br, wbv2%ssw, wbv2%ssv) .or. &
+         not_all_allocated(wbv2%jsw, wbv2%ksv) .or. &
+         not_all_allocated(wbv2%csw, wbv2%csv) .or. &
+         not_all_allocated(wbv2%numrotsw, wbv2%numrotsv) ) then
+       call c_deallocate_wbv(wbv2)
        allocate(wbv2%br(wbv1%n,wbv1%lbwmax+wbv1%ubwmax+1), wbv2%csv(wbv1%n,wbv1%ubwmax), &
             wbv2%ssv(wbv1%n,wbv1%ubwmax), wbv2%ksv(wbv1%n,wbv1%ubwmax), wbv2%numrotsv(wbv1%n), &
             wbv2%csw(wbv1%lbwmax,wbv1%n), wbv2%ssw(wbv1%lbwmax,wbv1%n), &

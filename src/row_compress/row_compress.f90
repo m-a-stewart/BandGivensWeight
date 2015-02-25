@@ -14,7 +14,48 @@ module mod_row_compress
      module procedure f_d_row_compress, f_c_row_compress
   end interface f_row_compress
 
+  interface rc
+     module procedure d_rc_of, c_rc_of
+  end interface rc
+
+  type d_rc
+     type(d_sweeps), allocatable :: sw
+     type(d_bv), allocatable :: bv
+  end type d_rc
+
+  type c_rc
+     type(c_sweeps), allocatable :: sw
+     type(c_bv), allocatable :: bv
+  end type c_rc
+  
 contains
+
+  function d_rc_of(ubt,error) result(swbv)
+    type(d_rc) :: swbv
+    type(d_ubt), intent(in) :: ubt
+    type(error_info), intent(inout), optional :: error
+    type(routine_info), parameter :: info=info_d_rc_of
+    integer(kind=int32) :: n, lbwmax, ubwmax, lbw, ubw
+    type(d_ubt), allocatable :: ubt1
+
+    if (failure(error)) then
+       return
+    end if
+    call push_id(info,error)
+
+    n=get_n(ubt)
+    lbwmax=get_lbwmax(ubt);
+    ubwmax=get_ubwmax(ubt);
+    lbw=ubt%lbw
+    ubw=ubt%ubw
+    swbv%bv=d_new_bv(n,lbw,min(lbw+ubw,n-1))
+    ubt1=d_new_ubt(n,min(lbw+1,n-1),min(lbw+ubw+1,n-1))
+    call copy(ubt1,ubt)
+    swbv%sw=d_new_sweeps(n, 1, n-2, lbw)
+    call d_row_compress(ubt1, swbv%bv, swbv%sw, error)
+    deallocate(ubt1)
+    call pop_id(error)
+  end function d_rc_of
 
   ! Errors
   ! 0: no error
@@ -168,6 +209,33 @@ contains
     call bc_to_br(b_ubt,b_bv,lbw,ubw)
     lbw_bv=lbw; ubw_bv=ubw
   end subroutine f_d_row_compress
+
+  function c_rc_of(ubt,error) result(swbv)
+    type(c_rc) :: swbv
+    type(c_ubt), intent(in) :: ubt
+    type(error_info), intent(inout), optional :: error
+    type(routine_info), parameter :: info=info_c_rc_of
+    integer(kind=int32) :: n, lbwmax, ubwmax, lbw, ubw
+    type(c_ubt), allocatable :: ubt1
+
+    if (failure(error)) then
+       return
+    end if
+    call push_id(info,error)
+
+    n=get_n(ubt)
+    lbwmax=get_lbwmax(ubt);
+    ubwmax=get_ubwmax(ubt);
+    lbw=ubt%lbw
+    ubw=ubt%ubw
+    swbv%bv=c_new_bv(n,lbw,min(lbw+ubw,n-1))
+    ubt1=c_new_ubt(n,min(lbw+1,n-1),min(lbw+ubw+1,n-1))
+    call copy(ubt1,ubt)
+    swbv%sw=c_new_sweeps(n, 1, n-2, lbw)
+    call c_row_compress(ubt1, swbv%bv, swbv%sw, error)
+    deallocate(ubt1)
+    call pop_id(error)
+  end function c_rc_of
 
   ! Errors
   ! 0: no error

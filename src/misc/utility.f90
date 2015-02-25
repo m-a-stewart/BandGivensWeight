@@ -4,6 +4,8 @@ module mod_utility
 
   private
 
+  public :: maybe_deallocate, not_all_allocated
+
   public :: maxabs, c_maxabs, d_maxabs, c_maxabs_v, d_maxabs_v, &
        norm2, c_norm2_v, d_norm2_v, &
        normf, c_normf, d_normf
@@ -20,6 +22,16 @@ module mod_utility
   public :: c_delta, d_delta
 
   public :: equals_option, i_equals_option
+
+  interface maybe_deallocate
+     module procedure d_maybe_deallocate2, c_maybe_deallocate2, i_maybe_deallocate2, &
+          d_maybe_deallocate1, c_maybe_deallocate1, i_maybe_deallocate1
+  end interface maybe_deallocate
+
+  interface not_all_allocated
+     module procedure d_not_all_allocated2, c_not_all_allocated2, i_not_all_allocated2, &
+          d_not_all_allocated1, c_not_all_allocated1, i_not_all_allocated1
+  end interface not_all_allocated
 
   interface maxabs
      module procedure c_maxabs, d_maxabs, c_maxabs_v, d_maxabs_v
@@ -58,6 +70,325 @@ module mod_utility
   complex(kind=dp), parameter :: c_random_shift=(-1.0_dp,-1.0_dp), c_random_scale=(2.0_dp,0.0_dp)
 
 contains
+
+  logical function d_not_all_allocated2(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10) result(x)
+    real(kind=dp), dimension(:,:), allocatable :: a1
+    real(kind=dp), dimension(:,:), optional, allocatable :: a2, a3, a4, a5, &
+         a6, a7, a8, a9, a10
+    x=.false.
+    if (.not. allocated(a1)) goto 1
+    if (.not. present(a2)) return
+    if (.not. allocated(a2)) goto 1
+    if (.not. present(a3)) return
+    if (.not. allocated(a3)) goto 1
+    if (.not. present(a4)) return
+    if (.not. allocated(a4)) goto 1
+    if (.not. present(a5)) return
+    if (.not. allocated(a5)) goto 1
+    if (.not. present(a6)) return
+    if (.not. allocated(a6)) goto 1
+    if (.not. present(a7)) return
+    if (.not. allocated(a7)) goto 1
+    if (.not. present(a8)) return
+    if (.not. allocated(a8)) goto 1
+    if (.not. present(a9)) return
+    if (.not. allocated(a9)) goto 1
+    if (.not. present(a10)) return
+    if (allocated(a10)) return
+1   x=.true.
+  end function d_not_all_allocated2
+
+  logical function c_not_all_allocated2(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10) result(x)
+    complex(kind=dp), dimension(:,:), allocatable :: a1
+    complex(kind=dp), dimension(:,:), optional, allocatable :: a2, a3, a4, a5, &
+         a6, a7, a8, a9, a10
+    x=.false.
+    if (.not. allocated(a1)) goto 1
+    if (.not. present(a2)) return
+    if (.not. allocated(a2)) goto 1
+    if (.not. present(a3)) return
+    if (.not. allocated(a3)) goto 1
+    if (.not. present(a4)) return
+    if (.not. allocated(a4)) goto 1
+    if (.not. present(a5)) return
+    if (.not. allocated(a5)) goto 1
+    if (.not. present(a6)) return
+    if (.not. allocated(a6)) goto 1
+    if (.not. present(a7)) return
+    if (.not. allocated(a7)) goto 1
+    if (.not. present(a8)) return
+    if (.not. allocated(a8)) goto 1
+    if (.not. present(a9)) return
+    if (.not. allocated(a9)) goto 1
+    if (.not. present(a10)) return
+    if (allocated(a10)) return
+1   x=.true.
+  end function c_not_all_allocated2
+
+  logical function i_not_all_allocated2(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10) result(x)
+    integer(kind=int32), dimension(:,:), allocatable :: a1
+    integer(kind=int32), dimension(:,:), optional, allocatable :: a2, a3, a4, a5, &
+         a6, a7, a8, a9, a10
+    x=.false.
+    if (.not. allocated(a1)) goto 1
+    if (.not. present(a2)) return
+    if (.not. allocated(a2)) goto 1
+    if (.not. present(a3)) return
+    if (.not. allocated(a3)) goto 1
+    if (.not. present(a4)) return
+    if (.not. allocated(a4)) goto 1
+    if (.not. present(a5)) return
+    if (.not. allocated(a5)) goto 1
+    if (.not. present(a6)) return
+    if (.not. allocated(a6)) goto 1
+    if (.not. present(a7)) return
+    if (.not. allocated(a7)) goto 1
+    if (.not. present(a8)) return
+    if (.not. allocated(a8)) goto 1
+    if (.not. present(a9)) return
+    if (.not. allocated(a9)) goto 1
+    if (.not. present(a10)) return
+    if (allocated(a10)) return
+1   x=.true.
+  end function i_not_all_allocated2
+
+  logical function d_not_all_allocated1(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10) result(x)
+    real(kind=dp), dimension(:), allocatable :: a1
+    real(kind=dp), dimension(:), optional, allocatable :: a2, a3, a4, a5, &
+         a6, a7, a8, a9, a10
+    x=.false.
+    if (.not. allocated(a1)) goto 1
+    if (.not. present(a2)) return
+    if (.not. allocated(a2)) goto 1
+    if (.not. present(a3)) return
+    if (.not. allocated(a3)) goto 1
+    if (.not. present(a4)) return
+    if (.not. allocated(a4)) goto 1
+    if (.not. present(a5)) return
+    if (.not. allocated(a5)) goto 1
+    if (.not. present(a6)) return
+    if (.not. allocated(a6)) goto 1
+    if (.not. present(a7)) return
+    if (.not. allocated(a7)) goto 1
+    if (.not. present(a8)) return
+    if (.not. allocated(a8)) goto 1
+    if (.not. present(a9)) return
+    if (.not. allocated(a9)) goto 1
+    if (.not. present(a10)) return
+    if (allocated(a10)) return
+1   x=.true.
+  end function d_not_all_allocated1
+
+  logical function c_not_all_allocated1(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10) result(x)
+    complex(kind=dp), dimension(:), allocatable :: a1
+    complex(kind=dp), dimension(:), optional, allocatable :: a2, a3, a4, a5, &
+         a6, a7, a8, a9, a10
+    x=.false.
+    if (.not. allocated(a1)) goto 1
+    if (.not. present(a2)) return
+    if (.not. allocated(a2)) goto 1
+    if (.not. present(a3)) return
+    if (.not. allocated(a3)) goto 1
+    if (.not. present(a4)) return
+    if (.not. allocated(a4)) goto 1
+    if (.not. present(a5)) return
+    if (.not. allocated(a5)) goto 1
+    if (.not. present(a6)) return
+    if (.not. allocated(a6)) goto 1
+    if (.not. present(a7)) return
+    if (.not. allocated(a7)) goto 1
+    if (.not. present(a8)) return
+    if (.not. allocated(a8)) goto 1
+    if (.not. present(a9)) return
+    if (.not. allocated(a9)) goto 1
+    if (.not. present(a10)) return
+    if (allocated(a10)) return
+1   x=.true.
+  end function c_not_all_allocated1
+
+  logical function i_not_all_allocated1(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10) result(x)
+    integer(kind=int32), dimension(:), allocatable :: a1
+    integer(kind=int32), dimension(:), optional, allocatable :: a2, a3, a4, a5, &
+         a6, a7, a8, a9, a10
+    x=.false.
+    if (.not. allocated(a1)) goto 1
+    if (.not. present(a2)) return
+    if (.not. allocated(a2)) goto 1
+    if (.not. present(a3)) return
+    if (.not. allocated(a3)) goto 1
+    if (.not. present(a4)) return
+    if (.not. allocated(a4)) goto 1
+    if (.not. present(a5)) return
+    if (.not. allocated(a5)) goto 1
+    if (.not. present(a6)) return
+    if (.not. allocated(a6)) goto 1
+    if (.not. present(a7)) return
+    if (.not. allocated(a7)) goto 1
+    if (.not. present(a8)) return
+    if (.not. allocated(a8)) goto 1
+    if (.not. present(a9)) return
+    if (.not. allocated(a9)) goto 1
+    if (.not. present(a10)) return
+    if (allocated(a10)) return
+1   x=.true.
+  end function i_not_all_allocated1
+  
+
+  subroutine d_maybe_deallocate2(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10)
+    real(kind=dp), dimension(:,:), allocatable :: a1
+    real(kind=dp), dimension(:,:), optional, allocatable :: a2, a3, a4, a5, &
+         a6, a7, a8, a9, a10
+    if (allocated(a1)) deallocate(a1)
+    if (.not. present(a2)) go to 1
+    if (allocated(a2)) deallocate(a2)
+    if (.not. present(a3)) go to 1
+    if (allocated(a3)) deallocate(a3)
+    if (.not. present(a4)) go to 1
+    if (allocated(a4)) deallocate(a4)
+    if (.not. present(a5)) go to 1
+    if (allocated(a5)) deallocate(a5)
+    if (.not. present(a6)) go to 1
+    if (allocated(a6)) deallocate(a6)
+    if (.not. present(a7)) go to 1
+    if (allocated(a7)) deallocate(a7)
+    if (.not. present(a8)) go to 1
+    if (allocated(a8)) deallocate(a8)
+    if (.not. present(a9)) go to 1
+    if (allocated(a9)) deallocate(a9)
+    if (.not. present(a10)) go to 1
+    if (allocated(a10)) deallocate(a10)
+1   return
+  end subroutine d_maybe_deallocate2
+
+  subroutine c_maybe_deallocate2(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10)
+    complex(kind=dp), dimension(:,:), allocatable :: a1
+    complex(kind=dp), dimension(:,:), optional, allocatable :: a2, a3, a4, a5, &
+         a6, a7, a8, a9, a10
+    if (allocated(a1)) deallocate(a1)
+    if (.not. present(a2)) go to 1
+    if (allocated(a2)) deallocate(a2)
+    if (.not. present(a3)) go to 1
+    if (allocated(a3)) deallocate(a3)
+    if (.not. present(a4)) go to 1
+    if (allocated(a4)) deallocate(a4)
+    if (.not. present(a5)) go to 1
+    if (allocated(a5)) deallocate(a5)
+    if (.not. present(a6)) go to 1
+    if (allocated(a6)) deallocate(a6)
+    if (.not. present(a7)) go to 1
+    if (allocated(a7)) deallocate(a7)
+    if (.not. present(a8)) go to 1
+    if (allocated(a8)) deallocate(a8)
+    if (.not. present(a9)) go to 1
+    if (allocated(a9)) deallocate(a9)
+    if (.not. present(a10)) go to 1
+    if (allocated(a10)) deallocate(a10)
+1   return
+  end subroutine c_maybe_deallocate2
+
+  subroutine i_maybe_deallocate2(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10)
+    integer(kind=int32), dimension(:,:), allocatable :: a1
+    integer(kind=int32), dimension(:,:), optional, allocatable :: a2, a3, a4, a5, &
+         a6, a7, a8, a9, a10
+    if (allocated(a1)) deallocate(a1)
+    if (.not. present(a2)) go to 1
+    if (allocated(a2)) deallocate(a2)
+    if (.not. present(a3)) go to 1
+    if (allocated(a3)) deallocate(a3)
+    if (.not. present(a4)) go to 1
+    if (allocated(a4)) deallocate(a4)
+    if (.not. present(a5)) go to 1
+    if (allocated(a5)) deallocate(a5)
+    if (.not. present(a6)) go to 1
+    if (allocated(a6)) deallocate(a6)
+    if (.not. present(a7)) go to 1
+    if (allocated(a7)) deallocate(a7)
+    if (.not. present(a8)) go to 1
+    if (allocated(a8)) deallocate(a8)
+    if (.not. present(a9)) go to 1
+    if (allocated(a9)) deallocate(a9)
+    if (.not. present(a10)) go to 1
+    if (allocated(a10)) deallocate(a10)
+1   return
+  end subroutine i_maybe_deallocate2
+
+  subroutine d_maybe_deallocate1(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10)
+    real(kind=dp), dimension(:), allocatable :: a1
+    real(kind=dp), dimension(:), optional, allocatable :: a2, a3, a4, a5, &
+         a6, a7, a8, a9, a10
+    if (allocated(a1)) deallocate(a1)
+    if (.not. present(a2)) go to 1
+    if (allocated(a2)) deallocate(a2)
+    if (.not. present(a3)) go to 1
+    if (allocated(a3)) deallocate(a3)
+    if (.not. present(a4)) go to 1
+    if (allocated(a4)) deallocate(a4)
+    if (.not. present(a5)) go to 1
+    if (allocated(a5)) deallocate(a5)
+    if (.not. present(a6)) go to 1
+    if (allocated(a6)) deallocate(a6)
+    if (.not. present(a7)) go to 1
+    if (allocated(a7)) deallocate(a7)
+    if (.not. present(a8)) go to 1
+    if (allocated(a8)) deallocate(a8)
+    if (.not. present(a9)) go to 1
+    if (allocated(a9)) deallocate(a9)
+    if (.not. present(a10)) go to 1
+    if (allocated(a10)) deallocate(a10)
+1   return
+  end subroutine d_maybe_deallocate1
+
+  subroutine c_maybe_deallocate1(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10)
+    complex(kind=dp), dimension(:), allocatable :: a1
+    complex(kind=dp), dimension(:), optional, allocatable :: a2, a3, a4, a5, &
+         a6, a7, a8, a9, a10
+    if (allocated(a1)) deallocate(a1)
+    if (.not. present(a2)) go to 1
+    if (allocated(a2)) deallocate(a2)
+    if (.not. present(a3)) go to 1
+    if (allocated(a3)) deallocate(a3)
+    if (.not. present(a4)) go to 1
+    if (allocated(a4)) deallocate(a4)
+    if (.not. present(a5)) go to 1
+    if (allocated(a5)) deallocate(a5)
+    if (.not. present(a6)) go to 1
+    if (allocated(a6)) deallocate(a6)
+    if (.not. present(a7)) go to 1
+    if (allocated(a7)) deallocate(a7)
+    if (.not. present(a8)) go to 1
+    if (allocated(a8)) deallocate(a8)
+    if (.not. present(a9)) go to 1
+    if (allocated(a9)) deallocate(a9)
+    if (.not. present(a10)) go to 1
+    if (allocated(a10)) deallocate(a10)
+1   return
+  end subroutine c_maybe_deallocate1
+
+  subroutine i_maybe_deallocate1(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10)
+    integer(kind=int32), dimension(:), allocatable :: a1
+    integer(kind=int32), dimension(:), optional, allocatable :: a2, a3, a4, a5, &
+         a6, a7, a8, a9, a10
+    if (allocated(a1)) deallocate(a1)
+    if (.not. present(a2)) go to 1
+    if (allocated(a2)) deallocate(a2)
+    if (.not. present(a3)) go to 1
+    if (allocated(a3)) deallocate(a3)
+    if (.not. present(a4)) go to 1
+    if (allocated(a4)) deallocate(a4)
+    if (.not. present(a5)) go to 1
+    if (allocated(a5)) deallocate(a5)
+    if (.not. present(a6)) go to 1
+    if (allocated(a6)) deallocate(a6)
+    if (.not. present(a7)) go to 1
+    if (allocated(a7)) deallocate(a7)
+    if (.not. present(a8)) go to 1
+    if (allocated(a8)) deallocate(a8)
+    if (.not. present(a9)) go to 1
+    if (allocated(a9)) deallocate(a9)
+    if (.not. present(a10)) go to 1
+    if (allocated(a10)) deallocate(a10)
+1   return
+  end subroutine i_maybe_deallocate1
 
   real(kind=dp) function c_maxabs(a) result(x)
     complex(kind=dp), dimension(:,:), intent(in) :: a

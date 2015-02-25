@@ -42,7 +42,7 @@ contains
     
     ubt=d_new_ubt(get_n(wbv), wbv%lbw, wbv%ubw)
     wbv1=d_new_wbv(get_n(wbv),wbv%lbw+1,  wbv%ubw+1)
-    call copy(wbv,wbv1)
+    call copy(wbv1,wbv)
     call d_convert_wbv_to_ubt(wbv1,ubt,error)
 
     call pop_id(error)
@@ -200,7 +200,7 @@ contains
     
     ubt=c_new_ubt(get_n(wbv), wbv%lbw, wbv%ubw)
     wbv1=c_new_wbv(get_n(wbv),wbv%lbw+1,  wbv%ubw+1)
-    call copy(wbv,wbv1)
+    call copy(wbv1,wbv)
     call c_convert_wbv_to_ubt(wbv1,ubt,error)
 
     call pop_id(error)

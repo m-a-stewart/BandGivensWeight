@@ -41,7 +41,7 @@ contains
     
     bt=d_new_bt(get_n(wb), wb%lbw, wb%ubw)
     wb1=d_new_wb(get_n(wb),wb%lbw+1,  wb%ubw)
-    call copy(wb,wb1)
+    call copy(wb1,wb)
     call d_convert_wb_to_bt(wb1,bt,error)
 
     call pop_id(error)
@@ -155,7 +155,7 @@ contains
     
     bt=c_new_bt(get_n(wb), wb%lbw, wb%ubw)
     wb1=c_new_wb(get_n(wb),wb%lbw+1,  wb%ubw)
-    call copy(wb,wb1)
+    call copy(wb1,wb)
     call c_convert_wb_to_bt(wb1,bt,error)
 
     call pop_id(error)

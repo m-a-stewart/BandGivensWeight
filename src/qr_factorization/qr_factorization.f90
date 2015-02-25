@@ -60,7 +60,7 @@ contains
     ubw=bv%ubw
     swub%ub=d_new_ub(n,0,min(lbw+ubw,n-1))
     bv1=d_new_bv(n,lbw,min(lbw+ubw+1,n-1))
-    call copy(bv,bv1)
+    call copy(bv1,bv)
     swub%sw=d_new_sweeps(n, lbw+1, n+lbw-1, lbw)
     call d_qr_bv_to_ub(bv1, swub%ub, swub%sw,error)
     deallocate(bv1)
@@ -250,7 +250,7 @@ contains
     ubw=bv%ubw
     swub%ub=c_new_ub(n,0,min(lbw+ubw,n-1))
     bv1=c_new_bv(n,lbw,min(lbw+ubw+1,n-1))
-    call copy(bv,bv1)
+    call copy(bv1,bv)
     swub%sw=c_new_sweeps(n, lbw+1, n+lbw-1, lbw)
     call c_qr_bv_to_ub(bv1, swub%ub, swub%sw,error)
     deallocate(bv1)

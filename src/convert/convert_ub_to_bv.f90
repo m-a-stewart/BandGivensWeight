@@ -42,7 +42,7 @@ contains
     
     bv=d_new_bv(get_n(ub), ub%lbw, ub%ubw)
     ub1=d_new_ub(get_n(ub),ub%lbw,  ub%ubw+1)
-    call copy(ub,ub1)
+    call copy(ub1,ub)
     call d_convert_ub_to_bv(ub1,bv,error)
 
     call pop_id(error)
@@ -158,7 +158,7 @@ contains
     
     bv=c_new_bv(get_n(ub), ub%lbw, ub%ubw)
     ub1=c_new_ub(get_n(ub),ub%lbw,  ub%ubw+1)
-    call copy(ub,ub1)
+    call copy(ub1,ub)
     call c_convert_ub_to_bv(ub1,bv,error)
     deallocate(ub1)
     call pop_id(error)

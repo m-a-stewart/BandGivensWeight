@@ -722,16 +722,24 @@ module mod_error_id
 
   ! src/row_compress 1700
   integer(int32), parameter :: mod_id_row_compress=1700
-  integer(int32), parameter :: id_d_row_compress=mod_id_row_compress + 0
-  integer(int32), parameter :: id_f_d_row_compress=mod_id_row_compress + 1
-  integer(int32), parameter :: id_c_row_compress=mod_id_row_compress + 2
-  integer(int32), parameter :: id_f_c_row_compress=mod_id_row_compress + 3
+  integer(int32), parameter :: id_d_rc_of=mod_id_row_compress + 0  
+  integer(int32), parameter :: id_d_row_compress=mod_id_row_compress + 1
+  integer(int32), parameter :: id_f_d_row_compress=mod_id_row_compress + 2
+  integer(int32), parameter :: id_c_rc_of=mod_id_row_compress + 3
+  integer(int32), parameter :: id_c_row_compress=mod_id_row_compress + 4
+  integer(int32), parameter :: id_f_c_row_compress=mod_id_row_compress + 5
+
+  type(routine_info), parameter :: info_d_rc_of=routine_info(id_d_rc_of, &
+       'd_rc_of', [ character(len=error_message_length) :: '' ])
 
   type(routine_info), parameter :: info_d_row_compress=routine_info(id_d_row_compress, &
        'd_row_compress', &
        [ character(len=error_message_length) :: 'ub%n /= bv%n or sw%n /= ub%n', &
        'Not enough stroage for each sweeps', 'Not enough storage for number of sweeps', &
        'Insufficient storage in ubt.', 'Insufficient storage in bv.'])
+
+  type(routine_info), parameter :: info_c_rc_of=routine_info(id_c_rc_of, &
+       'c_rc_of', [ character(len=error_message_length) :: '' ])
 
   type(routine_info), parameter :: info_c_row_compress=routine_info(id_c_row_compress, &
        'c_row_compress', &
@@ -1151,8 +1159,9 @@ contains
        info_index(info_c_v_forward_solve_bv%routine_id)=info_c_v_forward_solve_bv
 
        ! row_compress
-
+       info_index(info_d_rc_of%routine_id)=info_d_rc_of
        info_index(info_d_row_compress%routine_id)=info_d_row_compress
+       info_index(info_c_rc_of%routine_id)=info_c_rc_of
        info_index(info_c_row_compress%routine_id)=info_c_row_compress
 
        ! random
