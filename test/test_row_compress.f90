@@ -14,8 +14,6 @@ program test_row_compress
   type(c_ubt), allocatable :: ubt_c
   type(d_rc), allocatable :: swbv_d
   type(c_rc), allocatable :: swbv_c
-  type(d_sweeps), allocatable :: sw_d
-  type(c_sweeps), allocatable :: sw_c
 
   call initialize_errors
 

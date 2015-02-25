@@ -12,8 +12,9 @@ module mod_utility
 
   public :: print_matrix, d_print_matrix, c_print_matrix, i_print_matrix
 
-  public :: random_matrix, d_random_matrix, d_v_random_matrix, d_s_random_matrix, &
-       c_random_matrix, c_v_random_matrix, c_s_random_matrix
+  public :: random_matrix_to, d_random_matrix_to, d_v_random_matrix_to, d_s_random_matrix_to, &
+       c_random_matrix_to, c_v_random_matrix_to, c_s_random_matrix_to, &
+       d_random_matrix, d_random_vector, c_random_matrix, c_random_vector
 
   public :: ip_transpose, d_ip_transpose, c_ip_transpose
 
@@ -49,10 +50,10 @@ module mod_utility
      module procedure d_print_matrix, c_print_matrix, i_print_matrix
   end interface print_matrix
 
-  interface random_matrix
-     module procedure d_random_matrix, d_v_random_matrix, d_s_random_matrix, &
-          c_random_matrix, c_v_random_matrix, c_s_random_matrix
-  end interface random_matrix
+  interface random_matrix_to
+     module procedure d_random_matrix_to, d_v_random_matrix_to, d_s_random_matrix_to, &
+          c_random_matrix_to, c_v_random_matrix_to, c_s_random_matrix_to
+  end interface random_matrix_to
 
   interface ip_transpose
      module procedure d_ip_transpose, c_ip_transpose
@@ -609,25 +610,49 @@ contains
     end do
   end subroutine i_print_matrix
 
-  subroutine d_random_matrix(a)
+  function d_random_matrix(m,n) result(a)
+    real(kind=dp), dimension(m,n) :: a
+    integer(kind=int32), intent(in) :: m,n
+    call d_random_matrix_to(a)
+  end function d_random_matrix
+
+  function d_random_vector(n) result(a)
+    real(kind=dp), dimension(n) :: a
+    integer(kind=int32), intent(in) :: n
+    call d_v_random_matrix_to(a)
+  end function d_random_vector
+
+  function c_random_matrix(m,n) result(a)
+    complex(kind=dp), dimension(m,n) :: a
+    integer(kind=int32), intent(in) :: m,n
+    call c_random_matrix_to(a)
+  end function c_random_matrix
+
+  function c_random_vector(n) result(a)
+    complex(kind=dp), dimension(n) :: a
+    integer(kind=int32), intent(in) :: n
+    call c_v_random_matrix_to(a)
+  end function c_random_vector
+  
+  subroutine d_random_matrix_to(a)
     real(kind=dp), dimension(:,:), intent(out) :: a
     call random_number(a)
     a=d_random_scale*a+d_random_shift
-  end subroutine d_random_matrix
+  end subroutine d_random_matrix_to
 
-  subroutine d_v_random_matrix(a)
+  subroutine d_v_random_matrix_to(a)
     real(kind=dp), dimension(:), intent(out) :: a
     call random_number(a)
     a=d_random_scale*a+d_random_shift
-  end subroutine d_v_random_matrix
+  end subroutine d_v_random_matrix_to
 
-  subroutine d_s_random_matrix(a)
+  subroutine d_s_random_matrix_to(a)
     real(kind=dp), intent(out) :: a
     call random_number(a)
     a=d_random_scale*a+d_random_shift
-  end subroutine d_s_random_matrix
+  end subroutine d_s_random_matrix_to
 
-  subroutine c_random_matrix(a)
+  subroutine c_random_matrix_to(a)
     complex(kind=dp), dimension(:,:), intent(out) :: a
     real(kind=dp) :: x,y
     integer(kind=int32) :: j, k
@@ -638,9 +663,9 @@ contains
           a(j,k)=c_random_scale*cmplx(x,y)+c_random_shift
        end do
     end do
-  end subroutine c_random_matrix
+  end subroutine c_random_matrix_to
 
-  subroutine c_v_random_matrix(a)
+  subroutine c_v_random_matrix_to(a)
     complex(kind=dp), dimension(:), intent(out) :: a
     real(kind=dp) :: x,y
     integer(kind=int32) :: j
@@ -649,15 +674,15 @@ contains
        call random_number(y)
        a(j)= c_random_scale*cmplx(x,y)+c_random_shift
     end do
-  end subroutine c_v_random_matrix
+  end subroutine c_v_random_matrix_to
 
-  subroutine c_s_random_matrix(a)
+  subroutine c_s_random_matrix_to(a)
     complex(kind=dp), intent(out) :: a
     real(kind=dp) :: x,y
     call random_number(x)
     call random_number(y)
     a=c_random_scale*cmplx(x,y)+c_random_shift
-  end subroutine c_s_random_matrix
+  end subroutine c_s_random_matrix_to
 
   real(kind=dp) function d_delta(j,k)
     integer(kind=int32), intent(in) :: j,k

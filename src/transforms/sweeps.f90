@@ -219,8 +219,8 @@ contains
     do j=1,n-1
        sw%js(j,:)=j
     end do
-    call random_matrix(sw%cs)
-    call random_matrix(sw%ss)
+    call random_matrix_to(sw%cs)
+    call random_matrix_to(sw%ss)
     do j=1,n-1
        do k=1,l
           nrm=sqrt(sw%cs(j,k)**2+sw%ss(j,k)**2)
@@ -240,8 +240,8 @@ contains
     do j=1,n-1
        sw%js(j,:)=j
     end do
-    call random_matrix(sw%cs)
-    call random_matrix(sw%ss)
+    call random_matrix_to(sw%cs)
+    call random_matrix_to(sw%ss)
     do j=1,n-1
        do k=1,l
           nrm=sqrt(sw%cs(j,k)**2+abs(sw%ss(j,k))**2)

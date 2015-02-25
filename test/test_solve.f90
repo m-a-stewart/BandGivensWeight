@@ -31,8 +31,7 @@ program test_solve
   print *
 
   na=40; lbwa=5; ubwa=7; nc=3
-  allocate(rhs_d(na,nc))
-  call random_matrix(rhs_d)
+  rhs_d=d_random_matrix(na,nc)
   rhs0_d=rhs_d
   ubt_d=d_random_ubt(na,lbwa,ubwa,error=error)
   a_d = general(ubt_d,error)
@@ -47,11 +46,9 @@ program test_solve
   scale=maxabs(a_d)*maxabs(x_d)
   test_name = "Real Back Subs. (n=40)"
   call d_output_result_upper(test_name,rhs0_d/scale,rhs_d/scale,ubwa,ubwa,t0,t1,c*tol,error)
-  deallocate(rhs_d)
 
   na=40; lbwa=5; ubwa=7
-  allocate(rhs_v_d(na))
-  call random_matrix(rhs_v_d)
+  rhs_v_d=d_random_vector(na)
   rhs0_v_d=rhs_v_d
   ubt_d=d_random_ubt(na,lbwa,ubwa,error=error)
   a_d = general(ubt_d,error)
@@ -67,11 +64,9 @@ program test_solve
   test_name = "Real Vector Back Subs. (n=40)"
   call d_output_result_upper(test_name,reshape(rhs0_v_d/scale,[na,1]),&
        reshape(rhs_v_d/scale,[na,1]),ubwa,ubwa,t0,t1,c*tol,error)
-  deallocate(rhs_v_d)
 
-  na=40; lbwa=5; ubwa=7; nc=3  
-  allocate(rhs_c(na,nc))
-  call random_matrix(rhs_c)
+  na=40; lbwa=5; ubwa=7; nc=3
+  rhs_c=c_random_matrix(na,nc)
   rhs0_c=rhs_c
   ubt_c=c_random_ubt(na,lbwa,ubwa,error=error)
   a_c = general(ubt_c,error)
@@ -86,11 +81,9 @@ program test_solve
   scale=maxabs(a_c)*maxabs(x_c)
   test_name = "Complex Back Subs. (n=40)"
   call c_output_result_upper(test_name,rhs0_c/scale,rhs_c/scale,ubwa,ubwa,t0,t1,c*tol,error)
-  deallocate(rhs_c)
 
   na=40; lbwa=5; ubwa=7
-  allocate(rhs_v_c(na))
-  call random_matrix(rhs_v_c)
+  rhs_v_c=c_random_vector(na)
   rhs0_v_c=rhs_v_c
   ubt_c=c_random_ubt(na,lbwa,ubwa,error=error)
   a_c = general(ubt_c,error)
@@ -106,7 +99,6 @@ program test_solve
   test_name = "Complex Vector Back Subs. (n=40)"
   call c_output_result_upper(test_name,reshape(rhs0_v_c/scale,[na,1]),&
        reshape(rhs_v_c/scale,[na,1]),ubwa,ubwa,t0,t1,c*tol,error)
-  deallocate(rhs_v_c)
 
   print *
   print *, "--------------------------------"
@@ -115,8 +107,7 @@ program test_solve
   print *
 
   na=40; lbwa=5; ubwa=7; nc=3
-  allocate(rhs_d(nc,na))
-  call random_matrix(rhs_d)
+  rhs_d=d_random_matrix(nc,na)
   rhs0_d=rhs_d
   ubt_d=d_random_ubt(na,lbwa,ubwa,error=error)
   a_d = general(ubt_d,error)
@@ -132,11 +123,9 @@ program test_solve
   scale=maxabs(a_d)*maxabs(x_d)
   test_name = "Real Forward Subs. (n=40)"
   call d_output_result_upper(test_name,rhs0_d/scale,rhs_d/scale,ubwa,ubwa,t0,t1,c*tol,error)
-  deallocate(rhs_d)
 
   na=40; lbwa=5; ubwa=7
-  allocate(rhs_v_d(na))
-  call random_matrix(rhs_v_d)
+  rhs_v_d=d_random_vector(na)
   rhs0_v_d=rhs_v_d
   ubt_d=d_random_ubt(na,lbwa,ubwa,error=error)
   a_d = general(ubt_d,error)
@@ -153,11 +142,9 @@ program test_solve
   test_name = "Real Vector Forward Subs. (n=40)"
   call d_output_result_upper(test_name,reshape(rhs0_v_d/scale,[1,na]),&
        reshape(rhs_v_d/scale,[1,na]),ubwa,ubwa,t0,t1,c*tol,error)
-  deallocate(rhs_v_d)
 
   na=40; lbwa=5; ubwa=7; nc=3
-  allocate(rhs_c(nc,na))
-  call random_matrix(rhs_c)
+  rhs_c=c_random_matrix(nc,na)
   rhs0_c=rhs_c
   ubt_c=c_random_ubt(na,lbwa,ubwa,error=error)
   a_c = general(ubt_c,error)
@@ -173,11 +160,9 @@ program test_solve
   scale=maxabs(a_c)*maxabs(x_c)
   test_name = "Complex Forward Subs. (n=40)"
   call c_output_result_upper(test_name,rhs0_c/scale,rhs_c/scale,ubwa,ubwa,t0,t1,c*tol,error)
-  deallocate(rhs_c)
 
   na=40; lbwa=5; ubwa=7
-  allocate(rhs_v_c(na))
-  call random_matrix(rhs_v_c)
+  rhs_v_c=c_random_vector(na)
   rhs0_v_c=rhs_v_c
   ubt_c=c_random_ubt(na,lbwa,ubwa,error=error)
   a_c = general(ubt_c,error)
@@ -194,6 +179,5 @@ program test_solve
   test_name = "Complex Vector Forward Subs. (n=40)"
   call c_output_result_upper(test_name,reshape(rhs0_v_c/scale,[1,na]),&
        reshape(rhs_v_c/scale,[1,na]),ubwa,ubwa,t0,t1,c*tol,error)
-  deallocate(rhs_v_c)
   
 end program test_solve

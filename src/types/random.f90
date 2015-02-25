@@ -10,8 +10,6 @@ module mod_random
 
   public :: d_random_bc, c_random_bc, f_d_random_bc, f_c_random_bc, f_random_bc, &
        d_random_br, c_random_br, f_d_random_br, f_c_random_br, f_random_br
-       
-
 
   public :: d_random_ub0, c_random_ub0, f_d_random_rotations_ub, f_c_random_rotations_ub, &
        d_random_bv0, f_d_random_rotations_bv, c_random_bv0, f_c_random_rotations_bv, &
@@ -146,7 +144,7 @@ contains
     do k=1,n
        j0=max(1,ubw-k+2)
        j1=min(bw,ubw+n-k+1)
-       call random_matrix(b(j0:j1,k))
+       call random_matrix_to(b(j0:j1,k))
     end do
   end subroutine f_d_random_bc
 
@@ -192,7 +190,7 @@ contains
     do k=1,n
        j0=max(1,ubw-k+2)
        j1=min(bw,ubw+n-k+1)
-       call random_matrix(b(j0:j1,k))
+       call random_matrix_to(b(j0:j1,k))
     end do
   end subroutine f_c_random_bc
 
@@ -239,7 +237,7 @@ contains
     do j=1,n
        k0=max(1,lbw-j+2)
        k1=min(bw,lbw+n-j+1)
-       call random_matrix(b(j,k0:k1))
+       call random_matrix_to(b(j,k0:k1))
     end do
   end subroutine f_d_random_br
 
@@ -286,7 +284,7 @@ contains
     do j=1,n
        k0=max(1,lbw-j+2)
        k1=min(bw,lbw+n-j+1)
-       call random_matrix(b(j,k0:k1))
+       call random_matrix_to(b(j,k0:k1))
     end do
   end subroutine f_c_random_br
 
@@ -382,8 +380,8 @@ contains
        end if
        nr=min(k-1,ubwk)
        numrotsu(k)=nr
-       call random_matrix(csu(1:nr,k))
-       call random_matrix(ssu(1:nr,k))
+       call random_matrix_to(csu(1:nr,k))
+       call random_matrix_to(ssu(1:nr,k))
        jsu(1:nr,k) = (/ (j, j=k-nr, k-1) /)
        do j=1,nr
           nrm = sqrt(csu(j,k)**2 + ssu(j,k)**2)
@@ -486,8 +484,8 @@ contains
        end if
        nr=min(k-1,ubwk)
        numrotsu(k)=nr
-       call random_matrix(csu(1:nr,k))
-       call random_matrix(ssu(1:nr,k))
+       call random_matrix_to(csu(1:nr,k))
+       call random_matrix_to(ssu(1:nr,k))
        jsu(1:nr,k) = (/ (j, j=k-nr, k-1) /)
        do j=1,nr
           nrm = sqrt(csu(j,k)**2 + abs(ssu(j,k))**2)
@@ -588,8 +586,8 @@ contains
        end if
        nr=min(n-j-1,ubwj)
        numrotsv(j)=nr
-       call random_matrix(csv(j,1:nr))
-       call random_matrix(ssv(j,1:nr))
+       call random_matrix_to(csv(j,1:nr))
+       call random_matrix_to(ssv(j,1:nr))
        ksv(j,1:nr) = (/ (k, k=j+nr,j+1,-1) /)
        do k=1,nr
           nrm = sqrt(csv(j,k)**2 + ssv(j,k)**2)
@@ -690,8 +688,8 @@ contains
        nr=min(n-j-1,ubwj)
        numrotsv(j)=nr
 
-       call random_matrix(csv(j,1:nr))
-       call random_matrix(ssv(j,1:nr))
+       call random_matrix_to(csv(j,1:nr))
+       call random_matrix_to(ssv(j,1:nr))
        ksv(j,1:nr) = (/ (k, k=j+nr,j+1,-1) /)
        do k=1,nr
           nrm = sqrt(csv(j,k)**2 + abs(ssv(j,k))**2)
@@ -789,8 +787,8 @@ contains
        end if
        nr=min(j-1,lbwj)
        numrotst(j)=nr
-       call random_matrix(cst(j,1:nr))
-       call random_matrix(sst(j,1:nr))
+       call random_matrix_to(cst(j,1:nr))
+       call random_matrix_to(sst(j,1:nr))
        kst(j,1:nr) = (/ (k, k=j-nr,j-1) /)
        do k=1,nr
           nrm = sqrt(cst(j,k)**2 + sst(j,k)**2)
@@ -886,8 +884,8 @@ contains
        end if
        nr=min(j-1,lbwj)
        numrotst(j)=nr
-       call random_matrix(cst(j,1:nr))
-       call random_matrix(sst(j,1:nr))
+       call random_matrix_to(cst(j,1:nr))
+       call random_matrix_to(sst(j,1:nr))
        kst(j,1:nr) = (/ (k, k=j-nr,j-1) /)
        do k=1,nr
           nrm = sqrt(cst(j,k)**2 + abs(sst(j,k))**2)
@@ -984,8 +982,8 @@ contains
        end if
        nr=min(n-k-2,lbwk)
        numrotsw(k)=nr
-       call random_matrix(csw(1:nr,k))
-       call random_matrix(ssw(1:nr,k))
+       call random_matrix_to(csw(1:nr,k))
+       call random_matrix_to(ssw(1:nr,k))
        jsw(1:nr,k) = (/ (j, j=k+nr,k+1,-1) /)
        do j=1,nr
           nrm = sqrt(csw(j,k)**2 + ssw(j,k)**2)
@@ -1057,7 +1055,6 @@ contains
          wb%csw, wb%ssw,lbws)
     call pop_id(error)
   end function c_random_wb1
-  
 
   subroutine f_c_random_rotations_wb(n,lbw,ubw,lbwmax,ubwmax,numrotsw,jsw,csw,ssw,lower)
     integer(kind=int32), intent(in) :: n, lbw, ubw
@@ -1082,8 +1079,8 @@ contains
        end if
        nr=min(n-k-2,lbwk)
        numrotsw(k)=nr
-       call random_matrix(csw(1:nr,k))
-       call random_matrix(ssw(1:nr,k))
+       call random_matrix_to(csw(1:nr,k))
+       call random_matrix_to(ssw(1:nr,k))
        jsw(1:nr,k) = (/ (j, j=k+nr,k+1,-1) /)
        do j=1,nr
           nrm = sqrt(csw(j,k)**2 + abs(ssw(j,k))**2)
