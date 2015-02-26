@@ -1,8 +1,10 @@
 module mod_row_compress
-  use mod_misc
+  use mod_prec
+  use mod_error_id
+  use mod_band_types
+  use mod_orth_band_types
   use mod_sweeps
   use mod_rotation
-  use mod_types
   use mod_shift
   implicit none
 

@@ -18,8 +18,6 @@ module mod_utility
 
   public :: ip_transpose, d_ip_transpose, c_ip_transpose
 
-  public :: includes_nan, d_includes_nan, d_v_includes_nan, c_includes_nan, c_v_includes_nan
-
   public :: c_delta, d_delta
 
   public :: equals_option, i_equals_option
@@ -62,10 +60,6 @@ module mod_utility
   interface equals_option
      module procedure i_equals_option
   end interface equals_option
-
-  interface includes_nan
-     module procedure d_includes_nan, d_v_includes_nan, c_includes_nan, c_v_includes_nan
-  end interface includes_nan
 
   real(kind=dp), parameter :: d_random_shift=-1.0_dp, d_random_scale=2.0_dp
   complex(kind=dp), parameter :: c_random_shift=(-1.0_dp,-1.0_dp), c_random_scale=(2.0_dp,0.0_dp)
@@ -712,60 +706,6 @@ contains
        i=j
     end if
   end function i_equals_option
-
-  type(logical) function d_includes_nan(a) result(nanflag)
-    real(kind=dp), dimension(:,:) :: a
-    integer(kind=int32) :: m,n,j,k
-    nanflag=.false.
-    m=size(a,1)
-    n=size(a,2)
-    do j=1,m
-       do k=1,n
-          if (a(j,k) /= a(j,k)) then
-             nanflag=.true.
-          end if
-       end do
-    end do
-  end function d_includes_nan
-
-  type(logical) function d_v_includes_nan(a) result(nanflag)
-    real(kind=dp), dimension(:) :: a
-    integer(kind=int32) :: n,j
-    nanflag=.false.
-    n=size(a)
-    do j=1,n
-       if (a(j) /= a(j)) then
-          nanflag=.true.
-       end if
-    end do
-  end function d_v_includes_nan
-
-  type(logical) function c_includes_nan(a) result(nanflag)
-    complex(kind=dp), dimension(:,:) :: a
-    integer(kind=int32) :: m,n,j,k
-    nanflag=.false.
-    m=size(a,1)
-    n=size(a,2)
-    do j=1,m
-       do k=1,n
-          if (a(j,k) /= a(j,k)) then
-             nanflag=.true.
-          end if
-       end do
-    end do
-  end function c_includes_nan
-
-  type(logical) function c_v_includes_nan(a) result(nanflag)
-    complex(kind=dp), dimension(:) :: a
-    integer(kind=int32) :: n,j
-    nanflag=.false.
-    n=size(a)
-    do j=1,n
-       if (a(j) /= a(j)) then
-          nanflag=.true.
-       end if
-    end do
-  end function c_v_includes_nan
 
   subroutine d_ip_transpose(a)
     real(kind=dp), dimension(:,:), intent(inout) :: a

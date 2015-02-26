@@ -28,11 +28,9 @@ _ASSEMBLE = prec error_id band_types orth_band_types rotation
 
 _GENERAL = general_bv general_ub general_bt \
 	general_wb general_ubt general_wbv
-_GENERAL_BV = orth shift rotation \
-	prec error_id utility \
+_GENERAL_BV = prec utility error_id nullvec gs shift rotation \
 	orth_band_types band_types
-_GENERAL_UB = orth shift rotation \
-	prec error_id utility \
+_GENERAL_UB = prec utility error_id nullvec gs shift rotation \
 	orth_band_types band_types
 _GENERAL_BT = prec error_id utility \
 	orth_band_types band_types general_ub
@@ -60,7 +58,8 @@ _CONVERT_WBV_TO_UBT = prec error_id shift \
 _CONVERT_UBT_TO_WBV = prec error_id shift \
 	rotation orth_band_types band_types
 
-_ROW_COMPRESS = misc sweeps types
+_ROW_COMPRESS = prec error_id band_types orth_band_types \
+	sweeps rotation shift
 
 _QR_FACTORIZATION = prec error_id \
 	convert_bv_to_ub convert_ub_to_bv \
