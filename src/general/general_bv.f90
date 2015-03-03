@@ -49,9 +49,7 @@ contains
     type(routine_info), parameter :: info=info_d_bv_of_general
     integer(kind=int32) :: n
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
 
     n=size(a,1)
@@ -77,9 +75,7 @@ contains
     integer(kind=int32), intent(in) :: lbw
     type(routine_info), parameter :: info=info_d_general_to_bv
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
     
     if (size(a,1) < 1) then
@@ -117,9 +113,7 @@ contains
     integer(kind=int32), dimension(n) :: ubws
     type(routine_info), parameter :: info=info_f_d_general_to_bv
     !
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
 
     if (n == 1) then
@@ -167,9 +161,7 @@ contains
     type(routine_info), parameter :: info=info_f_d_general_bv
     type(error_info) :: errornv
     !
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
     
     q=0.0_dp; numrotsv=0;
@@ -209,10 +201,7 @@ contains
        if (success(errornv)) then
           ! if there is a left null vector then introduce a zero row.
           ubws(k)=nl-1
-          if (p == nl) then
-             pl(nl,nl)=0.0_dp
-             numrotsv(n-k)=0
-          else if (p >= 1) then
+          if (p >= 1) then
              numrotsv(n-k)=nl-p
              pl(p,p)=0.0_dp
              do j=p,nl-1
@@ -264,9 +253,7 @@ contains
           else
              pq(:,nl)=0.0_dp; pq(n-k,nl)=1.0_dp
              call extend_gs_columns(pq(:,1:nl-1), x(1:nl-1), x(nl), pq(:,nl), error)
-             if (failure(error)) then
-                return
-             end if
+             if (failure(error)) return
              do j=1,nl-1
                 rot=rgivens2(pq(n-k,j),pq(n-k,nl))
                 call general_times_rotation(pq,rot,j,nl)
@@ -279,9 +266,7 @@ contains
              pq(:,1)=a(1:n-k-1,coffs)
              pl => a(roffs:roffs+nl-1, coffs:coffs+nl-1)
              call extend_gs_columns(pq(:,2:nl),pl(2:nl,1),pl(1,1),pq(:,1),error)
-             if (failure(error)) then
-                return
-             end if
+             if (failure(error)) return
              if (roffs>1) then
                 a(1:roffs-1,coffs)=0.0_dp
              end if
@@ -302,9 +287,7 @@ contains
              pq => q(1:n-k,1:nl+1)
              pq(:,nl+1)=0.0_dp; pq(n-k,nl+1)=1.0_dp
              call extend_gs_columns(pq(:,1:nl),x(1:nl), x(nl+1),pq(:,nl+1),error)
-             if (failure(error)) then
-                return
-             end if
+             if (failure(error)) return
              do j=1,nl
                 rot=rgivens2(pq(n-k,j),pq(n-k,nl+1))
                 call general_times_rotation(pq,rot,j,nl+1)
@@ -329,9 +312,7 @@ contains
                 pl => a(roffs-1:roffs-1+nl,coffs:coffs+nl)
                 call extend_gs_columns(pq(:,2:nl+1), pl(2:nl+1,1), &
                      pl(1,1), pq(:,1), error)
-                if (failure(error)) then
-                   return
-                end if
+                if (failure(error)) return
                 if (roffs-2 >= 1) then
                    a(1:roffs-2,coffs)=0.0_dp
                 end if
@@ -416,9 +397,7 @@ contains
     type(routine_info), parameter :: info=info_c_bv_of_general
     integer(kind=int32) :: n
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
 
     n=size(a,1)
@@ -438,9 +417,7 @@ contains
     integer(kind=int32), intent(in) :: lbw
     type(routine_info), parameter :: info=info_c_general_to_bv
     
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
     !
     if (size(a,1) < 1) then
@@ -478,9 +455,7 @@ contains
     type(routine_info), parameter :: info=info_f_c_general_to_bv
     !
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
 
     if (n == 1) then
@@ -528,9 +503,7 @@ contains
     q=(0.0_dp, 0.0_dp); numrotsv=0;
     ssv=(0.0_dp, 0.0_dp); csv=0.0_dp; ksv=0
     ubws=0
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
 
     nrma = maxabs(a)*sqrt(real(n))
@@ -566,10 +539,7 @@ contains
        if (success(errornv)) then
           ! if there is a left null vector then introduce a zero row.
           ubws(k)=nl-1
-          if (p == nl) then
-             pl(nl,nl)=(0.0_dp, 0.0_dp)
-             numrotsv(n-k)=0
-          else if (p >= 1) then
+          if (p >= 1) then
              numrotsv(n-k)=nl-p
              pl(p,p)=(0.0_dp, 0.0_dp)
              do j=p,nl-1
@@ -623,9 +593,7 @@ contains
           else
              pq(:,nl)=(0.0_dp, 0.0_dp); pq(n-k,nl)=(1.0_dp, 0.0_dp)
              call extend_gs_columns(pq(:,1:nl-1), x(1:nl-1), x(nl), pq(:,nl), error)
-             if (failure(error)) then
-                return
-             end if
+             if (failure(error)) return
              do j=1,nl-1
                 rot=rgivens2(pq(n-k,j),pq(n-k,nl))
                 call general_times_rotation(pq,rot,j,nl)
@@ -638,9 +606,7 @@ contains
              pq(:,1)=a(1:n-k-1,coffs)
              pl => a(roffs:roffs+nl-1, coffs:coffs+nl-1)
              call extend_gs_columns(pq(:,2:nl),pl(2:nl,1),pl(1,1),pq(:,1),error)
-             if (failure(error)) then
-                return
-             end if
+             if (failure(error)) return
              if (roffs>1) then
                 a(1:roffs-1,coffs)=(0.0_dp, 0.0_dp)
              end if
@@ -661,9 +627,7 @@ contains
              pq => q(1:n-k,1:nl+1)
              pq(:,nl+1)=(0.0_dp, 0.0_dp); pq(n-k,nl+1)=(1.0_dp, 0.0_dp)
              call extend_gs_columns(pq(:,1:nl),x(1:nl), x(nl+1),pq(:,nl+1),error)
-             if (failure(error)) then
-                return
-             end if
+             if (failure(error)) return
              do j=1,nl
                 rot=rgivens2(pq(n-k,j),pq(n-k,nl+1))
                 call general_times_rotation(pq,rot,j,nl+1)
@@ -688,9 +652,7 @@ contains
                 pl => a(roffs-1:roffs-1+nl,coffs:coffs+nl)
                 call extend_gs_columns(pq(:,2:nl+1), pl(2:nl+1,1), &
                      pl(1,1), pq(:,1), error)
-                if (failure(error)) then
-                   return
-                end if
+                if (failure(error)) return
                 if (roffs-2 >= 1) then
                    a(1:roffs-2,coffs)=(0.0_dp, 0.0_dp)
                 end if

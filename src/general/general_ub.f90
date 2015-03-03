@@ -49,9 +49,7 @@ contains
     type(routine_info), parameter :: info=info_d_ub_of_general
     integer(kind=int32) :: n
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
 
     n=size(a,1)
@@ -76,9 +74,7 @@ contains
     integer(kind=int32), intent(in) :: lbw
     type(routine_info), parameter :: info=info_d_general_to_ub
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
     if (size(a,1) < 1) then
        call set_error(1, info, error); return
@@ -116,9 +112,7 @@ contains
     integer(kind=int32), dimension(n) :: ubws
     type(routine_info), parameter :: info=info_f_d_general_to_ub
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
 
     if (n == 1) then
@@ -163,9 +157,7 @@ contains
     type(routine_info), parameter :: info=info_f_d_general_ub
     type(error_info) :: errornv
     !
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
     
     q=0.0_dp; numrotsu=0;
@@ -201,10 +193,7 @@ contains
        if (success(errornv)) then
           ! if there is a left null vector then introduce a zero row.          
           ubws(k)=nl-1
-          if (p == 1) then
-             pl(1,1)=0.0_dp
-             numrotsu(k)=0
-          else if (p > 1) then
+          if (p >= 1) then
              numrotsu(k)=p-1
              pl(p,p)=0.0_dp
              do j=p-1,1,-1
@@ -258,9 +247,7 @@ contains
           else
              pq(1,:)=0.0_dp;     pq(1,1)=1.0_dp
              call extend_gs_rows(pq(2:nl,:), x(1:nl-1), x(nl), pq(1,:), error)
-             if (failure(error)) then
-                return
-             endif
+             if (failure(error)) return
              do j=nl,2,-1
                 rot=lgivens(pq(1,1),pq(j,1))
                 call rotation_times_general(trp_rot(rot), pq, 1,j)
@@ -273,9 +260,7 @@ contains
              pq(nl,:)=a(k+1,k+2:n)
              pl => a(roffs+2:k+1,k+2:k+nl+1) ! nl by nl
              call extend_gs_rows(pq(1:nl-1,:), pl(nl,1:nl-1), pl(nl,nl), pq(nl,:), error)
-             if (failure(error)) then
-                return
-             endif
+             if (failure(error)) return
              if (k+nl+2 <= n) then
                 a(k+1,k+nl+2:n)=0.0_dp
              end if
@@ -300,9 +285,7 @@ contains
              pq(1,1)=1.0_dp
              ! orthogonalizing.  Note x is used as workspace for coefficients.
              call extend_gs_rows(pq(2:nl+1,:), x(1:nl), x(nl+1), pq(1,:), error)
-             if (failure(error)) then
-                return
-             endif
+             if (failure(error)) return
              do j=nl+1,2,-1
                 rot=lgivens(pq(1,1),pq(j,1))
                 call rotation_times_general(trp_rot(rot), pq, 1,j)
@@ -329,9 +312,7 @@ contains
                 pl => a(roffs+1:k+1,k+2:k+nl+2)
                 call extend_gs_rows(pq(1:nl,:), pl(nl+1,1:nl), &
                      pl(nl+1,nl+1), pq(nl+1,:), error)
-                if (failure(error)) then
-                   return
-                endif
+                if (failure(error)) return
                 if (k+nl+3 <= n) then
                    a(k+1,k+nl+3:n)=0.0_dp
                 end if
@@ -423,9 +404,7 @@ contains
     type(routine_info), parameter :: info=info_c_ub_of_general
     integer(kind=int32) :: n
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
 
     n=size(a,1)
@@ -445,9 +424,7 @@ contains
     integer(kind=int32), intent(in) :: lbw
     type(routine_info), parameter :: info=info_c_general_to_ub
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
     
     if (size(a,1) < 1) then
@@ -482,9 +459,7 @@ contains
     integer(kind=int32), dimension(n) :: ubws
     type(routine_info), parameter :: info=info_f_c_general_to_ub
     !
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
     !
     if (n == 1) then
@@ -531,9 +506,7 @@ contains
     type(routine_info), parameter :: info=info_f_c_general_ub
     type(error_info) :: errornv
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
 
     q=(0.0_dp, 0.0_dp); numrotsu=0;
@@ -570,10 +543,8 @@ contains
        call lower_left_nullvec(x(1:nl),pl,tol*nrma,nullmaxits,p,errornv)
        if (success(errornv)) then ! if there is a left null vector then introduce a zero row.
           ubws(k)=nl-1
-          if (p == 1) then
-             pl(1,1)=(0.0_dp, 0.0_dp)
-             numrotsu(k)=0
-          else if (p > 1) then
+          if (p >= 1) then
+             ! sufficiently small zero on diagonal
              numrotsu(k)=p-1
              pl(p,p)=(0.0_dp, 0.0_dp)
              do j=p-1,1,-1
@@ -583,7 +554,7 @@ contains
                 csu(j,k)=rot%cosine; ssu(j,k)=rot%sine
                 jsu(j,k)=roffs+j
              end do
-          else ! error=0
+          else
              numrotsu(k)=nl-1;
              do j=nl,2,-1 ! apply u_k while preserving the triangular structure of L
                 rot=rgivens(x(j-1),x(j))
@@ -604,7 +575,7 @@ contains
              call rotation_times_general(trp_rot(rot), pq, 1,j)
              pl(j,1)=(0.0_dp, 0.0_dp)
           end do
-          if (k+nl==n) then ! square case
+          if (k+nl==n) then
              ! reveal column k+1
              do j=nl,2,-1
                 rot=lgivens(pq(1,1),pq(j,1))
@@ -626,9 +597,7 @@ contains
           else
              pq(1,:)=(0.0_dp, 0.0_dp);     pq(1,1)=(1.0_dp,0.0_dp)
              call extend_gs_rows(pq(2:nl,:), x(1:nl-1), x(nl), pq(1,:), error) ! orthogonalize
-             if (failure(error)) then
-                return
-             endif
+             if (failure(error)) return
              do j=nl,2,-1
                 rot=lgivens(pq(1,1),pq(j,1))
                 call rotation_times_general(trp_rot(rot), pq, 1,j)
@@ -641,9 +610,7 @@ contains
              pq(nl,:)=a(k+1,k+2:n)
              pl => a(roffs+2:k+1,k+2:k+nl+1) ! nl by nl
              call extend_gs_rows(pq(1:nl-1,:), pl(nl,1:nl-1), pl(nl,nl), pq(nl,:), error)
-             if (failure(error)) then
-                return
-             endif
+             if (failure(error)) return
              if (k+nl+2 <= n) then
                 a(k+1,k+nl+2:n)=(0.0_dp, 0.0_dp)
              end if
@@ -667,9 +634,7 @@ contains
              pq(1,1)=(1.0_dp, 0.0_dp)
              ! orthogonalizing.  Note x is used as workspace for coefficients.
              call extend_gs_rows(pq(2:nl+1,:), x(1:nl), x(nl+1), pq(1,:), error)
-             if (failure(error)) then
-                return
-             endif
+             if (failure(error)) return
              do j=nl+1,2,-1
                 rot=lgivens(pq(1,1),pq(j,1))
                 call rotation_times_general(trp_rot(rot), pq, 1,j)
@@ -694,9 +659,7 @@ contains
                 pq(nl+1,:)=a(k+1,k+2:n)
                 pl => a(roffs+1:k+1,k+2:k+nl+2)
                 call extend_gs_rows(pq(1:nl,:), pl(nl+1,1:nl), pl(nl+1,nl+1), pq(nl+1,:), error)
-                if (failure(error)) then
-                   return
-                endif
+                if (failure(error)) return
                 if (k+nl+3 <= n) then
                    a(k+1,k+nl+3:n)=(0.0_dp, 0.0_dp)
                 end if
