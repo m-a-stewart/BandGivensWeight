@@ -185,7 +185,7 @@ contains
     nl=1
     klast=n
     ! k is the trailing principal submatrix size.
-    kloop: do k=1,n
+    kloop: do k=1,n-1
        ! Current, possibly singular, L should be contained in
        ! a(n-k-nl+1:n-k,n-k+1:n-k+nl)
        ! At the start of the loop nl is a possible overestimate that
@@ -267,9 +267,7 @@ contains
              pl => a(roffs:roffs+nl-1, coffs:coffs+nl-1)
              call extend_gs_columns(pq(:,2:nl),pl(2:nl,1),pl(1,1),pq(:,1),error)
              if (failure(error)) return
-             if (roffs>1) then
-                a(1:roffs-1,coffs)=0.0_dp
-             end if
+             a(1:roffs-1,coffs)=0.0_dp
           end if
        else
           ! no null vector found.  Simply reveal row nl if there is room.
@@ -313,9 +311,7 @@ contains
                 call extend_gs_columns(pq(:,2:nl+1), pl(2:nl+1,1), &
                      pl(1,1), pq(:,1), error)
                 if (failure(error)) return
-                if (roffs-2 >= 1) then
-                   a(1:roffs-2,coffs)=0.0_dp
-                end if
+                a(1:roffs-2,coffs)=0.0_dp
                 nl=nl+1
              end if
           end if
@@ -523,7 +519,7 @@ contains
     end if
     nl=1
     klast=n
-    kloop: do k=1,n
+    kloop: do k=1,n-1
        ! Current, possibly singular, L should be contained in
        ! a(n-k-nl+1:n-k,n-k+1:n-k+nl)
        ! At the start of the loop nl is a possible overestimate that
@@ -607,9 +603,7 @@ contains
              pl => a(roffs:roffs+nl-1, coffs:coffs+nl-1)
              call extend_gs_columns(pq(:,2:nl),pl(2:nl,1),pl(1,1),pq(:,1),error)
              if (failure(error)) return
-             if (roffs>1) then
-                a(1:roffs-1,coffs)=(0.0_dp, 0.0_dp)
-             end if
+             a(1:roffs-1,coffs)=(0.0_dp, 0.0_dp)
           end if
        else
           ! no null vector found.  Simply reveal row nl if there is room.
@@ -653,9 +647,7 @@ contains
                 call extend_gs_columns(pq(:,2:nl+1), pl(2:nl+1,1), &
                      pl(1,1), pq(:,1), error)
                 if (failure(error)) return
-                if (roffs-2 >= 1) then
-                   a(1:roffs-2,coffs)=(0.0_dp, 0.0_dp)
-                end if
+                a(1:roffs-2,coffs)=(0.0_dp, 0.0_dp)
                 nl=nl+1
              end if
           end if

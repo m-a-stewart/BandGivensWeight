@@ -180,7 +180,7 @@ contains
     end if
     nl=1
     klast=n
-    kloop: do k=1,n
+    kloop: do k=1,n-1
        ! Current, possibly singular, L should be contained in
        ! a(k-nl+1:k,k+1:k+nl)
        roffs=k-nl
@@ -261,9 +261,7 @@ contains
              pl => a(roffs+2:k+1,k+2:k+nl+1) ! nl by nl
              call extend_gs_rows(pq(1:nl-1,:), pl(nl,1:nl-1), pl(nl,nl), pq(nl,:), error)
              if (failure(error)) return
-             if (k+nl+2 <= n) then
-                a(k+1,k+nl+2:n)=0.0_dp
-             end if
+             a(k+1,k+nl+2:n)=0.0_dp
           end if
        else
           ! no null vector found.  Simply reveal column k+1 if there is room.
@@ -313,9 +311,7 @@ contains
                 call extend_gs_rows(pq(1:nl,:), pl(nl+1,1:nl), &
                      pl(nl+1,nl+1), pq(nl+1,:), error)
                 if (failure(error)) return
-                if (k+nl+3 <= n) then
-                   a(k+1,k+nl+3:n)=0.0_dp
-                end if
+                a(k+1,k+nl+3:n)=0.0_dp ! possibly zero size if k+nl+3>n
                 nl=nl+1
              end if
           end if
@@ -529,7 +525,7 @@ contains
     end if
     nl=1
     klast=n
-    kloop: do k=1,n
+    kloop: do k=1,n-1
        ! Current, possibly singular, L should be contained in
        ! a(k-nl+1:k,k+1:k+nl)
        ! At the start of the loop nl is a possible overestimate that
@@ -611,9 +607,7 @@ contains
              pl => a(roffs+2:k+1,k+2:k+nl+1) ! nl by nl
              call extend_gs_rows(pq(1:nl-1,:), pl(nl,1:nl-1), pl(nl,nl), pq(nl,:), error)
              if (failure(error)) return
-             if (k+nl+2 <= n) then
-                a(k+1,k+nl+2:n)=(0.0_dp, 0.0_dp)
-             end if
+             a(k+1,k+nl+2:n)=(0.0_dp, 0.0_dp)
           end if
        else
           ! no null vector found.  Simply reveal column k+1 if there is room.  Otherwise terminate
@@ -660,9 +654,7 @@ contains
                 pl => a(roffs+1:k+1,k+2:k+nl+2)
                 call extend_gs_rows(pq(1:nl,:), pl(nl+1,1:nl), pl(nl+1,nl+1), pq(nl+1,:), error)
                 if (failure(error)) return
-                if (k+nl+3 <= n) then
-                   a(k+1,k+nl+3:n)=(0.0_dp, 0.0_dp)
-                end if
+                a(k+1,k+nl+3:n)=(0.0_dp, 0.0_dp) ! possibly zero size.
                 nl=nl+1
              end if
           end if
