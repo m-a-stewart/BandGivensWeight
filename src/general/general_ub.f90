@@ -152,10 +152,11 @@ contains
     real(kind=dp), dimension(ubwmax+1) :: x
     real(kind=dp) :: nrma
     real(kind=dp), pointer, dimension(:,:) :: pl, pq
-    integer(kind=int32) :: i, j, k, roffs, nl, klast, p
+    integer(kind=int32) :: i, j, k, roffs, nl, p
     type(d_rotation) :: rot
     type(routine_info), parameter :: info=info_f_d_general_ub
     type(error_info) :: errornv
+    logical :: null
     !
     if (failure(error)) return
     call push_id(info, error)
@@ -179,7 +180,6 @@ contains
        q(1,1:n-1)=q(1,1:n-1)/a(1,2)
     end if
     nl=1
-    klast=n
     kloop: do k=1,n-1
        ! Current, possibly singular, L should be contained in
        ! a(k-nl+1:k,k+1:k+nl)
@@ -191,6 +191,7 @@ contains
        errornv%halt=.false.
        call lower_left_nullvec(x(1:nl),pl,tol*nrma,nullmaxits,p,errornv)
        if (success(errornv)) then
+          null=.true.
           ! if there is a left null vector then introduce a zero row.          
           ubws(k)=nl-1
           if (p >= 1) then
@@ -242,7 +243,6 @@ contains
                 end do
              end do
              a(k+1,k+2:n)=x(1:nl-1)
-             klast=k+1
              exit kloop ! terminate
           else
              pq(1,:)=0.0_dp;     pq(1,1)=1.0_dp
@@ -266,15 +266,17 @@ contains
        else
           ! no null vector found.  Simply reveal column k+1 if there is room.
           ! Otherwise terminate with square L.
+          null=.false.
           if (ubwmax<nl) then
              call set_error(1, info, error); return
           end if
           ubws(k)=nl
           if (k+nl==n) then
-             klast=k ! terminate without null vector (square L)
              exit kloop
           else
-             ! extend pl to the right. (note this requires k+nl < n)             
+             ! extend pl to the right and reveal
+             ! a column of A. (note this requires k+nl < n),
+             ! making pl nl x (nl+1) and q (nl+1) x (n-k)
              pl => a(roffs+1:k, k+1:k+nl+1)
              call shift(pl,0,1)
              pq => q(1:nl+1, 1:n-k)
@@ -292,7 +294,7 @@ contains
              pl(:,1)=pl(:,1)*pq(1,1)
              call shift(pq,-1,-1)
              if (nl==n-k-1) then
-                ! q is now nl by nl.  Extend the LQ factorization down one
+                ! q is now (nl) x (nl).  Extend the LQ factorization down one
                 ! row before stopping.
                 pq => q(1:nl,1:nl)
                 x(1:nl)=0.0_dp
@@ -302,12 +304,13 @@ contains
                    end do
                 end do
                 a(k+1,k+2:n)=x(1:nl)
-                klast=k+1
+                null=.true.
                 exit kloop
              else ! q is not square.  Make L (nl+1)x(nl+1)
                 pq => q(1:nl+1,1:n-k-1)
                 pq(nl+1,:)=a(k+1,k+2:n)
                 pl => a(roffs+1:k+1,k+2:k+nl+2)
+                pl => a(roffs+1:k+1,k+2:min(k+nl+2,n))
                 call extend_gs_rows(pq(1:nl,:), pl(nl+1,1:nl), &
                      pl(nl+1,nl+1), pq(nl+1,:), error)
                 if (failure(error)) return
@@ -317,11 +320,11 @@ contains
           end if
        end if ! null vector check
     end do kloop
-    ! If klast = k+1, we need to terminate on an nl+1 by nl matrix L
-    ! contained in a(klast-(n-klast):klast,klast+1:n).  If klast=k, then L is square and
+    ! If null = .true., we need to terminate on an nl+1 by nl matrix L
+    ! contained in a a(k+1-(n-k-1):k+1,k+2:n).  If null=.false., then L is square and
     ! contained in a(k-(n-k)+1:k,k+1:n).  The former happens when the last step
     ! of kloop found a null vector.  The latter happens when it didn't.
-    if (klast == k) then ! square termination
+    if (.not. null) then ! square termination
        if (ubwmax<n-k) then
           call set_error(1, info, error); return
        end if
@@ -354,8 +357,8 @@ contains
        else
           pl(1,1)=pl(1,1)*pq(1,1)
        end if
-    else ! rectangular termination
-       k=k+1 ! not in square
+    else
+       k=k+1
        if (ubwmax < n-k) then
           call set_error(1, info, error); return
        end if
@@ -497,10 +500,11 @@ contains
     complex(kind=dp), dimension(ubwmax+1) :: x
     real(kind=dp) :: nrma
     complex(kind=dp), pointer, dimension(:,:) :: pl, pq
-    integer(kind=int32) :: i, j, k, roffs, nl, klast, p
+    integer(kind=int32) :: i, j, k, roffs, nl, p
     type(c_rotation) :: rot
     type(routine_info), parameter :: info=info_f_c_general_ub
     type(error_info) :: errornv
+    logical :: null
 
     if (failure(error)) return
     call push_id(info, error)
@@ -524,7 +528,6 @@ contains
        q(1,1:n-1)=q(1,1:n-1)/a(1,2)
     end if
     nl=1
-    klast=n
     kloop: do k=1,n-1
        ! Current, possibly singular, L should be contained in
        ! a(k-nl+1:k,k+1:k+nl)
@@ -538,6 +541,7 @@ contains
        errornv%halt=.false.
        call lower_left_nullvec(x(1:nl),pl,tol*nrma,nullmaxits,p,errornv)
        if (success(errornv)) then ! if there is a left null vector then introduce a zero row.
+          null=.true.
           ubws(k)=nl-1
           if (p >= 1) then
              ! sufficiently small zero on diagonal
@@ -588,7 +592,6 @@ contains
                 end do
              end do
              a(k+1,k+2:n)=x(1:nl-1)
-             klast=k+1
              exit kloop ! terminate
           else
              pq(1,:)=(0.0_dp, 0.0_dp);     pq(1,1)=(1.0_dp,0.0_dp)
@@ -612,12 +615,12 @@ contains
        else
           ! no null vector found.  Simply reveal column k+1 if there is room.  Otherwise terminate
           !  with square L.
+          null=.false.
           if (ubwmax<nl) then
              call set_error(1, info, error); return
           end if
           ubws(k)=nl
           if (k+nl==n) then
-             klast=k ! terminate with square L.
              exit kloop
           else
              pl => a(roffs+1:k, k+1:k+nl+1) ! extend pl to the right. (note this requires k+nl < n)
@@ -646,7 +649,7 @@ contains
                    end do
                 end do
                 a(k+1,k+2:n)=x(1:nl)
-                klast=k+1
+                null=.true.
                 exit kloop
              else ! q is not square.  Make L (nl+1)x(nl+1)
                 pq => q(1:nl+1,1:n-k-1)
@@ -660,11 +663,11 @@ contains
           end if
        end if ! null vector check
     end do kloop
-    ! If klast = k+1, we need to terminate on an nl+1 by nl matrix L
-    ! contained in a(klast-(n-klast):klast,klast+1:n).  If klast=k, then L is square and
+    ! If null=.true., we need to terminate on an nl+1 by nl matrix L
+    ! contained in a(k+1-(n-k-1):k+1,k+2:n).  If null=.false., then L is square and
     ! contained in a(k-(n-k)+1:k,k+1:n).  The former happens when the last step
     ! of kloop found a null vector.  The latter happens when it didn't.
-    if (klast == k) then ! square termination
+    if (.not. null) then ! square termination
        if (ubwmax<n-k) then
           call set_error(1, info, error); return
        end if

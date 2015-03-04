@@ -23,6 +23,20 @@ run_all_tests : $(TESTS)
 	$(BINDIR)/test_qr_factorization
 	$(BINDIR)/test_solve
 
+.PHONY : run_general
+run_general : $(BINDIR)/test_general_ub $(BINDIR)/test_general_bv $(BINDIR)/test_general_bt \
+	$(BINDIR)/test_general_wb $(BINDIR)/test_general_wbv $(BINDIR)/test_general_ubt
+	$(BINDIR)/test_general_ub
+	$(BINDIR)/test_general_bv
+	$(BINDIR)/test_general_bt
+	$(BINDIR)/test_general_wb
+	$(BINDIR)/test_general_ubt
+	$(BINDIR)/test_general_wbv
+
+.PHONY : run_general_bv
+run_general_bv : $(BINDIR)/test_general_bv
+	$(BINDIR)/test_general_bv
+
 .PHONY : run_general_ub
 run_general_ub : $(BINDIR)/test_general_ub
 	$(BINDIR)/test_general_ub
