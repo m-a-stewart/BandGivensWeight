@@ -233,33 +233,24 @@ contains
              call general_times_rotation(pq,rot,j,nl)
              pl(nl,j)=0.0_dp
           end do
+
+          ! reveal row nl
+          pq(:,nl)=0.0_dp; pq(n-k,nl)=1.0_dp
+          call extend_gs_columns(pq(:,1:nl-1), x(1:nl-1), x(nl), pq(:,nl), error)
+          if (failure(error)) return
+          do j=1,nl-1
+             rot=rgivens2(pq(n-k,j),pq(n-k,nl))
+             call general_times_rotation(pq,rot,j,nl)
+             call rotation_times_general(trp_rot(rot),pl(:,1:j),j,nl)
+          end do
+          pl(nl,:)=pq(n-k,nl)*pl(nl,:)
+          
           if (k+nl==n) then ! q is square and nl by nl
-             ! reveal row nl
-             do j=1,nl-1
-                rot=rgivens2(pq(nl,j),pq(nl,nl))
-                call general_times_rotation(pq,rot,j,nl)
-                call rotation_times_general(trp_rot(rot),pl(:,1:j),j,nl)
-             end do
-             pl(nl,:)=pq(nl,nl)*pl(nl,:)
              ! extend one row
-             x(1:nl-1)=0.0_dp
-             do j=1,nl-1
-                do i=1,nl-1
-                   x(j)=x(j)+pq(i,j)*a(i,coffs)
-                end do
-             end do
+             x(1:nl-1)=matmul(transpose(pq(1:nl-1,1:nl-1)),a(1:nl-1,coffs))
              a(1:nl-1,coffs)=x(1:nl-1)
              exit kloop ! terminate
           else
-             pq(:,nl)=0.0_dp; pq(n-k,nl)=1.0_dp
-             call extend_gs_columns(pq(:,1:nl-1), x(1:nl-1), x(nl), pq(:,nl), error)
-             if (failure(error)) return
-             do j=1,nl-1
-                rot=rgivens2(pq(n-k,j),pq(n-k,nl))
-                call general_times_rotation(pq,rot,j,nl)
-                call rotation_times_general(trp_rot(rot),pl(:,1:j),j,nl)
-             end do
-             pl(nl,:)=pq(n-k,nl)*pl(nl,:)
              ! extend the LQ factorization with a(1:n-k-1,coffs)
              call shift(pq,0,1)
              pq => q(1:n-k-1,1:nl)
@@ -277,43 +268,35 @@ contains
              call set_error(1, info, error); return
           end if
           ubws(k)=nl
-          if (k+nl == n) then
+          if (k+nl == n) exit kloop
+          pl => a(roffs:roffs+nl, coffs+1:coffs+nl) ! extend pl up
+          call shift(pl,-1,0)
+          pq => q(1:n-k,1:nl+1)
+          pq(:,nl+1)=0.0_dp; pq(n-k,nl+1)=1.0_dp
+          call extend_gs_columns(pq(:,1:nl),x(1:nl), x(nl+1),pq(:,nl+1),error)
+          if (failure(error)) return
+          do j=1,nl
+             rot=rgivens2(pq(n-k,j),pq(n-k,nl+1))
+             call general_times_rotation(pq,rot,j,nl+1)
+             call rotation_times_general(trp_rot(rot),pl(:,1:j),j,nl+1)
+          end do
+          pl(nl+1,:)=pl(nl+1,:)*pq(n-k,nl+1)
+          if (nl==n-k-1) then ! q is now nl x nl
+             pq => q(1:nl,1:nl)
+             x(1:nl)=matmul(transpose(pq),a(1:nl,coffs))
+             a(1:nl,coffs)=x(1:nl)
+             null=.true.
              exit kloop
-          else
-             pl => a(roffs:roffs+nl, coffs+1:coffs+nl) ! extend pl up
-             call shift(pl,-1,0)
-             pq => q(1:n-k,1:nl+1)
-             pq(:,nl+1)=0.0_dp; pq(n-k,nl+1)=1.0_dp
-             call extend_gs_columns(pq(:,1:nl),x(1:nl), x(nl+1),pq(:,nl+1),error)
+          else ! q is not square.  Make L (nl+1)x(nl+1)
+             pq => q(1:n-k-1,1:nl+1)
+             call shift(pq,0,1)
+             pq(:,1)=a(1:n-k-1,coffs)
+             pl => a(roffs-1:roffs-1+nl,coffs:coffs+nl)
+             call extend_gs_columns(pq(:,2:nl+1), pl(2:nl+1,1), &
+                  pl(1,1), pq(:,1), error)
              if (failure(error)) return
-             do j=1,nl
-                rot=rgivens2(pq(n-k,j),pq(n-k,nl+1))
-                call general_times_rotation(pq,rot,j,nl+1)
-                call rotation_times_general(trp_rot(rot),pl(:,1:j),j,nl+1)
-             end do
-             pl(nl+1,:)=pl(nl+1,:)*pq(n-k,nl+1)
-             if (nl==n-k-1) then ! q is now nl x nl
-                pq => q(1:nl,1:nl)
-                x(1:nl)=0.0_dp
-                do j=1,nl
-                   do i=1,nl
-                      x(j)=x(j)+pq(i,j)*a(i,coffs)
-                   end do
-                end do
-                a(1:nl,coffs)=x(1:nl)
-                null=.true.
-                exit kloop
-             else ! q is not square.  Make L (nl+1)x(nl+1)
-                pq => q(1:n-k-1,1:nl+1)
-                call shift(pq,0,1)
-                pq(:,1)=a(1:n-k-1,coffs)
-                pl => a(roffs-1:roffs-1+nl,coffs:coffs+nl)
-                call extend_gs_columns(pq(:,2:nl+1), pl(2:nl+1,1), &
-                     pl(1,1), pq(:,1), error)
-                if (failure(error)) return
-                a(1:roffs-2,coffs)=0.0_dp
-                nl=nl+1
-             end if
+             a(1:roffs-2,coffs)=0.0_dp
+             nl=nl+1
           end if
        end if ! null vector check
     end do kloop
@@ -563,39 +546,29 @@ contains
              pl(nl,nl)=(0.0_dp, 0.0_dp)
           end if
           do j=nl-1,1,-1
-             ! compress (TODO: this is not necessary if zero is in pl(1,1))
              rot=lgivens(pl(j,j),pl(nl,j))
              call rotation_times_general(trp_rot(rot),pl(:,1:j),j,nl)
              call general_times_rotation(pq,rot,j,nl)
              pl(nl,j)=(0.0_dp, 0.0_dp)
           end do
+
+          ! reveal row nl
+          pq(:,nl)=(0.0_dp, 0.0_dp); pq(n-k,nl)=(1.0_dp, 0.0_dp)
+          call extend_gs_columns(pq(:,1:nl-1), x(1:nl-1), x(nl), pq(:,nl), error)
+          if (failure(error)) return
+          do j=1,nl-1
+             rot=rgivens2(pq(n-k,j),pq(n-k,nl))
+             call general_times_rotation(pq,rot,j,nl)
+             call rotation_times_general(trp_rot(rot),pl(:,1:j),j,nl)
+          end do
+          pl(nl,:)=pq(n-k,nl)*pl(nl,:)
+          
           if (k+nl==n) then ! q is square and nl by nl
-             ! reveal row nl
-             do j=1,nl-1
-                rot=rgivens2(pq(nl,j),pq(nl,nl))
-                call general_times_rotation(pq,rot,j,nl)
-                call rotation_times_general(trp_rot(rot),pl(:,1:j),j,nl)
-             end do
-             pl(nl,:)=pq(nl,nl)*pl(nl,:)
              ! extend one row
-             x(1:nl-1)=(0.0_dp, 0.0_dp)
-             do j=1,nl-1
-                do i=1,nl-1
-                   x(j)=x(j)+conjg(pq(i,j))*a(i,coffs)
-                end do
-             end do
+             x(1:nl-1)=matmul(transpose(conjg(pq(1:nl-1,1:nl-1))),a(1:nl-1,coffs))
              a(1:nl-1,coffs)=x(1:nl-1)
              exit kloop ! terminate
           else
-             pq(:,nl)=(0.0_dp, 0.0_dp); pq(n-k,nl)=(1.0_dp, 0.0_dp)
-             call extend_gs_columns(pq(:,1:nl-1), x(1:nl-1), x(nl), pq(:,nl), error)
-             if (failure(error)) return
-             do j=1,nl-1
-                rot=rgivens2(pq(n-k,j),pq(n-k,nl))
-                call general_times_rotation(pq,rot,j,nl)
-                call rotation_times_general(trp_rot(rot),pl(:,1:j),j,nl)
-             end do
-             pl(nl,:)=pq(n-k,nl)*pl(nl,:)
              ! extend the LQ factorization with a(1:n-k-1,coffs)
              call shift(pq,0,1)
              pq => q(1:n-k-1,1:nl)
@@ -613,43 +586,35 @@ contains
              call set_error(1, info, error); return
           end if
           ubws(k)=nl
-          if (k+nl == n) then
+          if (k+nl == n) exit kloop
+          pl => a(roffs:roffs+nl, coffs+1:coffs+nl) ! extend pl up
+          call shift(pl,-1,0)
+          pq => q(1:n-k,1:nl+1)
+          pq(:,nl+1)=(0.0_dp, 0.0_dp); pq(n-k,nl+1)=(1.0_dp, 0.0_dp)
+          call extend_gs_columns(pq(:,1:nl),x(1:nl), x(nl+1),pq(:,nl+1),error)
+          if (failure(error)) return
+          do j=1,nl
+             rot=rgivens2(pq(n-k,j),pq(n-k,nl+1))
+             call general_times_rotation(pq,rot,j,nl+1)
+             call rotation_times_general(trp_rot(rot),pl(:,1:j),j,nl+1)
+          end do
+          pl(nl+1,:)=pl(nl+1,:)*pq(n-k,nl+1)
+          if (nl==n-k-1) then ! q is now nl x nl
+             pq => q(1:nl,1:nl)
+             x(1:nl)=matmul(conjg(transpose(pq)),a(1:nl,coffs))
+             a(1:nl,coffs)=x(1:nl)
+             null=.true.
              exit kloop
-          else
-             pl => a(roffs:roffs+nl, coffs+1:coffs+nl) ! extend pl up
-             call shift(pl,-1,0)
-             pq => q(1:n-k,1:nl+1)
-             pq(:,nl+1)=(0.0_dp, 0.0_dp); pq(n-k,nl+1)=(1.0_dp, 0.0_dp)
-             call extend_gs_columns(pq(:,1:nl),x(1:nl), x(nl+1),pq(:,nl+1),error)
+          else ! q is not square.  Make L (nl+1)x(nl+1)
+             pq => q(1:n-k-1,1:nl+1)
+             call shift(pq,0,1)
+             pq(:,1)=a(1:n-k-1,coffs)
+             pl => a(roffs-1:roffs-1+nl,coffs:coffs+nl)
+             call extend_gs_columns(pq(:,2:nl+1), pl(2:nl+1,1), &
+                  pl(1,1), pq(:,1), error)
              if (failure(error)) return
-             do j=1,nl
-                rot=rgivens2(pq(n-k,j),pq(n-k,nl+1))
-                call general_times_rotation(pq,rot,j,nl+1)
-                call rotation_times_general(trp_rot(rot),pl(:,1:j),j,nl+1)
-             end do
-             pl(nl+1,:)=pl(nl+1,:)*pq(n-k,nl+1)
-             if (nl==n-k-1) then ! q is now nl x nl
-                pq => q(1:nl,1:nl)
-                x(1:nl)=(0.0_dp, 0.0_dp)
-                do j=1,nl
-                   do i=1,nl
-                      x(j)=x(j)+conjg(pq(i,j))*a(i,coffs)
-                   end do
-                end do
-                a(1:nl,coffs)=x(1:nl)
-                null=.true.
-                exit kloop
-             else ! q is not square.  Make L (nl+1)x(nl+1)
-                pq => q(1:n-k-1,1:nl+1)
-                call shift(pq,0,1)
-                pq(:,1)=a(1:n-k-1,coffs)
-                pl => a(roffs-1:roffs-1+nl,coffs:coffs+nl)
-                call extend_gs_columns(pq(:,2:nl+1), pl(2:nl+1,1), &
-                     pl(1,1), pq(:,1), error)
-                if (failure(error)) return
-                a(1:roffs-2,coffs)=(0.0_dp, 0.0_dp)
-                nl=nl+1
-             end if
+             a(1:roffs-2,coffs)=(0.0_dp, 0.0_dp)
+             nl=nl+1
           end if
        end if ! null vector check
     end do kloop

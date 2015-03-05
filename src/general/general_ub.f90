@@ -225,37 +225,29 @@ contains
              call rotation_times_general(trp_rot(rot), pq, 1,j)
              pl(j,1)=0.0_dp
           end do
+
+          ! reveal column k+1
+          pq(1,:)=0.0_dp;     pq(1,1)=1.0_dp
+          call extend_gs_rows(pq(2:nl,:), x(1:nl-1), x(nl), pq(1,:), error)
+          if (failure(error)) return
+          do j=nl,2,-1
+             rot=lgivens(pq(1,1),pq(j,1))
+             call rotation_times_general(trp_rot(rot), pq, 1,j)
+             call general_times_rotation(pl(j:nl,:),rot,1,j)
+          end do
+          pl(:,1)=pl(:,1)*pq(1,1)
+          call shift(pq,-1,-1) ! shift so q is (nl-1) x (n-k-1)
+
           if (k+nl==n) then
-             ! Termination with a null vector. (rectangular termination.)
-             ! reveal column k+1
-             do j=nl,2,-1
-                rot=lgivens(pq(1,1),pq(j,1))
-                call rotation_times_general(trp_rot(rot), pq, 1,j)
-                call general_times_rotation(pl(j:nl,:),rot,1,j)
-             end do
-             pl(:,1)=pl(:,1)*pq(1,1)
-             call shift(pq,-1,-1)
-             ! extend one row
-             x(1:nl-1)=0.0_dp
-             do j=1,nl-1
-                do i=1,nl-1
-                   x(j)=x(j)+a(k+1,k+1+i)*pq(j,i)
-                end do
-             end do
+             ! q is (nl-1) x (nl-1) extend one row and exit
+             ! with nl x (nl-1) lower triangular L in a(k+2-nl:k+1,k+2:k+nl)
+             ! The transformation u_k has been applied.
+             x(1:nl-1)=matmul(a(k+1,k+2:k+nl),transpose(pq(1:nl-1,1:nl-1)))
              a(k+1,k+2:n)=x(1:nl-1)
-             exit kloop ! terminate
+             exit kloop
           else
-             pq(1,:)=0.0_dp;     pq(1,1)=1.0_dp
-             call extend_gs_rows(pq(2:nl,:), x(1:nl-1), x(nl), pq(1,:), error)
-             if (failure(error)) return
-             do j=nl,2,-1
-                rot=lgivens(pq(1,1),pq(j,1))
-                call rotation_times_general(trp_rot(rot), pq, 1,j)
-                call general_times_rotation(pl(j:nl,:),rot,1,j)
-             end do
-             pl(:,1)=pl(:,1)*pq(1,1)
-             call shift(pq,-1,-1)
-             ! extend the LQ factorization
+             ! q is rectangular and (nl-1) x (n-k-1).  Extend the LQ factorization by one row
+             ! so that q is nl x (n-k-1) and L is nl x nl and in a(k-nl+2:k+1,k+2:k+nl+1).
              pq => q(1:nl,1:n-k-1)
              pq(nl,:)=a(k+1,k+2:n)
              pl => a(roffs+2:k+1,k+2:k+nl+1) ! nl by nl
@@ -271,52 +263,52 @@ contains
              call set_error(1, info, error); return
           end if
           ubws(k)=nl
-          if (k+nl==n) then
+          ! q is square.  exit with q nl x nl, l nl x nl and
+          ! stored in a(k-nl+1:k,k+1:k+nl).  u_k has not yet been applied.
+          if (k+nl==n) exit kloop
+          ! extend pl to the right. (note this requires k+nl < n),
+          ! making pl nl x nl+1 and q (nl+1) x (n-k)
+          pl => a(roffs+1:k, k+1:k+nl+1)
+          call shift(pl,0,1)
+          pq => q(1:nl+1, 1:n-k)
+          call shift(pq,1,0)
+
+          ! Downdate a column of a.  This makes L nl x nl and q nl x n-k-1
+          ! with L stored in a(k-nl+1:k,k+2:k+nl+1)
+          pq(1,:)=0.0_dp
+          pq(1,1)=1.0_dp
+          call extend_gs_rows(pq(2:nl+1,:), x(1:nl), x(nl+1), pq(1,:), error)
+          if (failure(error)) return
+          do j=nl+1,2,-1
+             rot=lgivens(pq(1,1),pq(j,1))
+             call rotation_times_general(trp_rot(rot), pq, 1,j)
+             call general_times_rotation(pl(j-1:nl,:),rot,1,j)
+          end do
+          pl(:,1)=pl(:,1)*pq(1,1)
+          call shift(pq,-1,-1)
+          
+          if (nl==n-k-1) then
+             ! q is now (nl) x (nl).  Extend the LQ factorization down one
+             ! row before stopping so that l is (nl+1) x nl and stored in
+             ! a(k-nl+1:k+1, k+2:k+nl+1).  Note that u_k has not been applied yet,
+             ! however since no null vector was found, u_k is uneccesary and
+             ! we can use the same termination as if a null vector were found.
+             pq => q(1:nl,1:nl)
+             x(1:nl)=matmul(a(k+1,k+2:k+nl+1),transpose(pq))
+             a(k+1,k+2:n)=x(1:nl)
+             null=.true.
              exit kloop
           else
-             ! extend pl to the right and reveal
-             ! a column of A. (note this requires k+nl < n),
-             ! making pl nl x (nl+1) and q (nl+1) x (n-k)
-             pl => a(roffs+1:k, k+1:k+nl+1)
-             call shift(pl,0,1)
-             pq => q(1:nl+1, 1:n-k)
-             call shift(pq,1,0)
-             pq(1,:)=0.0_dp
-             pq(1,1)=1.0_dp
-             ! orthogonalizing.  Note x is used as workspace for coefficients.
-             call extend_gs_rows(pq(2:nl+1,:), x(1:nl), x(nl+1), pq(1,:), error)
+             ! q is not square.  Make L (nl+1)x(nl+1)
+             pq => q(1:nl+1,1:n-k-1)
+             pq(nl+1,:)=a(k+1,k+2:n)
+             pl => a(roffs+1:k+1,k+2:k+nl+2)
+             pl => a(roffs+1:k+1,k+2:min(k+nl+2,n))
+             call extend_gs_rows(pq(1:nl,:), pl(nl+1,1:nl), &
+                  pl(nl+1,nl+1), pq(nl+1,:), error)
              if (failure(error)) return
-             do j=nl+1,2,-1
-                rot=lgivens(pq(1,1),pq(j,1))
-                call rotation_times_general(trp_rot(rot), pq, 1,j)
-                call general_times_rotation(pl(j-1:nl,:),rot,1,j)
-             end do
-             pl(:,1)=pl(:,1)*pq(1,1)
-             call shift(pq,-1,-1)
-             if (nl==n-k-1) then
-                ! q is now (nl) x (nl).  Extend the LQ factorization down one
-                ! row before stopping.
-                pq => q(1:nl,1:nl)
-                x(1:nl)=0.0_dp
-                do j=1,nl
-                   do i=1,nl
-                      x(j)=x(j)+a(k+1,k+1+i)*pq(j,i)
-                   end do
-                end do
-                a(k+1,k+2:n)=x(1:nl)
-                null=.true.
-                exit kloop
-             else ! q is not square.  Make L (nl+1)x(nl+1)
-                pq => q(1:nl+1,1:n-k-1)
-                pq(nl+1,:)=a(k+1,k+2:n)
-                pl => a(roffs+1:k+1,k+2:k+nl+2)
-                pl => a(roffs+1:k+1,k+2:min(k+nl+2,n))
-                call extend_gs_rows(pq(1:nl,:), pl(nl+1,1:nl), &
-                     pl(nl+1,nl+1), pq(nl+1,:), error)
-                if (failure(error)) return
-                a(k+1,k+nl+3:n)=0.0_dp ! possibly zero size if k+nl+3>n
-                nl=nl+1
-             end if
+             a(k+1,k+nl+3:n)=0.0_dp ! possibly zero size if k+nl+3>n
+             nl=nl+1
           end if
        end if ! null vector check
     end do kloop
@@ -569,42 +561,34 @@ contains
              end do
              pl(1,1)=(0.0_dp, 0.0_dp)
           end if
+
           do j=2,nl ! compress
              rot=rgivens2(pl(j,1),pl(j,j))
              call general_times_rotation(pl(j:nl,:), rot, 1,j)
              call rotation_times_general(trp_rot(rot), pq, 1,j)
              pl(j,1)=(0.0_dp, 0.0_dp)
           end do
+
+          ! reveal column k+1
+          pq(1,:)=(0.0_dp, 0.0_dp);     pq(1,1)=(1.0_dp,0.0_dp)
+          call extend_gs_rows(pq(2:nl,:), x(1:nl-1), x(nl), pq(1,:), error)
+          if (failure(error)) return
+          do j=nl,2,-1
+             rot=lgivens(pq(1,1),pq(j,1))
+             call rotation_times_general(trp_rot(rot), pq, 1,j)
+             call general_times_rotation(pl(j:nl,:),rot,1,j)
+          end do
+          pl(:,1)=pl(:,1)*pq(1,1)
+          call shift(pq,-1,-1) ! shift q so it is (nl-1) x (n-k-1)
+
           if (k+nl==n) then
-             ! reveal column k+1
-             do j=nl,2,-1
-                rot=lgivens(pq(1,1),pq(j,1))
-                call rotation_times_general(trp_rot(rot), pq, 1,j)
-                call general_times_rotation(pl(j:nl,:),rot,1,j)
-             end do
-             pl(:,1)=pl(:,1)*pq(1,1)
-             call shift(pq,-1,-1)
-             ! extend one row
-             x(1:nl-1)=(0.0_dp, 0.0_dp)
-             do j=1,nl-1
-                do i=1,nl-1
-                   x(j)=x(j)+a(k+1,k+1+i)*conjg(pq(j,i))
-                end do
-             end do
+             ! q is (nl-1) x (nl-1) extend one row by direct multiplication and exit
+             x(1:nl-1)=matmul(a(k+1,k+2:k+nl),transpose(conjg(pq(1:nl-1,1:nl-1))))
              a(k+1,k+2:n)=x(1:nl-1)
              exit kloop ! terminate
           else
-             pq(1,:)=(0.0_dp, 0.0_dp);     pq(1,1)=(1.0_dp,0.0_dp)
-             call extend_gs_rows(pq(2:nl,:), x(1:nl-1), x(nl), pq(1,:), error) ! orthogonalize
-             if (failure(error)) return
-             do j=nl,2,-1
-                rot=lgivens(pq(1,1),pq(j,1))
-                call rotation_times_general(trp_rot(rot), pq, 1,j)
-                call general_times_rotation(pl(j:nl,:),rot,1,j)
-             end do
-             pl(:,1)=pl(:,1)*pq(1,1)
-             call shift(pq,-1,-1)
-             ! extend the LQ factorization
+             ! q is nl x n-k with n-k > nl
+             ! extend one row using Gram-Schmidt.
              pq => q(1:nl,1:n-k-1)
              pq(nl,:)=a(k+1,k+2:n)
              pl => a(roffs+2:k+1,k+2:k+nl+1) ! nl by nl
@@ -620,46 +604,38 @@ contains
              call set_error(1, info, error); return
           end if
           ubws(k)=nl
-          if (k+nl==n) then
+          if (k+nl==n) exit kloop
+          pl => a(roffs+1:k, k+1:k+nl+1) ! extend pl to the right. (note this requires k+nl < n)
+          call shift(pl,0,1)
+          pq => q(1:nl+1, 1:n-k)
+          call shift(pq,1,0)
+          pq(1,:)=(0.0_dp, 0.0_dp)
+          pq(1,1)=(1.0_dp, 0.0_dp)
+          ! orthogonalizing.  Note x is used as workspace for coefficients.
+          call extend_gs_rows(pq(2:nl+1,:), x(1:nl), x(nl+1), pq(1,:), error)
+          if (failure(error)) return
+          do j=nl+1,2,-1
+             rot=lgivens(pq(1,1),pq(j,1))
+             call rotation_times_general(trp_rot(rot), pq, 1,j)
+             call general_times_rotation(pl(j-1:nl,:),rot,1,j)
+          end do
+          pl(:,1)=pl(:,1)*pq(1,1)
+          call shift(pq,-1,-1)
+          if (nl==n-k-1) then
+             ! q is now nl by nl.  Extend the LQ factorization down one row before stopping.
+             pq => q(1:nl,1:nl)
+             x(1:nl)=matmul(a(k+1,k+2:k+nl+1),conjg(transpose(pq)))
+             a(k+1,k+2:n)=x(1:nl)
+             null=.true.
              exit kloop
-          else
-             pl => a(roffs+1:k, k+1:k+nl+1) ! extend pl to the right. (note this requires k+nl < n)
-             call shift(pl,0,1)
-             pq => q(1:nl+1, 1:n-k)
-             call shift(pq,1,0)
-             pq(1,:)=(0.0_dp, 0.0_dp)
-             pq(1,1)=(1.0_dp, 0.0_dp)
-             ! orthogonalizing.  Note x is used as workspace for coefficients.
-             call extend_gs_rows(pq(2:nl+1,:), x(1:nl), x(nl+1), pq(1,:), error)
+          else ! q is not square.  Make L (nl+1)x(nl+1)
+             pq => q(1:nl+1,1:n-k-1)
+             pq(nl+1,:)=a(k+1,k+2:n)
+             pl => a(roffs+1:k+1,k+2:k+nl+2)
+             call extend_gs_rows(pq(1:nl,:), pl(nl+1,1:nl), pl(nl+1,nl+1), pq(nl+1,:), error)
              if (failure(error)) return
-             do j=nl+1,2,-1
-                rot=lgivens(pq(1,1),pq(j,1))
-                call rotation_times_general(trp_rot(rot), pq, 1,j)
-                call general_times_rotation(pl(j-1:nl,:),rot,1,j)
-             end do
-             pl(:,1)=pl(:,1)*pq(1,1)
-             call shift(pq,-1,-1)
-             if (nl==n-k-1) then
-                ! q is now nl by nl.  Extend the LQ factorization down one row before stopping.
-                pq => q(1:nl,1:nl)
-                x(1:nl)=(0.0_dp, 0.0_dp)
-                do j=1,nl
-                   do i=1,nl
-                      x(j)=x(j)+a(k+1,k+1+i)*conjg(pq(j,i))
-                   end do
-                end do
-                a(k+1,k+2:n)=x(1:nl)
-                null=.true.
-                exit kloop
-             else ! q is not square.  Make L (nl+1)x(nl+1)
-                pq => q(1:nl+1,1:n-k-1)
-                pq(nl+1,:)=a(k+1,k+2:n)
-                pl => a(roffs+1:k+1,k+2:k+nl+2)
-                call extend_gs_rows(pq(1:nl,:), pl(nl+1,1:nl), pl(nl+1,nl+1), pq(nl+1,:), error)
-                if (failure(error)) return
-                a(k+1,k+nl+3:n)=(0.0_dp, 0.0_dp) ! possibly zero size.
-                nl=nl+1
-             end if
+             a(k+1,k+nl+3:n)=(0.0_dp, 0.0_dp) ! possibly zero size.
+             nl=nl+1
           end if
        end if ! null vector check
     end do kloop
