@@ -12,7 +12,7 @@ $(OBJDIR)/%.o : %.f90
 	$(FC) $(CFLAGS) $(PROFCFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@
 
 $(BINDIR)/% : $(OBJDIR)/%.o
-	$(FC) $(LFLAGS) $< $(OBJS) $(OBJDIR)/test_data.o -o $@
+	$(FC) $(PROFLFLAGS) $(LFLAGS) $< $(OBJS) $(OBJDIR)/test_data.o -o $@
 
 .PHONY : clean
 clean :

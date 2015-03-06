@@ -11,11 +11,9 @@ program test_general_ub
   complex(kind=dp), dimension(:,:), allocatable :: a_c, a0_c, a1_c
   type(d_ub), allocatable :: ub_d
   type(c_ub), allocatable :: ub_c
-  
 
   call initialize_errors
 
-  ! test one
   print *
   print *, "--------------------------------"
   print *

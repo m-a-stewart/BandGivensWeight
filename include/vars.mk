@@ -9,5 +9,7 @@ LFLAGS =
 CFLAGS = -fbounds-check -mcmodel=medium -Waliasing -Wampersand -Wconversion -Wsurprising \
 	-Wintrinsics-std -Wno-tabs -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant -Wunused
 #CFLAGS = -Wall -O2 -mcmodel=medium
-PROFLFLAGS = -pg
-PROFCFLAGS = -pg
+#PROFLFLAGS = -pg
+#PROFCFLAGS = -pg
+PROFLFLAGS =
+PROFCFLAGS =

@@ -159,7 +159,7 @@ contains
     !
     if (failure(error)) return
     call push_id(info, error)
-    
+
     q=0.0_dp; numrotsu=0;
     ssu=0.0_dp; csu=0.0_dp; jsu=0
     ubws=0
@@ -228,7 +228,7 @@ contains
           pq(1,:)=0.0_dp;     pq(1,1)=1.0_dp
           call extend_gs_rows(pq(2:nl,:), x(1:nl-1), x(nl), pq(1,:), error)
           if (failure(error)) return
-          do j=nl,2,-1
+           do j=nl,2,-1
              rot=lgivens(pq(1,1),pq(j,1))
              call rotation_times_general(trp_rot(rot), pq, 1,j)
              call general_times_rotation(pl(j:nl,:),rot,1,j)
