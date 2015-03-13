@@ -165,9 +165,7 @@ contains
     ubws=0
     nrma = maxabs(a)*sqrt(real(n))
     !
-    if (n == 1) then
-       return
-    end if
+    if (n == 1) return
     ! Compute an initial LQ factorization
     q(1,1:n-1) = a(1,2:n)
     a(1,2:n)=0.0_dp
@@ -179,7 +177,7 @@ contains
        q(1,1:n-1)=q(1,1:n-1)/a(1,2)
     end if
     nl=1
-    kloop: do k=1,n-1
+    leading_loop: do k=1,n-1
        ! Current, possibly singular, L should be contained in
        ! a(k-nl+1:k,k+1:k+nl)
        roffs=k-nl
@@ -224,7 +222,7 @@ contains
              pl(j,1)=0.0_dp
           end do
 
-          ! reveal column k+1
+          ! reveal column k+1 of a
           pq(1,:)=0.0_dp;     pq(1,1)=1.0_dp
           call extend_gs_rows(pq(2:nl,:), x(1:nl-1), x(nl), pq(1,:), error)
           if (failure(error)) return
@@ -245,7 +243,7 @@ contains
              k1 = k+1 ! u_{k+1} next to be applied.
              roffs1=k+1-nl ! L starts in row k+2-nl
              ubw1=nl-1
-             exit kloop
+             exit leading_loop
           else
              ! q is rectangular and (nl-1) x (n-k-1).  Extend the LQ factorization by one row
              ! so that q is nl x (n-k-1) and L is nl x nl and in a(k-nl+2:k+1,k+2:k+nl+1).
@@ -257,15 +255,14 @@ contains
              a(k+1,k+nl+2:n)=0.0_dp
           end if
        else
-          ! no null vector found.  Simply reveal column k+1 if there is room.
-          ! Otherwise terminate with square L.
+          ! no null vector found.
           if (ubwmax<nl) then
              call set_error(1, info, error); return
           end if
           ubws(k)=nl
-          ! q is square.  exit with q nl x nl, l nl x nl and
-          ! stored in a(k-nl+1:k,k+1:k+nl).  u_k has not yet been applied.
           if (k+nl==n) then
+             ! q is square and nl x nl.  L is nl x nl
+             ! and in a(k-nl+1:k,k+1:k+nl).
              ! downdate column k+1
              do j=nl,2,-1
                 rot=lgivens(pq(j-1,1),pq(j,1))
@@ -277,7 +274,7 @@ contains
              roffs1=k-nl ! L starts in row k-nl+1
              k1=k+1 ! u_k+1 is the next transformation
              ubw1=nl
-             exit kloop
+             exit leading_loop
           end if
           ! extend pl to the right. (note this requires k+nl < n),
           ! making pl nl x nl+1 and q (nl+1) x (n-k)
@@ -312,7 +309,7 @@ contains
              k1=k+1 ! u_k+1 is the next transformation
              roffs1=k-nl ! L starts in row k-nl+1
              ubw1=nl
-             exit kloop
+             exit leading_loop
           else
              ! q is not square.  Make L (nl+1)x(nl+1)
              pq => q(1:nl+1,1:n-k-1)
@@ -326,7 +323,7 @@ contains
              nl=nl+1
           end if
        end if ! null vector check
-    end do kloop
+    end do leading_loop
     ! For nl = n-k1, there should be a lower trapezoidal matrix L
     ! of size (nl+1) x nl in a(roffs1+1:roffs1+nl+1,k1+1:n).  This
     ! can be reduced to give an upper bandwidth of ubw=ubw1
@@ -497,7 +494,7 @@ contains
        q(1,1:n-1)=q(1,1:n-1)/a(1,2)
     end if
     nl=1
-    kloop: do k=1,n-1
+    leading_loop: do k=1,n-1
        ! Current, possibly singular, L should be contained in
        ! a(k-nl+1:k,k+1:k+nl)
        roffs=k-nl
@@ -563,7 +560,7 @@ contains
              k1 = k+1 ! u_{k+1} next to be applied.
              roffs1=k+1-nl ! L starts in row k+2-nl
              ubw1=nl-1
-             exit kloop
+             exit leading_loop
           else
              ! q is rectangular and (nl-1) x (n-k-1).  Extend the LQ factorization by one row
              ! so that q is nl x (n-k-1) and L is nl x nl and in a(k-nl+2:k+1,k+2:k+nl+1).
@@ -595,7 +592,7 @@ contains
              roffs1=k-nl ! L starts in row k-nl+1
              k1=k+1 ! u_k+1 is the next transformation
              ubw1=nl
-             exit kloop
+             exit leading_loop
           end if
           ! extend pl to the right. (note this requires k+nl < n),
           ! making pl nl x nl+1 and q (nl+1) x (n-k)
@@ -630,7 +627,7 @@ contains
              k1=k+1 ! u_k+1 is the next transformation
              roffs1=k-nl ! L starts in row k-nl+1
              ubw1=nl
-             exit kloop
+             exit leading_loop
           else
              ! q is not square.  Make L (nl+1)x(nl+1)
              pq => q(1:nl+1,1:n-k-1)
@@ -644,7 +641,7 @@ contains
              nl=nl+1
           end if
        end if ! null vector check
-    end do kloop
+    end do leading_loop
     ! For nl = n-k1, there should be a lower trapezoidal matrix L
     ! of size (nl+1) x nl in a(roffs1+1:roffs1+nl+1,k1+1:n).  This
     ! can be reduced to give an upper bandwidth of ubw=ubw1

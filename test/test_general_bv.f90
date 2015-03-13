@@ -19,7 +19,7 @@ program test_general_bv
   print *
   print *, "Real BV Decomposition Tests"
   print *
-  
+
   na=40
   lbwa=3; ubwa=5
   bv_d=d_random_bv(na,lbwa,ubwa,error=error)
