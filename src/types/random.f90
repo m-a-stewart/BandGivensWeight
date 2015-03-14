@@ -109,9 +109,7 @@ contains
     type(routine_info), parameter :: info=info_d_random_bc
     integer(kind=int32) :: lbwmax, ubwmax
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info,error)
 
     lbwmax=equals_option(lbw,lbwmax0)
@@ -156,9 +154,7 @@ contains
     type(routine_info), parameter :: info=info_c_random_bc
     integer(kind=int32) :: lbwmax, ubwmax
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info,error)
     lbwmax=equals_option(lbw,lbwmax0)
     ubwmax=equals_option(ubw,ubwmax0)
@@ -202,9 +198,7 @@ contains
     type(routine_info), parameter :: info=info_d_random_br
     integer(kind=int32) :: lbwmax, ubwmax
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info,error)
 
     lbwmax=equals_option(lbw,lbwmax0)
@@ -249,9 +243,7 @@ contains
     type(routine_info), parameter :: info=info_c_random_br
     integer(kind=int32) :: lbwmax, ubwmax
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info,error)
 
     lbwmax=equals_option(lbw,lbwmax0)
@@ -297,9 +289,7 @@ contains
     type(routine_info), parameter :: info=info_d_random_ub0
     integer(kind=int32) :: lbwmax, ubwmax
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info,error)
     lbwmax=equals_option(lbw,lbwmax0)
     ubwmax=equals_option(ubw,ubwmax0)
@@ -329,9 +319,7 @@ contains
     type(routine_info), parameter :: info=info_d_random_ub1
     integer(kind=int32) :: lbwmax, ubwmax,lbw,ubw
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info,error)
     lbw=maxval(lbws)
     ubw=maxval(ubws)
@@ -398,9 +386,7 @@ contains
     type(routine_info), parameter :: info=info_c_random_ub0
     integer(kind=int32) :: lbwmax, ubwmax
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info,error)
 
     lbwmax=equals_option(lbw,lbwmax0)
@@ -431,9 +417,7 @@ contains
     type(routine_info), parameter :: info=info_c_random_ub1
     integer(kind=int32) :: lbwmax, ubwmax,lbw,ubw
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info,error)
     lbw=maxval(lbws)
     ubw=maxval(ubws)
@@ -503,9 +487,7 @@ contains
     type(error_info), optional :: error
     type(routine_info), parameter :: info=info_d_random_bv0
     integer(kind=int32) :: lbwmax, ubwmax
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info,error)
     lbwmax=equals_option(lbw,lbwmax0)
     ubwmax=equals_option(ubw,ubwmax0)
@@ -535,9 +517,7 @@ contains
     type(error_info), optional :: error
     type(routine_info), parameter :: info=info_d_random_bv1
     integer(kind=int32) :: lbwmax, ubwmax, lbw, ubw
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info,error)
     lbw=maxval(lbws)
     ubw=maxval(ubws)
@@ -604,9 +584,7 @@ contains
     type(routine_info), parameter :: info=info_c_random_bv0
     integer(kind=int32) :: lbwmax, ubwmax
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info,error)
     lbwmax=equals_option(lbw,lbwmax0)
     ubwmax=equals_option(ubw,ubwmax0)
@@ -635,9 +613,7 @@ contains
     type(error_info), optional :: error
     type(routine_info), parameter :: info=info_c_random_bv1
     integer(kind=int32) :: lbwmax, ubwmax, lbw, ubw
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info,error)
     lbw=maxval(lbws)
     ubw=maxval(ubws)
@@ -708,9 +684,7 @@ contains
     type(routine_info), parameter :: info=info_d_random_bt0
     integer(kind=int32) :: lbwmax, ubwmax
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info,error)
     lbwmax=equals_option(lbw,lbwmax0)
     ubwmax=equals_option(ubw,ubwmax0)
@@ -738,9 +712,7 @@ contains
     type(routine_info), parameter :: info=info_d_random_bt1
     integer(kind=int32) :: lbwmax, ubwmax, lbw, ubw
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info,error)
     lbw=maxval(lbws)
     ubw=maxval(ubws)
@@ -805,9 +777,7 @@ contains
     type(routine_info), parameter :: info=info_c_random_bt0
     integer(kind=int32) :: lbwmax, ubwmax
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info,error)
     lbwmax=equals_option(lbw,lbwmax0)
     ubwmax=equals_option(ubw,ubwmax0)
@@ -835,9 +805,7 @@ contains
     type(routine_info), parameter :: info=info_c_random_bt1
     integer(kind=int32) :: lbwmax, ubwmax, lbw, ubw
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info,error)
     lbw=maxval(lbws)
     ubw=maxval(ubws)
@@ -904,9 +872,7 @@ contains
     type(routine_info), parameter :: info=info_d_random_wb0
     integer(kind=int32) :: lbwmax, ubwmax
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info,error)
     lbwmax=equals_option(lbw,lbwmax0)
     ubwmax=equals_option(ubw,ubwmax0)
@@ -934,9 +900,7 @@ contains
     type(routine_info), parameter :: info=info_d_random_wb1
     integer(kind=int32) :: lbwmax, ubwmax, lbw, ubw
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info,error)
     lbw=maxval(lbws)
     ubw=maxval(ubws)
@@ -1000,9 +964,7 @@ contains
     type(routine_info), parameter :: info=info_c_random_wb0
     integer(kind=int32) :: lbwmax, ubwmax
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info,error)
     lbwmax=equals_option(lbw,lbwmax0)
     ubwmax=equals_option(ubw,ubwmax0)
@@ -1030,9 +992,7 @@ contains
     type(routine_info), parameter :: info=info_c_random_wb1
     integer(kind=int32) :: lbwmax, ubwmax, lbw, ubw
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info,error)
     lbw=maxval(lbws)
     ubw=maxval(ubws)
@@ -1097,9 +1057,7 @@ contains
     type(routine_info), parameter :: info=info_d_random_ubt0
     integer(kind=int32) :: lbwmax, ubwmax
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info,error)
     lbwmax=equals_option(lbw,lbwmax0)
     ubwmax=equals_option(ubw,ubwmax0)
@@ -1128,9 +1086,7 @@ contains
     type(routine_info), parameter :: info=info_d_random_ubt1
     integer(kind=int32) :: lbwmax, ubwmax, lbw, ubw
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info,error)
     lbw=maxval(lbws)
     ubw=maxval(ubws)
@@ -1163,9 +1119,7 @@ contains
     type(routine_info), parameter :: info=info_c_random_ubt0
     integer(kind=int32) :: lbwmax, ubwmax
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info,error)
     lbwmax=equals_option(lbw,lbwmax0)
     ubwmax=equals_option(ubw,ubwmax0)
@@ -1194,9 +1148,7 @@ contains
     type(routine_info), parameter :: info=info_c_random_ubt1
     integer(kind=int32) :: lbwmax, ubwmax, lbw, ubw
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info,error)
     lbw=maxval(lbws)
     ubw=maxval(ubws)
@@ -1229,9 +1181,7 @@ contains
     type(routine_info), parameter :: info=info_d_random_wbv0
     integer(kind=int32) :: lbwmax, ubwmax
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info,error)
     lbwmax=equals_option(lbw,lbwmax0)
     ubwmax=equals_option(ubw,ubwmax0)
@@ -1260,9 +1210,7 @@ contains
     type(routine_info), parameter :: info=info_d_random_wbv1
     integer(kind=int32) :: lbwmax, ubwmax, lbw, ubw
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info,error)
     lbw=maxval(lbws)
     ubw=maxval(ubws)
@@ -1295,9 +1243,7 @@ contains
     type(routine_info), parameter :: info=info_c_random_wbv0
     integer(kind=int32) :: lbwmax, ubwmax
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info,error)
     lbwmax=equals_option(lbw,lbwmax0)
     ubwmax=equals_option(ubw,ubwmax0)
@@ -1326,9 +1272,7 @@ contains
     type(routine_info), parameter :: info=info_c_random_wbv1
     integer(kind=int32) :: lbwmax, ubwmax, lbw, ubw
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info,error)
     lbw=maxval(lbws)
     ubw=maxval(ubws)

@@ -35,9 +35,7 @@ contains
     type(d_bt), allocatable :: bt1
     type(routine_info), parameter :: info=info_d_wb_of_bt
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
     
     wb=d_new_wb(get_n(bt), bt%lbw, bt%ubw)
@@ -61,9 +59,7 @@ contains
     type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_d_convert_bt_to_wb
     
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
 
     if (get_n(wb) < 1) then
@@ -157,9 +153,7 @@ contains
     type(c_bt), allocatable :: bt1
     type(routine_info), parameter :: info=info_c_wb_of_bt
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
     
     wb=c_new_wb(get_n(bt), bt%lbw, bt%ubw)
@@ -183,9 +177,7 @@ contains
     type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_c_convert_bt_to_wb
     
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
     
     if (get_n(wb) < 1) then

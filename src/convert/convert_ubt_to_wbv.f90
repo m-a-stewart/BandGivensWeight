@@ -35,9 +35,7 @@ contains
     type(d_ubt), allocatable :: ubt1
     type(routine_info), parameter :: info=info_d_wbv_of_ubt
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
     
     wbv=d_new_wbv(get_n(ubt), ubt%lbw, ubt%ubw)
@@ -62,9 +60,7 @@ contains
     type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_d_convert_ubt_to_wbv
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
     
     if (get_n(ubt) < 1) then
@@ -192,9 +188,7 @@ contains
     type(c_ubt), allocatable :: ubt1
     type(routine_info), parameter :: info=info_c_wbv_of_ubt
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
     
     wbv=c_new_wbv(get_n(ubt), ubt%lbw, ubt%ubw)
@@ -218,9 +212,7 @@ contains
     type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_c_convert_ubt_to_wbv
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
     
     if (get_n(ubt) < 1) then

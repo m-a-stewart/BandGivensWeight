@@ -44,9 +44,7 @@ contains
     nrm2=norm2(q2)
     rho=nrm2
     ! reorthogonalize as needed
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
     k=0
     do while (nrm1 > eta * nrm2 .and. nrm2 > 0 .and. k < orthmaxits)
@@ -102,9 +100,7 @@ contains
     nrm2=norm2(q2)
     rho=nrm2
     ! reorthogonalize as needed
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
     k=0
     do while (nrm1 > eta * nrm2 .and. nrm2 > 0 .and. k < orthmaxits)
@@ -160,9 +156,7 @@ contains
     nrm2=norm2(q2)
     rho=nrm2
     ! reorthogonalize as needed
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
     k=0
     do while (nrm1 > eta * nrm2 .and. nrm2 > 0 .and. k < orthmaxits)
@@ -217,9 +211,7 @@ contains
     nrm2=norm2(q2)
     rho=nrm2
     ! reorthogonalize as needed
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
     k=0
     do while (nrm1 > eta * nrm2 .and. nrm2 > 0 .and. k < orthmaxits)

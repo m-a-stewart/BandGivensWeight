@@ -56,9 +56,7 @@ contains
     real(kind=dp), dimension(:,:), allocatable :: c1
     type(routine_info), parameter :: info=info_d_solve_ub
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info,error)
 
     c1=c
@@ -90,9 +88,7 @@ contains
 
     integer(kind=int32) :: n
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
 
     n=size(c,1)
@@ -122,9 +118,7 @@ contains
     real(kind=dp), dimension(:), allocatable :: c1
     type(routine_info), parameter :: info=info_d_v_solve_ub
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info,error)
 
     c1=c
@@ -145,9 +139,7 @@ contains
 
     integer(kind=int32) :: n
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
 
     n=size(c)
@@ -256,9 +248,7 @@ contains
     complex(kind=dp), dimension(:,:), allocatable :: c1
     type(routine_info), parameter :: info=info_c_solve_ub
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info,error)
 
     c1=c
@@ -278,9 +268,7 @@ contains
     type(routine_info), parameter :: info=info_c_back_solve_ub
     integer(kind=int32) :: n
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
     n=size(c,1)
     if (get_n(ub) /= n) then
@@ -309,9 +297,7 @@ contains
     complex(kind=dp), dimension(:), allocatable :: c1
     type(routine_info), parameter :: info=info_c_v_solve_ub
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info,error)
 
     c1=c
@@ -332,9 +318,7 @@ contains
 
     integer(kind=int32) :: n
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
     n=size(c)
     if (get_n(ub) /= n) then
@@ -476,9 +460,7 @@ contains
 
     integer(kind=int32) :: n
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
 
     n=size(c,2)
@@ -659,9 +641,7 @@ contains
 
     integer(kind=int32) :: n
     n=size(c,2)
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
     if (get_n(bv) /= n) then
        call set_error(1, info, error); return
@@ -750,9 +730,7 @@ contains
 
     integer(kind=int32) :: n
     n=size(c)
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
     if (get_n(bv) /= n) then
        call set_error(1, info, error); return

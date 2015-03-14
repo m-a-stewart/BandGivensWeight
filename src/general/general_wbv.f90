@@ -45,9 +45,7 @@ contains
     type(routine_info), parameter :: info=info_d_wbv_of_general
     integer(kind=int32) :: n
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
 
     n=size(a,1)
@@ -77,9 +75,7 @@ contains
     real(kind=dp), dimension(n,lbwmax) :: csv0, ssv0
     type(routine_info), parameter :: info=info_f_d_general_wbv
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
 
     call f_d_general_bv(a,n,ubws,ubwmax,numrotsv,ksv,csv,ssv,tol,error)
@@ -108,9 +104,7 @@ contains
     type(routine_info), parameter :: info=info_c_wbv_of_general
     integer(kind=int32) :: n
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
 
     n=size(a,1)
@@ -144,9 +138,7 @@ contains
     complex(kind=dp), dimension(n,lbwmax) :: ssv0
     type(routine_info), parameter :: info=info_f_c_general_wbv
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
 
     call f_c_general_bv(a,n,ubws,ubwmax,numrotsv,ksv,csv,ssv,tol,error)
@@ -186,9 +178,7 @@ contains
     integer(kind=int32), dimension(n) :: lbws, ubws
     type(routine_info), parameter :: info=info_f_d_general_to_wbv
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
 
     if (n == 1) then
@@ -246,9 +236,7 @@ contains
     integer(kind=int32), dimension(n) :: lbws, ubws
     type(routine_info), parameter :: info=info_f_c_general_to_wbv
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
 
     if (n == 1) then
@@ -292,9 +280,7 @@ contains
     real(kind=dp), intent(in) :: tol
     type(routine_info), parameter :: info=info_d_general_to_wbv
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
     
     if (size(a,1) < 1) then
@@ -319,9 +305,7 @@ contains
     real(kind=dp), intent(in) :: tol
     type(routine_info), parameter :: info=info_c_general_to_wbv
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
     
     if (size(a,1) < 1) then

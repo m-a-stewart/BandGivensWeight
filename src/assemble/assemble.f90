@@ -97,9 +97,7 @@ contains
     type(routine_info), parameter :: info=info_d_general_of_ub
     integer(kind=int32) :: n
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
     
     n=get_n(ub)
@@ -117,9 +115,7 @@ contains
     type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_d_ub_to_general
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
 
     if (get_n(ub) /= size(a,1) .or. get_n(ub) /= size(a,2)) then
@@ -159,9 +155,7 @@ contains
     type(routine_info), parameter :: info=info_c_general_of_ub
     integer(kind=int32) :: n
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
     
     n=get_n(ub)
@@ -176,9 +170,7 @@ contains
     type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_c_ub_to_general
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
     
     if (get_n(ub) /= size(a,1) .or. get_n(ub) /= size(a,2)) then
@@ -220,9 +212,7 @@ contains
     type(routine_info), parameter :: info=info_d_general_of_bt
     integer(kind=int32) :: n
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
     
     n=get_n(bt)
@@ -240,9 +230,7 @@ contains
     type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_d_bt_to_general
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
     
     if (get_n(bt) /= size(a,1) .or. get_n(bt) /= size(a,2)) then
@@ -282,9 +270,7 @@ contains
     type(routine_info), parameter :: info=info_c_general_of_bt
     integer(kind=int32) :: n
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
     
     n=get_n(bt)
@@ -302,9 +288,7 @@ contains
     type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_c_bt_to_general
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
 
     if (get_n(bt) /= size(a,1) .or. get_n(bt) /= size(a,2)) then
@@ -345,9 +329,7 @@ contains
     type(routine_info), parameter :: info=info_d_general_of_ubt
     integer(kind=int32) :: n
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
 
     call push_id(info, error)
     
@@ -367,9 +349,7 @@ contains
     type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_d_ubt_to_general
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
 
     if (get_n(ubt) /= size(a,1) .or. get_n(ubt) /= size(a,2)) then
@@ -420,9 +400,7 @@ contains
     type(routine_info), parameter :: info=info_c_general_of_ubt
     integer(kind=int32) :: n
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
     
     n=get_n(ubt)
@@ -440,9 +418,7 @@ contains
     type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_c_ubt_to_general
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
     
     if (get_n(ubt) /= size(a,1) .or. get_n(ubt) /= size(a,2)) then
@@ -495,9 +471,7 @@ contains
     type(routine_info), parameter :: info=info_d_general_of_bv
     integer(kind=int32) :: n
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
     
     n=get_n(bv)
@@ -513,9 +487,7 @@ contains
     type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_d_bv_to_general
     
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
     if (get_n(bv) /= size(a,1) .or. get_n(bv) /= size(a,2)) then
        call set_error(1, info, error); return
@@ -554,9 +526,7 @@ contains
     type(routine_info), parameter :: info=info_c_general_of_bv
     integer(kind=int32) :: n
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
     
     n=get_n(bv)
@@ -571,9 +541,7 @@ contains
     type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_c_bv_to_general
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
     if (get_n(bv) /= size(a,1) .or. get_n(bv) /= size(a,2)) then
        call set_error(1, info, error); return
@@ -613,9 +581,7 @@ contains
     type(routine_info), parameter :: info=info_d_general_of_wb
     integer(kind=int32) :: n
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
     
     n=get_n(wb)
@@ -630,9 +596,7 @@ contains
     type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_d_wb_to_general
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
     if (get_n(wb) /= size(a,1) .or. get_n(wb) /= size(a,2)) then
        call set_error(1, info, error); return
@@ -671,9 +635,7 @@ contains
     type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_c_general_of_wb
     integer(kind=int32) :: n
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
     
     n=get_n(wb)
@@ -688,9 +650,7 @@ contains
     type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_c_wb_to_general
     
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
     if (get_n(wb) /= size(a,1) .or. get_n(wb) /= size(a,2)) then
        call set_error(1, info, error); return
@@ -730,9 +690,7 @@ contains
     type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_d_general_of_wbv
     integer(kind=int32) :: n
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
     
     n=get_n(wbv)
@@ -747,9 +705,7 @@ contains
     type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_d_wbv_to_general
     
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
     if (get_n(wbv) /= size(a,1) .or. get_n(wbv) /= size(a,2)) then
        call set_error(1, info, error); return
@@ -799,9 +755,7 @@ contains
     type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_c_general_of_wbv
     integer(kind=int32) :: n
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
     
     n=get_n(wbv)
@@ -816,9 +770,7 @@ contains
     type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_c_wbv_to_general
     
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
     
     if (get_n(wbv) /= size(a,1) .or. get_n(wbv) /= size(a,2)) then

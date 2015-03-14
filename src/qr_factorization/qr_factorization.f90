@@ -49,9 +49,7 @@ contains
     integer(kind=int32) :: n, lbwmax, ubwmax, lbw, ubw
     type(d_bv), allocatable :: bv1
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info,error)
     n=get_n(bv)
     lbwmax=get_lbwmax(bv);
@@ -84,9 +82,7 @@ contains
     integer(kind=int32) :: lbw, n
     type(routine_info), parameter :: info=info_d_qr_bv_to_ub
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
     
     lbw=bv%lbw
@@ -239,9 +235,7 @@ contains
     integer(kind=int32) :: n, lbwmax, ubwmax, lbw, ubw
     type(c_bv), allocatable :: bv1
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info,error)
     n=get_n(bv)
     lbwmax=get_lbwmax(bv);
@@ -275,9 +269,7 @@ contains
 
     integer(kind=int32) :: lbw, n
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
 
     lbw=bv%lbw

@@ -35,9 +35,7 @@ contains
     type(d_ub), allocatable :: ub1
     type(routine_info), parameter :: info=info_d_bv_of_ub
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
     
     bv=d_new_bv(get_n(ub), ub%lbw, ub%ubw)
@@ -60,9 +58,7 @@ contains
     type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_d_convert_ub_to_bv
     
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
 
     if (get_n(ub) < 1) then
@@ -151,9 +147,7 @@ contains
     type(c_ub), allocatable :: ub1
     type(routine_info), parameter :: info=info_c_bv_of_ub
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
     
     bv=c_new_bv(get_n(ub), ub%lbw, ub%ubw)
@@ -170,9 +164,7 @@ contains
     type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_c_convert_ub_to_bv
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
 
     if (get_n(ub) < 1) then

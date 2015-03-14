@@ -45,9 +45,7 @@ contains
     type(routine_info), parameter :: info=info_d_bt_of_general
     integer(kind=int32) :: n
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
 
     n=size(a,1)
@@ -73,9 +71,7 @@ contains
     real(kind=dp), dimension(lbwmax,n) :: csu, ssu
     type(routine_info), parameter :: info=info_f_d_general_bt
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
     
     call ip_transpose(a)
@@ -108,9 +104,7 @@ contains
     integer(kind=int32), dimension(n) :: lbws
     type(routine_info), parameter :: info=info_f_d_general_to_bt
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
 
     if (n == 1) then
@@ -149,9 +143,7 @@ contains
     integer(kind=int32), intent(in) :: ubw
     type(routine_info), parameter :: info=info_d_general_to_bt
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
 
     if (size(a,1) < 1) then
@@ -179,9 +171,7 @@ contains
     type(routine_info), parameter :: info=info_c_bt_of_general
     integer(kind=int32) :: n
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
 
     n=size(a,1)
@@ -210,9 +200,7 @@ contains
     complex(kind=dp), dimension(lbwmax,n) :: ssu
     type(routine_info), parameter :: info=info_f_c_general_bt
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
 
     call ip_transpose(a)
@@ -249,9 +237,7 @@ contains
     integer(kind=int32), dimension(n) :: lbws
     type(routine_info), parameter :: info=info_f_c_general_to_bt
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
 
     if (n == 1) then
@@ -289,9 +275,7 @@ contains
     integer(kind=int32), intent(in) :: ubw
     type(routine_info), parameter :: info=info_c_general_to_bt
 
-    if (failure(error)) then
-       return
-    end if
+    if (failure(error)) return
     call push_id(info, error)
 
     if (size(a,1) < 1) then
