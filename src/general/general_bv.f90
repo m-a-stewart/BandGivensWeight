@@ -154,7 +154,6 @@ contains
     !
     real(kind=dp), target, dimension(n,ubwmax+1) :: q
     real(kind=dp), dimension(ubwmax+1) :: x
-    real(kind=dp) :: nrma
     real(kind=dp), pointer, dimension(:,:) :: pl, pq
     integer(kind=int32) :: i, j, k, roffs, coffs, nl, p
     type(d_rotation) :: rot
@@ -169,7 +168,6 @@ contains
     q=0.0_dp; numrotsv=0;
     ssv=0.0_dp; csv=0.0_dp; ksv=0
     ubws=0
-    nrma = maxabs(a)*sqrt(real(n))
     !
     if (n == 1) return
     ! Compute an initial trivial QL factorization
@@ -194,36 +192,26 @@ contains
        call clear_error(errornv)
        call clear_routines(errornv)
        errornv%halt=.false.
-       call lower_right_nullvec(x(1:nl),pl,tol*nrma,nullmaxits,p,errornv)
+       call lower_right_nullvec(x(1:nl),pl,tol,nullmaxits,p,errornv)
        if (success(errornv)) then
           null=.true.
           ! if there is a right null vector then introduce a zero column.
           ubws(k)=nl-1
-          if (p >= 1) then
-             numrotsv(n-k)=nl-p
-             pl(p,p)=0.0_dp
-             do j=p,nl-1
-                rot=rgivens(pl(j+1,j),pl(j+1,j+1))
-                call general_times_rotation(pl(j+1:nl,:),rot,j,j+1)
-                pl(j+1,j+1)=0.0_dp
-                csv(n-k,nl-j)=rot%cosine; ssv(n-k,nl-j)=rot%sine
-                ksv(n-k,nl-j)=coffs+j
-             end do
-          else ! p==0
-             numrotsv(n-k)=nl-1;
-             do j=2,nl ! apply v_k while preserving the triangular structure of L
-                rot=lgivens2(x(j-1),x(j))
-                call rotation_times_general(trp_rot(rot),x, j-1,j)
-                call general_times_rotation(pl,rot,j-1,j)
-                csv(n-k,nl-j+1)=rot%cosine; ssv(n-k,nl-j+1)=rot%sine
-                ksv(n-k,nl-j+1)=coffs+j-1
-                rot=lgivens2(pl(j-1,j),pl(j,j))
-                call rotation_times_general(trp_rot(rot), pl(:,1:j), j-1,j)
-                call general_times_rotation(pq,rot,j-1,j)
-                pl(j-1,j)=0.0_dp
-             end do
-             pl(nl,nl)=0.0_dp
-          end if
+          ! null vec in x(p:nl)
+          numrotsv(n-k)=nl-p;
+          do j=p+1,nl ! apply v_k while preserving the triangular structure of L
+             rot=lgivens2(x(j-1),x(j))
+             call rotation_times_general(trp_rot(rot),x, j-1,j)
+             call general_times_rotation(pl,rot,j-1,j)
+             csv(n-k,nl-j+1)=rot%cosine; ssv(n-k,nl-j+1)=rot%sine
+             ksv(n-k,nl-j+1)=coffs+j-1
+             rot=lgivens2(pl(j-1,j),pl(j,j))
+             call rotation_times_general(trp_rot(rot), pl(:,1:j), j-1,j)
+             call general_times_rotation(pq,rot,j-1,j)
+             pl(j-1,j)=0.0_dp
+          end do
+          pl(nl,nl)=0.0_dp
+
           do j=nl-1,1,-1 ! compress
              rot=lgivens(pl(j,j),pl(nl,j))
              call rotation_times_general(trp_rot(rot),pl(:,1:j),j,nl)
@@ -481,7 +469,6 @@ contains
     !
     complex(kind=dp), target, dimension(n,ubwmax+1) :: q
     complex(kind=dp), dimension(ubwmax+1) :: x
-    real(kind=dp) :: nrma
     complex(kind=dp), pointer, dimension(:,:) :: pl, pq
     integer(kind=int32) :: i, j, k, roffs, coffs, nl, p
     type(c_rotation) :: rot
@@ -496,7 +483,6 @@ contains
     q=(0.0_dp,0.0_dp); numrotsv=0;
     ssv=(0.0_dp,0.0_dp); csv=0.0_dp; ksv=0
     ubws=0
-    nrma = maxabs(a)*sqrt(real(n))
     !
     if (n == 1) return
     ! Compute an initial trivial QL factorization
@@ -521,36 +507,26 @@ contains
        call clear_error(errornv)
        call clear_routines(errornv)
        errornv%halt=.false.
-       call lower_right_nullvec(x(1:nl),pl,tol*nrma,nullmaxits,p,errornv)
+       call lower_right_nullvec(x(1:nl),pl,tol,nullmaxits,p,errornv)
        if (success(errornv)) then
           null=.true.
           ! if there is a right null vector then introduce a zero column.
           ubws(k)=nl-1
-          if (p >= 1) then
-             numrotsv(n-k)=nl-p
-             pl(p,p)=(0.0_dp,0.0_dp)
-             do j=p,nl-1
-                rot=rgivens(pl(j+1,j),pl(j+1,j+1))
-                call general_times_rotation(pl(j+1:nl,:),rot,j,j+1)
-                pl(j+1,j+1)=(0.0_dp,0.0_dp)
-                csv(n-k,nl-j)=rot%cosine; ssv(n-k,nl-j)=rot%sine
-                ksv(n-k,nl-j)=coffs+j
-             end do
-          else ! p==0
-             numrotsv(n-k)=nl-1;
-             do j=2,nl ! apply v_k while preserving the triangular structure of L
-                rot=lgivens2(x(j-1),x(j))
-                call rotation_times_general(trp_rot(rot),x, j-1,j)
-                call general_times_rotation(pl,rot,j-1,j)
-                csv(n-k,nl-j+1)=rot%cosine; ssv(n-k,nl-j+1)=rot%sine
-                ksv(n-k,nl-j+1)=coffs+j-1
-                rot=lgivens2(pl(j-1,j),pl(j,j))
-                call rotation_times_general(trp_rot(rot), pl(:,1:j), j-1,j)
-                call general_times_rotation(pq,rot,j-1,j)
-                pl(j-1,j)=(0.0_dp,0.0_dp)
-             end do
-             pl(nl,nl)=(0.0_dp,0.0_dp)
-          end if
+
+          numrotsv(n-k)=nl-p;
+          do j=p+1,nl ! apply v_k while preserving the triangular structure of L
+             rot=lgivens2(x(j-1),x(j))
+             call rotation_times_general(trp_rot(rot),x, j-1,j)
+             call general_times_rotation(pl,rot,j-1,j)
+             csv(n-k,nl-j+1)=rot%cosine; ssv(n-k,nl-j+1)=rot%sine
+             ksv(n-k,nl-j+1)=coffs+j-1
+             rot=lgivens2(pl(j-1,j),pl(j,j))
+             call rotation_times_general(trp_rot(rot), pl(:,1:j), j-1,j)
+             call general_times_rotation(pq,rot,j-1,j)
+             pl(j-1,j)=(0.0_dp,0.0_dp)
+          end do
+          pl(nl,nl)=(0.0_dp,0.0_dp)
+
           do j=nl-1,1,-1 ! compress
              rot=lgivens(pl(j,j),pl(nl,j))
              call rotation_times_general(trp_rot(rot),pl(:,1:j),j,nl)

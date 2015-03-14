@@ -149,7 +149,6 @@ contains
     !
     real(kind=dp), target, dimension(ubwmax+1,n) :: q
     real(kind=dp), dimension(ubwmax+1) :: x
-    real(kind=dp) :: nrma
     real(kind=dp), pointer, dimension(:,:) :: pl, pq
     integer(kind=int32) :: i, j, k, roffs, nl, p
     type(d_rotation) :: rot
@@ -163,7 +162,6 @@ contains
     q=0.0_dp; numrotsu=0;
     ssu=0.0_dp; csu=0.0_dp; jsu=0
     ubws=0
-    nrma = maxabs(a)*sqrt(real(n))
     !
     if (n == 1) return
     ! Compute an initial LQ factorization
@@ -186,35 +184,25 @@ contains
        call clear_error(errornv)
        call clear_routines(errornv)
        errornv%halt=.false.
-       call lower_left_nullvec(x(1:nl),pl,tol*nrma,nullmaxits,p,errornv)
+       call lower_left_nullvec(x(1:nl),pl,tol,nullmaxits,p,errornv)
        if (success(errornv)) then
-          ! if there is a left null vector then introduce a zero row.          
+          ! if there is a left null vector in x(1:p) then introduce a zero row.
           ubws(k)=nl-1
-          if (p >= 1) then
-             numrotsu(k)=p-1
-             pl(p,p)=0.0_dp
-             do j=p-1,1,-1
-                rot=lgivens2(pl(j,j),pl(j+1,j))
-                call rotation_times_general(trp_rot(rot), pl(:,1:j), j,j+1)
-                pl(j,j)=0.0_dp
-                csu(j,k)=rot%cosine; ssu(j,k)=rot%sine
-                jsu(j,k)=roffs+j
-             end do
-          else ! p==0
-             numrotsu(k)=nl-1;
-             do j=nl,2,-1 ! apply u_k while preserving the triangular structure of L
-                rot=rgivens(x(j-1),x(j))
-                call general_times_rotation(x,rot,j-1,j)
-                call rotation_times_general(trp_rot(rot), pl,j-1,j)
-                csu(j-1,k)=rot%cosine; ssu(j-1,k)=rot%sine
-                jsu(j-1,k)=roffs+j-1
-                rot=rgivens(pl(j-1,j-1),pl(j-1,j))
-                call general_times_rotation(pl,rot,j-1,j)
-                call rotation_times_general(trp_rot(rot),pq,j-1,j)
-                pl(j-1,j)=0.0_dp
-             end do
-             pl(1,1)=0.0_dp
-          end if
+
+          numrotsu(k)=p-1;
+          do j=p,2,-1 ! apply u_k while preserving the triangular structure of L
+             rot=rgivens(x(j-1),x(j))
+             call general_times_rotation(x,rot,j-1,j)
+             call rotation_times_general(trp_rot(rot), pl,j-1,j)
+             csu(j-1,k)=rot%cosine; ssu(j-1,k)=rot%sine
+             jsu(j-1,k)=roffs+j-1
+             rot=rgivens(pl(j-1,j-1),pl(j-1,j))
+             call general_times_rotation(pl,rot,j-1,j)
+             call rotation_times_general(trp_rot(rot),pq,j-1,j)
+             pl(j-1,j)=0.0_dp
+          end do
+          pl(1,1)=0.0_dp
+
           do j=2,nl ! compress
              rot=rgivens2(pl(j,1),pl(j,j))
              call general_times_rotation(pl(j:nl,:), rot, 1,j)
@@ -464,7 +452,6 @@ contains
     !
     complex(kind=dp), target, dimension(ubwmax+1,n) :: q
     complex(kind=dp), dimension(ubwmax+1) :: x
-    real(kind=dp) :: nrma
     complex(kind=dp), pointer, dimension(:,:) :: pl, pq
     integer(kind=int32) :: i, j, k, roffs, nl, p
     type(c_rotation) :: rot
@@ -478,7 +465,6 @@ contains
     q=(0.0_dp,0.0_dp); numrotsu=0;
     ssu=(0.0_dp,0.0_dp); csu=0.0_dp; jsu=0
     ubws=0
-    nrma = maxabs(a)*sqrt(real(n))
     !
     if (n == 1) then
        return
@@ -503,35 +489,25 @@ contains
        call clear_error(errornv)
        call clear_routines(errornv)
        errornv%halt=.false.
-       call lower_left_nullvec(x(1:nl),pl,tol*nrma,nullmaxits,p,errornv)
+       call lower_left_nullvec(x(1:nl),pl,tol,nullmaxits,p,errornv)
        if (success(errornv)) then
-          ! if there is a left null vector then introduce a zero row.          
+          ! if there is a left null vector in x(1:p) then introduce a zero row.
           ubws(k)=nl-1
-          if (p >= 1) then
-             numrotsu(k)=p-1
-             pl(p,p)=(0.0_dp,0.0_dp)
-             do j=p-1,1,-1
-                rot=lgivens2(pl(j,j),pl(j+1,j))
-                call rotation_times_general(trp_rot(rot), pl(:,1:j), j,j+1)
-                pl(j,j)=(0.0_dp,0.0_dp)
-                csu(j,k)=rot%cosine; ssu(j,k)=rot%sine
-                jsu(j,k)=roffs+j
-             end do
-          else ! p==0
-             numrotsu(k)=nl-1;
-             do j=nl,2,-1 ! apply u_k while preserving the triangular structure of L
-                rot=rgivens(x(j-1),x(j))
-                call general_times_rotation(x,rot,j-1,j)
-                call rotation_times_general(trp_rot(rot), pl,j-1,j)
-                csu(j-1,k)=rot%cosine; ssu(j-1,k)=rot%sine
-                jsu(j-1,k)=roffs+j-1
-                rot=rgivens(pl(j-1,j-1),pl(j-1,j))
-                call general_times_rotation(pl,rot,j-1,j)
-                call rotation_times_general(trp_rot(rot),pq,j-1,j)
-                pl(j-1,j)=(0.0_dp,0.0_dp)
-             end do
-             pl(1,1)=(0.0_dp,0.0_dp)
-          end if
+
+          numrotsu(k)=p-1;
+          do j=p,2,-1 ! apply u_k while preserving the triangular structure of L
+             rot=rgivens(x(j-1),x(j))
+             call general_times_rotation(x,rot,j-1,j)
+             call rotation_times_general(trp_rot(rot), pl,j-1,j)
+             csu(j-1,k)=rot%cosine; ssu(j-1,k)=rot%sine
+             jsu(j-1,k)=roffs+j-1
+             rot=rgivens(pl(j-1,j-1),pl(j-1,j))
+             call general_times_rotation(pl,rot,j-1,j)
+             call rotation_times_general(trp_rot(rot),pq,j-1,j)
+             pl(j-1,j)=(0.0_dp,0.0_dp)
+          end do
+          pl(1,1)=(0.0_dp,0.0_dp)
+
           do j=2,nl ! compress
              rot=rgivens2(pl(j,1),pl(j,j))
              call general_times_rotation(pl(j:nl,:), rot, 1,j)

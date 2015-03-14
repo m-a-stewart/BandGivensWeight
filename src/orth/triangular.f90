@@ -10,7 +10,7 @@ module mod_triangular
        upper_right_invert, f_c_upper_right_invert, f_d_upper_right_invert
 
   public :: first_zero_diagonal, c_first_zero_diagonal, d_first_zero_diagonal, &
-       last_zero_diagonal, c_last_zero_diagonal, d_last_zero_diagonal
+       reverse_first_zero_diagonal, c_reverse_first_zero_diagonal, d_reverse_first_zero_diagonal
 
   interface lower_right_invert
      module procedure f_c_lower_right_invert, f_d_lower_right_invert
@@ -36,9 +36,9 @@ module mod_triangular
      module procedure c_first_zero_diagonal, d_first_zero_diagonal
   end interface first_zero_diagonal
 
-  interface last_zero_diagonal
-     module procedure c_last_zero_diagonal, d_last_zero_diagonal
-  end interface last_zero_diagonal
+  interface reverse_first_zero_diagonal
+     module procedure c_reverse_first_zero_diagonal, d_reverse_first_zero_diagonal
+  end interface reverse_first_zero_diagonal
 
 contains
 
@@ -381,9 +381,7 @@ contains
     n=min(size(a,1), size(a,2))
     d=1
     do j=1,n
-       if (abs(a(j,j)) <= tol) then
-          return
-       end if
+       if (abs(a(j,j)) <= tol) return
        d=d+1
     end do
   end function d_first_zero_diagonal
@@ -396,14 +394,13 @@ contains
     n=min(size(a,1), size(a,2))
     d=1
     do j=1,n
-       if (abs(a(j,j)) <= tol) then
-          return
-       end if
+       if (abs(a(j,j)) <= tol) return
        d=d+1
     end do
   end function c_first_zero_diagonal
 
-  integer(kind=int32) function d_last_zero_diagonal(a,tol) result(d)
+  ! Return the first zero diagonal from the bottom right.
+  integer(kind=int32) function d_reverse_first_zero_diagonal(a,tol) result(d)
     real(kind=dp), dimension(:,:), intent(in) :: a
     real(kind=dp), intent(in) :: tol
     !
@@ -411,14 +408,12 @@ contains
     n=min(size(a,1), size(a,2))
     d=n
     do j=n,1,-1
-       if (abs(a(j,j)) <= tol) then
-          return
-       end if
+       if (abs(a(j,j)) <= tol) return
        d=d-1
     end do
-  end function d_last_zero_diagonal
+  end function d_reverse_first_zero_diagonal
 
-  integer(kind=int32) function c_last_zero_diagonal(a,tol) result(d)
+  integer(kind=int32) function c_reverse_first_zero_diagonal(a,tol) result(d)
     complex(kind=dp), dimension(:,:), intent(in) :: a
     real(kind=dp), intent(in) :: tol
     !
@@ -426,11 +421,9 @@ contains
     n=min(size(a,1), size(a,2))
     d=n
     do j=n,1,-1
-       if (abs(a(j,j)) <= tol) then
-          return
-       end if
+       if (abs(a(j,j)) <= tol) return
        d=d-1
     end do
-  end function c_last_zero_diagonal
+  end function c_reverse_first_zero_diagonal
 
 end module mod_triangular
