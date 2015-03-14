@@ -9,20 +9,20 @@ module mod_convert_wbv_to_ubt
 
   private
 
-  public :: convert_wbv_to_ubt, d_convert_wbv_to_ubt, c_convert_wbv_to_ubt, &
-       f_convert_wbv_to_ubt, f_d_convert_wbv_to_ubt, f_c_convert_wbv_to_ubt, &
-       d_ubt_of_wbv, c_ubt_of_wbv, ubt
+  public :: convert_wbv_to_ubt, d_convert_wbv_to_ubt, z_convert_wbv_to_ubt, &
+       f_convert_wbv_to_ubt, f_d_convert_wbv_to_ubt, f_z_convert_wbv_to_ubt, &
+       d_ubt_of_wbv, z_ubt_of_wbv, ubt
 
   interface convert_wbv_to_ubt
-     module procedure d_convert_wbv_to_ubt, c_convert_wbv_to_ubt
+     module procedure d_convert_wbv_to_ubt, z_convert_wbv_to_ubt
   end interface convert_wbv_to_ubt
 
   interface f_convert_wbv_to_ubt
-     module procedure f_d_convert_wbv_to_ubt, f_c_convert_wbv_to_ubt
+     module procedure f_d_convert_wbv_to_ubt, f_z_convert_wbv_to_ubt
   end interface f_convert_wbv_to_ubt
 
   interface ubt
-     module procedure d_ubt_of_wbv, c_ubt_of_wbv
+     module procedure d_ubt_of_wbv, z_ubt_of_wbv
   end interface ubt
 
 contains
@@ -181,24 +181,24 @@ contains
     call br_to_bc(b_wbv,b_ubt,lbw,ubw)
   end subroutine f_d_convert_wbv_to_ubt
 
-  function c_ubt_of_wbv(wbv,error) result(ubt)
-    type(c_ubt) :: ubt
-    type(c_wbv), intent(in) :: wbv
+  function z_ubt_of_wbv(wbv,error) result(ubt)
+    type(z_ubt) :: ubt
+    type(z_wbv), intent(in) :: wbv
     type(error_info), intent(inout), optional :: error
 
-    type(c_wbv), allocatable :: wbv1
-    type(routine_info), parameter :: info=info_c_ubt_of_wbv
+    type(z_wbv), allocatable :: wbv1
+    type(routine_info), parameter :: info=info_z_ubt_of_wbv
 
     if (failure(error)) return
     call push_id(info, error)
     
-    ubt=c_new_ubt(get_n(wbv), wbv%lbw, wbv%ubw)
-    wbv1=c_new_wbv(get_n(wbv),wbv%lbw+1,  wbv%ubw+1)
+    ubt=z_new_ubt(get_n(wbv), wbv%lbw, wbv%ubw)
+    wbv1=z_new_wbv(get_n(wbv),wbv%lbw+1,  wbv%ubw+1)
     call copy(wbv1,wbv)
-    call c_convert_wbv_to_ubt(wbv1,ubt,error)
+    call z_convert_wbv_to_ubt(wbv1,ubt,error)
 
     call pop_id(error)
-  end function c_ubt_of_wbv
+  end function z_ubt_of_wbv
   
 
   ! Errors:
@@ -208,11 +208,11 @@ contains
   ! 3: Insufficient stroage in ubt
   ! 4: wbv%n /= ubt%n
 
-  subroutine c_convert_wbv_to_ubt(wbv, ubt, error)
-    type(c_wbv) :: wbv
-    type(c_ubt) :: ubt
+  subroutine z_convert_wbv_to_ubt(wbv, ubt, error)
+    type(z_wbv) :: wbv
+    type(z_ubt) :: ubt
     type(error_info), intent(inout), optional :: error
-    type(routine_info), parameter :: info=info_c_convert_wbv_to_ubt
+    type(routine_info), parameter :: info=info_z_convert_wbv_to_ubt
 
     if (failure(error)) return
     call push_id(info, error)
@@ -230,16 +230,16 @@ contains
     if (get_n(wbv) /= get_n(ubt)) then
        call set_error(4, info, error); return
     end if
-    call f_c_convert_wbv_to_ubt(wbv%br, get_n(wbv), wbv%lbw, wbv%ubw, get_lbwmax(wbv), &
+    call f_z_convert_wbv_to_ubt(wbv%br, get_n(wbv), wbv%lbw, wbv%ubw, get_lbwmax(wbv), &
          get_ubwmax(wbv), wbv%numrotsw, wbv%jsw, wbv%csw, wbv%ssw, &
          wbv%numrotsv, wbv%ksv, wbv%csv, wbv%ssv, &
          ubt%bc, ubt%lbw, ubt%ubw, get_lbwmax(ubt), get_ubwmax(ubt), &
          ubt%numrotsu, ubt%jsu, ubt%csu, ubt%ssu, &
          ubt%numrotst, ubt%kst, ubt%cst, ubt%sst)
     call pop_id(error)
-  end subroutine c_convert_wbv_to_ubt
+  end subroutine z_convert_wbv_to_ubt
 
-  subroutine f_c_convert_wbv_to_ubt(b_wbv, n, lbw, ubw, lbwmax_wbv, ubwmax_wbv, numrotsw, &
+  subroutine f_z_convert_wbv_to_ubt(b_wbv, n, lbw, ubw, lbwmax_wbv, ubwmax_wbv, numrotsw, &
        jsw, csw, ssw, numrotsv, ksv, csv, ssv, &
        b_ubt, lbw_ubt, ubw_ubt, lbwmax_ubt, ubwmax_ubt, &
        numrotsu, jsu, csu, ssu, numrotst, kst, cst, sst)
@@ -266,7 +266,7 @@ contains
     integer(kind=int32), intent(out) :: lbw_ubt, ubw_ubt
 
     integer(kind=int32) :: j, k, k0, k1, ubw1, lbw1
-    type(c_rotation) :: rot
+    type(z_rotation) :: rot
     logical :: full_lbw
 
     b_ubt(1:lbw+ubw+1,:)=(0.0_dp,0.0_dp); numrotsu=0
@@ -337,7 +337,7 @@ contains
        call shift(b_wbv,0,-1)
     end if
     call br_to_bc(b_wbv,b_ubt,lbw,ubw)
-  end subroutine f_c_convert_wbv_to_ubt
+  end subroutine f_z_convert_wbv_to_ubt
 
 
 end module mod_convert_wbv_to_ubt

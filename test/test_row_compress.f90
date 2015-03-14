@@ -8,12 +8,12 @@ program test_row_compress
   type(error_info) :: error
   real(kind=dp), parameter :: tol=1e-15, c=4.0
   real(kind=dp), dimension(:,:), allocatable :: a_d, a0_d
-  complex(kind=dp), dimension(:,:), allocatable :: a_c, a0_c
+  complex(kind=dp), dimension(:,:), allocatable :: a_z, a0_z
   !
   type(d_ubt), allocatable :: ubt_d
-  type(c_ubt), allocatable :: ubt_c
+  type(z_ubt), allocatable :: ubt_z
   type(d_rc), allocatable :: swbv_d
-  type(c_rc), allocatable :: swbv_c
+  type(z_rc), allocatable :: swbv_z
 
   call initialize_errors
 
@@ -95,68 +95,68 @@ program test_row_compress
   print *
 
   na=40; lbwa=7; ubwa=5
-  ubt_c=c_random_ubt(na,lbwa,ubwa,error=error)
-  a_c = general(ubt_c,error)
-  a0_c = a_c
+  ubt_z=z_random_ubt(na,lbwa,ubwa,error=error)
+  a_z = general(ubt_z,error)
+  a0_z = a_z
   call cpu_time(t0)
-  swbv_c=rc(ubt_c,error)
+  swbv_z=rc(ubt_z,error)
   call cpu_time(t1)  
-  a_c = general(swbv_c%bv,error)
-  a_c = swbv_c%sw * a_c
+  a_z = general(swbv_z%bv,error)
+  a_z = swbv_z%sw * a_z
   test_name = "Random Complex Row Compression, n=40"
-  call c_output_result_lower_upper(test_name,a0_c,a_c,lbwa, &
-       swbv_c%bv%lbw, min(ubwa+lbwa,na-1),swbv_c%bv%ubw,t0,t1,c*tol,error)
+  call z_output_result_lower_upper(test_name,a0_z,a_z,lbwa, &
+       swbv_z%bv%lbw, min(ubwa+lbwa,na-1),swbv_z%bv%ubw,t0,t1,c*tol,error)
 
   na=1; lbwa=0; ubwa=0
-  ubt_c=c_random_ubt(na,lbwa,ubwa,error=error)
-  a_c = general(ubt_c,error)
-  a0_c = a_c
+  ubt_z=z_random_ubt(na,lbwa,ubwa,error=error)
+  a_z = general(ubt_z,error)
+  a0_z = a_z
   call cpu_time(t0)
-  swbv_c=rc(ubt_c,error)
+  swbv_z=rc(ubt_z,error)
   call cpu_time(t1)  
-  a_c = general(swbv_c%bv,error)
-  a_c = swbv_c%sw * a_c
+  a_z = general(swbv_z%bv,error)
+  a_z = swbv_z%sw * a_z
   test_name = "Random Complex Row Compression, n=1"
-  call c_output_result_lower_upper(test_name,a0_c,a_c,lbwa, &
-       swbv_c%bv%lbw, min(ubwa+lbwa,na-1),swbv_c%bv%ubw,t0,t1,c*tol,error)
+  call z_output_result_lower_upper(test_name,a0_z,a_z,lbwa, &
+       swbv_z%bv%lbw, min(ubwa+lbwa,na-1),swbv_z%bv%ubw,t0,t1,c*tol,error)
 
   na=2; lbwa=1; ubwa=1
-  ubt_c=c_random_ubt(na,lbwa,ubwa,error=error)
-  a_c = general(ubt_c,error)
-  a0_c = a_c
+  ubt_z=z_random_ubt(na,lbwa,ubwa,error=error)
+  a_z = general(ubt_z,error)
+  a0_z = a_z
   call cpu_time(t0)
-  swbv_c=rc(ubt_c,error)
+  swbv_z=rc(ubt_z,error)
   call cpu_time(t1)  
-  a_c = general(swbv_c%bv,error)
-  a_c = swbv_c%sw * a_c
+  a_z = general(swbv_z%bv,error)
+  a_z = swbv_z%sw * a_z
   test_name = "Random Complex Row Compression, n=2"
-  call c_output_result_lower_upper(test_name,a0_c,a_c,lbwa, &
-       swbv_c%bv%lbw, min(ubwa+lbwa,na-1),swbv_c%bv%ubw,t0,t1,c*tol,error)
+  call z_output_result_lower_upper(test_name,a0_z,a_z,lbwa, &
+       swbv_z%bv%lbw, min(ubwa+lbwa,na-1),swbv_z%bv%ubw,t0,t1,c*tol,error)
 
   na=3; lbwa=1; ubwa=1
-  ubt_c=c_random_ubt(na,lbwa,ubwa,error=error)
-  a_c = general(ubt_c,error)
-  a0_c = a_c
+  ubt_z=z_random_ubt(na,lbwa,ubwa,error=error)
+  a_z = general(ubt_z,error)
+  a0_z = a_z
   call cpu_time(t0)
-  swbv_c=rc(ubt_c,error)
+  swbv_z=rc(ubt_z,error)
   call cpu_time(t1)  
-  a_c = general(swbv_c%bv,error)
-  a_c = swbv_c%sw * a_c
+  a_z = general(swbv_z%bv,error)
+  a_z = swbv_z%sw * a_z
   test_name = "Random Complex Row Compression, n=3"
-  call c_output_result_lower_upper(test_name,a0_c,a_c,lbwa, &
-       swbv_c%bv%lbw, min(ubwa+lbwa,na-1),swbv_c%bv%ubw,t0,t1,c*tol,error)
+  call z_output_result_lower_upper(test_name,a0_z,a_z,lbwa, &
+       swbv_z%bv%lbw, min(ubwa+lbwa,na-1),swbv_z%bv%ubw,t0,t1,c*tol,error)
 
   na=4; lbwa=2; ubwa=2
-  ubt_c=c_random_ubt(na,lbwa,ubwa,error=error)
-  a_c = general(ubt_c,error)
-  a0_c = a_c
+  ubt_z=z_random_ubt(na,lbwa,ubwa,error=error)
+  a_z = general(ubt_z,error)
+  a0_z = a_z
   call cpu_time(t0)
-  swbv_c=rc(ubt_c,error)
+  swbv_z=rc(ubt_z,error)
   call cpu_time(t1)  
-  a_c = general(swbv_c%bv,error)
-  a_c = swbv_c%sw * a_c
+  a_z = general(swbv_z%bv,error)
+  a_z = swbv_z%sw * a_z
   test_name = "Random Complex Row Compression, n=4"
-  call c_output_result_lower_upper(test_name,a0_c,a_c,lbwa, &
-       swbv_c%bv%lbw, min(ubwa+lbwa,na-1),swbv_c%bv%ubw,t0,t1,c*tol,error)
+  call z_output_result_lower_upper(test_name,a0_z,a_z,lbwa, &
+       swbv_z%bv%lbw, min(ubwa+lbwa,na-1),swbv_z%bv%ubw,t0,t1,c*tol,error)
   
 end program test_row_compress

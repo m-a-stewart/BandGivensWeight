@@ -8,9 +8,9 @@ program test_general_ub
   real(kind=dp), parameter :: tol=1e-14, c=5
   !
   real(kind=dp), dimension(:,:), allocatable :: a_d, a0_d, a1_d
-  complex(kind=dp), dimension(:,:), allocatable :: a_c, a0_c, a1_c
+  complex(kind=dp), dimension(:,:), allocatable :: a_z, a0_z, a1_z
   type(d_ub), allocatable :: ub_d
-  type(c_ub), allocatable :: ub_c
+  type(z_ub), allocatable :: ub_z
 
   call initialize_errors
 
@@ -130,100 +130,100 @@ program test_general_ub
 
   na=40
   lbwa=3; ubwa=5
-  ub_c=c_random_ub(na,lbwa,ubwa,error=error)
-  a_c=general(ub_c,error)
-  a1_c=a_c
+  ub_z=z_random_ub(na,lbwa,ubwa,error=error)
+  a_z=general(ub_z,error)
+  a1_z=a_z
   call cpu_time(t0)
-  ub_c=ub(a_c, lbwa, lbwa, ubwa+1, tol,error)
+  ub_z=ub(a_z, lbwa, lbwa, ubwa+1, tol,error)
   call cpu_time(t1)
-  a0_c=general(ub_c,error)
+  a0_z=general(ub_z,error)
   test_name="Random Complex UB;"  
-  call c_output_result_upper(test_name,a0_c,a1_c,ubwa,ub_c%ubw,t0,t1,c*tol,error)
+  call z_output_result_upper(test_name,a0_z,a1_z,ubwa,ub_z%ubw,t0,t1,c*tol,error)
 
   na=40
   lbwa=3; ubwa=1
-  ub_c=c_random_ub(na,lbwa,ubwa,error=error)
-  a_c=general(ub_c,error)
-  a1_c=a_c
+  ub_z=z_random_ub(na,lbwa,ubwa,error=error)
+  a_z=general(ub_z,error)
+  a1_z=a_z
   call cpu_time(t0)
-  ub_c=ub(a_c, lbwa, lbwa, ubwa+1, tol,error)
+  ub_z=ub(a_z, lbwa, lbwa, ubwa+1, tol,error)
   call cpu_time(t1)
-  a0_c=general(ub_c,error)
+  a0_z=general(ub_z,error)
   test_name="Random Complex UB, ubwa=1;"
-  call c_output_result_upper(test_name,a0_c,a1_c,ubwa,ub_c%ubw,t0,t1,c*tol,error)
+  call z_output_result_upper(test_name,a0_z,a1_z,ubwa,ub_z%ubw,t0,t1,c*tol,error)
 
   na=40
   lbwa=3; ubwa=0
-  ub_c=c_random_ub(na,lbwa,ubwa,error=error)
-  a_c=general(ub_c,error)
-  a1_c=a_c
+  ub_z=z_random_ub(na,lbwa,ubwa,error=error)
+  a_z=general(ub_z,error)
+  a1_z=a_z
   call cpu_time(t0)
-  ub_c=ub(a_c, lbwa, lbwa, ubwa+1, tol,error)
+  ub_z=ub(a_z, lbwa, lbwa, ubwa+1, tol,error)
   call cpu_time(t1)
-  a0_c=general(ub_c,error)
+  a0_z=general(ub_z,error)
   test_name="Random Complex UB, ubwa=0;"
-  call c_output_result_upper(test_name,a0_c,a1_c,ubwa,ub_c%ubw,t0,t1,c*tol,error)
+  call z_output_result_upper(test_name,a0_z,a1_z,ubwa,ub_z%ubw,t0,t1,c*tol,error)
 
   na=1
   lbwa=0; ubwa=0
-  ub_c=c_random_ub(na,lbwa,ubwa,error=error)
-  a_c=general(ub_c,error)
-  a1_c=a_c
+  ub_z=z_random_ub(na,lbwa,ubwa,error=error)
+  a_z=general(ub_z,error)
+  a1_z=a_z
   call cpu_time(t0)
-  ub_c=ub(a_c, lbwa, lbwa, ubwa+1, tol,error)
+  ub_z=ub(a_z, lbwa, lbwa, ubwa+1, tol,error)
   call cpu_time(t1)
-  a0_c=general(ub_c,error)
+  a0_z=general(ub_z,error)
   test_name="Random Complex UB, na=1;"
-  call c_output_result_upper(test_name,a0_c,a1_c,ubwa,ub_c%ubw,t0,t1,c*tol,error)
+  call z_output_result_upper(test_name,a0_z,a1_z,ubwa,ub_z%ubw,t0,t1,c*tol,error)
 
   na=2
   lbwa=1; ubwa=1
-  ub_c=c_random_ub(na,lbwa,ubwa,error=error)
-  a_c=general(ub_c,error)
-  a1_c=a_c
+  ub_z=z_random_ub(na,lbwa,ubwa,error=error)
+  a_z=general(ub_z,error)
+  a1_z=a_z
   call cpu_time(t0)
-  ub_c=ub(a_c, lbwa, lbwa, ubwa+1, tol,error)
+  ub_z=ub(a_z, lbwa, lbwa, ubwa+1, tol,error)
   call cpu_time(t1)
-  a0_c=general(ub_c,error)
+  a0_z=general(ub_z,error)
   test_name="Random Complex UB, na=2;"
-  call c_output_result_upper(test_name,a0_c,a1_c,ubwa,ub_c%ubw,t0,t1,c*tol,error)
+  call z_output_result_upper(test_name,a0_z,a1_z,ubwa,ub_z%ubw,t0,t1,c*tol,error)
 
   na=3
   lbwa=1; ubwa=1
-  ub_c=c_random_ub(na,lbwa,ubwa,error=error)
-  a_c=general(ub_c,error)
-  a1_c=a_c
+  ub_z=z_random_ub(na,lbwa,ubwa,error=error)
+  a_z=general(ub_z,error)
+  a1_z=a_z
   call cpu_time(t0)
-  ub_c=ub(a_c, lbwa, lbwa, ubwa+1, tol,error)
+  ub_z=ub(a_z, lbwa, lbwa, ubwa+1, tol,error)
   call cpu_time(t1)
-  a0_c=general(ub_c,error)
+  a0_z=general(ub_z,error)
   test_name="Random Complex UB, na=3;"
-  call c_output_result_upper(test_name,a0_c,a1_c,ubwa,ub_c%ubw,t0,t1,c*tol,error)
+  call z_output_result_upper(test_name,a0_z,a1_z,ubwa,ub_z%ubw,t0,t1,c*tol,error)
 
   na=4
   lbwa=2; ubwa=2
-  ub_c=c_random_ub(na,lbwa,ubwa,error=error)
-  a_c=general(ub_c,error)
-  a1_c=a_c
+  ub_z=z_random_ub(na,lbwa,ubwa,error=error)
+  a_z=general(ub_z,error)
+  a1_z=a_z
   call cpu_time(t0)
-  ub_c=ub(a_c, lbwa, lbwa, ubwa+1, tol,error)
+  ub_z=ub(a_z, lbwa, lbwa, ubwa+1, tol,error)
   call cpu_time(t1)
-  a0_c=general(ub_c,error)
+  a0_z=general(ub_z,error)
   test_name="Random Complex UB, na=4;"
-  call c_output_result_upper(test_name,a0_c,a1_c,ubwa,ub_c%ubw,t0,t1,c*tol,error)
+  call z_output_result_upper(test_name,a0_z,a1_z,ubwa,ub_z%ubw,t0,t1,c*tol,error)
   
   na=50
   lbwa=3; ubwa=13
-  ub_c=c_random_ub(na,[ (lbwa, j=1,na) ], &
+  ub_z=z_random_ub(na,[ (lbwa, j=1,na) ], &
        [ (ubwa-1, j=1,na-ubwa), (ubwa, j=na-ubwa+1,na) ], error = error)
-  a_c=general(ub_c,error)
-  a1_c=a_c
+  a_z=general(ub_z,error)
+  a1_z=a_z
   call cpu_time(t0)
-  ub_c=ub(a_c,lbwa,lbwa,ubwa+1,tol,error)
+  ub_z=ub(a_z,lbwa,lbwa,ubwa+1,tol,error)
   call cpu_time(t1)
-  a0_c = general(ub_c,error)
+  a0_z = general(ub_z,error)
   test_name="Random Complex Square Termination UB;"  
-  call c_output_result_upper(test_name,a0_c,a1_c,ubwa,ub_c%ubw,t0,t1,c*tol,error)
+  call z_output_result_upper(test_name,a0_z,a1_z,ubwa,ub_z%ubw,t0,t1,c*tol,error)
   print *
 
 end program test_general_ub

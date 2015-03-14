@@ -9,29 +9,29 @@ module mod_general_wbv
 
   private
 
-  public :: f_general_wbv, f_d_general_wbv, f_c_general_wbv, &
-       f_general_to_wbv, f_d_general_to_wbv, f_c_general_to_wbv, &
-       general_to_wbv, d_general_to_wbv, c_general_to_wbv, &
-       d_wbv_of_general, c_wbv_of_general, wbv_of_general, wbv
+  public :: f_general_wbv, f_d_general_wbv, f_z_general_wbv, &
+       f_general_to_wbv, f_d_general_to_wbv, f_z_general_to_wbv, &
+       general_to_wbv, d_general_to_wbv, z_general_to_wbv, &
+       d_wbv_of_general, z_wbv_of_general, wbv_of_general, wbv
 
   interface wbv_of_general
-     module procedure d_wbv_of_general, c_wbv_of_general
+     module procedure d_wbv_of_general, z_wbv_of_general
   end interface wbv_of_general
 
   interface wbv
-     module procedure d_wbv_of_general, c_wbv_of_general     
+     module procedure d_wbv_of_general, z_wbv_of_general     
   end interface wbv
   
   interface f_general_wbv
-     module procedure f_d_general_wbv, f_c_general_wbv
+     module procedure f_d_general_wbv, f_z_general_wbv
   end interface f_general_wbv
 
   interface f_general_to_wbv
-     module procedure f_d_general_to_wbv, f_c_general_to_wbv
+     module procedure f_d_general_to_wbv, f_z_general_to_wbv
   end interface f_general_to_wbv
 
   interface general_to_wbv
-     module procedure d_general_to_wbv, c_general_to_wbv
+     module procedure d_general_to_wbv, z_general_to_wbv
   end interface general_to_wbv
 
 contains
@@ -95,29 +95,29 @@ contains
     call pop_id(error)
   end subroutine f_d_general_wbv
 
-  function c_wbv_of_general(a, lbwmax, ubwmax, tol, error) result(wbv)
-    type(c_wbv), allocatable :: wbv
+  function z_wbv_of_general(a, lbwmax, ubwmax, tol, error) result(wbv)
+    type(z_wbv), allocatable :: wbv
     complex(kind=dp), target, dimension(:,:), intent(inout) :: a
     type(error_info), intent(inout), optional :: error
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), intent(in) :: lbwmax, ubwmax
-    type(routine_info), parameter :: info=info_c_wbv_of_general
+    type(routine_info), parameter :: info=info_z_wbv_of_general
     integer(kind=int32) :: n
 
     if (failure(error)) return
     call push_id(info, error)
 
     n=size(a,1)
-    wbv=c_new_wbv(n,lbwmax,ubwmax)
+    wbv=z_new_wbv(n,lbwmax,ubwmax)
 
-    call c_general_to_wbv(a,wbv,tol,error)
+    call z_general_to_wbv(a,wbv,tol,error)
 
     call pop_id(error)
     
-  end function c_wbv_of_general
+  end function z_wbv_of_general
 
 
-  subroutine f_c_general_wbv(a, n, lbws, ubws, lbwmax, ubwmax, &
+  subroutine f_z_general_wbv(a, n, lbws, ubws, lbwmax, ubwmax, &
        numrotsw, jsw, csw, ssw, &
        numrotsv, ksv, csv, ssv, tol, error)
     complex(kind=dp), target, dimension(n,n), intent(inout) :: a
@@ -136,15 +136,15 @@ contains
     integer(kind=int32), dimension(n,lbwmax) :: ksv0
     real(kind=dp), dimension(n,lbwmax) :: csv0
     complex(kind=dp), dimension(n,lbwmax) :: ssv0
-    type(routine_info), parameter :: info=info_f_c_general_wbv
+    type(routine_info), parameter :: info=info_f_z_general_wbv
 
     if (failure(error)) return
     call push_id(info, error)
 
-    call f_c_general_bv(a,n,ubws,ubwmax,numrotsv,ksv,csv,ssv,tol,error)
+    call f_z_general_bv(a,n,ubws,ubwmax,numrotsv,ksv,csv,ssv,tol,error)
     if (success(error)) then
        call ip_transpose(a)
-       call f_c_general_bv(a,n,lbws,lbwmax,numrotsw,ksv0,csv0,ssv0,tol,error)
+       call f_z_general_bv(a,n,lbws,lbwmax,numrotsw,ksv0,csv0,ssv0,tol,error)
        if (success(error)) then
           call ip_transpose(a)
 
@@ -154,7 +154,7 @@ contains
        end if
     end if
     call pop_id(error)
-  end subroutine f_c_general_wbv
+  end subroutine f_z_general_wbv
 
   ! Errors:
   ! 0: no error
@@ -216,7 +216,7 @@ contains
   ! 0: no error
   ! 1: insufficient lower bw in wbv.
   ! 2: insufficient upper bw in wbv.
-  subroutine f_c_general_to_wbv(a, n, br, lbw, ubw, lbwmax, ubwmax, &
+  subroutine f_z_general_to_wbv(a, n, br, lbw, ubw, lbwmax, ubwmax, &
        numrotsw, jsw, csw, ssw, &
        numrotsv, ksv, csv, ssv, tol, error)
     complex(kind=dp), target, dimension(n,n), intent(inout) :: a
@@ -234,7 +234,7 @@ contains
     integer(kind=int32), intent(in) :: n, ubwmax, lbwmax
     !
     integer(kind=int32), dimension(n) :: lbws, ubws
-    type(routine_info), parameter :: info=info_f_c_general_to_wbv
+    type(routine_info), parameter :: info=info_f_z_general_to_wbv
 
     if (failure(error)) return
     call push_id(info, error)
@@ -250,7 +250,7 @@ contains
        return
     end if
 
-    call f_c_general_wbv(a, n, lbws, ubws, lbwmax, ubwmax, &
+    call f_z_general_wbv(a, n, lbws, ubws, lbwmax, ubwmax, &
          numrotsw, jsw, csw, ssw, &
          numrotsv, ksv, csv, ssv, tol, error)
 
@@ -259,16 +259,16 @@ contains
        lbw=maxval(lbws)
        ubw=maxval(ubws)
        if (lbw > lbwmax) then
-          ! This should already have been detected in f_c_general_wbv.
+          ! This should already have been detected in f_z_general_wbv.
           call set_error(1, info, error); return
        else if (ubw > ubwmax) then
           call set_error(2, info, error); return
        else
-          call c_extract_diagonals_br(a, n, br, lbw, ubw, lbwmax, ubwmax)
+          call z_extract_diagonals_br(a, n, br, lbw, ubw, lbwmax, ubwmax)
        end if
     end if
     call pop_id(error)
-  end subroutine f_c_general_to_wbv
+  end subroutine f_z_general_to_wbv
 
   ! Errors:
   ! 1: n < 1
@@ -298,12 +298,12 @@ contains
   ! Errors:
   ! 1: n < 1
   ! 2: n is not the same for a and wbv.
-  subroutine c_general_to_wbv(a,wbv,tol,error)
+  subroutine z_general_to_wbv(a,wbv,tol,error)
     complex(kind=dp), target, dimension(:,:), intent(inout) :: a
-    type(c_wbv), intent(inout) :: wbv
+    type(z_wbv), intent(inout) :: wbv
     type(error_info), intent(inout), optional :: error
     real(kind=dp), intent(in) :: tol
-    type(routine_info), parameter :: info=info_c_general_to_wbv
+    type(routine_info), parameter :: info=info_z_general_to_wbv
 
     if (failure(error)) return
     call push_id(info, error)
@@ -314,11 +314,11 @@ contains
     if (get_n(wbv) /= size(a,1) .or. get_n(wbv) /= size(a,2)) then
        call set_error(2, info, error); return
     end if
-    call f_c_general_to_wbv(a,get_n(wbv),wbv%br, wbv%lbw, wbv%ubw, get_lbwmax(wbv), &
+    call f_z_general_to_wbv(a,get_n(wbv),wbv%br, wbv%lbw, wbv%ubw, get_lbwmax(wbv), &
          get_ubwmax(wbv), wbv%numrotsw, wbv%jsw, wbv%csw, wbv%ssw, &
          wbv%numrotsv, wbv%ksv, wbv%csv, wbv%ssv, tol, error)
     call pop_id(error)
 
-  end subroutine c_general_to_wbv
+  end subroutine z_general_to_wbv
 
 end module mod_general_wbv

@@ -9,29 +9,29 @@ module mod_general_bt
 
   private
 
-  public :: f_general_bt, f_d_general_bt, f_c_general_bt, &
-       f_general_to_bt, f_d_general_to_bt, f_c_general_to_bt, &
-       general_to_bt, d_general_to_bt, c_general_to_bt, &
-       d_bt_of_general, c_bt_of_general, bt_of_general, bt
+  public :: f_general_bt, f_d_general_bt, f_z_general_bt, &
+       f_general_to_bt, f_d_general_to_bt, f_z_general_to_bt, &
+       general_to_bt, d_general_to_bt, z_general_to_bt, &
+       d_bt_of_general, z_bt_of_general, bt_of_general, bt
 
   interface bt_of_general
-     module procedure d_bt_of_general, c_bt_of_general
+     module procedure d_bt_of_general, z_bt_of_general
   end interface bt_of_general
 
   interface bt
-     module procedure d_bt_of_general, c_bt_of_general
+     module procedure d_bt_of_general, z_bt_of_general
   end interface bt
   
   interface f_general_bt
-     module procedure f_d_general_bt, f_c_general_bt
+     module procedure f_d_general_bt, f_z_general_bt
   end interface f_general_bt
 
   interface f_general_to_bt
-     module procedure f_d_general_to_bt, f_c_general_to_bt
+     module procedure f_d_general_to_bt, f_z_general_to_bt
   end interface f_general_to_bt
 
   interface general_to_bt
-     module procedure d_general_to_bt, c_general_to_bt
+     module procedure d_general_to_bt, z_general_to_bt
   end interface general_to_bt
 
 contains
@@ -162,29 +162,29 @@ contains
   end subroutine d_general_to_bt
 
 
-  function c_bt_of_general(a, ubw, lbwmax, ubwmax, tol, error) result(bt)
-    type(c_bt), allocatable :: bt
+  function z_bt_of_general(a, ubw, lbwmax, ubwmax, tol, error) result(bt)
+    type(z_bt), allocatable :: bt
     complex(kind=dp), target, dimension(:,:), intent(inout) :: a
     type(error_info), intent(inout), optional :: error
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), intent(in) :: ubw, lbwmax, ubwmax
-    type(routine_info), parameter :: info=info_c_bt_of_general
+    type(routine_info), parameter :: info=info_z_bt_of_general
     integer(kind=int32) :: n
 
     if (failure(error)) return
     call push_id(info, error)
 
     n=size(a,1)
-    bt=c_new_bt(n,lbwmax,ubwmax)
+    bt=z_new_bt(n,lbwmax,ubwmax)
 
-    call c_general_to_bt(a,bt,ubw,tol,error)
+    call z_general_to_bt(a,bt,ubw,tol,error)
 
     call pop_id(error)
     
-  end function c_bt_of_general
+  end function z_bt_of_general
 
   
-  subroutine f_c_general_bt(a, n, lbws, lbwmax, numrotst, kst, cst, sst, tol, error)
+  subroutine f_z_general_bt(a, n, lbws, lbwmax, numrotst, kst, cst, sst, tol, error)
     complex(kind=dp), target, dimension(n,n), intent(inout) :: a
     integer(kind=int32), dimension(n,lbwmax), intent(out) :: kst
     real(kind=dp), dimension(n,lbwmax), intent(out) :: cst
@@ -198,13 +198,13 @@ contains
     integer(kind=int32), dimension(lbwmax,n) :: jsu
     real(kind=dp), dimension(lbwmax,n) :: csu
     complex(kind=dp), dimension(lbwmax,n) :: ssu
-    type(routine_info), parameter :: info=info_f_c_general_bt
+    type(routine_info), parameter :: info=info_f_z_general_bt
 
     if (failure(error)) return
     call push_id(info, error)
 
     call ip_transpose(a)
-    call f_c_general_ub(a,n,lbws,lbwmax,numrotst,jsu,csu,ssu,tol,error)
+    call f_z_general_ub(a,n,lbws,lbwmax,numrotst,jsu,csu,ssu,tol,error)
 
     if (success(error)) then
        
@@ -216,12 +216,12 @@ contains
     end if
 
     call pop_id(error)
-  end subroutine f_c_general_bt
+  end subroutine f_z_general_bt
 
   ! Errors:
   ! 0: no error
   ! 1: insufficient lower bw in bt%bc
-  subroutine f_c_general_to_bt(a, n, b, lbw, ubw, lbwmax, ubwmax, &
+  subroutine f_z_general_to_bt(a, n, b, lbw, ubw, lbwmax, ubwmax, &
        numrotst, kst, cst, sst, tol, error)
     complex(kind=dp), target, dimension(n,n), intent(inout) :: a
     integer(kind=int32), dimension(n,lbwmax), intent(out) :: kst
@@ -235,7 +235,7 @@ contains
     integer(kind=int32), intent(in) :: n, ubw, ubwmax, lbwmax
     !
     integer(kind=int32), dimension(n) :: lbws
-    type(routine_info), parameter :: info=info_f_c_general_to_bt
+    type(routine_info), parameter :: info=info_f_z_general_to_bt
 
     if (failure(error)) return
     call push_id(info, error)
@@ -248,32 +248,32 @@ contains
        return
     end if
 
-    call f_c_general_bt(a, n, lbws, lbwmax, numrotst, kst, cst, sst, tol, error)
+    call f_z_general_bt(a, n, lbws, lbwmax, numrotst, kst, cst, sst, tol, error)
 
     if (success(error)) then
        lbw=maxval(lbws)
        if (maxval(lbws) > lbwmax) then
-          ! This should already have been detected in f_c_general_bt.
+          ! This should already have been detected in f_z_general_bt.
           call set_error(1, info, error); return
        else
-          call c_extract_diagonals_br(a, n, b, lbw, ubw, lbwmax, ubwmax)
+          call z_extract_diagonals_br(a, n, b, lbw, ubw, lbwmax, ubwmax)
        end if
     end if
     call pop_id(error)
-  end subroutine f_c_general_to_bt
+  end subroutine f_z_general_to_bt
 
   ! Errors:
   ! 0: no error
   ! 1: n < 1
   ! 2: ub%ubwmax < ubw
   ! 3: n is not the same for a and ub or bv.
-  subroutine c_general_to_bt(a,bt,ubw,tol,error)
+  subroutine z_general_to_bt(a,bt,ubw,tol,error)
     complex(kind=dp), target, dimension(:,:), intent(inout) :: a
-    type(c_bt), intent(inout) :: bt
+    type(z_bt), intent(inout) :: bt
     type(error_info), intent(inout), optional :: error
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), intent(in) :: ubw
-    type(routine_info), parameter :: info=info_c_general_to_bt
+    type(routine_info), parameter :: info=info_z_general_to_bt
 
     if (failure(error)) return
     call push_id(info, error)
@@ -288,11 +288,11 @@ contains
        call set_error(3, info, error); return
     end if
     
-    call f_c_general_to_bt(a,get_n(bt),bt%br, bt%lbw, ubw, get_lbwmax(bt), get_ubwmax(bt), &
+    call f_z_general_to_bt(a,get_n(bt),bt%br, bt%lbw, ubw, get_lbwmax(bt), get_ubwmax(bt), &
          bt%numrotst, bt%kst, bt%cst, bt%sst, tol, error)
     bt%ubw=ubw
     call pop_id(error)
     
-  end subroutine c_general_to_bt
+  end subroutine z_general_to_bt
 
 end module mod_general_bt

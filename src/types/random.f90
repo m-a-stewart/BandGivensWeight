@@ -8,45 +8,45 @@ module mod_random
 
   private
 
-  public :: d_random_bc, c_random_bc, f_d_random_bc, f_c_random_bc, f_random_bc, &
-       d_random_br, c_random_br, f_d_random_br, f_c_random_br, f_random_br
+  public :: d_random_bc, z_random_bc, f_d_random_bc, f_z_random_bc, f_random_bc, &
+       d_random_br, z_random_br, f_d_random_br, f_z_random_br, f_random_br
 
-  public :: d_random_ub0, c_random_ub0, f_d_random_rotations_ub, f_c_random_rotations_ub, &
-       d_random_bv0, f_d_random_rotations_bv, c_random_bv0, f_c_random_rotations_bv, &
-       d_random_bt0, f_d_random_rotations_bt, c_random_bt0, f_c_random_rotations_bt, &
-       d_random_wb0, f_d_random_rotations_wb, c_random_wb0, f_c_random_rotations_wb, &
-       d_random_ubt0, c_random_ubt0, d_random_wbv0, c_random_wbv0, &
-       d_random_ub1, c_random_ub1, d_random_ubt1, c_random_ubt1, &
-       d_random_bt1, c_random_bt1, d_random_bv1, c_random_bv1, &
-       d_random_wbv1, c_random_wbv1, d_random_wb1, c_random_wb1, &
-       d_random_ub, c_random_ub, d_random_ubt, c_random_ubt, &
-       d_random_bt, c_random_bt, d_random_bv, c_random_bv, &
-       d_random_wbv, c_random_wbv, d_random_wb, c_random_wb, &
+  public :: d_random_ub0, z_random_ub0, f_d_random_rotations_ub, f_z_random_rotations_ub, &
+       d_random_bv0, f_d_random_rotations_bv, z_random_bv0, f_z_random_rotations_bv, &
+       d_random_bt0, f_d_random_rotations_bt, z_random_bt0, f_z_random_rotations_bt, &
+       d_random_wb0, f_d_random_rotations_wb, z_random_wb0, f_z_random_rotations_wb, &
+       d_random_ubt0, z_random_ubt0, d_random_wbv0, z_random_wbv0, &
+       d_random_ub1, z_random_ub1, d_random_ubt1, z_random_ubt1, &
+       d_random_bt1, z_random_bt1, d_random_bv1, z_random_bv1, &
+       d_random_wbv1, z_random_wbv1, d_random_wb1, z_random_wb1, &
+       d_random_ub, z_random_ub, d_random_ubt, z_random_ubt, &
+       d_random_bt, z_random_bt, d_random_bv, z_random_bv, &
+       d_random_wbv, z_random_wbv, d_random_wb, z_random_wb, &
        f_random_rotations_ub, f_random_rotations_bv, f_random_rotations_bt, &
        f_random_rotations_wb
 
   interface f_random_rotations_ub
-     module procedure f_d_random_rotations_ub, f_c_random_rotations_ub
+     module procedure f_d_random_rotations_ub, f_z_random_rotations_ub
   end interface f_random_rotations_ub
 
   interface f_random_rotations_bv
-     module procedure f_d_random_rotations_bv, f_c_random_rotations_bv
+     module procedure f_d_random_rotations_bv, f_z_random_rotations_bv
   end interface f_random_rotations_bv
 
   interface f_random_rotations_bt
-     module procedure f_d_random_rotations_bt, f_c_random_rotations_bt
+     module procedure f_d_random_rotations_bt, f_z_random_rotations_bt
   end interface f_random_rotations_bt
 
   interface f_random_rotations_wb
-     module procedure f_d_random_rotations_wb, f_c_random_rotations_wb
+     module procedure f_d_random_rotations_wb, f_z_random_rotations_wb
   end interface f_random_rotations_wb
 
   interface f_random_bc
-     module procedure f_d_random_bc, f_c_random_bc
+     module procedure f_d_random_bc, f_z_random_bc
   end interface f_random_bc
 
   interface f_random_br
-     module procedure f_d_random_br, f_c_random_br
+     module procedure f_d_random_br, f_z_random_br
   end interface f_random_br
 
   interface d_random_ub
@@ -73,29 +73,29 @@ module mod_random
      module procedure d_random_wbv0, d_random_wbv1
   end interface d_random_wbv
 
-  interface c_random_ub
-     module procedure c_random_ub0, c_random_ub1
-  end interface c_random_ub
+  interface z_random_ub
+     module procedure z_random_ub0, z_random_ub1
+  end interface z_random_ub
 
-  interface c_random_bv
-     module procedure c_random_bv0, c_random_bv1
-  end interface c_random_bv
+  interface z_random_bv
+     module procedure z_random_bv0, z_random_bv1
+  end interface z_random_bv
 
-  interface c_random_bt
-     module procedure c_random_bt0, c_random_bt1
-  end interface c_random_bt
+  interface z_random_bt
+     module procedure z_random_bt0, z_random_bt1
+  end interface z_random_bt
   
-  interface c_random_wb
-     module procedure c_random_wb0, c_random_wb1
-  end interface c_random_wb
+  interface z_random_wb
+     module procedure z_random_wb0, z_random_wb1
+  end interface z_random_wb
 
-  interface c_random_ubt
-     module procedure c_random_ubt0, c_random_ubt1
-  end interface c_random_ubt
+  interface z_random_ubt
+     module procedure z_random_ubt0, z_random_ubt1
+  end interface z_random_ubt
 
-  interface c_random_wbv
-     module procedure c_random_wbv0, c_random_wbv1
-  end interface c_random_wbv
+  interface z_random_wbv
+     module procedure z_random_wbv0, z_random_wbv1
+  end interface z_random_wbv
   
 contains
 
@@ -146,12 +146,12 @@ contains
     end do
   end subroutine f_d_random_bc
 
-  function c_random_bc(n,lbw,ubw,lbwmax0,ubwmax0,error) result(b)
+  function z_random_bc(n,lbw,ubw,lbwmax0,ubwmax0,error) result(b)
     complex(kind=dp), dimension(:,:), allocatable :: b
     integer(kind=int32), intent(in) :: n, lbw, ubw
     integer(kind=int32), intent(in), optional :: lbwmax0, ubwmax0
     type(error_info), optional :: error
-    type(routine_info), parameter :: info=info_c_random_bc
+    type(routine_info), parameter :: info=info_z_random_bc
     integer(kind=int32) :: lbwmax, ubwmax
 
     if (failure(error)) return
@@ -170,12 +170,12 @@ contains
     end if
 
     allocate(b(lbwmax+ubwmax+1,n))
-    call f_c_random_bc(b,n,lbw,ubw,lbwmax,ubwmax)
+    call f_z_random_bc(b,n,lbw,ubw,lbwmax,ubwmax)
 
     call pop_id(error)
-  end function c_random_bc
+  end function z_random_bc
 
-  subroutine f_c_random_bc(b,n,lbw,ubw,lbwmax,ubwmax)
+  subroutine f_z_random_bc(b,n,lbw,ubw,lbwmax,ubwmax)
     complex(kind=dp), dimension(lbwmax+ubwmax+1,n), intent(out) :: b
     integer(kind=int32), intent(in) :: n, lbw, ubw
     integer(kind=int32), intent(in) :: lbwmax, ubwmax
@@ -188,7 +188,7 @@ contains
        j1=min(bw,ubw+n-k+1)
        call random_matrix_to(b(j0:j1,k))
     end do
-  end subroutine f_c_random_bc
+  end subroutine f_z_random_bc
 
   function d_random_br(n,lbw,ubw,lbwmax0,ubwmax0,error) result(b)
     real(kind=dp), dimension(:,:), allocatable :: b
@@ -235,12 +235,12 @@ contains
     end do
   end subroutine f_d_random_br
 
-  function c_random_br(n,lbw,ubw,lbwmax0,ubwmax0,error) result(b)
+  function z_random_br(n,lbw,ubw,lbwmax0,ubwmax0,error) result(b)
     complex(kind=dp), dimension(:,:), allocatable :: b
     integer(kind=int32), intent(in) :: n, lbw, ubw
     integer(kind=int32), intent(in), optional :: lbwmax0, ubwmax0
     type(error_info), optional :: error
-    type(routine_info), parameter :: info=info_c_random_br
+    type(routine_info), parameter :: info=info_z_random_br
     integer(kind=int32) :: lbwmax, ubwmax
 
     if (failure(error)) return
@@ -260,12 +260,12 @@ contains
     end if
 
     allocate(b(n,lbwmax+ubwmax+1))
-    call f_c_random_br(b,n,lbw,ubw,lbwmax,ubwmax)
+    call f_z_random_br(b,n,lbw,ubw,lbwmax,ubwmax)
     call pop_id(error)
 
-  end function c_random_br
+  end function z_random_br
 
-  subroutine f_c_random_br(b,n,lbw,ubw,lbwmax,ubwmax)
+  subroutine f_z_random_br(b,n,lbw,ubw,lbwmax,ubwmax)
     complex(kind=dp), dimension(n,lbwmax+ubwmax+1), intent(out) :: b
     integer(kind=int32), intent(in) :: n, lbw, ubw
     integer(kind=int32), intent(in) :: lbwmax, ubwmax
@@ -278,7 +278,7 @@ contains
        k1=min(bw,lbw+n-j+1)
        call random_matrix_to(b(j,k0:k1))
     end do
-  end subroutine f_c_random_br
+  end subroutine f_z_random_br
 
   ! Random ub
 
@@ -379,11 +379,11 @@ contains
     end do
   end subroutine f_d_random_rotations_ub
 
-  type(c_ub) function c_random_ub0(n,lbw,ubw,lbwmax0,ubwmax0,error) result(ub)
+  type(z_ub) function z_random_ub0(n,lbw,ubw,lbwmax0,ubwmax0,error) result(ub)
     integer(kind=int32), intent(in) :: n, lbw, ubw
     integer(kind=int32), intent(in), optional :: lbwmax0, ubwmax0
     type(error_info), optional :: error
-    type(routine_info), parameter :: info=info_c_random_ub0
+    type(routine_info), parameter :: info=info_z_random_ub0
     integer(kind=int32) :: lbwmax, ubwmax
 
     if (failure(error)) return
@@ -402,19 +402,19 @@ contains
        call set_error(3,info,error); return
     end if
 
-    ub=c_new_ub(n,lbwmax,ubwmax)
+    ub=z_new_ub(n,lbwmax,ubwmax)
     ub%ubw=ubw; ub%lbw=lbw
-    call f_c_random_bc(ub%bc,n,lbw,ubw,lbwmax,ubwmax)
-    call f_c_random_rotations_ub(n,lbw,ubw,lbwmax,ubwmax,ub%numrotsu, ub%jsu, ub%csu, ub%ssu)
+    call f_z_random_bc(ub%bc,n,lbw,ubw,lbwmax,ubwmax)
+    call f_z_random_rotations_ub(n,lbw,ubw,lbwmax,ubwmax,ub%numrotsu, ub%jsu, ub%csu, ub%ssu)
     call pop_id(error)
-  end function c_random_ub0
+  end function z_random_ub0
 
-  type(c_ub) function c_random_ub1(n,lbws,ubws,lbwmax0,ubwmax0,error) result(ub)
+  type(z_ub) function z_random_ub1(n,lbws,ubws,lbwmax0,ubwmax0,error) result(ub)
     integer(kind=int32), intent(in) :: n
     integer(kind=int32), dimension(:), intent(in) :: lbws, ubws
     integer(kind=int32), intent(in), optional :: lbwmax0, ubwmax0
     type(error_info), optional :: error
-    type(routine_info), parameter :: info=info_c_random_ub1
+    type(routine_info), parameter :: info=info_z_random_ub1
     integer(kind=int32) :: lbwmax, ubwmax,lbw,ubw
 
     if (failure(error)) return
@@ -434,16 +434,16 @@ contains
        call set_error(3,info,error); return
     end if
 
-    ub=c_new_ub(n,lbwmax,ubwmax)
+    ub=z_new_ub(n,lbwmax,ubwmax)
     ub%ubw=ubw; ub%lbw=lbw
-    call f_c_random_bc(ub%bc,n,lbw,ubw,lbwmax,ubwmax)
-    call c_truncate_profile_bc(ub%bc,n,lbw,ubw,lbwmax,ubwmax,lbws,ubws)
-    call f_c_random_rotations_ub(n,lbw,ubw,lbwmax,ubwmax,ub%numrotsu, ub%jsu, &
+    call f_z_random_bc(ub%bc,n,lbw,ubw,lbwmax,ubwmax)
+    call z_truncate_profile_bc(ub%bc,n,lbw,ubw,lbwmax,ubwmax,lbws,ubws)
+    call f_z_random_rotations_ub(n,lbw,ubw,lbwmax,ubwmax,ub%numrotsu, ub%jsu, &
          ub%csu, ub%ssu,ubws)
     call pop_id(error)
-  end function c_random_ub1
+  end function z_random_ub1
 
-  subroutine f_c_random_rotations_ub(n,lbw,ubw,lbwmax,ubwmax,numrotsu,jsu,csu,ssu, &
+  subroutine f_z_random_rotations_ub(n,lbw,ubw,lbwmax,ubwmax,numrotsu,jsu,csu,ssu, &
        upper)
     integer(kind=int32), intent(in) :: n, lbw, ubw
     integer(kind=int32), intent(in) :: lbwmax, ubwmax
@@ -477,7 +477,7 @@ contains
           ssu(j,k)=ssu(j,k)/nrm
        end do
     end do
-  end subroutine f_c_random_rotations_ub
+  end subroutine f_z_random_rotations_ub
 
   ! Random bv
 
@@ -577,11 +577,11 @@ contains
     end do
   end subroutine f_d_random_rotations_bv
 
-  type(c_bv) function c_random_bv0(n,lbw,ubw,lbwmax0,ubwmax0,error) result(bv)
+  type(z_bv) function z_random_bv0(n,lbw,ubw,lbwmax0,ubwmax0,error) result(bv)
     integer(kind=int32), intent(in) :: n, lbw, ubw
     integer(kind=int32), intent(in), optional :: lbwmax0, ubwmax0
     type(error_info), optional :: error
-    type(routine_info), parameter :: info=info_c_random_bv0
+    type(routine_info), parameter :: info=info_z_random_bv0
     integer(kind=int32) :: lbwmax, ubwmax
 
     if (failure(error)) return
@@ -599,19 +599,19 @@ contains
        call set_error(3,info,error); return
     end if
 
-    bv=c_new_bv(n,lbwmax,ubwmax)
+    bv=z_new_bv(n,lbwmax,ubwmax)
     bv%ubw=ubw; bv%lbw=lbw
-    call f_c_random_br(bv%br,n,lbw,ubw,lbwmax,ubwmax)
-    call f_c_random_rotations_bv(n,lbw,ubw,lbwmax,ubwmax,bv%numrotsv, bv%ksv, bv%csv, bv%ssv)
+    call f_z_random_br(bv%br,n,lbw,ubw,lbwmax,ubwmax)
+    call f_z_random_rotations_bv(n,lbw,ubw,lbwmax,ubwmax,bv%numrotsv, bv%ksv, bv%csv, bv%ssv)
     call pop_id(error)
-  end function c_random_bv0
+  end function z_random_bv0
 
-  type(c_bv) function c_random_bv1(n,lbws,ubws,lbwmax0,ubwmax0,error) result(bv)
+  type(z_bv) function z_random_bv1(n,lbws,ubws,lbwmax0,ubwmax0,error) result(bv)
     integer(kind=int32), intent(in) :: n
     integer(kind=int32), dimension(:), intent(in) :: lbws, ubws
     integer(kind=int32), intent(in), optional :: lbwmax0, ubwmax0
     type(error_info), optional :: error
-    type(routine_info), parameter :: info=info_c_random_bv1
+    type(routine_info), parameter :: info=info_z_random_bv1
     integer(kind=int32) :: lbwmax, ubwmax, lbw, ubw
     if (failure(error)) return
     call push_id(info,error)
@@ -630,16 +630,16 @@ contains
        call set_error(3,info,error); return
     end if
 
-    bv=c_new_bv(n,lbwmax,ubwmax)
+    bv=z_new_bv(n,lbwmax,ubwmax)
     bv%ubw=ubw; bv%lbw=lbw
-    call f_c_random_br(bv%br,n,lbw,ubw,lbwmax,ubwmax)
-    call c_truncate_profile_br(bv%br,n,lbw,ubw,lbwmax,ubwmax,lbws,ubws)
-    call f_c_random_rotations_bv(n,lbw,ubw,lbwmax,ubwmax,bv%numrotsv, bv%ksv, &
+    call f_z_random_br(bv%br,n,lbw,ubw,lbwmax,ubwmax)
+    call z_truncate_profile_br(bv%br,n,lbw,ubw,lbwmax,ubwmax,lbws,ubws)
+    call f_z_random_rotations_bv(n,lbw,ubw,lbwmax,ubwmax,bv%numrotsv, bv%ksv, &
          bv%csv, bv%ssv,ubws)
     call pop_id(error)
-  end function c_random_bv1
+  end function z_random_bv1
 
-  subroutine f_c_random_rotations_bv(n,lbw,ubw,lbwmax,ubwmax,numrotsv,ksv,csv,ssv, &
+  subroutine f_z_random_rotations_bv(n,lbw,ubw,lbwmax,ubwmax,numrotsv,ksv,csv,ssv, &
        upper)
     integer(kind=int32), intent(in) :: n, lbw, ubw
     integer(kind=int32), intent(in) :: lbwmax, ubwmax
@@ -673,7 +673,7 @@ contains
           ssv(j,k)=ssv(j,k)/nrm
        end do
     end do
-  end subroutine f_c_random_rotations_bv
+  end subroutine f_z_random_rotations_bv
 
   ! Random bt
 
@@ -770,11 +770,11 @@ contains
     end do
   end subroutine f_d_random_rotations_bt
 
-  type(c_bt) function c_random_bt0(n,lbw,ubw,lbwmax0,ubwmax0,error) result(bt)
+  type(z_bt) function z_random_bt0(n,lbw,ubw,lbwmax0,ubwmax0,error) result(bt)
     integer(kind=int32), intent(in) :: n, lbw, ubw
     integer(kind=int32), intent(in), optional :: lbwmax0, ubwmax0
     type(error_info), optional :: error
-    type(routine_info), parameter :: info=info_c_random_bt0
+    type(routine_info), parameter :: info=info_z_random_bt0
     integer(kind=int32) :: lbwmax, ubwmax
 
     if (failure(error)) return
@@ -790,19 +790,19 @@ contains
     if(ubw > ubwmax) then
        call set_error(3,info,error); return
     end if
-    bt=c_new_bt(n,lbwmax,ubwmax)
+    bt=z_new_bt(n,lbwmax,ubwmax)
     bt%ubw=ubw; bt%lbw=lbw
-    call f_c_random_br(bt%br,n,lbw,ubw,lbwmax,ubwmax)
-    call f_c_random_rotations_bt(n,lbw,ubw,lbwmax,ubwmax,bt%numrotst, bt%kst, bt%cst, bt%sst)
+    call f_z_random_br(bt%br,n,lbw,ubw,lbwmax,ubwmax)
+    call f_z_random_rotations_bt(n,lbw,ubw,lbwmax,ubwmax,bt%numrotst, bt%kst, bt%cst, bt%sst)
     call pop_id(error)
-  end function c_random_bt0
+  end function z_random_bt0
 
-  type(c_bt) function c_random_bt1(n,lbws,ubws,lbwmax0,ubwmax0,error) result(bt)
+  type(z_bt) function z_random_bt1(n,lbws,ubws,lbwmax0,ubwmax0,error) result(bt)
     integer(kind=int32), intent(in) :: n
     integer(kind=int32), dimension(:), intent(in) :: lbws, ubws
     integer(kind=int32), intent(in), optional :: lbwmax0, ubwmax0
     type(error_info), optional :: error
-    type(routine_info), parameter :: info=info_c_random_bt1
+    type(routine_info), parameter :: info=info_z_random_bt1
     integer(kind=int32) :: lbwmax, ubwmax, lbw, ubw
 
     if (failure(error)) return
@@ -820,16 +820,16 @@ contains
     if(ubw > ubwmax) then
        call set_error(3,info,error); return
     end if
-    bt=c_new_bt(n,lbwmax,ubwmax)
+    bt=z_new_bt(n,lbwmax,ubwmax)
     bt%ubw=ubw; bt%lbw=lbw
-    call f_c_random_br(bt%br,n,lbw,ubw,lbwmax,ubwmax)
-    call c_truncate_profile_br(bt%br,n,lbw,ubw,lbwmax,ubwmax,lbws,ubws)
-    call f_c_random_rotations_bt(n,lbw,ubw,lbwmax,ubwmax,bt%numrotst, bt%kst, &
+    call f_z_random_br(bt%br,n,lbw,ubw,lbwmax,ubwmax)
+    call z_truncate_profile_br(bt%br,n,lbw,ubw,lbwmax,ubwmax,lbws,ubws)
+    call f_z_random_rotations_bt(n,lbw,ubw,lbwmax,ubwmax,bt%numrotst, bt%kst, &
          bt%cst, bt%sst,lbws)
     call pop_id(error)
-  end function c_random_bt1
+  end function z_random_bt1
   
-  subroutine f_c_random_rotations_bt(n,lbw,ubw,lbwmax,ubwmax,numrotst,kst,cst,sst,lower)
+  subroutine f_z_random_rotations_bt(n,lbw,ubw,lbwmax,ubwmax,numrotst,kst,cst,sst,lower)
     integer(kind=int32), intent(in) :: n, lbw, ubw
     integer(kind=int32), intent(in) :: lbwmax, ubwmax
     integer(kind=int32), dimension(n), intent(out) :: numrotst
@@ -861,7 +861,7 @@ contains
           sst(j,k)=sst(j,k)/nrm
        end do
     end do
-  end subroutine f_c_random_rotations_bt
+  end subroutine f_z_random_rotations_bt
 
   ! Random wb
 
@@ -957,11 +957,11 @@ contains
     end do
   end subroutine f_d_random_rotations_wb
 
-  type(c_wb) function c_random_wb0(n,lbw,ubw,lbwmax0,ubwmax0,error) result(wb)
+  type(z_wb) function z_random_wb0(n,lbw,ubw,lbwmax0,ubwmax0,error) result(wb)
     integer(kind=int32), intent(in) :: n, lbw, ubw
     integer(kind=int32), intent(in), optional :: lbwmax0, ubwmax0
     type(error_info), optional :: error
-    type(routine_info), parameter :: info=info_c_random_wb0
+    type(routine_info), parameter :: info=info_z_random_wb0
     integer(kind=int32) :: lbwmax, ubwmax
 
     if (failure(error)) return
@@ -977,19 +977,19 @@ contains
     if(ubw > ubwmax) then
        call set_error(3,info,error); return
     end if
-    wb=c_new_wb(n,lbwmax,ubwmax)
+    wb=z_new_wb(n,lbwmax,ubwmax)
     wb%ubw=ubw; wb%lbw=lbw
-    call f_c_random_bc(wb%bc,n,lbw,ubw,lbwmax,ubwmax)
-    call f_c_random_rotations_wb(n,lbw,ubw,lbwmax,ubwmax,wb%numrotsw, wb%jsw, wb%csw, wb%ssw)
+    call f_z_random_bc(wb%bc,n,lbw,ubw,lbwmax,ubwmax)
+    call f_z_random_rotations_wb(n,lbw,ubw,lbwmax,ubwmax,wb%numrotsw, wb%jsw, wb%csw, wb%ssw)
     call pop_id(error)
-  end function c_random_wb0
+  end function z_random_wb0
 
-  type(c_wb) function c_random_wb1(n,lbws,ubws,lbwmax0,ubwmax0,error) result(wb)
+  type(z_wb) function z_random_wb1(n,lbws,ubws,lbwmax0,ubwmax0,error) result(wb)
     integer(kind=int32), intent(in) :: n
     integer(kind=int32), dimension(:), intent(in) :: lbws, ubws
     integer(kind=int32), intent(in), optional :: lbwmax0, ubwmax0
     type(error_info), optional :: error
-    type(routine_info), parameter :: info=info_c_random_wb1
+    type(routine_info), parameter :: info=info_z_random_wb1
     integer(kind=int32) :: lbwmax, ubwmax, lbw, ubw
 
     if (failure(error)) return
@@ -1007,16 +1007,16 @@ contains
     if(ubw > ubwmax) then
        call set_error(3,info,error); return
     end if
-    wb=c_new_wb(n,lbwmax,ubwmax)
+    wb=z_new_wb(n,lbwmax,ubwmax)
     wb%ubw=ubw; wb%lbw=lbw
-    call f_c_random_bc(wb%bc,n,lbw,ubw,lbwmax,ubwmax)
-    call c_truncate_profile_bc(wb%bc,n,lbw,ubw,lbwmax,ubwmax,lbws,ubws)
-    call f_c_random_rotations_wb(n,lbw,ubw,lbwmax,ubwmax,wb%numrotsw, wb%jsw, &
+    call f_z_random_bc(wb%bc,n,lbw,ubw,lbwmax,ubwmax)
+    call z_truncate_profile_bc(wb%bc,n,lbw,ubw,lbwmax,ubwmax,lbws,ubws)
+    call f_z_random_rotations_wb(n,lbw,ubw,lbwmax,ubwmax,wb%numrotsw, wb%jsw, &
          wb%csw, wb%ssw,lbws)
     call pop_id(error)
-  end function c_random_wb1
+  end function z_random_wb1
 
-  subroutine f_c_random_rotations_wb(n,lbw,ubw,lbwmax,ubwmax,numrotsw,jsw,csw,ssw,lower)
+  subroutine f_z_random_rotations_wb(n,lbw,ubw,lbwmax,ubwmax,numrotsw,jsw,csw,ssw,lower)
     integer(kind=int32), intent(in) :: n, lbw, ubw
     integer(kind=int32), intent(in) :: lbwmax, ubwmax
     integer(kind=int32), dimension(n), intent(out) :: numrotsw
@@ -1048,7 +1048,7 @@ contains
           ssw(j,k)=ssw(j,k)/nrm
        end do
     end do
-  end subroutine f_c_random_rotations_wb
+  end subroutine f_z_random_rotations_wb
 
   type(d_ubt) function d_random_ubt0(n,lbw,ubw,lbwmax0,ubwmax0,error) result(ubt)
     integer(kind=int32), intent(in) :: n, lbw, ubw
@@ -1112,11 +1112,11 @@ contains
     call pop_id(error)
   end function d_random_ubt1
   
-  type(c_ubt) function c_random_ubt0(n,lbw,ubw,lbwmax0,ubwmax0,error) result(ubt)
+  type(z_ubt) function z_random_ubt0(n,lbw,ubw,lbwmax0,ubwmax0,error) result(ubt)
     integer(kind=int32), intent(in) :: n, lbw, ubw
     integer(kind=int32), intent(in), optional :: lbwmax0, ubwmax0
     type(error_info), optional :: error
-    type(routine_info), parameter :: info=info_c_random_ubt0
+    type(routine_info), parameter :: info=info_z_random_ubt0
     integer(kind=int32) :: lbwmax, ubwmax
 
     if (failure(error)) return
@@ -1132,20 +1132,20 @@ contains
     if(ubw > ubwmax) then
        call set_error(3,info,error); return
     end if
-    ubt=c_new_ubt(n,lbwmax,ubwmax)
+    ubt=z_new_ubt(n,lbwmax,ubwmax)
     ubt%ubw=ubw; ubt%lbw=lbw
-    call f_c_random_bc(ubt%bc,n,lbw,ubw,lbwmax,ubwmax)
-    call f_c_random_rotations_ub(n,lbw,ubw,lbwmax,ubwmax,ubt%numrotsu, ubt%jsu, ubt%csu, ubt%ssu)
-    call f_c_random_rotations_bt(n,lbw,ubw,lbwmax,ubwmax,ubt%numrotst, ubt%kst, ubt%cst, ubt%sst)
+    call f_z_random_bc(ubt%bc,n,lbw,ubw,lbwmax,ubwmax)
+    call f_z_random_rotations_ub(n,lbw,ubw,lbwmax,ubwmax,ubt%numrotsu, ubt%jsu, ubt%csu, ubt%ssu)
+    call f_z_random_rotations_bt(n,lbw,ubw,lbwmax,ubwmax,ubt%numrotst, ubt%kst, ubt%cst, ubt%sst)
     call pop_id(error)
-  end function c_random_ubt0
+  end function z_random_ubt0
 
-  type(c_ubt) function c_random_ubt1(n,lbws,ubws,lbwmax0,ubwmax0,error) result(ubt)
+  type(z_ubt) function z_random_ubt1(n,lbws,ubws,lbwmax0,ubwmax0,error) result(ubt)
     integer(kind=int32), intent(in) :: n
     integer(kind=int32), dimension(:), intent(in) :: lbws, ubws
     integer(kind=int32), intent(in), optional :: lbwmax0, ubwmax0
     type(error_info), optional :: error
-    type(routine_info), parameter :: info=info_c_random_ubt1
+    type(routine_info), parameter :: info=info_z_random_ubt1
     integer(kind=int32) :: lbwmax, ubwmax, lbw, ubw
 
     if (failure(error)) return
@@ -1163,16 +1163,16 @@ contains
     if(ubw > ubwmax) then
        call set_error(3,info,error); return
     end if
-    ubt=c_new_ubt(n,lbwmax,ubwmax)
+    ubt=z_new_ubt(n,lbwmax,ubwmax)
     ubt%ubw=ubw; ubt%lbw=lbw
-    call f_c_random_bc(ubt%bc,n,lbw,ubw,lbwmax,ubwmax)
-    call c_truncate_profile_bc(ubt%bc,n,lbw,ubw,lbwmax,ubwmax,lbws,ubws)
-    call f_c_random_rotations_ub(n,lbw,ubw,lbwmax,ubwmax,ubt%numrotsu, ubt%jsu, &
+    call f_z_random_bc(ubt%bc,n,lbw,ubw,lbwmax,ubwmax)
+    call z_truncate_profile_bc(ubt%bc,n,lbw,ubw,lbwmax,ubwmax,lbws,ubws)
+    call f_z_random_rotations_ub(n,lbw,ubw,lbwmax,ubwmax,ubt%numrotsu, ubt%jsu, &
          ubt%csu, ubt%ssu, ubws)
-    call f_c_random_rotations_bt(n,lbw,ubw,lbwmax,ubwmax,ubt%numrotst, ubt%kst, &
+    call f_z_random_rotations_bt(n,lbw,ubw,lbwmax,ubwmax,ubt%numrotst, ubt%kst, &
          ubt%cst, ubt%sst, lbws)
     call pop_id(error)
-  end function c_random_ubt1
+  end function z_random_ubt1
 
   type(d_wbv) function d_random_wbv0(n,lbw,ubw,lbwmax0,ubwmax0,error) result(wbv)
     integer(kind=int32), intent(in) :: n, lbw, ubw
@@ -1236,11 +1236,11 @@ contains
     call pop_id(error)
   end function d_random_wbv1
   
-  type(c_wbv) function c_random_wbv0(n,lbw,ubw,lbwmax0,ubwmax0,error) result(wbv)
+  type(z_wbv) function z_random_wbv0(n,lbw,ubw,lbwmax0,ubwmax0,error) result(wbv)
     integer(kind=int32), intent(in) :: n, lbw, ubw
     integer(kind=int32), intent(in), optional :: lbwmax0, ubwmax0
     type(error_info), optional :: error
-    type(routine_info), parameter :: info=info_c_random_wbv0
+    type(routine_info), parameter :: info=info_z_random_wbv0
     integer(kind=int32) :: lbwmax, ubwmax
 
     if (failure(error)) return
@@ -1256,20 +1256,20 @@ contains
     if(ubw > ubwmax) then
        call set_error(3,info,error); return
     end if
-    wbv=c_new_wbv(n,lbwmax,ubwmax)
+    wbv=z_new_wbv(n,lbwmax,ubwmax)
     wbv%ubw=ubw; wbv%lbw=lbw
-    call f_c_random_br(wbv%br,n,lbw,ubw,lbwmax,ubwmax)
-    call f_c_random_rotations_wb(n,lbw,ubw,lbwmax,ubwmax,wbv%numrotsw, wbv%jsw, wbv%csw, wbv%ssw)
-    call f_c_random_rotations_bv(n,lbw,ubw,lbwmax,ubwmax,wbv%numrotsv, wbv%ksv, wbv%csv, wbv%ssv)
+    call f_z_random_br(wbv%br,n,lbw,ubw,lbwmax,ubwmax)
+    call f_z_random_rotations_wb(n,lbw,ubw,lbwmax,ubwmax,wbv%numrotsw, wbv%jsw, wbv%csw, wbv%ssw)
+    call f_z_random_rotations_bv(n,lbw,ubw,lbwmax,ubwmax,wbv%numrotsv, wbv%ksv, wbv%csv, wbv%ssv)
     call pop_id(error)
-  end function c_random_wbv0
+  end function z_random_wbv0
 
-  type(c_wbv) function c_random_wbv1(n,lbws,ubws,lbwmax0,ubwmax0,error) result(wbv)
+  type(z_wbv) function z_random_wbv1(n,lbws,ubws,lbwmax0,ubwmax0,error) result(wbv)
     integer(kind=int32), intent(in) :: n
     integer(kind=int32), dimension(:), intent(in) :: lbws, ubws
     integer(kind=int32), intent(in), optional :: lbwmax0, ubwmax0
     type(error_info), optional :: error
-    type(routine_info), parameter :: info=info_c_random_wbv1
+    type(routine_info), parameter :: info=info_z_random_wbv1
     integer(kind=int32) :: lbwmax, ubwmax, lbw, ubw
 
     if (failure(error)) return
@@ -1287,15 +1287,15 @@ contains
     if(ubw > ubwmax) then
        call set_error(3,info,error); return
     end if
-    wbv=c_new_wbv(n,lbwmax,ubwmax)
+    wbv=z_new_wbv(n,lbwmax,ubwmax)
     wbv%ubw=ubw; wbv%lbw=lbw
-    call f_c_random_br(wbv%br,n,lbw,ubw,lbwmax,ubwmax)
-    call c_truncate_profile_br(wbv%br,n,lbw,ubw,lbwmax,ubwmax,lbws,ubws)
-    call f_c_random_rotations_wb(n,lbw,ubw,lbwmax,ubwmax,wbv%numrotsw, wbv%jsw, &
+    call f_z_random_br(wbv%br,n,lbw,ubw,lbwmax,ubwmax)
+    call z_truncate_profile_br(wbv%br,n,lbw,ubw,lbwmax,ubwmax,lbws,ubws)
+    call f_z_random_rotations_wb(n,lbw,ubw,lbwmax,ubwmax,wbv%numrotsw, wbv%jsw, &
          wbv%csw, wbv%ssw,lbws)
-    call f_c_random_rotations_bv(n,lbw,ubw,lbwmax,ubwmax,wbv%numrotsv, wbv%ksv, &
+    call f_z_random_rotations_bv(n,lbw,ubw,lbwmax,ubwmax,wbv%numrotsv, wbv%ksv, &
          wbv%csv, wbv%ssv,ubws)
     call pop_id(error)
-  end function c_random_wbv1
+  end function z_random_wbv1
 
 end module mod_random

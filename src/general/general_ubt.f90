@@ -9,29 +9,29 @@ module mod_general_ubt
 
   private
 
-  public :: f_general_ubt, f_d_general_ubt, f_c_general_ubt, &
-       f_general_to_ubt, f_d_general_to_ubt, f_c_general_to_ubt, &
-       general_to_ubt, d_general_to_ubt, c_general_to_ubt, &
-       d_ubt_of_general, c_ubt_of_general, ubt_of_general, ubt
+  public :: f_general_ubt, f_d_general_ubt, f_z_general_ubt, &
+       f_general_to_ubt, f_d_general_to_ubt, f_z_general_to_ubt, &
+       general_to_ubt, d_general_to_ubt, z_general_to_ubt, &
+       d_ubt_of_general, z_ubt_of_general, ubt_of_general, ubt
 
   interface ubt_of_general
-     module procedure d_ubt_of_general, c_ubt_of_general
+     module procedure d_ubt_of_general, z_ubt_of_general
   end interface ubt_of_general
 
   interface ubt
-     module procedure d_ubt_of_general, c_ubt_of_general
+     module procedure d_ubt_of_general, z_ubt_of_general
   end interface ubt
   
   interface f_general_ubt
-     module procedure f_d_general_ubt, f_c_general_ubt
+     module procedure f_d_general_ubt, f_z_general_ubt
   end interface f_general_ubt
 
   interface f_general_to_ubt
-     module procedure f_d_general_to_ubt, f_c_general_to_ubt
+     module procedure f_d_general_to_ubt, f_z_general_to_ubt
   end interface f_general_to_ubt
 
   interface general_to_ubt
-     module procedure d_general_to_ubt, c_general_to_ubt
+     module procedure d_general_to_ubt, z_general_to_ubt
   end interface general_to_ubt
 
 contains
@@ -178,29 +178,29 @@ contains
     call pop_id(error)
   end subroutine d_general_to_ubt
 
-  function c_ubt_of_general(a, lbwmax, ubwmax, tol, error) result(ubt)
-    type(c_ubt), allocatable :: ubt
+  function z_ubt_of_general(a, lbwmax, ubwmax, tol, error) result(ubt)
+    type(z_ubt), allocatable :: ubt
     complex(kind=dp), target, dimension(:,:), intent(inout) :: a
     type(error_info), intent(inout), optional :: error
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), intent(in) :: lbwmax, ubwmax
-    type(routine_info), parameter :: info=info_c_ubt_of_general
+    type(routine_info), parameter :: info=info_z_ubt_of_general
     integer(kind=int32) :: n
 
     if (failure(error)) return
     call push_id(info, error)
 
     n=size(a,1)
-    ubt=c_new_ubt(n,lbwmax,ubwmax)
+    ubt=z_new_ubt(n,lbwmax,ubwmax)
 
-    call c_general_to_ubt(a,ubt,tol,error)
+    call z_general_to_ubt(a,ubt,tol,error)
 
     call pop_id(error)
     
-  end function c_ubt_of_general
+  end function z_ubt_of_general
   
 
-  subroutine f_c_general_ubt(a, n, lbws, ubws, lbwmax, ubwmax, &
+  subroutine f_z_general_ubt(a, n, lbws, ubws, lbwmax, ubwmax, &
        numrotsu, jsu, csu, ssu, &
        numrotst, kst, cst, sst, tol, error)
     complex(kind=dp), target, dimension(n,n), intent(inout) :: a
@@ -219,17 +219,17 @@ contains
     integer(kind=int32), dimension(lbwmax,n) :: jsu0
     real(kind=dp), dimension(lbwmax,n) :: csu0
     complex(kind=dp), dimension(lbwmax,n) :: ssu0
-    type(routine_info), parameter :: info=info_f_c_general_ubt
+    type(routine_info), parameter :: info=info_f_z_general_ubt
 
     if (failure(error)) return
     call push_id(info, error)
     
-    call f_c_general_ub(a,n,ubws,ubwmax,numrotsu,jsu,csu,ssu,tol,error)
+    call f_z_general_ub(a,n,ubws,ubwmax,numrotsu,jsu,csu,ssu,tol,error)
 
     if (success(error)) then
        call ip_transpose(a)
 
-       call f_c_general_ub(a,n,lbws,lbwmax,numrotst,jsu0,csu0,ssu0,tol,error)
+       call f_z_general_ub(a,n,lbws,lbwmax,numrotst,jsu0,csu0,ssu0,tol,error)
 
        if (success(error)) then
           call ip_transpose(a)
@@ -242,13 +242,13 @@ contains
 
     call pop_id(error)
 
-  end subroutine f_c_general_ubt
+  end subroutine f_z_general_ubt
 
   ! Errors:
   ! 0: no error
   ! 1: insufficient lower bw in ubt.
   ! 2: insufficient upper bw in ubt.
-  subroutine f_c_general_to_ubt(a, n, bc, lbw, ubw, lbwmax, ubwmax, &
+  subroutine f_z_general_to_ubt(a, n, bc, lbw, ubw, lbwmax, ubwmax, &
        numrotsu, jsu, csu, ssu, &
        numrotst, kst, cst, sst, tol, error)
     complex(kind=dp), target, dimension(n,n), intent(inout) :: a
@@ -266,7 +266,7 @@ contains
     integer(kind=int32), intent(in) :: n, ubwmax, lbwmax
     !
     integer(kind=int32), dimension(n) :: lbws, ubws
-    type(routine_info), parameter :: info=info_f_c_general_to_ubt
+    type(routine_info), parameter :: info=info_f_z_general_to_ubt
 
     if (failure(error)) return
     call push_id(info, error)
@@ -282,33 +282,33 @@ contains
        return
     end if
 
-    call f_c_general_ubt(a, n, lbws, ubws, lbwmax, ubwmax, &
+    call f_z_general_ubt(a, n, lbws, ubws, lbwmax, ubwmax, &
          numrotsu, jsu, csu, ssu, &
          numrotst, kst, cst, sst, tol, error)
     if (success(error)) then
        lbw=maxval(lbws)
        ubw=maxval(ubws)
        if (lbw > lbwmax) then
-          ! This should already have been detected in f_c_general_bt.
+          ! This should already have been detected in f_z_general_bt.
           call set_error(1, info, error); return
        else if (ubw > ubwmax) then
           call set_error(2, info, error); return
        else
-          call c_extract_diagonals_bc(a, n, bc, lbw, ubw, lbwmax, ubwmax)
+          call z_extract_diagonals_bc(a, n, bc, lbw, ubw, lbwmax, ubwmax)
        end if
     end if
     call pop_id(error)
-  end subroutine f_c_general_to_ubt
+  end subroutine f_z_general_to_ubt
 
   ! Errors:
   ! 1: n < 1
   ! 2: n is not the same for a and ubt.
-  subroutine c_general_to_ubt(a,ubt,tol,error)
+  subroutine z_general_to_ubt(a,ubt,tol,error)
     complex(kind=dp), target, dimension(:,:), intent(inout) :: a
-    type(c_ubt), intent(inout) :: ubt
+    type(z_ubt), intent(inout) :: ubt
     type(error_info), intent(inout), optional :: error
     real(kind=dp), intent(in) :: tol
-    type(routine_info), parameter :: info=info_c_general_to_ubt
+    type(routine_info), parameter :: info=info_z_general_to_ubt
 
     if (failure(error)) return
     call push_id(info, error)
@@ -319,11 +319,11 @@ contains
     if (get_n(ubt) /= size(a,1) .or. get_n(ubt) /= size(a,2)) then
        call set_error(2, info, error); return
     end if
-    call f_c_general_to_ubt(a,get_n(ubt),ubt%bc, ubt%lbw, ubt%ubw, get_lbwmax(ubt), &
+    call f_z_general_to_ubt(a,get_n(ubt),ubt%bc, ubt%lbw, ubt%ubw, get_lbwmax(ubt), &
          get_ubwmax(ubt), ubt%numrotsu, ubt%jsu, ubt%csu, ubt%ssu, &
          ubt%numrotst, ubt%kst, ubt%cst, ubt%sst, tol, error)
     
     call pop_id(error)
-  end subroutine c_general_to_ubt
+  end subroutine z_general_to_ubt
 
 end module mod_general_ubt

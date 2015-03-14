@@ -6,47 +6,47 @@ module mod_orth_band_types
 
   private
 
-  public :: d_ub, d_bt, d_ubt, c_ub, c_bt, c_ubt, &
-       d_bv, d_wb, d_wbv, c_bv, c_wb, c_wbv
+  public :: d_ub, d_bt, d_ubt, z_ub, z_bt, z_ubt, &
+       d_bv, d_wb, d_wbv, z_bv, z_wb, z_wbv
 
-  public :: d_new_ub, d_new_bt, d_new_ubt, c_new_ub, c_new_bt, c_new_ubt, &
-       d_new_bv, d_new_wb, d_new_wbv, c_new_bv, c_new_wb, c_new_wbv
+  public :: d_new_ub, d_new_bt, d_new_ubt, z_new_ub, z_new_bt, z_new_ubt, &
+       d_new_bv, d_new_wb, d_new_wbv, z_new_bv, z_new_wb, z_new_wbv
 
-  public :: deallocate_ub, d_deallocate_ub, c_deallocate_ub, &
-       deallocate_bt, d_deallocate_bt, c_deallocate_bt, &
-       deallocate_ubt, d_deallocate_ubt, c_deallocate_ubt, &
-       deallocate_bv, d_deallocate_bv, c_deallocate_bv, &
-       deallocate_wb, d_deallocate_wb, c_deallocate_wb, &
-       deallocate_wbv, d_deallocate_wbv, c_deallocate_wbv
+  public :: deallocate_ub, d_deallocate_ub, z_deallocate_ub, &
+       deallocate_bt, d_deallocate_bt, z_deallocate_bt, &
+       deallocate_ubt, d_deallocate_ubt, z_deallocate_ubt, &
+       deallocate_bv, d_deallocate_bv, z_deallocate_bv, &
+       deallocate_wb, d_deallocate_wb, z_deallocate_wb, &
+       deallocate_wbv, d_deallocate_wbv, z_deallocate_wbv
 
-  public :: copy, d_copy_ub, c_copy_ub, &
-       d_copy_bt, c_copy_bt, &
-       d_copy_ubt, c_copy_ubt, &
-       d_copy_bv, c_copy_bv, &
-       d_copy_wb, c_copy_wb, &
-       d_copy_wbv, c_copy_wbv
+  public :: copy, d_copy_ub, z_copy_ub, &
+       d_copy_bt, z_copy_bt, &
+       d_copy_ubt, z_copy_ubt, &
+       d_copy_bv, z_copy_bv, &
+       d_copy_wb, z_copy_wb, &
+       d_copy_wbv, z_copy_wbv
 
-  public :: d_truncate_profile_ub, c_truncate_profile_ub, &
-       d_truncate_profile_ubt, c_truncate_profile_ubt, &
-       d_truncate_profile_bv, c_truncate_profile_bv, &
-       d_truncate_profile_wbv, c_truncate_profile_wbv, &
-       d_truncate_profile_wb, c_truncate_profile_wb, &
-       d_truncate_profile_bt, c_truncate_profile_bt, &
+  public :: d_truncate_profile_ub, z_truncate_profile_ub, &
+       d_truncate_profile_ubt, z_truncate_profile_ubt, &
+       d_truncate_profile_bv, z_truncate_profile_bv, &
+       d_truncate_profile_wbv, z_truncate_profile_wbv, &
+       d_truncate_profile_wb, z_truncate_profile_wb, &
+       d_truncate_profile_bt, z_truncate_profile_bt, &
        truncate_profile
 
-  public :: get_n, d_ub_get_n, d_bv_get_n, c_ub_get_n, c_bv_get_n, &
-       d_ubt_get_n, d_wbv_get_n, c_ubt_get_n, c_wbv_get_n, &
-       d_bt_get_n, d_wb_get_n, c_bt_get_n, c_wb_get_n
+  public :: get_n, d_ub_get_n, d_bv_get_n, z_ub_get_n, z_bv_get_n, &
+       d_ubt_get_n, d_wbv_get_n, z_ubt_get_n, z_wbv_get_n, &
+       d_bt_get_n, d_wb_get_n, z_bt_get_n, z_wb_get_n
 
-  public :: get_lbwmax, d_ub_get_lbwmax, d_bv_get_lbwmax, c_ub_get_lbwmax, &
-       c_bv_get_lbwmax, &
-       d_ubt_get_lbwmax, d_wbv_get_lbwmax, c_ubt_get_lbwmax, c_wbv_get_lbwmax, &
-       d_bt_get_lbwmax, d_wb_get_lbwmax, c_bt_get_lbwmax, c_wb_get_lbwmax
+  public :: get_lbwmax, d_ub_get_lbwmax, d_bv_get_lbwmax, z_ub_get_lbwmax, &
+       z_bv_get_lbwmax, &
+       d_ubt_get_lbwmax, d_wbv_get_lbwmax, z_ubt_get_lbwmax, z_wbv_get_lbwmax, &
+       d_bt_get_lbwmax, d_wb_get_lbwmax, z_bt_get_lbwmax, z_wb_get_lbwmax
 
-  public :: get_ubwmax, d_ub_get_ubwmax, d_bv_get_ubwmax, c_ub_get_ubwmax, &
-       c_bv_get_ubwmax, &
-       d_ubt_get_ubwmax, d_wbv_get_ubwmax, c_ubt_get_ubwmax, c_wbv_get_ubwmax, &
-       d_bt_get_ubwmax, d_wb_get_ubwmax, c_bt_get_ubwmax, c_wb_get_ubwmax
+  public :: get_ubwmax, d_ub_get_ubwmax, d_bv_get_ubwmax, z_ub_get_ubwmax, &
+       z_bv_get_ubwmax, &
+       d_ubt_get_ubwmax, d_wbv_get_ubwmax, z_ubt_get_ubwmax, z_wbv_get_ubwmax, &
+       d_bt_get_ubwmax, d_wb_get_ubwmax, z_bt_get_ubwmax, z_wb_get_ubwmax
 
   ! Stored by columns. (i.e. columns of A correspond to columns of B)
   type d_ub
@@ -79,7 +79,7 @@ module mod_orth_band_types
   end type d_ubt
 
   ! Stored by columns.
-  type c_ub
+  type z_ub
      integer(kind=int32) :: lbw, ubw
      integer(kind=int32), private :: n, lbwmax, ubwmax
      complex(kind=dp), dimension(:,:), allocatable :: bc
@@ -87,10 +87,10 @@ module mod_orth_band_types
      integer(kind=int32), dimension(:,:), allocatable :: jsu
      complex(kind=dp), dimension(:,:), allocatable :: ssu
      real(kind=dp), dimension(:,:), allocatable :: csu
-  end type c_ub
+  end type z_ub
 
   ! Stored by rows.
-  type c_bt
+  type z_bt
      integer(kind=int32) :: lbw, ubw
      integer(kind=int32), private :: n, lbwmax, ubwmax
      complex(kind=dp), dimension(:,:), allocatable :: br
@@ -98,10 +98,10 @@ module mod_orth_band_types
      integer(kind=int32), dimension(:,:), allocatable :: kst
      complex(kind=dp), dimension(:,:), allocatable :: sst
      real(kind=dp), dimension(:,:), allocatable :: cst
-  end type c_bt
+  end type z_bt
 
   ! Stored by columns.
-  type c_ubt
+  type z_ubt
      integer(kind=int32) :: lbw, ubw
      integer(kind=int32), private :: n, lbwmax, ubwmax
      complex(kind=dp), dimension(:,:), allocatable :: bc
@@ -109,7 +109,7 @@ module mod_orth_band_types
      integer(kind=int32), dimension(:,:), allocatable :: jsu, kst
      complex(kind=dp), dimension(:,:), allocatable :: ssu, sst
      real(kind=dp), dimension(:,:), allocatable :: csu, cst
-  end type c_ubt
+  end type z_ubt
 
   ! Stored by rows.
   type d_bv
@@ -142,7 +142,7 @@ module mod_orth_band_types
   end type d_wbv
 
   ! Stored by rows.
-  type c_bv
+  type z_bv
      integer(kind=int32) :: lbw, ubw
      integer(kind=int32), private :: n, lbwmax, ubwmax
      complex(kind=dp), dimension(:,:), allocatable :: br
@@ -150,10 +150,10 @@ module mod_orth_band_types
      integer(kind=int32), dimension(:,:), allocatable :: ksv
      complex(kind=dp), dimension(:,:), allocatable :: ssv
      real(kind=dp), dimension(:,:), allocatable :: csv
-  end type c_bv
+  end type z_bv
 
   ! Stored by columns.
-  type c_wb
+  type z_wb
      integer(kind=int32) :: lbw, ubw
      integer(kind=int32), private :: n, lbwmax, ubwmax
      complex(kind=dp), dimension(:,:), allocatable :: bc
@@ -161,10 +161,10 @@ module mod_orth_band_types
      integer(kind=int32), dimension(:,:), allocatable :: jsw
      complex(kind=dp), dimension(:,:), allocatable :: ssw
      real(kind=dp), dimension(:,:), allocatable :: csw
-  end type c_wb
+  end type z_wb
 
   ! Stored by rows.
-  type c_wbv
+  type z_wbv
      integer(kind=int32) :: lbw, ubw
      integer(kind=int32), private :: n, lbwmax, ubwmax
      complex(kind=dp), dimension(:,:), allocatable :: br
@@ -172,63 +172,63 @@ module mod_orth_band_types
      integer(kind=int32), dimension(:,:), allocatable :: ksv, jsw
      complex(kind=dp), dimension(:,:), allocatable :: ssv, ssw
      real(kind=dp), dimension(:,:), allocatable :: csv, csw
-  end type c_wbv
+  end type z_wbv
 
   interface deallocate_ub
-     module procedure d_deallocate_ub, c_deallocate_ub
+     module procedure d_deallocate_ub, z_deallocate_ub
   end interface deallocate_ub
 
   interface deallocate_bt
-     module procedure d_deallocate_bt, c_deallocate_bt
+     module procedure d_deallocate_bt, z_deallocate_bt
   end interface deallocate_bt
 
   interface deallocate_ubt
-     module procedure d_deallocate_ubt, c_deallocate_ubt
+     module procedure d_deallocate_ubt, z_deallocate_ubt
   end interface deallocate_ubt
 
   interface deallocate_bv
-     module procedure d_deallocate_bv, c_deallocate_bv
+     module procedure d_deallocate_bv, z_deallocate_bv
   end interface deallocate_bv
 
   interface deallocate_wb
-     module procedure d_deallocate_wb, c_deallocate_wb
+     module procedure d_deallocate_wb, z_deallocate_wb
   end interface deallocate_wb
 
   interface deallocate_wbv
-     module procedure d_deallocate_wbv, c_deallocate_wbv
+     module procedure d_deallocate_wbv, z_deallocate_wbv
   end interface deallocate_wbv
 
   interface copy
-     module procedure d_copy_ub, c_copy_ub, d_copy_bt, c_copy_bt,  &
-          d_copy_ubt, c_copy_ubt, d_copy_bv, c_copy_bv, d_copy_wb, c_copy_wb, &
-          d_copy_wbv, c_copy_wbv
+     module procedure d_copy_ub, z_copy_ub, d_copy_bt, z_copy_bt,  &
+          d_copy_ubt, z_copy_ubt, d_copy_bv, z_copy_bv, d_copy_wb, z_copy_wb, &
+          d_copy_wbv, z_copy_wbv
   end interface copy
   
   interface truncate_profile
-     module procedure d_truncate_profile_ub, c_truncate_profile_ub, &
-          d_truncate_profile_ubt, c_truncate_profile_ubt, &
-          d_truncate_profile_bv, c_truncate_profile_bv, &
-          d_truncate_profile_wbv, c_truncate_profile_wbv, &
-          d_truncate_profile_wb, c_truncate_profile_wb, &
-          d_truncate_profile_bt, c_truncate_profile_bt
+     module procedure d_truncate_profile_ub, z_truncate_profile_ub, &
+          d_truncate_profile_ubt, z_truncate_profile_ubt, &
+          d_truncate_profile_bv, z_truncate_profile_bv, &
+          d_truncate_profile_wbv, z_truncate_profile_wbv, &
+          d_truncate_profile_wb, z_truncate_profile_wb, &
+          d_truncate_profile_bt, z_truncate_profile_bt
   end interface truncate_profile
 
   interface get_n
-     module procedure d_ub_get_n, d_bv_get_n, c_ub_get_n, c_bv_get_n, &
-          d_ubt_get_n, d_wbv_get_n, c_ubt_get_n, c_wbv_get_n, &
-          d_bt_get_n, d_wb_get_n, c_bt_get_n, c_wb_get_n
+     module procedure d_ub_get_n, d_bv_get_n, z_ub_get_n, z_bv_get_n, &
+          d_ubt_get_n, d_wbv_get_n, z_ubt_get_n, z_wbv_get_n, &
+          d_bt_get_n, d_wb_get_n, z_bt_get_n, z_wb_get_n
   end interface get_n
 
   interface get_lbwmax
-     module procedure d_ub_get_lbwmax, d_bv_get_lbwmax, c_ub_get_lbwmax, c_bv_get_lbwmax, &
-          d_ubt_get_lbwmax, d_wbv_get_lbwmax, c_ubt_get_lbwmax, c_wbv_get_lbwmax, &
-          d_bt_get_lbwmax, d_wb_get_lbwmax, c_bt_get_lbwmax, c_wb_get_lbwmax
+     module procedure d_ub_get_lbwmax, d_bv_get_lbwmax, z_ub_get_lbwmax, z_bv_get_lbwmax, &
+          d_ubt_get_lbwmax, d_wbv_get_lbwmax, z_ubt_get_lbwmax, z_wbv_get_lbwmax, &
+          d_bt_get_lbwmax, d_wb_get_lbwmax, z_bt_get_lbwmax, z_wb_get_lbwmax
   end interface get_lbwmax
 
   interface get_ubwmax
-     module procedure d_ub_get_ubwmax, d_bv_get_ubwmax, c_ub_get_ubwmax, c_bv_get_ubwmax, &
-          d_ubt_get_ubwmax, d_wbv_get_ubwmax, c_ubt_get_ubwmax, c_wbv_get_ubwmax, &
-          d_bt_get_ubwmax, d_wb_get_ubwmax, c_bt_get_ubwmax, c_wb_get_ubwmax
+     module procedure d_ub_get_ubwmax, d_bv_get_ubwmax, z_ub_get_ubwmax, z_bv_get_ubwmax, &
+          d_ubt_get_ubwmax, d_wbv_get_ubwmax, z_ubt_get_ubwmax, z_wbv_get_ubwmax, &
+          d_bt_get_ubwmax, d_wb_get_ubwmax, z_bt_get_ubwmax, z_wb_get_ubwmax
   end interface get_ubwmax
 
 contains
@@ -253,7 +253,7 @@ contains
     ub%n=0; ub%lbwmax=0; ub%ubwmax=0
   end subroutine d_deallocate_ub
 
-  type(c_ub) function c_new_ub(n,lbwmax,ubwmax) result(ub)
+  type(z_ub) function z_new_ub(n,lbwmax,ubwmax) result(ub)
     integer(kind=int32), intent(in) :: n, lbwmax, ubwmax
     ub%n=n; ub%lbwmax=lbwmax; ub%ubwmax=ubwmax
     ub%ubw=0; ub%lbw=0
@@ -261,17 +261,17 @@ contains
          ub%jsu(ubwmax,n), ub%numrotsu(n))
     ub%bc=(0.0_dp,0.0_dp); ub%csu=0.0_dp; ub%ssu=(0.0_dp,0.0_dp)
     ub%jsu=0; ub%numrotsu=0
-  end function c_new_ub
+  end function z_new_ub
 
-  subroutine c_deallocate_ub(ub)
-    type(c_ub), intent(inout) :: ub
+  subroutine z_deallocate_ub(ub)
+    type(z_ub), intent(inout) :: ub
     call maybe_deallocate(ub%csu)
     call maybe_deallocate(ub%jsu)
     call maybe_deallocate(ub%numrotsu)
     call maybe_deallocate(ub%bc, ub%ssu)
     ub%n=0; ub%lbwmax=0; ub%ubwmax=0
     ub%lbw=0; ub%ubw=0
-  end subroutine c_deallocate_ub
+  end subroutine z_deallocate_ub
 
   ! BT
 
@@ -295,7 +295,7 @@ contains
     bt%lbw=0; bt%ubw=0
   end subroutine d_deallocate_bt
 
-  type(c_bt) function c_new_bt(n,lbwmax,ubwmax) result(bt)
+  type(z_bt) function z_new_bt(n,lbwmax,ubwmax) result(bt)
     integer(kind=int32), intent(in) :: n, lbwmax, ubwmax
     bt%n=n; bt%lbwmax=lbwmax; bt%ubwmax=ubwmax
     bt%ubw=0; bt%lbw=0
@@ -304,17 +304,17 @@ contains
     bt%br=(0.0_dp,0.0_dp)
     bt%cst=0.0_dp; bt%sst=(0.0_dp,0.0_dp)
     bt%kst=0; bt%numrotst=0
-  end function c_new_bt
+  end function z_new_bt
 
-  subroutine c_deallocate_bt(bt)
-    type(c_bt), intent(inout) :: bt
+  subroutine z_deallocate_bt(bt)
+    type(z_bt), intent(inout) :: bt
     call maybe_deallocate(bt%cst)
     call maybe_deallocate(bt%kst)
     call maybe_deallocate(bt%numrotst)
     call maybe_deallocate(bt%br, bt%sst)
     bt%n=0; bt%lbwmax=0; bt%ubwmax=0;
     bt%lbw=0; bt%ubw=0
-  end subroutine c_deallocate_bt
+  end subroutine z_deallocate_bt
 
 
   ! UBT
@@ -342,7 +342,7 @@ contains
     ubt%lbw=0; ubt%ubw=0
   end subroutine d_deallocate_ubt
 
-  type(c_ubt) function c_new_ubt(n,lbwmax,ubwmax) result(ubt)
+  type(z_ubt) function z_new_ubt(n,lbwmax,ubwmax) result(ubt)
     integer(kind=int32), intent(in) :: n, lbwmax, ubwmax
     ubt%n=n; ubt%lbwmax=lbwmax; ubt%ubwmax=ubwmax
     ubt%ubw=0; ubt%lbw=0
@@ -354,17 +354,17 @@ contains
     ubt%jsu=0; ubt%numrotsu=0
     ubt%cst=0.0_dp; ubt%sst=(0.0_dp,0.0_dp)
     ubt%kst=0; ubt%numrotst=0
-  end function c_new_ubt
+  end function z_new_ubt
 
-  subroutine c_deallocate_ubt(ubt)
-    type(c_ubt), intent(inout) :: ubt
+  subroutine z_deallocate_ubt(ubt)
+    type(z_ubt), intent(inout) :: ubt
     call maybe_deallocate(ubt%csu, ubt%cst)
     call maybe_deallocate(ubt%jsu, ubt%kst)
     call maybe_deallocate(ubt%numrotsu, ubt%numrotst)
     call maybe_deallocate(ubt%bc, ubt%ssu, ubt%sst)
     ubt%n=0; ubt%lbwmax=0; ubt%ubwmax=0;
     ubt%lbw=0; ubt%ubw=0
-  end subroutine c_deallocate_ubt
+  end subroutine z_deallocate_ubt
 
   ! BV
 
@@ -387,7 +387,7 @@ contains
     bv%lbw=0; bv%ubw=0
   end subroutine d_deallocate_bv
 
-  type(c_bv) function c_new_bv(n,lbwmax,ubwmax) result(bv)
+  type(z_bv) function z_new_bv(n,lbwmax,ubwmax) result(bv)
     integer(kind=int32), intent(in) :: n, lbwmax, ubwmax
     bv%n=n; bv%lbwmax=lbwmax; bv%ubwmax=ubwmax
     bv%ubw=0; bv%lbw=0
@@ -395,17 +395,17 @@ contains
          bv%ksv(n,ubwmax), bv%numrotsv(n))
     bv%br=(0.0_dp, 0.0_dp); bv%csv=0.0_dp; bv%ssv=(0.0_dp, 0.0_dp)
     bv%ksv=0; bv%numrotsv=0
-  end function c_new_bv
+  end function z_new_bv
 
-  subroutine c_deallocate_bv(bv)
-    type(c_bv), intent(inout) :: bv
+  subroutine z_deallocate_bv(bv)
+    type(z_bv), intent(inout) :: bv
     call maybe_deallocate(bv%csv)
     call maybe_deallocate(bv%ksv)
     call maybe_deallocate(bv%numrotsv)
     call maybe_deallocate(bv%br, bv%ssv)
     bv%n=0; bv%lbwmax=0; bv%ubwmax=0
     bv%lbw=0; bv%ubw=0
-  end subroutine c_deallocate_bv
+  end subroutine z_deallocate_bv
 
   ! WB
 
@@ -428,7 +428,7 @@ contains
     wb%lbw=0; wb%ubw=0
   end subroutine d_deallocate_wb
 
-  type(c_wb) function c_new_wb(n,lbwmax,ubwmax) result(wb)
+  type(z_wb) function z_new_wb(n,lbwmax,ubwmax) result(wb)
     integer(kind=int32), intent(in) :: n, lbwmax, ubwmax
     wb%n=n; wb%lbwmax=lbwmax; wb%ubwmax=ubwmax
     wb%ubw=0; wb%lbw=0
@@ -436,17 +436,17 @@ contains
          wb%ssw(lbwmax,n), wb%jsw(lbwmax,n), wb%numrotsw(n))
     wb%bc=(0.0_dp,0.0_dp); wb%csw=0.0_dp; wb%ssw=(0.0_dp,0.0_dp)
     wb%jsw=0; wb%numrotsw=0
-  end function c_new_wb
+  end function z_new_wb
 
-  subroutine c_deallocate_wb(wb)
-    type(c_wb), intent(inout) :: wb
+  subroutine z_deallocate_wb(wb)
+    type(z_wb), intent(inout) :: wb
     call maybe_deallocate(wb%csw)
     call maybe_deallocate(wb%jsw)
     call maybe_deallocate(wb%numrotsw)
     call maybe_deallocate(wb%bc, wb%ssw)
     wb%n=0; wb%lbwmax=0; wb%ubwmax=0
     wb%lbw=0; wb%ubw=0
-  end subroutine c_deallocate_wb
+  end subroutine z_deallocate_wb
 
   ! WBV
 
@@ -472,7 +472,7 @@ contains
     wbv%lbw=0; wbv%ubw=0
   end subroutine d_deallocate_wbv
 
-  type(c_wbv) function c_new_wbv(n,lbwmax,ubwmax) result(wbv)
+  type(z_wbv) function z_new_wbv(n,lbwmax,ubwmax) result(wbv)
     integer(kind=int32), intent(in) :: n, lbwmax, ubwmax
     wbv%n=n; wbv%lbwmax=lbwmax; wbv%ubwmax=ubwmax
     wbv%ubw=0; wbv%lbw=0
@@ -483,17 +483,17 @@ contains
     wbv%ksv=0; wbv%numrotsv=0
     wbv%csw=0.0_dp; wbv%ssw=(0.0_dp,0.0_dp)
     wbv%jsw=0; wbv%numrotsw=0
-  end function c_new_wbv
+  end function z_new_wbv
 
-  subroutine c_deallocate_wbv(wbv)
-    type(c_wbv), intent(inout) :: wbv
+  subroutine z_deallocate_wbv(wbv)
+    type(z_wbv), intent(inout) :: wbv
     call maybe_deallocate(wbv%csv, wbv%csw)
     call maybe_deallocate(wbv%ksv, wbv%jsw)
     call maybe_deallocate(wbv%numrotsv, wbv%numrotsw)
     call maybe_deallocate(wbv%br, wbv%ssv, wbv%ssw)
     wbv%n=0; wbv%lbwmax=0; wbv%ubwmax=0
     wbv%lbw=0; wbv%ubw=0
-  end subroutine c_deallocate_wbv
+  end subroutine z_deallocate_wbv
 
   ! copy
 
@@ -519,9 +519,9 @@ contains
     ub2%jsu(1:ub1%ubw,:)=ub1%jsu(1:ub1%ubw,:)
   end subroutine d_copy_ub
 
-  subroutine c_copy_ub(ub2,ub1)
-    type(c_ub), intent(in) :: ub1
-    type(c_ub), intent(inout) :: ub2
+  subroutine z_copy_ub(ub2,ub1)
+    type(z_ub), intent(in) :: ub1
+    type(z_ub), intent(inout) :: ub2
     ub2%n=ub1%n
     ub2%lbw=ub1%lbw
     ub2%ubw=ub1%ubw
@@ -529,7 +529,7 @@ contains
          size(ub2%bc,2) /= ub1%n .or. not_all_allocated(ub2%bc, ub2%ssu) .or. &
          not_all_allocated(ub2%csu) .or. not_all_allocated(ub2%jsu) .or. &
          not_all_allocated(ub2%numrotsu)) then
-       call c_deallocate_ub(ub2)
+       call z_deallocate_ub(ub2)
        allocate(ub2%bc(ub1%lbwmax+ub1%ubwmax+1,ub1%n), ub2%csu(ub1%ubwmax,ub1%n), &
             ub2%ssu(ub1%ubwmax,ub1%n), ub2%jsu(ub1%ubwmax,ub1%n), ub2%numrotsu(ub1%n))
        ub2%lbwmax=ub1%lbwmax
@@ -540,7 +540,7 @@ contains
     ub2%csu(1:ub1%ubw,:)=ub1%csu(1:ub1%ubw,:)
     ub2%ssu(1:ub1%ubw,:)=ub1%ssu(1:ub1%ubw,:)
     ub2%jsu(1:ub1%ubw,:)=ub1%jsu(1:ub1%ubw,:)
-  end subroutine c_copy_ub
+  end subroutine z_copy_ub
 
   subroutine d_copy_bt(bt2,bt1)
     type(d_bt), intent(in) :: bt1
@@ -566,9 +566,9 @@ contains
     bt2%kst(:,1:bt1%lbw)=bt1%kst(:,1:bt1%lbw)
   end subroutine d_copy_bt
 
-  subroutine c_copy_bt(bt2,bt1)
-    type(c_bt), intent(in) :: bt1
-    type(c_bt), intent(inout) :: bt2
+  subroutine z_copy_bt(bt2,bt1)
+    type(z_bt), intent(in) :: bt1
+    type(z_bt), intent(inout) :: bt2
     bt2%n=bt1%n
     bt2%lbw=bt1%lbw
     bt2%ubw=bt1%ubw
@@ -576,7 +576,7 @@ contains
          size(bt2%br,1) /= bt1%n .or. not_all_allocated(bt2%br, bt2%sst) .or. &
          not_all_allocated(bt2%cst) .or. not_all_allocated(bt2%kst) .or. &
          not_all_allocated(bt2%numrotst) ) then
-       call c_deallocate_bt(bt2)
+       call z_deallocate_bt(bt2)
        allocate(bt2%br(bt1%n,bt1%lbwmax+bt1%ubwmax+1), &
             bt2%cst(bt1%n, bt1%lbwmax), bt2%sst(bt1%n,bt1%lbwmax), &
             bt2%kst(bt1%n, bt1%lbwmax), bt2%numrotst(bt1%n))
@@ -588,7 +588,7 @@ contains
     bt2%cst(:,1:bt1%lbw)=bt1%cst(:,1:bt1%lbw)
     bt2%sst(:,1:bt1%lbw)=bt1%sst(:,1:bt1%lbw)
     bt2%kst(:,1:bt1%lbw)=bt1%kst(:,1:bt1%lbw)
-  end subroutine c_copy_bt
+  end subroutine z_copy_bt
 
   subroutine d_copy_ubt(ubt2,ubt1)
     type(d_ubt), intent(in) :: ubt1
@@ -622,9 +622,9 @@ contains
     ubt2%kst(:,1:ubt1%lbw)=ubt1%kst(:,1:ubt1%lbw)
   end subroutine d_copy_ubt
 
-  subroutine c_copy_ubt(ubt2,ubt1)
-    type(c_ubt), intent(in) :: ubt1
-    type(c_ubt), intent(inout) :: ubt2
+  subroutine z_copy_ubt(ubt2,ubt1)
+    type(z_ubt), intent(in) :: ubt1
+    type(z_ubt), intent(inout) :: ubt2
     ubt2%n=ubt1%n
     ubt2%lbw=ubt1%lbw
     ubt2%ubw=ubt1%ubw
@@ -634,7 +634,7 @@ contains
          not_all_allocated(ubt2%csu,ubt2%cst) .or. &
          not_all_allocated(ubt2%jsu, ubt2%kst) .or. &
          not_all_allocated(ubt2%numrotsu, ubt2%numrotst)) then
-       call c_deallocate_ubt(ubt2)
+       call z_deallocate_ubt(ubt2)
        allocate(ubt2%bc(ubt1%lbwmax+ubt1%ubwmax+1,ubt1%n), ubt2%csu(ubt1%ubwmax,ubt1%n), &
             ubt2%ssu(ubt1%ubwmax,ubt1%n), ubt2%jsu(ubt1%ubwmax,ubt1%n), ubt2%numrotsu(ubt1%n), &
             ubt2%cst(ubt1%n, ubt1%lbwmax), ubt2%sst(ubt1%n, ubt1%lbwmax), &
@@ -653,7 +653,7 @@ contains
     ubt2%cst(:,1:ubt1%lbw)=ubt1%cst(:,1:ubt1%lbw)
     ubt2%sst(:,1:ubt1%lbw)=ubt1%sst(:,1:ubt1%lbw)
     ubt2%kst(:,1:ubt1%lbw)=ubt1%kst(:,1:ubt1%lbw)
-  end subroutine c_copy_ubt
+  end subroutine z_copy_ubt
 
   subroutine d_copy_bv(bv2,bv1)
     type(d_bv), intent(in) :: bv1
@@ -732,9 +732,9 @@ contains
     wbv2%jsw(1:wbv1%lbw,:)=wbv1%jsw(1:wbv1%lbw,:)
   end subroutine d_copy_wbv
 
-  subroutine c_copy_bv(bv2,bv1)
-    type(c_bv), intent(in) :: bv1
-    type(c_bv), intent(inout) :: bv2
+  subroutine z_copy_bv(bv2,bv1)
+    type(z_bv), intent(in) :: bv1
+    type(z_bv), intent(inout) :: bv2
     bv2%n=bv1%n
     bv2%lbw=bv1%lbw
     bv2%ubw=bv1%ubw
@@ -743,7 +743,7 @@ contains
          size(bv2%br,1) /= bv1%n .or. not_all_allocated(bv2%br, bv2%ssv) .or. &
          not_all_allocated(bv2%csv) .or. &
          not_all_allocated(bv2%ksv) .or. not_all_allocated(bv2%numrotsv) ) then
-       call c_deallocate_bv(bv2)
+       call z_deallocate_bv(bv2)
        allocate(bv2%br(bv1%n,bv1%lbwmax+bv1%ubwmax+1), bv2%csv(bv1%n,bv1%ubwmax), &
             bv2%ssv(bv1%n,bv1%ubwmax), bv2%ksv(bv1%n,bv1%ubwmax), bv2%numrotsv(bv1%n))
        bv2%lbwmax=bv1%lbwmax
@@ -754,11 +754,11 @@ contains
     bv2%csv(:,1:bv1%ubw)=bv1%csv(:,1:bv1%ubw)
     bv2%ssv(:,1:bv1%ubw)=bv1%ssv(:,1:bv1%ubw)
     bv2%ksv(:,1:bv1%ubw)=bv1%ksv(:,1:bv1%ubw)
-  end subroutine c_copy_bv
+  end subroutine z_copy_bv
 
-  subroutine c_copy_wb(wb2,wb1)
-    type(c_wb), intent(in) :: wb1
-    type(c_wb), intent(inout) :: wb2
+  subroutine z_copy_wb(wb2,wb1)
+    type(z_wb), intent(in) :: wb1
+    type(z_wb), intent(inout) :: wb2
     wb2%n=wb1%n
     wb2%lbw=wb1%lbw
     wb2%ubw=wb1%ubw
@@ -766,7 +766,7 @@ contains
          size(wb2%bc,2) /= wb1%n .or. not_all_allocated(wb2%bc, wb2%ssw) .or. &
          not_all_allocated(wb2%csw) .or. &
          not_all_allocated(wb2%jsw) .or. not_all_allocated(wb2%numrotsw) ) then
-       call c_deallocate_wb(wb2)
+       call z_deallocate_wb(wb2)
        allocate(wb2%bc(wb1%lbwmax+wb1%ubwmax+1,wb1%n), &
             wb2%csw(wb1%lbwmax,wb1%n), wb2%ssw(wb1%lbwmax,wb1%n), &
             wb2%jsw(wb1%lbwmax,wb1%n), wb2%numrotsw(wb1%n))
@@ -778,11 +778,11 @@ contains
     wb2%csw(1:wb1%lbw,:)=wb1%csw(1:wb1%lbw,:)
     wb2%ssw(1:wb1%lbw,:)=wb1%ssw(1:wb1%lbw,:)
     wb2%jsw(1:wb1%lbw,:)=wb1%jsw(1:wb1%lbw,:)
-  end subroutine c_copy_wb
+  end subroutine z_copy_wb
 
-  subroutine c_copy_wbv(wbv2,wbv1)
-    type(c_wbv), intent(in) :: wbv1
-    type(c_wbv), intent(inout) :: wbv2
+  subroutine z_copy_wbv(wbv2,wbv1)
+    type(z_wbv), intent(in) :: wbv1
+    type(z_wbv), intent(inout) :: wbv2
     wbv2%n=wbv1%n
     wbv2%lbw=wbv1%lbw
     wbv2%ubw=wbv1%ubw
@@ -792,7 +792,7 @@ contains
          not_all_allocated(wbv2%jsw, wbv2%ksv) .or. &
          not_all_allocated(wbv2%csw, wbv2%csv) .or. &
          not_all_allocated(wbv2%numrotsw, wbv2%numrotsv) ) then
-       call c_deallocate_wbv(wbv2)
+       call z_deallocate_wbv(wbv2)
        allocate(wbv2%br(wbv1%n,wbv1%lbwmax+wbv1%ubwmax+1), wbv2%csv(wbv1%n,wbv1%ubwmax), &
             wbv2%ssv(wbv1%n,wbv1%ubwmax), wbv2%ksv(wbv1%n,wbv1%ubwmax), wbv2%numrotsv(wbv1%n), &
             wbv2%csw(wbv1%lbwmax,wbv1%n), wbv2%ssw(wbv1%lbwmax,wbv1%n), &
@@ -811,7 +811,7 @@ contains
     wbv2%csw(1:wbv1%lbw,:)=wbv1%csw(1:wbv1%lbw,:)
     wbv2%ssw(1:wbv1%lbw,:)=wbv1%ssw(1:wbv1%lbw,:)
     wbv2%jsw(1:wbv1%lbw,:)=wbv1%jsw(1:wbv1%lbw,:)
-  end subroutine c_copy_wbv
+  end subroutine z_copy_wbv
 
   subroutine d_truncate_profile_ub(ub,lower,upper)
     type(d_ub), intent(inout) :: ub
@@ -821,13 +821,13 @@ contains
          get_ubwmax(ub), lower, upper)
   end subroutine d_truncate_profile_ub
 
-  subroutine c_truncate_profile_ub(ub,lower,upper)
-    type(c_ub), intent(inout) :: ub
+  subroutine z_truncate_profile_ub(ub,lower,upper)
+    type(z_ub), intent(inout) :: ub
     integer(kind=int32), dimension(:), intent(in), optional :: lower, upper
 
-    call c_truncate_profile_bc(ub%bc,get_n(ub), ub%lbw, ub%ubw, get_lbwmax(ub), &
+    call z_truncate_profile_bc(ub%bc,get_n(ub), ub%lbw, ub%ubw, get_lbwmax(ub), &
          get_ubwmax(ub), lower, upper)
-  end subroutine c_truncate_profile_ub
+  end subroutine z_truncate_profile_ub
 
   subroutine d_truncate_profile_bt(bt,lower,upper)
     type(d_bt), intent(inout) :: bt
@@ -837,13 +837,13 @@ contains
          get_ubwmax(bt), lower, upper)
   end subroutine d_truncate_profile_bt
 
-  subroutine c_truncate_profile_bt(bt,lower,upper)
-    type(c_bt), intent(inout) :: bt
+  subroutine z_truncate_profile_bt(bt,lower,upper)
+    type(z_bt), intent(inout) :: bt
     integer(kind=int32), dimension(:), intent(in), optional :: lower, upper
 
-    call c_truncate_profile_br(bt%br,get_n(bt), bt%lbw, bt%ubw, get_lbwmax(bt), &
+    call z_truncate_profile_br(bt%br,get_n(bt), bt%lbw, bt%ubw, get_lbwmax(bt), &
          get_ubwmax(bt), lower, upper)
-  end subroutine c_truncate_profile_bt
+  end subroutine z_truncate_profile_bt
 
   subroutine d_truncate_profile_bv(bv,lower,upper)
     type(d_bv), intent(inout) :: bv
@@ -853,13 +853,13 @@ contains
          get_ubwmax(bv), lower, upper)
   end subroutine d_truncate_profile_bv
 
-  subroutine c_truncate_profile_bv(bv,lower,upper)
-    type(c_bv), intent(inout) :: bv
+  subroutine z_truncate_profile_bv(bv,lower,upper)
+    type(z_bv), intent(inout) :: bv
     integer(kind=int32), dimension(:), intent(in), optional :: lower, upper
 
-    call c_truncate_profile_br(bv%br,get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), &
+    call z_truncate_profile_br(bv%br,get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), &
          get_ubwmax(bv), lower, upper)
-  end subroutine c_truncate_profile_bv
+  end subroutine z_truncate_profile_bv
 
   subroutine d_truncate_profile_ubt(ubt,lower,upper)
     type(d_ubt), intent(inout) :: ubt
@@ -869,13 +869,13 @@ contains
          get_ubwmax(ubt), lower, upper)
   end subroutine d_truncate_profile_ubt
 
-  subroutine c_truncate_profile_ubt(ubt,lower,upper)
-    type(c_ubt), intent(inout) :: ubt
+  subroutine z_truncate_profile_ubt(ubt,lower,upper)
+    type(z_ubt), intent(inout) :: ubt
     integer(kind=int32), dimension(:), intent(in), optional :: lower, upper
 
-    call c_truncate_profile_bc(ubt%bc,get_n(ubt), ubt%lbw, ubt%ubw, get_lbwmax(ubt), &
+    call z_truncate_profile_bc(ubt%bc,get_n(ubt), ubt%lbw, ubt%ubw, get_lbwmax(ubt), &
          get_ubwmax(ubt), lower, upper)
-  end subroutine c_truncate_profile_ubt
+  end subroutine z_truncate_profile_ubt
   
   subroutine d_truncate_profile_wbv(wbv,lower,upper)
     type(d_wbv), intent(inout) :: wbv
@@ -885,13 +885,13 @@ contains
          get_ubwmax(wbv), lower, upper)
   end subroutine d_truncate_profile_wbv
 
-  subroutine c_truncate_profile_wbv(wbv,lower,upper)
-    type(c_wbv), intent(inout) :: wbv
+  subroutine z_truncate_profile_wbv(wbv,lower,upper)
+    type(z_wbv), intent(inout) :: wbv
     integer(kind=int32), dimension(:), intent(in), optional :: lower, upper
 
-    call c_truncate_profile_br(wbv%br,get_n(wbv), wbv%lbw, wbv%ubw, get_lbwmax(wbv), &
+    call z_truncate_profile_br(wbv%br,get_n(wbv), wbv%lbw, wbv%ubw, get_lbwmax(wbv), &
          get_ubwmax(wbv), lower, upper)
-  end subroutine c_truncate_profile_wbv
+  end subroutine z_truncate_profile_wbv
 
   subroutine d_truncate_profile_wb(wb,lower,upper)
     type(d_wb), intent(inout) :: wb
@@ -901,13 +901,13 @@ contains
          get_ubwmax(wb), lower, upper)
   end subroutine d_truncate_profile_wb
 
-  subroutine c_truncate_profile_wb(wb,lower,upper)
-    type(c_wb), intent(inout) :: wb
+  subroutine z_truncate_profile_wb(wb,lower,upper)
+    type(z_wb), intent(inout) :: wb
     integer(kind=int32), dimension(:), intent(in), optional :: lower, upper
 
-    call c_truncate_profile_bc(wb%bc,get_n(wb), wb%lbw, wb%ubw, get_lbwmax(wb), &
+    call z_truncate_profile_bc(wb%bc,get_n(wb), wb%lbw, wb%ubw, get_lbwmax(wb), &
          get_ubwmax(wb), lower, upper)
-  end subroutine c_truncate_profile_wb
+  end subroutine z_truncate_profile_wb
   
   integer(kind=int32) function d_ub_get_n(ub) result(n)
     type(d_ub) :: ub
@@ -939,35 +939,35 @@ contains
     n=wbv%n
   end function d_wbv_get_n
 
-  integer(kind=int32) function c_ub_get_n(ub) result(n)
-    type(c_ub) :: ub
+  integer(kind=int32) function z_ub_get_n(ub) result(n)
+    type(z_ub) :: ub
     n=ub%n
-  end function c_ub_get_n
+  end function z_ub_get_n
 
-  integer(kind=int32) function c_bv_get_n(bv) result(n)
-    type(c_bv) :: bv
+  integer(kind=int32) function z_bv_get_n(bv) result(n)
+    type(z_bv) :: bv
     n=bv%n
-  end function c_bv_get_n
+  end function z_bv_get_n
 
-  integer(kind=int32) function c_bt_get_n(bt) result(n)
-    type(c_bt) :: bt
+  integer(kind=int32) function z_bt_get_n(bt) result(n)
+    type(z_bt) :: bt
     n=bt%n
-  end function c_bt_get_n
+  end function z_bt_get_n
 
-  integer(kind=int32) function c_wb_get_n(wb) result(n)
-    type(c_wb) :: wb
+  integer(kind=int32) function z_wb_get_n(wb) result(n)
+    type(z_wb) :: wb
     n=wb%n
-  end function c_wb_get_n
+  end function z_wb_get_n
 
-  integer(kind=int32) function c_ubt_get_n(ubt) result(n)
-    type(c_ubt) :: ubt
+  integer(kind=int32) function z_ubt_get_n(ubt) result(n)
+    type(z_ubt) :: ubt
     n=ubt%n
-  end function c_ubt_get_n
+  end function z_ubt_get_n
 
-  integer(kind=int32) function c_wbv_get_n(wbv) result(n)
-    type(c_wbv) :: wbv
+  integer(kind=int32) function z_wbv_get_n(wbv) result(n)
+    type(z_wbv) :: wbv
     n=wbv%n
-  end function c_wbv_get_n
+  end function z_wbv_get_n
 
   ! lbwmax
 
@@ -1001,35 +1001,35 @@ contains
     n=wbv%lbwmax
   end function d_wbv_get_lbwmax
 
-  integer(kind=int32) function c_ub_get_lbwmax(ub) result(n)
-    type(c_ub) :: ub
+  integer(kind=int32) function z_ub_get_lbwmax(ub) result(n)
+    type(z_ub) :: ub
     n=ub%lbwmax
-  end function c_ub_get_lbwmax
+  end function z_ub_get_lbwmax
 
-  integer(kind=int32) function c_bv_get_lbwmax(bv) result(n)
-    type(c_bv) :: bv
+  integer(kind=int32) function z_bv_get_lbwmax(bv) result(n)
+    type(z_bv) :: bv
     n=bv%lbwmax
-  end function c_bv_get_lbwmax
+  end function z_bv_get_lbwmax
 
-  integer(kind=int32) function c_bt_get_lbwmax(bt) result(n)
-    type(c_bt) :: bt
+  integer(kind=int32) function z_bt_get_lbwmax(bt) result(n)
+    type(z_bt) :: bt
     n=bt%lbwmax
-  end function c_bt_get_lbwmax
+  end function z_bt_get_lbwmax
 
-  integer(kind=int32) function c_wb_get_lbwmax(wb) result(n)
-    type(c_wb) :: wb
+  integer(kind=int32) function z_wb_get_lbwmax(wb) result(n)
+    type(z_wb) :: wb
     n=wb%lbwmax
-  end function c_wb_get_lbwmax
+  end function z_wb_get_lbwmax
 
-  integer(kind=int32) function c_ubt_get_lbwmax(ubt) result(n)
-    type(c_ubt) :: ubt
+  integer(kind=int32) function z_ubt_get_lbwmax(ubt) result(n)
+    type(z_ubt) :: ubt
     n=ubt%lbwmax
-  end function c_ubt_get_lbwmax
+  end function z_ubt_get_lbwmax
 
-  integer(kind=int32) function c_wbv_get_lbwmax(wbv) result(n)
-    type(c_wbv) :: wbv
+  integer(kind=int32) function z_wbv_get_lbwmax(wbv) result(n)
+    type(z_wbv) :: wbv
     n=wbv%lbwmax
-  end function c_wbv_get_lbwmax
+  end function z_wbv_get_lbwmax
 
   ! ubwmax
 
@@ -1063,34 +1063,34 @@ contains
     n=wbv%ubwmax
   end function d_wbv_get_ubwmax
 
-  integer(kind=int32) function c_ub_get_ubwmax(ub) result(n)
-    type(c_ub) :: ub
+  integer(kind=int32) function z_ub_get_ubwmax(ub) result(n)
+    type(z_ub) :: ub
     n=ub%ubwmax
-  end function c_ub_get_ubwmax
+  end function z_ub_get_ubwmax
 
-  integer(kind=int32) function c_bv_get_ubwmax(bv) result(n)
-    type(c_bv) :: bv
+  integer(kind=int32) function z_bv_get_ubwmax(bv) result(n)
+    type(z_bv) :: bv
     n=bv%ubwmax
-  end function c_bv_get_ubwmax
+  end function z_bv_get_ubwmax
 
-  integer(kind=int32) function c_bt_get_ubwmax(bt) result(n)
-    type(c_bt) :: bt
+  integer(kind=int32) function z_bt_get_ubwmax(bt) result(n)
+    type(z_bt) :: bt
     n=bt%ubwmax
-  end function c_bt_get_ubwmax
+  end function z_bt_get_ubwmax
 
-  integer(kind=int32) function c_wb_get_ubwmax(wb) result(n)
-    type(c_wb) :: wb
+  integer(kind=int32) function z_wb_get_ubwmax(wb) result(n)
+    type(z_wb) :: wb
     n=wb%ubwmax
-  end function c_wb_get_ubwmax
+  end function z_wb_get_ubwmax
 
-  integer(kind=int32) function c_ubt_get_ubwmax(ubt) result(n)
-    type(c_ubt) :: ubt
+  integer(kind=int32) function z_ubt_get_ubwmax(ubt) result(n)
+    type(z_ubt) :: ubt
     n=ubt%ubwmax
-  end function c_ubt_get_ubwmax
+  end function z_ubt_get_ubwmax
 
-  integer(kind=int32) function c_wbv_get_ubwmax(wbv) result(n)
-    type(c_wbv) :: wbv
+  integer(kind=int32) function z_wbv_get_ubwmax(wbv) result(n)
+    type(z_wbv) :: wbv
     n=wbv%ubwmax
-  end function c_wbv_get_ubwmax
+  end function z_wbv_get_ubwmax
 
 end module mod_orth_band_types

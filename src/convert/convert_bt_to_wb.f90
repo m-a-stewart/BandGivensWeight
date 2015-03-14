@@ -9,20 +9,20 @@ module mod_convert_bt_to_wb
 
   private
 
-  public :: convert_bt_to_wb, d_convert_bt_to_wb, c_convert_bt_to_wb, &
-       f_convert_bt_to_wb, f_d_convert_bt_to_wb, f_c_convert_bt_to_wb, &
-       d_wb_of_bt, c_wb_of_bt, wb
+  public :: convert_bt_to_wb, d_convert_bt_to_wb, z_convert_bt_to_wb, &
+       f_convert_bt_to_wb, f_d_convert_bt_to_wb, f_z_convert_bt_to_wb, &
+       d_wb_of_bt, z_wb_of_bt, wb
 
   interface convert_bt_to_wb
-     module procedure d_convert_bt_to_wb, c_convert_bt_to_wb
+     module procedure d_convert_bt_to_wb, z_convert_bt_to_wb
   end interface convert_bt_to_wb
 
   interface f_convert_bt_to_wb
-     module procedure f_d_convert_bt_to_wb, f_c_convert_bt_to_wb
+     module procedure f_d_convert_bt_to_wb, f_z_convert_bt_to_wb
   end interface f_convert_bt_to_wb
 
   interface wb
-     module procedure d_wb_of_bt, c_wb_of_bt
+     module procedure d_wb_of_bt, z_wb_of_bt
   end interface wb
 
 contains
@@ -145,24 +145,24 @@ contains
     call br_to_bc(b_bt,b_wb,lbw,ubw)
   end subroutine f_d_convert_bt_to_wb
 
-  function c_wb_of_bt(bt,error) result(wb)
-    type(c_wb) :: wb
-    type(c_bt), intent(in) :: bt
+  function z_wb_of_bt(bt,error) result(wb)
+    type(z_wb) :: wb
+    type(z_bt), intent(in) :: bt
     type(error_info), intent(inout), optional :: error
 
-    type(c_bt), allocatable :: bt1
-    type(routine_info), parameter :: info=info_c_wb_of_bt
+    type(z_bt), allocatable :: bt1
+    type(routine_info), parameter :: info=info_z_wb_of_bt
 
     if (failure(error)) return
     call push_id(info, error)
     
-    wb=c_new_wb(get_n(bt), bt%lbw, bt%ubw)
-    bt1=c_new_bt(get_n(bt),bt%lbw+1,  bt%ubw)
+    wb=z_new_wb(get_n(bt), bt%lbw, bt%ubw)
+    bt1=z_new_bt(get_n(bt),bt%lbw+1,  bt%ubw)
     call copy(bt1,bt)
-    call c_convert_bt_to_wb(bt1,wb,error)
+    call z_convert_bt_to_wb(bt1,wb,error)
 
     call pop_id(error)
-  end function c_wb_of_bt
+  end function z_wb_of_bt
   
 
   ! Errors:
@@ -171,11 +171,11 @@ contains
   ! 2: Insufficient storage in bt
   ! 3: Insufficient stroage in wb
   ! 4: wb%n /= bt%n
-  subroutine c_convert_bt_to_wb(bt, wb, error)
-    type(c_bt) :: bt
-    type(c_wb) :: wb
+  subroutine z_convert_bt_to_wb(bt, wb, error)
+    type(z_bt) :: bt
+    type(z_wb) :: wb
     type(error_info), intent(inout), optional :: error
-    type(routine_info), parameter :: info=info_c_convert_bt_to_wb
+    type(routine_info), parameter :: info=info_z_convert_bt_to_wb
     
     if (failure(error)) return
     call push_id(info, error)
@@ -194,14 +194,14 @@ contains
        call set_error(4, info, error); return
     end if
 
-    call f_c_convert_bt_to_wb(bt%br, get_n(bt), bt%lbw, bt%ubw, get_lbwmax(bt), &
+    call f_z_convert_bt_to_wb(bt%br, get_n(bt), bt%lbw, bt%ubw, get_lbwmax(bt), &
          get_ubwmax(bt), bt%numrotst, bt%kst, bt%cst, bt%sst, wb%bc,  wb%lbw, &
          wb%ubw, get_lbwmax(wb), &
          get_ubwmax(wb), wb%numrotsw, wb%jsw, wb%csw, wb%ssw)
     call pop_id(error)
-  end subroutine c_convert_bt_to_wb
+  end subroutine z_convert_bt_to_wb
 
-  subroutine f_c_convert_bt_to_wb(b_bt, n, lbw, ubw, lbwmax_bt, ubwmax_bt, &
+  subroutine f_z_convert_bt_to_wb(b_bt, n, lbw, ubw, lbwmax_bt, ubwmax_bt, &
        numrotst, kst, cst, sst, b_wb, lbw_wb, ubw_wb, lbwmax_wb, ubwmax_wb, numrotsw, jsw, &
        csw, ssw)
     complex(kind=dp), dimension(n,lbwmax_bt+ubwmax_bt+1), intent(inout) :: b_bt
@@ -219,7 +219,7 @@ contains
     integer(kind=int32), intent(out) :: lbw_wb, ubw_wb
 
     integer(kind=int32) :: j, k, ubw1, lbw1, j0, j1
-    type(c_rotation) :: rot
+    type(z_rotation) :: rot
     logical :: full_lbw
 
     b_wb(1:lbw+ubw+1,:)=(0.0_dp,0.0_dp); numrotsw=0
@@ -263,6 +263,6 @@ contains
        call shift(b_bt,0,-1)
     end if
     call br_to_bc(b_bt,b_wb,lbw,ubw)
-  end subroutine f_c_convert_bt_to_wb
+  end subroutine f_z_convert_bt_to_wb
 
 end module mod_convert_bt_to_wb

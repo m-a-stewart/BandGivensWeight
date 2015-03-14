@@ -9,9 +9,9 @@ program test_general_bt
   real(kind=dp), parameter :: tol=1e-14, c=1.5
   !
   real(kind=dp), dimension(:,:), allocatable :: a_d, a0_d, a1_d
-  complex(kind=dp), dimension(:,:), allocatable :: a_c, a0_c, a1_c
+  complex(kind=dp), dimension(:,:), allocatable :: a_z, a0_z, a1_z
   type(d_bt), allocatable :: bt_d
-  type(c_bt), allocatable :: bt_c
+  type(z_bt), allocatable :: bt_z
 
   call initialize_errors
 
@@ -59,28 +59,28 @@ program test_general_bt
 
   na=40
   lbwa=5; ubwa=3
-  bt_c=c_random_bt(na,lbwa,ubwa,error=error)
-  a_c=general(bt_c,error)
-  a1_c=a_c
+  bt_z=z_random_bt(na,lbwa,ubwa,error=error)
+  a_z=general(bt_z,error)
+  a1_z=a_z
   call cpu_time(t0)
-  bt_c=bt(a_c, ubwa, lbwa+1, ubwa, tol,error)
+  bt_z=bt(a_z, ubwa, lbwa+1, ubwa, tol,error)
   call cpu_time(t1)
-  a0_c=general(bt_c,error)
+  a0_z=general(bt_z,error)
   test_name="Random Complex BT;"  
-  call c_output_result_lower(test_name,a0_c,a1_c,lbwa,bt_c%lbw,t0,t1,c*tol,error)
+  call z_output_result_lower(test_name,a0_z,a1_z,lbwa,bt_z%lbw,t0,t1,c*tol,error)
 
   na=50
   lbwa=13; ubwa=3
-  bt_c=c_random_bt(na,[ (lbwa-1, j=1,na-lbwa), (lbwa, j=na-lbwa+1,na) ], &
+  bt_z=z_random_bt(na,[ (lbwa-1, j=1,na-lbwa), (lbwa, j=na-lbwa+1,na) ], &
        [ (ubwa, j=1,na) ], error=error )
-  a_c=general(bt_c,error)
-  a1_c=a_c
+  a_z=general(bt_z,error)
+  a1_z=a_z
   call cpu_time(t0)
-  bt_c=bt(a_c,ubwa,lbwa+1,ubwa,tol,error)
+  bt_z=bt(a_z,ubwa,lbwa+1,ubwa,tol,error)
   call cpu_time(t1)
-  a0_c = general(bt_c,error)
+  a0_z = general(bt_z,error)
   test_name="Random Complex Square Termination BT;"  
-  call c_output_result_lower(test_name,a0_c,a1_c,lbwa,bt_c%lbw,t0,t1,c*tol,error)
+  call z_output_result_lower(test_name,a0_z,a1_z,lbwa,bt_z%lbw,t0,t1,c*tol,error)
   print *
 
   

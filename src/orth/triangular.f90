@@ -3,41 +3,41 @@ module mod_triangular
   implicit none
 
   private
-  public :: lower_right_invert, f_c_lower_right_invert, f_d_lower_right_invert, &
-       lower_tr_right_invert, f_c_lower_tr_right_invert, f_d_lower_tr_right_invert, &
-       lower_left_invert, f_c_lower_left_invert, f_d_lower_left_invert, &
-       lower_tr_left_invert, f_c_lower_tr_left_invert, f_d_lower_tr_left_invert, &
-       upper_right_invert, f_c_upper_right_invert, f_d_upper_right_invert
+  public :: lower_right_invert, f_z_lower_right_invert, f_d_lower_right_invert, &
+       lower_tr_right_invert, f_z_lower_tr_right_invert, f_d_lower_tr_right_invert, &
+       lower_left_invert, f_z_lower_left_invert, f_d_lower_left_invert, &
+       lower_tr_left_invert, f_z_lower_tr_left_invert, f_d_lower_tr_left_invert, &
+       upper_right_invert, f_z_upper_right_invert, f_d_upper_right_invert
 
-  public :: first_zero_diagonal, c_first_zero_diagonal, d_first_zero_diagonal, &
-       reverse_first_zero_diagonal, c_reverse_first_zero_diagonal, d_reverse_first_zero_diagonal
+  public :: first_zero_diagonal, z_first_zero_diagonal, d_first_zero_diagonal, &
+       reverse_first_zero_diagonal, z_reverse_first_zero_diagonal, d_reverse_first_zero_diagonal
 
   interface lower_right_invert
-     module procedure f_c_lower_right_invert, f_d_lower_right_invert
+     module procedure f_z_lower_right_invert, f_d_lower_right_invert
   end interface lower_right_invert
 
   interface lower_tr_right_invert
-     module procedure f_c_lower_tr_right_invert, f_d_lower_tr_right_invert
+     module procedure f_z_lower_tr_right_invert, f_d_lower_tr_right_invert
   end interface lower_tr_right_invert
 
   interface lower_left_invert
-     module procedure f_c_lower_left_invert, f_d_lower_left_invert
+     module procedure f_z_lower_left_invert, f_d_lower_left_invert
   end interface lower_left_invert
 
   interface lower_tr_left_invert
-     module procedure f_c_lower_tr_left_invert, f_d_lower_tr_left_invert
+     module procedure f_z_lower_tr_left_invert, f_d_lower_tr_left_invert
   end interface lower_tr_left_invert
 
   interface upper_right_invert
-     module procedure f_c_upper_right_invert, f_d_upper_right_invert
+     module procedure f_z_upper_right_invert, f_d_upper_right_invert
   end interface upper_right_invert
 
   interface first_zero_diagonal
-     module procedure c_first_zero_diagonal, d_first_zero_diagonal
+     module procedure z_first_zero_diagonal, d_first_zero_diagonal
   end interface first_zero_diagonal
 
   interface reverse_first_zero_diagonal
-     module procedure c_reverse_first_zero_diagonal, d_reverse_first_zero_diagonal
+     module procedure z_reverse_first_zero_diagonal, d_reverse_first_zero_diagonal
   end interface reverse_first_zero_diagonal
 
 contains
@@ -46,7 +46,7 @@ contains
   ! Lower triangular
 
   ! x^T L = b^T
-  subroutine f_c_lower_right_invert(x,l,b)
+  subroutine f_z_lower_right_invert(x,l,b)
     complex(kind=dp), dimension(:,:), intent(in) :: l
     complex(kind=dp), dimension(:), intent(in) :: b
     complex(kind=dp), dimension(:), intent(out) :: x
@@ -63,7 +63,7 @@ contains
        end do
        x(k) = tmp/l(k,k)
     end do
-  end subroutine f_c_lower_right_invert
+  end subroutine f_z_lower_right_invert
 
   ! x^T L = b^T
   subroutine f_d_lower_right_invert(x,l,b)
@@ -106,7 +106,7 @@ contains
   end subroutine f_d_lower_tr_right_invert
 
   ! x^T L^H = b^T
-  subroutine f_c_lower_tr_right_invert(x,l,b)
+  subroutine f_z_lower_tr_right_invert(x,l,b)
     complex(kind=dp), dimension(:,:), intent(in) :: l
     complex(kind=dp), dimension(:), intent(in) :: b
     complex(kind=dp), dimension(:), intent(out) :: x
@@ -123,14 +123,14 @@ contains
        end do
        x(k) = tmp/conjg(l(k,k))
     end do
-  end subroutine f_c_lower_tr_right_invert
+  end subroutine f_z_lower_tr_right_invert
 
   !
   ! applying inverses from the left.
   !
 
   ! L x = b
-  subroutine f_c_lower_left_invert(l,x,b)
+  subroutine f_z_lower_left_invert(l,x,b)
     complex(kind=dp), dimension(:,:), intent(in) :: l
     complex(kind=dp), dimension(:), intent(in) :: b
     complex(kind=dp), dimension(:), intent(out) :: x
@@ -147,7 +147,7 @@ contains
        end do
        x(k)=tmp/l(k,k)
     end do
-  end subroutine f_c_lower_left_invert
+  end subroutine f_z_lower_left_invert
 
   ! L x = b
   subroutine f_d_lower_left_invert(l,x,b)
@@ -190,7 +190,7 @@ contains
   end subroutine f_d_lower_tr_left_invert
 
   ! L^H x = b
-  subroutine f_c_lower_tr_left_invert(l,x,b)
+  subroutine f_z_lower_tr_left_invert(l,x,b)
     complex(kind=dp), dimension(:,:), intent(in) :: l
     complex(kind=dp), dimension(:), intent(in) :: b
     complex(kind=dp), dimension(:), intent(out) :: x
@@ -207,7 +207,7 @@ contains
        end do
        x(k)=tmp/conjg(l(k,k))
     end do
-  end subroutine f_c_lower_tr_left_invert
+  end subroutine f_z_lower_tr_left_invert
 
   ! Upper triangular
 
@@ -232,7 +232,7 @@ contains
   end subroutine f_d_upper_right_invert
 
   ! x^T R = b^T
-  subroutine f_c_upper_right_invert(x,r,b)
+  subroutine f_z_upper_right_invert(x,r,b)
     complex(kind=dp), dimension(:,:), intent(in) :: r
     complex(kind=dp), dimension(:), intent(in) :: b
     complex(kind=dp), dimension(:), intent(out) :: x
@@ -249,7 +249,7 @@ contains
        end do
        x(k)=tmp/r(k,k)
     end do
-  end subroutine f_c_upper_right_invert
+  end subroutine f_z_upper_right_invert
 
   ! x^T R^T = b^T
   subroutine f_d_upper_tr_right_invert(x,r,b)
@@ -272,7 +272,7 @@ contains
   end subroutine f_d_upper_tr_right_invert
 
 ! x^T R^H = b^T
-  subroutine f_c_upper_tr_right_invert(x,r,b)
+  subroutine f_z_upper_tr_right_invert(x,r,b)
     complex(kind=dp), dimension(:,:), intent(in) :: r
     complex(kind=dp), dimension(:), intent(in) :: b
     complex(kind=dp), dimension(:), intent(out) :: x
@@ -289,7 +289,7 @@ contains
        end do
        x(k) = tmp/conjg(r(k,k))
     end do
-  end subroutine f_c_upper_tr_right_invert
+  end subroutine f_z_upper_tr_right_invert
 
   ! R x = b
   subroutine f_d_upper_left_invert(r,x,b)
@@ -312,7 +312,7 @@ contains
   end subroutine f_d_upper_left_invert
 
   ! R x = b
-  subroutine f_c_upper_left_invert(r,x,b)
+  subroutine f_z_upper_left_invert(r,x,b)
     complex(kind=dp), dimension(:,:), intent(in) :: r
     complex(kind=dp), dimension(:), intent(in) :: b
     complex(kind=dp), dimension(:), intent(out) :: x
@@ -329,7 +329,7 @@ contains
        end do
        x(k)=tmp/r(k,k)
     end do
-  end subroutine f_c_upper_left_invert
+  end subroutine f_z_upper_left_invert
 
   ! R^T x = b
   subroutine f_d_upper_tr_left_invert(r,x,b)
@@ -352,7 +352,7 @@ contains
   end subroutine f_d_upper_tr_left_invert
 
   ! R^H x = b
-  subroutine f_c_upper_tr_left_invert(r,x,b)
+  subroutine f_z_upper_tr_left_invert(r,x,b)
     complex(kind=dp), dimension(:,:), intent(in) :: r
     complex(kind=dp), dimension(:), intent(in) :: b
     complex(kind=dp), dimension(:), intent(out) :: x
@@ -369,7 +369,7 @@ contains
        end do
        x(k)=tmp/conjg(r(k,k))
     end do
-  end subroutine f_c_upper_tr_left_invert
+  end subroutine f_z_upper_tr_left_invert
 
   ! finding zeros on the diagonal
 
@@ -386,7 +386,7 @@ contains
     end do
   end function d_first_zero_diagonal
 
-  integer(kind=int32) function c_first_zero_diagonal(a,tol) result(d)
+  integer(kind=int32) function z_first_zero_diagonal(a,tol) result(d)
     complex(kind=dp), dimension(:,:), intent(in) :: a
     real(kind=dp), intent(in) :: tol
     !
@@ -397,7 +397,7 @@ contains
        if (abs(a(j,j)) <= tol) return
        d=d+1
     end do
-  end function c_first_zero_diagonal
+  end function z_first_zero_diagonal
 
   ! Return the first zero diagonal from the bottom right.
   integer(kind=int32) function d_reverse_first_zero_diagonal(a,tol) result(d)
@@ -413,7 +413,7 @@ contains
     end do
   end function d_reverse_first_zero_diagonal
 
-  integer(kind=int32) function c_reverse_first_zero_diagonal(a,tol) result(d)
+  integer(kind=int32) function z_reverse_first_zero_diagonal(a,tol) result(d)
     complex(kind=dp), dimension(:,:), intent(in) :: a
     real(kind=dp), intent(in) :: tol
     !
@@ -424,6 +424,6 @@ contains
        if (abs(a(j,j)) <= tol) return
        d=d-1
     end do
-  end function c_reverse_first_zero_diagonal
+  end function z_reverse_first_zero_diagonal
 
 end module mod_triangular

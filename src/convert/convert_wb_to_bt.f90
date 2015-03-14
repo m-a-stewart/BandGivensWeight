@@ -8,20 +8,20 @@ module mod_convert_wb_to_bt
 
   private
 
-  public :: convert_wb_to_bt, d_convert_wb_to_bt, c_convert_wb_to_bt, &
-       f_convert_wb_to_bt, f_d_convert_wb_to_bt, f_c_convert_wb_to_bt, &
-       d_bt_of_wb, c_bt_of_wb, bt
+  public :: convert_wb_to_bt, d_convert_wb_to_bt, z_convert_wb_to_bt, &
+       f_convert_wb_to_bt, f_d_convert_wb_to_bt, f_z_convert_wb_to_bt, &
+       d_bt_of_wb, z_bt_of_wb, bt
 
   interface convert_wb_to_bt
-     module procedure d_convert_wb_to_bt, c_convert_wb_to_bt
+     module procedure d_convert_wb_to_bt, z_convert_wb_to_bt
   end interface convert_wb_to_bt
 
   interface f_convert_wb_to_bt
-     module procedure f_d_convert_wb_to_bt, f_c_convert_wb_to_bt
+     module procedure f_d_convert_wb_to_bt, f_z_convert_wb_to_bt
   end interface f_convert_wb_to_bt
 
   interface bt
-     module procedure d_bt_of_wb, c_bt_of_wb
+     module procedure d_bt_of_wb, z_bt_of_wb
   end interface bt
 
 contains
@@ -136,24 +136,24 @@ contains
     call bc_to_br(b_wb,b_bt,lbw,ubw)
   end subroutine f_d_convert_wb_to_bt
 
-  function c_bt_of_wb(wb,error) result(bt)
-    type(c_bt) :: bt
-    type(c_wb), intent(in) :: wb
+  function z_bt_of_wb(wb,error) result(bt)
+    type(z_bt) :: bt
+    type(z_wb), intent(in) :: wb
     type(error_info), intent(inout), optional :: error
 
-    type(c_wb), allocatable :: wb1
-    type(routine_info), parameter :: info=info_c_bt_of_wb
+    type(z_wb), allocatable :: wb1
+    type(routine_info), parameter :: info=info_z_bt_of_wb
 
     if (failure(error)) return
     call push_id(info, error)
     
-    bt=c_new_bt(get_n(wb), wb%lbw, wb%ubw)
-    wb1=c_new_wb(get_n(wb),wb%lbw+1,  wb%ubw)
+    bt=z_new_bt(get_n(wb), wb%lbw, wb%ubw)
+    wb1=z_new_wb(get_n(wb),wb%lbw+1,  wb%ubw)
     call copy(wb1,wb)
-    call c_convert_wb_to_bt(wb1,bt,error)
+    call z_convert_wb_to_bt(wb1,bt,error)
 
     call pop_id(error)
-  end function c_bt_of_wb
+  end function z_bt_of_wb
 
   ! Errors:
   ! 0: no error
@@ -161,11 +161,11 @@ contains
   ! 2: Insufficient storage in wb
   ! 3: Insufficient stroage in bt
   ! 4: bt%n /= wb%n
-  subroutine c_convert_wb_to_bt(wb, bt, error)
-    type(c_wb) :: wb
-    type(c_bt) :: bt
+  subroutine z_convert_wb_to_bt(wb, bt, error)
+    type(z_wb) :: wb
+    type(z_bt) :: bt
     type(error_info), intent(inout), optional :: error
-    type(routine_info), parameter :: info=info_c_convert_wb_to_bt
+    type(routine_info), parameter :: info=info_z_convert_wb_to_bt
 
     if (failure(error)) return
     call push_id(info, error)
@@ -184,13 +184,13 @@ contains
        call set_error(4, info, error); return
     end if
 
-    call f_c_convert_wb_to_bt(wb%bc, get_n(wb), wb%lbw, wb%ubw, get_lbwmax(wb), &
+    call f_z_convert_wb_to_bt(wb%bc, get_n(wb), wb%lbw, wb%ubw, get_lbwmax(wb), &
          get_ubwmax(wb), wb%numrotsw, wb%jsw, wb%csw, wb%ssw, bt%br,  bt%lbw, bt%ubw, &
          get_lbwmax(bt), get_ubwmax(bt), bt%numrotst, bt%kst, bt%cst, bt%sst)
     call pop_id(error)
-  end subroutine c_convert_wb_to_bt
+  end subroutine z_convert_wb_to_bt
 
-  subroutine f_c_convert_wb_to_bt(b_wb, n, lbw, ubw, lbwmax_wb, ubwmax_wb, &
+  subroutine f_z_convert_wb_to_bt(b_wb, n, lbw, ubw, lbwmax_wb, ubwmax_wb, &
        numrotsw, jsw, csw, ssw, b_bt, lbw_bt, ubw_bt, lbwmax_bt, ubwmax_bt, numrotst, kst, &
        cst, sst)
     complex(kind=dp), dimension(lbwmax_wb+ubwmax_wb+1,n), intent(inout) :: b_wb
@@ -208,7 +208,7 @@ contains
     complex(kind=dp), dimension(n,lbwmax_bt), intent(out) :: sst
 
     integer(kind=int32) :: j, k, ubw1, lbw1, k0, k1
-    type(c_rotation) :: rot
+    type(z_rotation) :: rot
 
     b_bt(:,1:lbw+ubw+1)=(0.0_dp,0.0_dp); numrotst=0
     sst(:,1:lbw)=(0.0_dp,0.0_dp); cst(:,1:lbw)=0.0_dp
@@ -245,7 +245,7 @@ contains
        end do
     end do
     call bc_to_br(b_wb,b_bt,lbw,ubw)
-  end subroutine f_c_convert_wb_to_bt
+  end subroutine f_z_convert_wb_to_bt
 
 
 end module mod_convert_wb_to_bt

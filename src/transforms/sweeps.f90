@@ -7,41 +7,41 @@ module mod_sweeps
 
   private
 
-  public :: d_sweeps, c_sweeps
+  public :: d_sweeps, z_sweeps
 
-  public :: d_new_sweeps, c_new_sweeps
+  public :: d_new_sweeps, z_new_sweeps
 
-  public :: d_random_full_sweeps, c_random_full_sweeps
+  public :: d_random_full_sweeps, z_random_full_sweeps
 
-  public :: get_maxind, d_get_maxind, c_get_maxind, &
-       get_minind, d_get_minind, c_get_minind
+  public :: get_maxind, d_get_maxind, z_get_maxind, &
+       get_minind, d_get_minind, z_get_minind
 
-  public :: d_sweeps_general_product_of, c_sweeps_general_product_of, &
-       d_general_sweeps_product_of, c_general_sweeps_product_of, &
-       d_v_sweeps_general_product_of, c_v_sweeps_general_product_of, &
-       d_v_general_sweeps_product_of, c_v_general_sweeps_product_of, operator(*)
+  public :: d_sweeps_general_product_of, z_sweeps_general_product_of, &
+       d_general_sweeps_product_of, z_general_sweeps_product_of, &
+       d_v_sweeps_general_product_of, z_v_sweeps_general_product_of, &
+       d_v_general_sweeps_product_of, z_v_general_sweeps_product_of, operator(*)
 
-  public :: trp, d_trp_sweeps, c_trp_sweeps
+  public :: trp, d_trp_sweeps, z_trp_sweeps
 
-  public :: get_maxord, d_get_maxord, c_get_maxord
+  public :: get_maxord, d_get_maxord, z_get_maxord
 
-  public :: get_n, d_get_n_sweeps, c_get_n_sweeps
+  public :: get_n, d_get_n_sweeps, z_get_n_sweeps
 
-  public :: deallocate_sweeps, d_deallocate_sweeps, c_deallocate_sweeps
+  public :: deallocate_sweeps, d_deallocate_sweeps, z_deallocate_sweeps
 
-  public :: sweeps_times_general, d_sweeps_times_general, c_sweeps_times_general, &
-       d_v_sweeps_times_general, c_v_sweeps_times_general
+  public :: sweeps_times_general, d_sweeps_times_general, z_sweeps_times_general, &
+       d_v_sweeps_times_general, z_v_sweeps_times_general
 
   public :: trp_sweeps_times_general, d_trp_sweeps_times_general, &
-       c_trp_sweeps_times_general, &
-       d_v_trp_sweeps_times_general, c_v_trp_sweeps_times_general
+       z_trp_sweeps_times_general, &
+       d_v_trp_sweeps_times_general, z_v_trp_sweeps_times_general
 
-  public :: general_times_sweeps, d_general_times_sweeps, c_general_times_sweeps, &
-       d_v_general_times_sweeps, c_v_general_times_sweeps
+  public :: general_times_sweeps, d_general_times_sweeps, z_general_times_sweeps, &
+       d_v_general_times_sweeps, z_v_general_times_sweeps
 
   public :: general_times_trp_sweeps, d_general_times_trp_sweeps, &
-       c_general_times_trp_sweeps, &
-       d_v_general_times_trp_sweeps, c_v_general_times_trp_sweeps
+       z_general_times_trp_sweeps, &
+       d_v_general_times_trp_sweeps, z_v_general_times_trp_sweeps
 
   ! These types represent a sequence of sweeps of plane rotations.
   ! In particular
@@ -74,7 +74,7 @@ module mod_sweeps
      logical :: trp
   end type d_sweeps
 
-  type c_sweeps
+  type z_sweeps
      integer(kind=int32), private :: minind, maxind, n, maxord
      integer(kind=int32) :: left, right, inc, ord, type
      real(kind=dp), allocatable, dimension(:,:) :: cs
@@ -82,57 +82,57 @@ module mod_sweeps
      integer(kind=int32), allocatable, dimension(:) :: numrots
      integer(kind=int32), allocatable, dimension(:,:) :: js
      logical :: trp
-  end type c_sweeps
+  end type z_sweeps
 
   interface get_maxind
-     module procedure d_get_maxind, c_get_maxind
+     module procedure d_get_maxind, z_get_maxind
   end interface get_maxind
 
   interface get_minind
-     module procedure d_get_minind, c_get_minind
+     module procedure d_get_minind, z_get_minind
   end interface get_minind
 
   interface get_maxord
-     module procedure d_get_maxord, c_get_maxord
+     module procedure d_get_maxord, z_get_maxord
   end interface get_maxord
 
   interface get_n
-     module procedure d_get_n_sweeps, c_get_n_sweeps
+     module procedure d_get_n_sweeps, z_get_n_sweeps
   end interface get_n
 
   interface deallocate_sweeps
-     module procedure d_deallocate_sweeps, c_deallocate_sweeps
+     module procedure d_deallocate_sweeps, z_deallocate_sweeps
   end interface deallocate_sweeps
 
   interface trp
-     module procedure d_trp_sweeps, c_trp_sweeps
+     module procedure d_trp_sweeps, z_trp_sweeps
   end interface trp
 
   interface operator (*)
-     module procedure d_sweeps_general_product_of, c_sweeps_general_product_of, &
-          d_general_sweeps_product_of, c_general_sweeps_product_of, &
-          d_v_sweeps_general_product_of, c_v_sweeps_general_product_of, &
-          d_v_general_sweeps_product_of, c_v_general_sweeps_product_of
+     module procedure d_sweeps_general_product_of, z_sweeps_general_product_of, &
+          d_general_sweeps_product_of, z_general_sweeps_product_of, &
+          d_v_sweeps_general_product_of, z_v_sweeps_general_product_of, &
+          d_v_general_sweeps_product_of, z_v_general_sweeps_product_of
   end interface operator (*)
 
   interface sweeps_times_general
-     module procedure d_sweeps_times_general, c_sweeps_times_general, &
-          d_v_sweeps_times_general, c_v_sweeps_times_general
+     module procedure d_sweeps_times_general, z_sweeps_times_general, &
+          d_v_sweeps_times_general, z_v_sweeps_times_general
   end interface sweeps_times_general
 
   interface trp_sweeps_times_general
-     module procedure d_trp_sweeps_times_general, c_trp_sweeps_times_general, &
-          d_v_trp_sweeps_times_general, c_v_trp_sweeps_times_general
+     module procedure d_trp_sweeps_times_general, z_trp_sweeps_times_general, &
+          d_v_trp_sweeps_times_general, z_v_trp_sweeps_times_general
   end interface trp_sweeps_times_general
 
   interface general_times_sweeps
-     module procedure d_general_times_sweeps, c_general_times_sweeps, &
-          d_v_general_times_sweeps, c_v_general_times_sweeps
+     module procedure d_general_times_sweeps, z_general_times_sweeps, &
+          d_v_general_times_sweeps, z_v_general_times_sweeps
   end interface general_times_sweeps
 
   interface general_times_trp_sweeps
-     module procedure d_general_times_trp_sweeps, c_general_times_trp_sweeps, &
-          d_v_general_times_trp_sweeps, c_v_general_times_trp_sweeps
+     module procedure d_general_times_trp_sweeps, z_general_times_trp_sweeps, &
+          d_v_general_times_trp_sweeps, z_v_general_times_trp_sweeps
   end interface general_times_trp_sweeps
 
 contains
@@ -152,30 +152,30 @@ contains
     maxord=sw%maxord
   end function d_get_maxord
 
-  integer(kind=int32) function c_get_maxord(sw) result(maxord)
-    type(c_sweeps) :: sw
+  integer(kind=int32) function z_get_maxord(sw) result(maxord)
+    type(z_sweeps) :: sw
     maxord=sw%maxord
-  end function c_get_maxord
+  end function z_get_maxord
 
-  integer(kind=int32) function c_get_maxind(sw) result(maxind)
-    type(c_sweeps) :: sw
+  integer(kind=int32) function z_get_maxind(sw) result(maxind)
+    type(z_sweeps) :: sw
     maxind=sw%maxind
-  end function c_get_maxind
+  end function z_get_maxind
 
-  integer(kind=int32) function c_get_minind(sw) result(minind)
-    type(c_sweeps) :: sw
+  integer(kind=int32) function z_get_minind(sw) result(minind)
+    type(z_sweeps) :: sw
     minind=sw%minind
-  end function c_get_minind
+  end function z_get_minind
 
   integer(kind=int32) function d_get_n_sweeps(sw) result(n)
     type(d_sweeps) :: sw
     n=sw%n
   end function d_get_n_sweeps
 
-  integer(kind=int32) function c_get_n_sweeps(sw) result(n)
-    type(c_sweeps) :: sw
+  integer(kind=int32) function z_get_n_sweeps(sw) result(n)
+    type(z_sweeps) :: sw
     n=sw%n
-  end function c_get_n_sweeps
+  end function z_get_n_sweeps
 
   type(d_sweeps) function d_new_sweeps(n,minind, maxind, maxord) result(sw)
     integer(kind=int32), intent(in) :: n, minind, maxind, maxord
@@ -188,7 +188,7 @@ contains
     sw%trp=.false.
   end function d_new_sweeps
 
-  type(c_sweeps) function c_new_sweeps(n,minind, maxind, maxord) result(sw)
+  type(z_sweeps) function z_new_sweeps(n,minind, maxind, maxord) result(sw)
     integer(kind=int32), intent(in) :: n, minind, maxind, maxord
     sw%n=n; sw%maxind=maxind; sw%minind=minind; sw%maxord=maxord
     allocate(sw%cs(maxord,minind:maxind), sw%ss(maxord,minind:maxind), &
@@ -197,17 +197,17 @@ contains
     sw%type=-1
     sw%cs=0.0_dp; sw%ss=(0.0_dp,0.0_dp)
     sw%trp=.false.
-  end function c_new_sweeps
+  end function z_new_sweeps
 
   subroutine d_deallocate_sweeps(sw)
     type(d_sweeps), intent(inout) :: sw
     deallocate(sw%cs, sw%ss, sw%js, sw%numrots)
   end subroutine d_deallocate_sweeps
 
-  subroutine c_deallocate_sweeps(sw)
-    type(c_sweeps), intent(inout) :: sw
+  subroutine z_deallocate_sweeps(sw)
+    type(z_sweeps), intent(inout) :: sw
     deallocate(sw%cs, sw%ss, sw%js, sw%numrots)
-  end subroutine c_deallocate_sweeps
+  end subroutine z_deallocate_sweeps
 
   type(d_sweeps) function d_random_full_sweeps(n,l) result(sw)
     integer(kind=int32) :: n, l, j, k
@@ -230,10 +230,10 @@ contains
     end do
   end function d_random_full_sweeps
 
-  type(c_sweeps) function c_random_full_sweeps(n,l) result(sw)
+  type(z_sweeps) function z_random_full_sweeps(n,l) result(sw)
     integer(kind=int32) :: n, l, j, k
     real(kind=dp) :: nrm
-    sw=c_new_sweeps(n, 1, l, n-1)
+    sw=z_new_sweeps(n, 1, l, n-1)
     sw%left=1
     sw%right=l
     sw%numrots=n-1
@@ -249,7 +249,7 @@ contains
           sw%ss(j,k)=sw%ss(j,k)/nrm
        end do
     end do
-  end function c_random_full_sweeps
+  end function z_random_full_sweeps
 
   ! Multiply routines
 
@@ -266,18 +266,18 @@ contains
     end if
   end function d_sweeps_general_product_of
 
-  function c_sweeps_general_product_of(sw,a) result(b)
+  function z_sweeps_general_product_of(sw,a) result(b)
     complex(kind=dp), allocatable, dimension(:,:) :: b
     complex(kind=dp), dimension(:,:), intent(in) :: a
-    type(c_sweeps), intent(in) :: sw
+    type(z_sweeps), intent(in) :: sw
 
     b=a
     if (sw%trp) then
-       call c_trp_sweeps_times_general(sw,b)
+       call z_trp_sweeps_times_general(sw,b)
     else
-       call c_sweeps_times_general(sw,b)
+       call z_sweeps_times_general(sw,b)
     end if
-  end function c_sweeps_general_product_of
+  end function z_sweeps_general_product_of
 
   function d_general_sweeps_product_of(a,sw) result(b)
     real(kind=dp), allocatable, dimension(:,:) :: b
@@ -292,18 +292,18 @@ contains
     end if
   end function d_general_sweeps_product_of
 
-  function c_general_sweeps_product_of(a,sw) result(b)
+  function z_general_sweeps_product_of(a,sw) result(b)
     complex(kind=dp), allocatable, dimension(:,:) :: b
     complex(kind=dp), dimension(:,:), intent(in) :: a
-    type(c_sweeps), intent(in) :: sw
+    type(z_sweeps), intent(in) :: sw
 
     b=a
     if (sw%trp) then
-       call c_general_times_trp_sweeps(b,sw)
+       call z_general_times_trp_sweeps(b,sw)
     else
-       call c_general_times_sweeps(b,sw)
+       call z_general_times_sweeps(b,sw)
     end if
-  end function c_general_sweeps_product_of
+  end function z_general_sweeps_product_of
 
   ! vectors
 
@@ -320,18 +320,18 @@ contains
     end if
   end function d_v_sweeps_general_product_of
 
-  function c_v_sweeps_general_product_of(sw,a) result(b)
+  function z_v_sweeps_general_product_of(sw,a) result(b)
     complex(kind=dp), allocatable, dimension(:) :: b
     complex(kind=dp), dimension(:), intent(in) :: a
-    type(c_sweeps), intent(in) :: sw
+    type(z_sweeps), intent(in) :: sw
 
     b=a
     if (sw%trp) then
-       call c_v_trp_sweeps_times_general(sw,b)
+       call z_v_trp_sweeps_times_general(sw,b)
     else
-       call c_v_sweeps_times_general(sw,b)
+       call z_v_sweeps_times_general(sw,b)
     end if
-  end function c_v_sweeps_general_product_of
+  end function z_v_sweeps_general_product_of
 
   function d_v_general_sweeps_product_of(a,sw) result(b)
     real(kind=dp), allocatable, dimension(:) :: b
@@ -346,18 +346,18 @@ contains
     end if
   end function d_v_general_sweeps_product_of
 
-  function c_v_general_sweeps_product_of(a,sw) result(b)
+  function z_v_general_sweeps_product_of(a,sw) result(b)
     complex(kind=dp), allocatable, dimension(:) :: b
     complex(kind=dp), dimension(:), intent(in) :: a
-    type(c_sweeps), intent(in) :: sw
+    type(z_sweeps), intent(in) :: sw
 
     b=a
     if (sw%trp) then
-       call c_v_general_times_trp_sweeps(b,sw)
+       call z_v_general_times_trp_sweeps(b,sw)
     else
-       call c_v_general_times_sweeps(b,sw)
+       call z_v_general_times_sweeps(b,sw)
     end if
-  end function c_v_general_sweeps_product_of
+  end function z_v_general_sweeps_product_of
 
   function d_trp_sweeps(swa) result(swb)
     type(d_sweeps), allocatable :: swb
@@ -367,13 +367,13 @@ contains
     swb%trp=.not. swb%trp
   end function d_trp_sweeps
 
-  function c_trp_sweeps(swa) result(swb)
-    type(c_sweeps), allocatable :: swb
-    type(c_sweeps), intent(in) :: swa
+  function z_trp_sweeps(swa) result(swb)
+    type(z_sweeps), allocatable :: swb
+    type(z_sweeps), intent(in) :: swa
 
     swb=swa
     swb%trp=.not. swb%trp
-  end function c_trp_sweeps
+  end function z_trp_sweeps
   
   subroutine d_sweeps_times_general(sw,a)
     type(d_sweeps) :: sw
@@ -390,20 +390,20 @@ contains
     end do
   end subroutine d_sweeps_times_general
 
-  subroutine c_sweeps_times_general(sw,a)
-    type(c_sweeps) :: sw
+  subroutine z_sweeps_times_general(sw,a)
+    type(z_sweeps) :: sw
     complex(kind=dp), dimension(:,:), intent(inout) :: a
-    type(c_rotation) :: rot
+    type(z_rotation) :: rot
     integer(kind=int32) :: j, m, l,jj
     m=size(a,1)
     do l=sw%right,sw%left,-sw%inc
        do j=1,sw%numrots(l)
           jj=sw%js(j,l)
           rot%cosine=sw%cs(j,l); rot%sine=sw%ss(j,l)
-          call c_rotation_times_general(rot,a,jj,jj+1)
+          call z_rotation_times_general(rot,a,jj,jj+1)
        end do
     end do
-  end subroutine c_sweeps_times_general
+  end subroutine z_sweeps_times_general
 
   subroutine d_v_sweeps_times_general(sw,a)
     type(d_sweeps) :: sw
@@ -421,8 +421,8 @@ contains
     end do
   end subroutine d_v_sweeps_times_general
 
-  subroutine c_v_sweeps_times_general(sw,a)
-    type(c_sweeps) :: sw
+  subroutine z_v_sweeps_times_general(sw,a)
+    type(z_sweeps) :: sw
     complex(kind=dp), dimension(:), intent(inout) :: a
     integer(kind=int32) :: j, l, jj
     real(kind=dp) :: c
@@ -437,7 +437,7 @@ contains
           a(jj+1)=s*tmp+c*a(jj+1)
        end do
     end do
-  end subroutine c_v_sweeps_times_general
+  end subroutine z_v_sweeps_times_general
 
   subroutine d_trp_sweeps_times_general(sw,a)
     type(d_sweeps) :: sw
@@ -453,19 +453,19 @@ contains
     end do
   end subroutine d_trp_sweeps_times_general
 
-  subroutine c_trp_sweeps_times_general(sw,a)
-    type(c_sweeps) :: sw
+  subroutine z_trp_sweeps_times_general(sw,a)
+    type(z_sweeps) :: sw
     complex(kind=dp), dimension(:,:), intent(inout) :: a
-    type(c_rotation) :: rot
+    type(z_rotation) :: rot
     integer(kind=int32) :: j, l, jj
     do l=sw%left,sw%right,sw%inc
        do j=sw%numrots(l),1,-1
           jj=sw%js(j,l)
           rot%cosine=sw%cs(j,l); rot%sine=sw%ss(j,l)
-          call c_rotation_times_general(trp_rot(rot),a,jj,jj+1)
+          call z_rotation_times_general(trp_rot(rot),a,jj,jj+1)
        end do
     end do
-  end subroutine c_trp_sweeps_times_general
+  end subroutine z_trp_sweeps_times_general
 
   subroutine d_v_trp_sweeps_times_general(sw,a)
     type(d_sweeps) :: sw
@@ -483,8 +483,8 @@ contains
     end do
   end subroutine d_v_trp_sweeps_times_general
 
-  subroutine c_v_trp_sweeps_times_general(sw,a)
-    type(c_sweeps) :: sw
+  subroutine z_v_trp_sweeps_times_general(sw,a)
+    type(z_sweeps) :: sw
     complex(kind=dp), dimension(:), intent(inout) :: a
     integer(kind=int32) :: j, l, jj
     real(kind=dp) :: c
@@ -498,7 +498,7 @@ contains
           a(jj+1)=-s*tmp+c*a(jj+1)
        end do
     end do
-  end subroutine c_v_trp_sweeps_times_general
+  end subroutine z_v_trp_sweeps_times_general
 
   subroutine d_general_times_sweeps(a,sw)
     type(d_sweeps) :: sw
@@ -514,19 +514,19 @@ contains
     end do
   end subroutine d_general_times_sweeps
 
-  subroutine c_general_times_sweeps(a,sw)
-    type(c_sweeps) :: sw
+  subroutine z_general_times_sweeps(a,sw)
+    type(z_sweeps) :: sw
     complex(kind=dp), dimension(:,:), intent(inout) :: a
-    type(c_rotation) :: rot
+    type(z_rotation) :: rot
     integer(kind=int32) :: j, l, kk
     do l=sw%left,sw%right,sw%inc
        do j=sw%numrots(l),1,-1
           kk=sw%js(j,l)
           rot%cosine=sw%cs(j,l); rot%sine=sw%ss(j,l)
-          call c_general_times_rotation(a,rot,kk,kk+1)
+          call z_general_times_rotation(a,rot,kk,kk+1)
        end do
     end do
-  end subroutine c_general_times_sweeps
+  end subroutine z_general_times_sweeps
 
   subroutine d_v_general_times_sweeps(a,sw)
     type(d_sweeps) :: sw
@@ -544,8 +544,8 @@ contains
     end do
   end subroutine d_v_general_times_sweeps
 
-  subroutine c_v_general_times_sweeps(a,sw)
-    type(c_sweeps) :: sw
+  subroutine z_v_general_times_sweeps(a,sw)
+    type(z_sweeps) :: sw
     complex(kind=dp), dimension(:), intent(inout) :: a
     integer(kind=int32) :: j, l, kk
     complex(kind=dp) :: c
@@ -559,7 +559,7 @@ contains
           a(kk+1)=-conjg(s)*tmp+c*a(kk+1)
        end do
     end do
-  end subroutine c_v_general_times_sweeps
+  end subroutine z_v_general_times_sweeps
 
   subroutine d_general_times_trp_sweeps(a,sw)
     type(d_sweeps) :: sw
@@ -575,19 +575,19 @@ contains
     end do
   end subroutine d_general_times_trp_sweeps
 
-  subroutine c_general_times_trp_sweeps(a,sw)
-    type(c_sweeps) :: sw
+  subroutine z_general_times_trp_sweeps(a,sw)
+    type(z_sweeps) :: sw
     complex(kind=dp), dimension(:,:), intent(inout) :: a
-    type(c_rotation) :: rot
+    type(z_rotation) :: rot
     integer(kind=int32) :: j, l, kk
     do l=sw%right,sw%left,-sw%inc
        do j=1,sw%numrots(l)
           rot%cosine=sw%cs(j,l); rot%sine=sw%ss(j,l)
           kk=sw%js(j,l)
-          call c_general_times_rotation(a, trp_rot(rot),kk,kk+1)
+          call z_general_times_rotation(a, trp_rot(rot),kk,kk+1)
        end do
     end do
-  end subroutine c_general_times_trp_sweeps
+  end subroutine z_general_times_trp_sweeps
 
   subroutine d_v_general_times_trp_sweeps(a,sw)
     type(d_sweeps) :: sw
@@ -605,8 +605,8 @@ contains
     end do
   end subroutine d_v_general_times_trp_sweeps
 
-  subroutine c_v_general_times_trp_sweeps(a,sw)
-    type(c_sweeps) :: sw
+  subroutine z_v_general_times_trp_sweeps(a,sw)
+    type(z_sweeps) :: sw
     complex(kind=dp), dimension(:), intent(inout) :: a
     integer(kind=int32) :: j, l, kk
     real(kind=dp) :: c
@@ -620,6 +620,6 @@ contains
           a(kk+1)=conjg(s)*tmp+c*a(kk+1)
        end do
     end do
-  end subroutine c_v_general_times_trp_sweeps
+  end subroutine z_v_general_times_trp_sweeps
 
 end module mod_sweeps

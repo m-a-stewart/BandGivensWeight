@@ -7,15 +7,15 @@ module mod_nullvec
 
   private
 
-  public :: lower_left_nullvec, f_c_lower_left_nullvec, f_d_lower_left_nullvec, &
-       lower_right_nullvec, f_c_lower_right_nullvec, f_d_lower_right_nullvec
+  public :: lower_left_nullvec, f_z_lower_left_nullvec, f_d_lower_left_nullvec, &
+       lower_right_nullvec, f_z_lower_right_nullvec, f_d_lower_right_nullvec
 
   interface lower_left_nullvec
-     module procedure f_c_lower_left_nullvec, f_d_lower_left_nullvec
+     module procedure f_z_lower_left_nullvec, f_d_lower_left_nullvec
   end interface lower_left_nullvec
 
   interface lower_right_nullvec
-     module procedure f_c_lower_right_nullvec, f_d_lower_right_nullvec
+     module procedure f_z_lower_right_nullvec, f_d_lower_right_nullvec
   end interface lower_right_nullvec
 
 contains
@@ -100,7 +100,7 @@ contains
   end subroutine f_d_lower_left_nullvec
 
   ! null vector of a lower triangular matrix.
-  subroutine f_c_lower_left_nullvec(x,l,tol,maxit,p, error)
+  subroutine f_z_lower_left_nullvec(x,l,tol,maxit,p, error)
     complex(kind=dp), dimension(:,:), intent(in) :: l
     complex(kind=dp), dimension(:), intent(out) :: x
     real(kind=dp), intent(in) :: tol
@@ -112,7 +112,7 @@ contains
     real(kind=dp) :: nrmx
     complex(kind=dp) :: d, tmp
     complex(kind=dp), dimension(size(x)) :: y
-    type(routine_info), parameter :: info=info_f_c_lower_left_nullvec
+    type(routine_info), parameter :: info=info_f_z_lower_left_nullvec
     !
     n=size(l,1)
     if (failure(error)) return
@@ -173,7 +173,7 @@ contains
           call set_error(1, info, error); return
        end if
     end if
-  end subroutine f_c_lower_left_nullvec
+  end subroutine f_z_lower_left_nullvec
 
   ! right null vector of a lower triangular matrix.
   ! Returns p such that x(1:p-1)=0
@@ -251,7 +251,7 @@ contains
   end subroutine f_d_lower_right_nullvec
 
   ! right null vector of a lower triangular matrix.
-  subroutine f_c_lower_right_nullvec(x, l, tol, maxit, p, error)
+  subroutine f_z_lower_right_nullvec(x, l, tol, maxit, p, error)
     complex(kind=dp), dimension(:,:), intent(in) :: l
     complex(kind=dp), dimension(:), intent(out) :: x
     real(kind=dp), intent(in) :: tol
@@ -263,7 +263,7 @@ contains
     real(kind=dp) :: nrmx
     complex(kind=dp) :: d, tmp
     complex(kind=dp), dimension(size(x)) :: y
-    type(routine_info), parameter :: info=info_f_c_lower_right_nullvec
+    type(routine_info), parameter :: info=info_f_z_lower_right_nullvec
     !
     n=size(l,1)
     if (failure(error)) return
@@ -323,6 +323,6 @@ contains
           call set_error(1, info, error); return
        end if
     end if
-  end subroutine f_c_lower_right_nullvec
+  end subroutine f_z_lower_right_nullvec
 
 end module mod_nullvec

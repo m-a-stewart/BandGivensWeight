@@ -11,22 +11,22 @@ module mod_qr_factorization
 
   private
 
-  public d_qr, c_qr
+  public d_qr, z_qr
   
-  public qr_bv_to_ub, d_qr_bv_to_ub, c_qr_bv_to_ub, &
-       f_qr_bv_to_ub, f_d_qr_bv_to_ub, f_c_qr_bv_to_ub, &
-       d_qr_of, c_qr_of, qr
+  public qr_bv_to_ub, d_qr_bv_to_ub, z_qr_bv_to_ub, &
+       f_qr_bv_to_ub, f_d_qr_bv_to_ub, f_z_qr_bv_to_ub, &
+       d_qr_of, z_qr_of, qr
 
   interface qr
-     module procedure d_qr_of, c_qr_of
+     module procedure d_qr_of, z_qr_of
   end interface qr
 
   interface qr_bv_to_ub
-     module procedure d_qr_bv_to_ub, c_qr_bv_to_ub
+     module procedure d_qr_bv_to_ub, z_qr_bv_to_ub
   end interface qr_bv_to_ub
 
   interface f_qr_bv_to_ub
-     module procedure f_d_qr_bv_to_ub, f_c_qr_bv_to_ub
+     module procedure f_d_qr_bv_to_ub, f_z_qr_bv_to_ub
   end interface f_qr_bv_to_ub
 
   type d_qr
@@ -34,10 +34,10 @@ module mod_qr_factorization
      type(d_ub), allocatable :: ub
   end type d_qr
 
-  type c_qr
-     type(c_sweeps), allocatable :: sw
-     type(c_ub), allocatable :: ub
-  end type c_qr
+  type z_qr
+     type(z_sweeps), allocatable :: sw
+     type(z_ub), allocatable :: ub
+  end type z_qr
 
 contains
 
@@ -227,13 +227,13 @@ contains
     call br_to_bc(b_bv,b_ub,0,ubw)
   end subroutine f_d_qr_bv_to_ub
 
-  function c_qr_of(bv,error) result(swub)
-    type(c_qr) :: swub
-    type(c_bv), intent(in) :: bv
+  function z_qr_of(bv,error) result(swub)
+    type(z_qr) :: swub
+    type(z_bv), intent(in) :: bv
     type(error_info), intent(inout), optional :: error
-    type(routine_info), parameter :: info=info_c_qr_of
+    type(routine_info), parameter :: info=info_z_qr_of
     integer(kind=int32) :: n, lbwmax, ubwmax, lbw, ubw
-    type(c_bv), allocatable :: bv1
+    type(z_bv), allocatable :: bv1
 
     if (failure(error)) return
     call push_id(info,error)
@@ -242,14 +242,14 @@ contains
     ubwmax=get_ubwmax(bv);
     lbw=bv%lbw
     ubw=bv%ubw
-    swub%ub=c_new_ub(n,0,min(lbw+ubw,n-1))
-    bv1=c_new_bv(n,lbw,min(lbw+ubw+1,n-1))
+    swub%ub=z_new_ub(n,0,min(lbw+ubw,n-1))
+    bv1=z_new_bv(n,lbw,min(lbw+ubw+1,n-1))
     call copy(bv1,bv)
-    swub%sw=c_new_sweeps(n, lbw+1, n+lbw-1, lbw)
-    call c_qr_bv_to_ub(bv1, swub%ub, swub%sw,error)
+    swub%sw=z_new_sweeps(n, lbw+1, n+lbw-1, lbw)
+    call z_qr_bv_to_ub(bv1, swub%ub, swub%sw,error)
     deallocate(bv1)
     call pop_id(error)
-  end function c_qr_of
+  end function z_qr_of
   
 
   ! Errors
@@ -260,12 +260,12 @@ contains
   ! 4: Not enough storage in bv.
   ! 5: Not enough storage in ub.
 
-  subroutine c_qr_bv_to_ub(bv,ub,sw,error)
-    type(c_ub) :: ub
-    type(c_bv) :: bv
-    type(c_sweeps) :: sw
+  subroutine z_qr_bv_to_ub(bv,ub,sw,error)
+    type(z_ub) :: ub
+    type(z_bv) :: bv
+    type(z_sweeps) :: sw
     type(error_info), intent(inout), optional :: error
-    type(routine_info), parameter :: info=info_c_qr_bv_to_ub
+    type(routine_info), parameter :: info=info_z_qr_bv_to_ub
 
     integer(kind=int32) :: lbw, n
 
@@ -290,16 +290,16 @@ contains
     if (get_ubwmax(ub) < min(bv%lbw+bv%ubw,n-1)) then
        call set_error(5, info, error); return
     end if
-    call f_c_qr_bv_to_ub(bv%br, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), &
+    call f_z_qr_bv_to_ub(bv%br, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), &
          get_ubwmax(bv), bv%numrotsv, bv%ksv, bv%csv, bv%ssv, & 
          ub%bc, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), ub%numrotsu, &
          ub%jsu, ub%csu, ub%ssu, sw%left, sw%right, sw%inc, get_minind(sw), &
          get_maxind(sw), get_maxord(sw), sw%numrots, sw%js, &
          sw%cs, sw%ss)
     call pop_id(error)
-  end subroutine c_qr_bv_to_ub
+  end subroutine z_qr_bv_to_ub
 
-  subroutine f_c_qr_bv_to_ub(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, &
+  subroutine f_z_qr_bv_to_ub(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, &
        ksv, csv, ssv, &
        b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, csu, ssu, &
        leftq, rightq, incq, minind, maxind, maxord, numrotsq, jsq, csq, ssq)
@@ -326,7 +326,7 @@ contains
     integer(kind=int32), intent(out) :: leftq, rightq, incq
 
     integer(kind=int32) :: j, k, lbw, ubw, lbw1, ubw1, k0, k1
-    type(c_rotation) :: rot
+    type(z_rotation) :: rot
 
     if (n == 1) then
        b_ub(1,1)=b_bv(1,1);
@@ -336,7 +336,7 @@ contains
     end if
 
     if (lbw_bv == 0) then
-       call f_c_convert_bv_to_ub(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, &
+       call f_z_convert_bv_to_ub(b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, &
             numrotsv, ksv, csv, ssv, b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, &
             numrotsu, jsu, csu, ssu)
        numrotsq=0; leftq=0; rightq=-1; incq=1
@@ -414,7 +414,7 @@ contains
     lbw_ub=0; ubw_ub=ubw
     call shift(b_bv,0,-lbw)
     call br_to_bc(b_bv,b_ub,0,ubw)
-  end subroutine f_c_qr_bv_to_ub
+  end subroutine f_z_qr_bv_to_ub
 
 end module mod_qr_factorization
 

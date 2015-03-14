@@ -12,12 +12,12 @@ program test_convert_ubt_and_wbv
   real(kind=dp), parameter :: tol=1e-15, c=2.0
   !
   real(kind=dp), dimension(:,:), allocatable :: a0_d, a1_d
-  complex(kind=dp), dimension(:,:), allocatable :: a0_c, a1_c
+  complex(kind=dp), dimension(:,:), allocatable :: a0_z, a1_z
 
   type(d_wbv), allocatable :: wbv_d
-  type(c_wbv), allocatable :: wbv_c
+  type(z_wbv), allocatable :: wbv_z
   type(d_ubt), allocatable :: ubt_d
-  type(c_ubt), allocatable :: ubt_c
+  type(z_ubt), allocatable :: ubt_z
 
   call initialize_errors
 
@@ -160,124 +160,124 @@ program test_convert_ubt_and_wbv
 
   na=40
   lbwa=5; ubwa=3
-  wbv_c=c_random_wbv(na,lbwa,ubwa,error=error)
-  a0_c=general(wbv_c,error)
+  wbv_z=z_random_wbv(na,lbwa,ubwa,error=error)
+  a0_z=general(wbv_z,error)
   call cpu_time(t0)
-  ubt_c=ubt(wbv_c,error)
+  ubt_z=ubt(wbv_z,error)
   call cpu_time(t1)
-  a1_c=general(ubt_c,error)
+  a1_z=general(ubt_z,error)
   test_name = "Complex WBV to UBT, n=40;"
-  call c_output_result_lower_upper(test_name,a0_c,a1_c,lbwa,ubt_c%lbw, &
-       ubwa, ubt_c%ubw, t0,t1,c*tol,error)
+  call z_output_result_lower_upper(test_name,a0_z,a1_z,lbwa,ubt_z%lbw, &
+       ubwa, ubt_z%ubw, t0,t1,c*tol,error)
 
   na=1
   lbwa=0; ubwa=0
-  wbv_c=c_random_wbv(na,lbwa,ubwa,error=error)
-  a0_c=general(wbv_c,error)
+  wbv_z=z_random_wbv(na,lbwa,ubwa,error=error)
+  a0_z=general(wbv_z,error)
   call cpu_time(t0)
-  ubt_c=ubt(wbv_c,error)
+  ubt_z=ubt(wbv_z,error)
   call cpu_time(t1)
-  a1_c=general(ubt_c,error)
+  a1_z=general(ubt_z,error)
   test_name = "Complex WBV to UBT, n=1;"
-  call c_output_result_lower_upper(test_name,a0_c,a1_c,lbwa,ubt_c%lbw, &
-       ubwa, ubt_c%ubw, t0,t1,c*tol,error)
+  call z_output_result_lower_upper(test_name,a0_z,a1_z,lbwa,ubt_z%lbw, &
+       ubwa, ubt_z%ubw, t0,t1,c*tol,error)
 
   na=2
   lbwa=1; ubwa=1
-  wbv_c=c_random_wbv(na,lbwa,ubwa,error=error)
-  a0_c=general(wbv_c,error)
+  wbv_z=z_random_wbv(na,lbwa,ubwa,error=error)
+  a0_z=general(wbv_z,error)
   call cpu_time(t0)
-  ubt_c=ubt(wbv_c,error)
+  ubt_z=ubt(wbv_z,error)
   call cpu_time(t1)
-  a1_c=general(ubt_c,error)
+  a1_z=general(ubt_z,error)
   test_name = "Complex WBV to UBT, n=2;"
-  call c_output_result_lower_upper(test_name,a0_c,a1_c,lbwa,ubt_c%lbw, &
-       ubwa, ubt_c%ubw, t0,t1,c*tol,error)
+  call z_output_result_lower_upper(test_name,a0_z,a1_z,lbwa,ubt_z%lbw, &
+       ubwa, ubt_z%ubw, t0,t1,c*tol,error)
   
   na=3
   lbwa=1; ubwa=1
-  wbv_c=c_random_wbv(na,lbwa,ubwa,error=error)
-  a0_c=general(wbv_c,error)
+  wbv_z=z_random_wbv(na,lbwa,ubwa,error=error)
+  a0_z=general(wbv_z,error)
   call cpu_time(t0)
-  ubt_c=ubt(wbv_c,error)
+  ubt_z=ubt(wbv_z,error)
   call cpu_time(t1)
-  a1_c=general(ubt_c,error)
+  a1_z=general(ubt_z,error)
   test_name = "Complex WBV to UBT, n=3;"
-  call c_output_result_lower_upper(test_name,a0_c,a1_c,lbwa,ubt_c%lbw, &
-       ubwa, ubt_c%ubw, t0,t1,c*tol,error)
+  call z_output_result_lower_upper(test_name,a0_z,a1_z,lbwa,ubt_z%lbw, &
+       ubwa, ubt_z%ubw, t0,t1,c*tol,error)
 
   na=4
   lbwa=2; ubwa=2
-  wbv_c=c_random_wbv(na,lbwa,ubwa,error=error)
-  a0_c=general(wbv_c,error)
+  wbv_z=z_random_wbv(na,lbwa,ubwa,error=error)
+  a0_z=general(wbv_z,error)
   call cpu_time(t0)
-  ubt_c=ubt(wbv_c,error)
+  ubt_z=ubt(wbv_z,error)
   call cpu_time(t1)
-  a1_c=general(ubt_c,error)
+  a1_z=general(ubt_z,error)
   test_name = "Complex WBV to UBT, n=4;"
-  call c_output_result_lower_upper(test_name,a0_c,a1_c,lbwa,ubt_c%lbw, &
-       ubwa, ubt_c%ubw, t0,t1,c*tol,error)
+  call z_output_result_lower_upper(test_name,a0_z,a1_z,lbwa,ubt_z%lbw, &
+       ubwa, ubt_z%ubw, t0,t1,c*tol,error)
   print *
   
   na=40
   lbwa=5; ubwa=3
-  ubt_c=c_random_ubt(na,lbwa,ubwa,error=error)
-  a0_c=general(ubt_c,error)
+  ubt_z=z_random_ubt(na,lbwa,ubwa,error=error)
+  a0_z=general(ubt_z,error)
   call cpu_time(t0)
-  wbv_c=wbv(ubt_c,error)
+  wbv_z=wbv(ubt_z,error)
   call cpu_time(t1)
-  a1_c=general(wbv_c,error)
+  a1_z=general(wbv_z,error)
   test_name = "Complex UBT to WBV, n=40;"
-  call c_output_result_lower_upper(test_name,a0_c,a1_c,lbwa,wbv_c%lbw, &
-       ubwa,wbv_c%ubw,t0,t1,c*tol,error)
+  call z_output_result_lower_upper(test_name,a0_z,a1_z,lbwa,wbv_z%lbw, &
+       ubwa,wbv_z%ubw,t0,t1,c*tol,error)
 
   na=1
   lbwa=0; ubwa=0
-  ubt_c=c_random_ubt(na,lbwa,ubwa,error=error)
-  a0_c=general(ubt_c,error)
+  ubt_z=z_random_ubt(na,lbwa,ubwa,error=error)
+  a0_z=general(ubt_z,error)
   call cpu_time(t0)
-  wbv_c=wbv(ubt_c,error)
+  wbv_z=wbv(ubt_z,error)
   call cpu_time(t1)
-  a1_c=general(wbv_c,error)
+  a1_z=general(wbv_z,error)
   test_name = "Complex UBT to WBV, n=1;"
-  call c_output_result_lower_upper(test_name,a0_c,a1_c,lbwa,wbv_c%lbw, &
-       ubwa,wbv_c%ubw,t0,t1,c*tol,error)
+  call z_output_result_lower_upper(test_name,a0_z,a1_z,lbwa,wbv_z%lbw, &
+       ubwa,wbv_z%ubw,t0,t1,c*tol,error)
 
   na=2
   lbwa=1; ubwa=1
-  ubt_c=c_random_ubt(na,lbwa,ubwa,error=error)
-  a0_c=general(ubt_c,error)
+  ubt_z=z_random_ubt(na,lbwa,ubwa,error=error)
+  a0_z=general(ubt_z,error)
   call cpu_time(t0)
-  wbv_c=wbv(ubt_c,error)
+  wbv_z=wbv(ubt_z,error)
   call cpu_time(t1)
-  a1_c=general(wbv_c,error)
+  a1_z=general(wbv_z,error)
   test_name = "Complex UBT to WBV, n=2;"
-  call c_output_result_lower_upper(test_name,a0_c,a1_c,lbwa,wbv_c%lbw, &
-       ubwa,wbv_c%ubw,t0,t1,c*tol,error)
+  call z_output_result_lower_upper(test_name,a0_z,a1_z,lbwa,wbv_z%lbw, &
+       ubwa,wbv_z%ubw,t0,t1,c*tol,error)
 
   na=3
   lbwa=1; ubwa=1
-  ubt_c=c_random_ubt(na,lbwa,ubwa,error=error)
-  a0_c=general(ubt_c,error)
+  ubt_z=z_random_ubt(na,lbwa,ubwa,error=error)
+  a0_z=general(ubt_z,error)
   call cpu_time(t0)
-  wbv_c=wbv(ubt_c,error)
+  wbv_z=wbv(ubt_z,error)
   call cpu_time(t1)
-  a1_c=general(wbv_c,error)
+  a1_z=general(wbv_z,error)
   test_name = "Complex UBT to WBV, n=3;"
-  call c_output_result_lower_upper(test_name,a0_c,a1_c,lbwa,wbv_c%lbw, &
-       ubwa,wbv_c%ubw,t0,t1,c*tol,error)
+  call z_output_result_lower_upper(test_name,a0_z,a1_z,lbwa,wbv_z%lbw, &
+       ubwa,wbv_z%ubw,t0,t1,c*tol,error)
 
   na=4
   lbwa=2; ubwa=2
-  ubt_c=c_random_ubt(na,lbwa,ubwa,error=error)
-  a0_c=general(ubt_c,error)
+  ubt_z=z_random_ubt(na,lbwa,ubwa,error=error)
+  a0_z=general(ubt_z,error)
   call cpu_time(t0)
-  wbv_c=wbv(ubt_c,error)
+  wbv_z=wbv(ubt_z,error)
   call cpu_time(t1)
-  a1_c=general(wbv_c,error)
+  a1_z=general(wbv_z,error)
   test_name = "Complex UBT to WBV, n=4;"
-  call c_output_result_lower_upper(test_name,a0_c,a1_c,lbwa,wbv_c%lbw, &
-       ubwa,wbv_c%ubw,t0,t1,c*tol,error)
+  call z_output_result_lower_upper(test_name,a0_z,a1_z,lbwa,wbv_z%lbw, &
+       ubwa,wbv_z%ubw,t0,t1,c*tol,error)
 
 
 end program test_convert_ubt_and_wbv

@@ -33,7 +33,7 @@ contains
     end if
   end subroutine d_output_result_upper
 
-  subroutine c_output_result_upper(name,a0,a1,ubw0,ubw1,t0,t1,bnd,error)
+  subroutine z_output_result_upper(name,a0,a1,ubw0,ubw1,t0,t1,bnd,error)
     character(len=*) :: name
     complex(kind=dp), dimension(:,:) :: a0, a1     
     real(kind=dp) :: bnd, t0, t1
@@ -54,7 +54,7 @@ contains
        end if
        write (*,fmt_upper) name, t1-t0, ubw1, berr, test_result
     end if
-  end subroutine c_output_result_upper
+  end subroutine z_output_result_upper
 
   subroutine d_output_result_lower(name,a0,a1,lbw0,lbw1,t0,t1,bnd,error)
     character(len=*) :: name
@@ -79,7 +79,7 @@ contains
     end if
   end subroutine d_output_result_lower
 
-  subroutine c_output_result_lower(name,a0,a1,lbw0,lbw1,t0,t1,bnd,error)
+  subroutine z_output_result_lower(name,a0,a1,lbw0,lbw1,t0,t1,bnd,error)
     character(len=*) :: name
     complex(kind=dp), dimension(:,:) :: a0, a1     
     real(kind=dp) :: bnd, t0, t1
@@ -100,7 +100,7 @@ contains
        end if
        write (*,fmt_lower) name, t1-t0, lbw1, berr, test_result
     end if
-  end subroutine c_output_result_lower
+  end subroutine z_output_result_lower
 
   subroutine d_output_result_lower_upper(name,a0,a1,lbw0,lbw1,ubw0,ubw1,t0,t1,bnd,error)
     character(len=*) :: name
@@ -125,7 +125,7 @@ contains
     end if
   end subroutine d_output_result_lower_upper
 
-  subroutine c_output_result_lower_upper(name,a0,a1,lbw0,lbw1,ubw0,ubw1,t0,t1,bnd,error)
+  subroutine z_output_result_lower_upper(name,a0,a1,lbw0,lbw1,ubw0,ubw1,t0,t1,bnd,error)
     character(len=*) :: name
     complex(kind=dp), dimension(:,:) :: a0, a1     
     real(kind=dp) :: bnd, t0, t1
@@ -146,6 +146,6 @@ contains
        end if
        write (*,fmt_lower_upper) name, t1-t0, lbw1, ubw1, berr, test_result
     end if
-  end subroutine c_output_result_lower_upper
+  end subroutine z_output_result_lower_upper
 
 end module mod_test_data

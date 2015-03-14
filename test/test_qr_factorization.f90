@@ -9,12 +9,12 @@ program test_qr_factorization
   !
 
   real(kind=dp), dimension(:,:), allocatable :: a_d, a0_d
-  complex(kind=dp), dimension(:,:), allocatable :: a_c, a0_c
+  complex(kind=dp), dimension(:,:), allocatable :: a_z, a0_z
 
   type(d_bv), allocatable :: bv_d
-  type(c_bv), allocatable :: bv_c
+  type(z_bv), allocatable :: bv_z
   type(d_qr), allocatable :: swub_d
-  type(c_qr), allocatable :: swub_c
+  type(z_qr), allocatable :: swub_z
 
   call initialize_errors
   print *
@@ -98,68 +98,68 @@ program test_qr_factorization
   print *
 
   na=40; lbwa=3; ubwa=5
-  bv_c=c_random_bv(na,lbwa,ubwa,error=error)
-  a_c = general(bv_c,error)
-  a0_c = a_c
+  bv_z=z_random_bv(na,lbwa,ubwa,error=error)
+  a_z = general(bv_z,error)
+  a0_z = a_z
   call cpu_time(t0)
-  swub_c=qr(bv_c,error)
+  swub_z=qr(bv_z,error)
   call cpu_time(t1)  
-  a_c = general(swub_c%ub,error)
-  a_c = swub_c%sw * a_c
+  a_z = general(swub_z%ub,error)
+  a_z = swub_z%sw * a_z
   test_name = "Random Complex QR Factorization"
-  call c_output_result_lower_upper(test_name,a0_c,a_c,0, &
-       swub_c%ub%lbw, min(ubwa+lbwa,na-1),swub_c%ub%ubw,t0,t1,c*tol,error)
+  call z_output_result_lower_upper(test_name,a0_z,a_z,0, &
+       swub_z%ub%lbw, min(ubwa+lbwa,na-1),swub_z%ub%ubw,t0,t1,c*tol,error)
 
   na=1; lbwa=0; ubwa=0
-  bv_c=c_random_bv(na,lbwa,ubwa,error=error)
-  a_c = general(bv_c,error)
-  a0_c = a_c
+  bv_z=z_random_bv(na,lbwa,ubwa,error=error)
+  a_z = general(bv_z,error)
+  a0_z = a_z
   call cpu_time(t0)
-  swub_c=qr(bv_c,error)
+  swub_z=qr(bv_z,error)
   call cpu_time(t1)  
-  a_c = general(swub_c%ub,error)
-  a_c = swub_c%sw * a_c
+  a_z = general(swub_z%ub,error)
+  a_z = swub_z%sw * a_z
   test_name = "Random Complex QR Factorization, n=1"
-  call c_output_result_lower_upper(test_name,a0_c,a_c,0, &
-       swub_c%ub%lbw, min(ubwa+lbwa,na-1), swub_c%ub%ubw,t0,t1,c*tol,error)
+  call z_output_result_lower_upper(test_name,a0_z,a_z,0, &
+       swub_z%ub%lbw, min(ubwa+lbwa,na-1), swub_z%ub%ubw,t0,t1,c*tol,error)
 
   na=2; lbwa=1; ubwa=1
-  bv_c=c_random_bv(na,lbwa,ubwa,error=error)
-  a_c = general(bv_c,error)
-  a0_c = a_c
+  bv_z=z_random_bv(na,lbwa,ubwa,error=error)
+  a_z = general(bv_z,error)
+  a0_z = a_z
   call cpu_time(t0)
-  swub_c=qr(bv_c,error)
+  swub_z=qr(bv_z,error)
   call cpu_time(t1)  
-  a_c = general(swub_c%ub,error)
-  a_c = swub_c%sw * a_c
+  a_z = general(swub_z%ub,error)
+  a_z = swub_z%sw * a_z
   test_name = "Random Complex QR Factorization, n=2"
-  call c_output_result_lower_upper(test_name,a0_c,a_c,0, &
-       swub_c%ub%lbw, min(ubwa+lbwa,na-1), swub_c%ub%ubw,t0,t1,c*tol,error)
+  call z_output_result_lower_upper(test_name,a0_z,a_z,0, &
+       swub_z%ub%lbw, min(ubwa+lbwa,na-1), swub_z%ub%ubw,t0,t1,c*tol,error)
 
   na=3; lbwa=1; ubwa=1
-  bv_c=c_random_bv(na,lbwa,ubwa,error=error)
-  a_c = general(bv_c,error)
-  a0_c = a_c
+  bv_z=z_random_bv(na,lbwa,ubwa,error=error)
+  a_z = general(bv_z,error)
+  a0_z = a_z
   call cpu_time(t0)
-  swub_c=qr(bv_c,error)
+  swub_z=qr(bv_z,error)
   call cpu_time(t1)  
-  a_c = general(swub_c%ub,error)
-  a_c = swub_c%sw * a_c
+  a_z = general(swub_z%ub,error)
+  a_z = swub_z%sw * a_z
   test_name = "Random Complex QR Factorization, n=3"
-  call c_output_result_lower_upper(test_name,a0_c,a_c,0, &
-       swub_c%ub%lbw, min(ubwa+lbwa,na-1), swub_c%ub%ubw,t0,t1,c*tol,error)
+  call z_output_result_lower_upper(test_name,a0_z,a_z,0, &
+       swub_z%ub%lbw, min(ubwa+lbwa,na-1), swub_z%ub%ubw,t0,t1,c*tol,error)
 
   na=4; lbwa=2; ubwa=2
-  bv_c=c_random_bv(na,lbwa,ubwa,error=error)
-  a_c = general(bv_c,error)
-  a0_c = a_c
+  bv_z=z_random_bv(na,lbwa,ubwa,error=error)
+  a_z = general(bv_z,error)
+  a0_z = a_z
   call cpu_time(t0)
-  swub_c=qr(bv_c,error)
+  swub_z=qr(bv_z,error)
   call cpu_time(t1)  
-  a_c = general(swub_c%ub,error)
-  a_c = swub_c%sw * a_c
+  a_z = general(swub_z%ub,error)
+  a_z = swub_z%sw * a_z
   test_name = "Random Complex QR Factorization, n=4"
-  call c_output_result_lower_upper(test_name,a0_c,a_c,0, &
-       swub_c%ub%lbw, min(ubwa+lbwa,na-1), swub_c%ub%ubw,t0,t1,c*tol,error)
+  call z_output_result_lower_upper(test_name,a0_z,a_z,0, &
+       swub_z%ub%lbw, min(ubwa+lbwa,na-1), swub_z%ub%ubw,t0,t1,c*tol,error)
 
 end program test_qr_factorization

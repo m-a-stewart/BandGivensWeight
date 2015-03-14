@@ -7,20 +7,20 @@ module mod_convert_bv_to_ub
   implicit none
 
   private
-  public :: convert_bv_to_ub, d_convert_bv_to_ub, c_convert_bv_to_ub, &
-       f_convert_bv_to_ub, f_d_convert_bv_to_ub, f_c_convert_bv_to_ub, &
-       d_ub_of_bv, c_ub_of_bv, ub
+  public :: convert_bv_to_ub, d_convert_bv_to_ub, z_convert_bv_to_ub, &
+       f_convert_bv_to_ub, f_d_convert_bv_to_ub, f_z_convert_bv_to_ub, &
+       d_ub_of_bv, z_ub_of_bv, ub
 
   interface convert_bv_to_ub
-     module procedure d_convert_bv_to_ub, c_convert_bv_to_ub
+     module procedure d_convert_bv_to_ub, z_convert_bv_to_ub
   end interface convert_bv_to_ub
 
   interface f_convert_bv_to_ub
-     module procedure f_d_convert_bv_to_ub, f_c_convert_bv_to_ub
+     module procedure f_d_convert_bv_to_ub, f_z_convert_bv_to_ub
   end interface f_convert_bv_to_ub
 
   interface ub
-     module procedure d_ub_of_bv, c_ub_of_bv
+     module procedure d_ub_of_bv, z_ub_of_bv
   end interface ub
 
 contains
@@ -133,30 +133,30 @@ contains
     call br_to_bc(b_bv,b_ub,lbw,ubw)
   end subroutine f_d_convert_bv_to_ub
 
-  function c_ub_of_bv(bv,error) result(ub)
-    type(c_ub) :: ub
-    type(c_bv), intent(in) :: bv
+  function z_ub_of_bv(bv,error) result(ub)
+    type(z_ub) :: ub
+    type(z_bv), intent(in) :: bv
     type(error_info), intent(inout), optional :: error
 
-    type(c_bv), allocatable :: bv1
-    type(routine_info), parameter :: info=info_c_ub_of_bv
+    type(z_bv), allocatable :: bv1
+    type(routine_info), parameter :: info=info_z_ub_of_bv
 
     if (failure(error)) return
     call push_id(info, error)
     
-    ub=c_new_ub(get_n(bv), bv%lbw, bv%ubw)
-    bv1=c_new_bv(get_n(bv),bv%lbw,  bv%ubw+1)
+    ub=z_new_ub(get_n(bv), bv%lbw, bv%ubw)
+    bv1=z_new_bv(get_n(bv),bv%lbw,  bv%ubw+1)
     call copy(bv1,bv)
-    call c_convert_bv_to_ub(bv1,ub,error)
+    call z_convert_bv_to_ub(bv1,ub,error)
 
     call pop_id(error)
-  end function c_ub_of_bv
+  end function z_ub_of_bv
 
-  subroutine c_convert_bv_to_ub(bv, ub, error)
-    type(c_bv) :: bv
-    type(c_ub) :: ub
+  subroutine z_convert_bv_to_ub(bv, ub, error)
+    type(z_bv) :: bv
+    type(z_ub) :: ub
     type(error_info), intent(inout), optional :: error
-    type(routine_info), parameter :: info=info_c_convert_bv_to_ub
+    type(routine_info), parameter :: info=info_z_convert_bv_to_ub
     if (failure(error)) return
     call push_id(info, error)
     
@@ -173,14 +173,14 @@ contains
     if (get_n(ub) /= get_n(bv)) then
        call set_error(4, info, error); return
     end if
-    call f_c_convert_bv_to_ub(bv%br, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), &
+    call f_z_convert_bv_to_ub(bv%br, get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), &
          get_ubwmax(bv), bv%numrotsv, bv%ksv, &
          bv%csv, bv%ssv, ub%bc,  ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), ub%numrotsu, &
          ub%jsu, ub%csu, ub%ssu)
     call pop_id(error)
-  end subroutine c_convert_bv_to_ub
+  end subroutine z_convert_bv_to_ub
 
-  subroutine f_c_convert_bv_to_ub(b_bv, n, lbw, ubw, lbwmax_bv, ubwmax_bv, numrotsv, &
+  subroutine f_z_convert_bv_to_ub(b_bv, n, lbw, ubw, lbwmax_bv, ubwmax_bv, numrotsv, &
        ksv, csv, ssv, b_ub, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, csu, ssu)
     complex(kind=dp), dimension(n,lbwmax_bv+ubwmax_bv+1), intent(inout) :: b_bv
     integer(kind=int32), intent(in) :: n, lbw, ubw, lbwmax_bv, ubwmax_bv, lbwmax_ub, ubwmax_ub
@@ -197,7 +197,7 @@ contains
     complex(kind=dp), dimension(ubwmax_ub,n), intent(out) :: ssu
 
     integer(kind=int32) :: j, k, ubw1, lbw1, k0, k1
-    type(c_rotation) :: rot
+    type(z_rotation) :: rot
 
     b_ub(1:lbw+ubw+1,:)=(0.0_dp, 0.0_dp); numrotsu=0
     ssu(1:ubw,:)=(0.0_dp, 0.0_dp); csu(1:ubw,:)=0.0_dp
@@ -232,6 +232,6 @@ contains
        end do
     end do
     call br_to_bc(b_bv,b_ub,lbw,ubw)
-  end subroutine f_c_convert_bv_to_ub
+  end subroutine f_z_convert_bv_to_ub
 
 end module mod_convert_bv_to_ub

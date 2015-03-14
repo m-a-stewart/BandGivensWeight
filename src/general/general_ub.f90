@@ -13,29 +13,29 @@ module mod_general_ub
 
   private
 
-  public :: general_to_ub, d_general_to_ub, c_general_to_ub, &
-       f_general_to_ub, f_d_general_to_ub, f_c_general_to_ub, &
-       f_general_ub, f_d_general_ub, f_c_general_ub, &
-       d_ub_of_general, c_ub_of_general, ub_of_general, ub
+  public :: general_to_ub, d_general_to_ub, z_general_to_ub, &
+       f_general_to_ub, f_d_general_to_ub, f_z_general_to_ub, &
+       f_general_ub, f_d_general_ub, f_z_general_ub, &
+       d_ub_of_general, z_ub_of_general, ub_of_general, ub
 
   interface ub_of_general
-     module procedure d_ub_of_general, c_ub_of_general
+     module procedure d_ub_of_general, z_ub_of_general
   end interface ub_of_general
 
   interface ub
-     module procedure d_ub_of_general, c_ub_of_general
+     module procedure d_ub_of_general, z_ub_of_general
   end interface ub
   
   interface general_to_ub
-     module procedure d_general_to_ub, c_general_to_ub
+     module procedure d_general_to_ub, z_general_to_ub
   end interface general_to_ub
 
   interface f_general_to_ub
-     module procedure f_d_general_to_ub, f_c_general_to_ub
+     module procedure f_d_general_to_ub, f_z_general_to_ub
   end interface f_general_to_ub
 
   interface f_general_ub
-     module procedure f_d_general_ub, f_c_general_ub
+     module procedure f_d_general_ub, f_z_general_ub
   end interface f_general_ub
 
 contains
@@ -348,34 +348,34 @@ contains
   ! Complex.
   !
 
-  function c_ub_of_general(a, lbw, lbwmax, ubwmax, tol, error) result(ub)
-    type(c_ub), allocatable :: ub
+  function z_ub_of_general(a, lbw, lbwmax, ubwmax, tol, error) result(ub)
+    type(z_ub), allocatable :: ub
     complex(kind=dp), target, dimension(:,:), intent(inout) :: a
     type(error_info), intent(inout), optional :: error
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), intent(in) :: lbw, lbwmax, ubwmax
-    type(routine_info), parameter :: info=info_c_ub_of_general
+    type(routine_info), parameter :: info=info_z_ub_of_general
     integer(kind=int32) :: n
 
     if (failure(error)) return
     call push_id(info, error)
 
     n=size(a,1)
-    ub=c_new_ub(n,lbwmax,ubwmax)
+    ub=z_new_ub(n,lbwmax,ubwmax)
 
-    call c_general_to_ub(a,ub,lbw,tol,error)
+    call z_general_to_ub(a,ub,lbw,tol,error)
 
     call pop_id(error)
     
-  end function c_ub_of_general
+  end function z_ub_of_general
 
-  subroutine c_general_to_ub(a,ub,lbw,tol,error)
+  subroutine z_general_to_ub(a,ub,lbw,tol,error)
     complex(kind=dp), target, dimension(:,:), intent(inout) :: a
-    type(c_ub), intent(inout) :: ub
+    type(z_ub), intent(inout) :: ub
     type(error_info), intent(inout), optional :: error
     real(kind=dp), intent(in) :: tol
     integer(kind=int32), intent(in) :: lbw
-    type(routine_info), parameter :: info=info_c_general_to_ub
+    type(routine_info), parameter :: info=info_z_general_to_ub
 
     if (failure(error)) return
     call push_id(info, error)
@@ -389,14 +389,14 @@ contains
     if (get_n(ub) /= size(a,1) .or. get_n(ub) /= size(a,2)) then
        call set_error(3, info, error); return
     end if
-    call f_c_general_to_ub(a,get_n(ub),ub%bc, lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
+    call f_z_general_to_ub(a,get_n(ub),ub%bc, lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
          ub%numrotsu, ub%jsu, ub%csu, ub%ssu, tol, error)
     ub%lbw=lbw
     call pop_id(error)
     
-  end subroutine c_general_to_ub
+  end subroutine z_general_to_ub
 
-  subroutine f_c_general_to_ub(a, n, b, lbw, ubw, lbwmax, ubwmax, &
+  subroutine f_z_general_to_ub(a, n, b, lbw, ubw, lbwmax, ubwmax, &
        numrotsu, jsu, csu, ssu, tol, error)
     complex(kind=dp), target, dimension(n,n), intent(inout) :: a
     integer(kind=int32), dimension(ubwmax,n), intent(out) :: jsu
@@ -410,7 +410,7 @@ contains
     integer(kind=int32), intent(in) :: n, lbw, lbwmax, ubwmax
     
     integer(kind=int32), dimension(n) :: ubws
-    type(routine_info), parameter :: info=info_f_c_general_to_ub
+    type(routine_info), parameter :: info=info_f_z_general_to_ub
     !
     if (failure(error)) return
     call push_id(info, error)
@@ -423,7 +423,7 @@ contains
        return
     end if
 
-    call f_c_general_ub(a, n, ubws, ubwmax, numrotsu, jsu, csu, ssu, tol, error)
+    call f_z_general_ub(a, n, ubws, ubwmax, numrotsu, jsu, csu, ssu, tol, error)
 
     if (success(error)) then
        
@@ -432,14 +432,14 @@ contains
           ! This should already have been detected in f_d_general_ub.
           call set_error(1, info, error); return
        else
-          call c_extract_diagonals_bc(a,n,b,lbw,ubw,lbwmax, ubwmax)
+          call z_extract_diagonals_bc(a,n,b,lbw,ubw,lbwmax, ubwmax)
        end if
     end if
 
     call pop_id(error)
-  end subroutine f_c_general_to_ub
+  end subroutine f_z_general_to_ub
 
-  subroutine f_c_general_ub(a, n, ubws, ubwmax, numrotsu, jsu, csu, ssu, tol, error)
+  subroutine f_z_general_ub(a, n, ubws, ubwmax, numrotsu, jsu, csu, ssu, tol, error)
     complex(kind=dp), target, dimension(n,n), intent(inout) :: a
     integer(kind=int32), dimension(ubwmax,n), intent(out) :: jsu
     real(kind=dp), dimension(ubwmax,n), intent(out) :: csu
@@ -454,8 +454,8 @@ contains
     complex(kind=dp), dimension(ubwmax+1) :: x
     complex(kind=dp), pointer, dimension(:,:) :: pl, pq
     integer(kind=int32) :: i, j, k, roffs, nl, p
-    type(c_rotation) :: rot
-    type(routine_info), parameter :: info=info_f_c_general_ub
+    type(z_rotation) :: rot
+    type(routine_info), parameter :: info=info_f_z_general_ub
     type(error_info) :: errornv
     integer(kind=int32) :: k1, roffs1, ubw1
     !
@@ -648,6 +648,6 @@ contains
        pl(:,1)=pl(:,1)*pq(1,1)
     end do
     call pop_id(error)
-  end subroutine f_c_general_ub
+  end subroutine f_z_general_ub
 
 end module mod_general_ub

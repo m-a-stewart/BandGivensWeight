@@ -8,15 +8,15 @@ module mod_gs
 
   private
 
-  public :: extend_gs_rows, d_extend_gs_rows, c_extend_gs_rows, &
-       extend_gs_columns, d_extend_gs_columns, c_extend_gs_columns
+  public :: extend_gs_rows, d_extend_gs_rows, z_extend_gs_rows, &
+       extend_gs_columns, d_extend_gs_columns, z_extend_gs_columns
 
   interface extend_gs_rows
-     module procedure d_extend_gs_rows, c_extend_gs_rows
+     module procedure d_extend_gs_rows, z_extend_gs_rows
   end interface extend_gs_rows
 
   interface extend_gs_columns
-     module procedure d_extend_gs_columns, c_extend_gs_columns
+     module procedure d_extend_gs_columns, z_extend_gs_columns
   end interface extend_gs_columns
 
 contains
@@ -79,7 +79,7 @@ contains
   end subroutine d_extend_gs_rows
 
   ! Extend a Gram-Schmidt LQ decomposition
-  subroutine c_extend_gs_rows(q1, l, rho, q2, error)
+  subroutine z_extend_gs_rows(q1, l, rho, q2, error)
     ! orthogonalize q2 against q1.  Return error = 1 if
     ! too many iterations are required.
     complex(kind=dp), dimension (:,:), intent(in) :: q1
@@ -91,7 +91,7 @@ contains
     complex(kind=dp), dimension(size(l)) :: x
     real(kind=dp) :: nrm1, nrm2
     integer(kind=int32) :: k
-    type(routine_info), parameter :: info=info_c_extend_gs_rows
+    type(routine_info), parameter :: info=info_z_extend_gs_rows
     !
     nrm1=norm2(q2)
     l = matmul(q1,conjg(q2))
@@ -133,7 +133,7 @@ contains
        call set_error(1, info, error); return
     end if
     call pop_id(error)
-  end subroutine c_extend_gs_rows
+  end subroutine z_extend_gs_rows
 
   ! Extend a Gram-Schmidt QL decomposition
   subroutine d_extend_gs_columns(q1, l, rho, q2, error)
@@ -190,7 +190,7 @@ contains
   end subroutine d_extend_gs_columns
 
   ! Extend a Gram-Schmidt QL decomposition
-  subroutine c_extend_gs_columns(q1, l, rho, q2, error)
+  subroutine z_extend_gs_columns(q1, l, rho, q2, error)
     ! orthogonalize q2 against q1.  Return error = 1 if
     ! too many iterations are required.
     complex(kind=dp), dimension (:,:), intent(in) :: q1
@@ -202,7 +202,7 @@ contains
     complex(kind=dp), dimension(size(l)) :: x
     real(kind=dp) :: nrm1, nrm2
     integer(kind=int32) :: k
-    type(routine_info), parameter :: info=info_c_extend_gs_columns
+    type(routine_info), parameter :: info=info_z_extend_gs_columns
     !
     nrm1=norm2(q2)
     l = matmul(conjg(q2),q1)
@@ -244,6 +244,6 @@ contains
        call set_error(1, info, error); return
     end if
     call pop_id(error)
-  end subroutine c_extend_gs_columns
+  end subroutine z_extend_gs_columns
 
 end module mod_gs

@@ -8,41 +8,41 @@ module mod_solve
 
   private
 
-  public :: back_solve_ub, d_back_solve_ub, c_back_solve_ub, &
-          d_v_back_solve_ub, c_v_back_solve_ub, &
-          f_back_solve_ub, f_d_back_solve_ub, f_c_back_solve_ub, &
-          f_d_v_back_solve_ub, f_c_v_back_solve_ub, &
-          d_solve_ub, d_v_solve_ub, c_solve_ub, c_v_solve_ub
+  public :: back_solve_ub, d_back_solve_ub, z_back_solve_ub, &
+          d_v_back_solve_ub, z_v_back_solve_ub, &
+          f_back_solve_ub, f_d_back_solve_ub, f_z_back_solve_ub, &
+          f_d_v_back_solve_ub, f_z_v_back_solve_ub, &
+          d_solve_ub, d_v_solve_ub, z_solve_ub, z_v_solve_ub
 
-  public :: forward_solve_bv, d_forward_solve_bv, c_forward_solve_bv, &
-          d_v_forward_solve_bv, c_v_forward_solve_bv, &
-          f_forward_solve_bv, f_d_forward_solve_bv, f_c_forward_solve_bv, &
-          f_d_v_forward_solve_bv, f_c_v_forward_solve_bv, &
-          d_solve_bv, d_v_solve_bv, c_solve_bv, c_v_solve_bv, solve
+  public :: forward_solve_bv, d_forward_solve_bv, z_forward_solve_bv, &
+          d_v_forward_solve_bv, z_v_forward_solve_bv, &
+          f_forward_solve_bv, f_d_forward_solve_bv, f_z_forward_solve_bv, &
+          f_d_v_forward_solve_bv, f_z_v_forward_solve_bv, &
+          d_solve_bv, d_v_solve_bv, z_solve_bv, z_v_solve_bv, solve
 
   interface solve
-     module procedure d_solve_ub, d_v_solve_ub, c_solve_ub, c_v_solve_ub, &
-          d_solve_bv, d_v_solve_bv, c_solve_bv, c_v_solve_bv
+     module procedure d_solve_ub, d_v_solve_ub, z_solve_ub, z_v_solve_ub, &
+          d_solve_bv, d_v_solve_bv, z_solve_bv, z_v_solve_bv
   end interface solve
 
   interface back_solve_ub
-     module procedure d_back_solve_ub, c_back_solve_ub, &
-          d_v_back_solve_ub, c_v_back_solve_ub
+     module procedure d_back_solve_ub, z_back_solve_ub, &
+          d_v_back_solve_ub, z_v_back_solve_ub
   end interface back_solve_ub
 
   interface f_back_solve_ub
-     module procedure f_d_back_solve_ub, f_c_back_solve_ub, &
-          f_d_v_back_solve_ub, f_c_v_back_solve_ub
+     module procedure f_d_back_solve_ub, f_z_back_solve_ub, &
+          f_d_v_back_solve_ub, f_z_v_back_solve_ub
   end interface f_back_solve_ub
 
   interface forward_solve_bv
-     module procedure d_forward_solve_bv, c_forward_solve_bv, &
-          d_v_forward_solve_bv, c_v_forward_solve_bv
+     module procedure d_forward_solve_bv, z_forward_solve_bv, &
+          d_v_forward_solve_bv, z_v_forward_solve_bv
   end interface forward_solve_bv
 
   interface f_forward_solve_bv
-     module procedure f_d_forward_solve_bv, f_c_forward_solve_bv, &
-          f_d_v_forward_solve_bv, f_c_v_forward_solve_bv
+     module procedure f_d_forward_solve_bv, f_z_forward_solve_bv, &
+          f_d_v_forward_solve_bv, f_z_v_forward_solve_bv
   end interface f_forward_solve_bv
 
 contains
@@ -239,33 +239,33 @@ contains
     end do
   end subroutine f_d_v_back_solve_ub
 
-  function c_solve_ub(ub,c,error) result(x)
+  function z_solve_ub(ub,c,error) result(x)
     complex(kind=dp), dimension(:,:), allocatable :: x
     complex(kind=dp), dimension(:,:), intent(in) :: c
-    type(c_ub), intent(in) :: ub
+    type(z_ub), intent(in) :: ub
     type(error_info), intent(inout), optional :: error
 
     complex(kind=dp), dimension(:,:), allocatable :: c1
-    type(routine_info), parameter :: info=info_c_solve_ub
+    type(routine_info), parameter :: info=info_z_solve_ub
 
     if (failure(error)) return
     call push_id(info,error)
 
     c1=c
     allocate(x(size(c,1),size(c,2)))
-    call c_back_solve_ub(ub,x,c1,error)
+    call z_back_solve_ub(ub,x,c1,error)
     deallocate(c1)
     
     call pop_id(error)
 
-  end function c_solve_ub
+  end function z_solve_ub
 
-  subroutine c_back_solve_ub(ub,x,c,error)
-    type(c_ub), intent(in) :: ub
+  subroutine z_back_solve_ub(ub,x,c,error)
+    type(z_ub), intent(in) :: ub
     complex(kind=dp), dimension(:,:), intent(inout) :: c
     complex(kind=dp), dimension(:,:), intent(out) :: x
     type(error_info), intent(inout), optional :: error
-    type(routine_info), parameter :: info=info_c_back_solve_ub
+    type(routine_info), parameter :: info=info_z_back_solve_ub
     integer(kind=int32) :: n
 
     if (failure(error)) return
@@ -283,38 +283,38 @@ contains
     if (size(x,1)/=n .or. size(x,2) /= size(c,2)) then
        call set_error(4, info, error); return
     end if
-    call f_c_back_solve_ub(ub%bc, n, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
+    call f_z_back_solve_ub(ub%bc, n, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
          ub%numrotsu, ub%jsu, ub%csu, ub%ssu, x, c, size(c,2))
     call pop_id(error)
-  end subroutine c_back_solve_ub
+  end subroutine z_back_solve_ub
 
-  function c_v_solve_ub(ub,c,error) result(x)
+  function z_v_solve_ub(ub,c,error) result(x)
     complex(kind=dp), dimension(:), allocatable :: x
     complex(kind=dp), dimension(:), intent(in) :: c
-    type(c_ub), intent(in) :: ub
+    type(z_ub), intent(in) :: ub
     type(error_info), intent(inout), optional :: error
 
     complex(kind=dp), dimension(:), allocatable :: c1
-    type(routine_info), parameter :: info=info_c_v_solve_ub
+    type(routine_info), parameter :: info=info_z_v_solve_ub
 
     if (failure(error)) return
     call push_id(info,error)
 
     c1=c
     allocate(x(size(c)))
-    call c_v_back_solve_ub(ub,x,c1,error)
+    call z_v_back_solve_ub(ub,x,c1,error)
     deallocate(c1)
     
     call pop_id(error)
 
-  end function c_v_solve_ub
+  end function z_v_solve_ub
 
-  subroutine c_v_back_solve_ub(ub,x,c,error)
-    type(c_ub), intent(in) :: ub
+  subroutine z_v_back_solve_ub(ub,x,c,error)
+    type(z_ub), intent(in) :: ub
     complex(kind=dp), dimension(:), intent(inout) :: c
     complex(kind=dp), dimension(:), intent(out) :: x
     type(error_info), intent(inout), optional :: error
-    type(routine_info), parameter :: info=info_c_v_back_solve_ub
+    type(routine_info), parameter :: info=info_z_v_back_solve_ub
 
     integer(kind=int32) :: n
 
@@ -333,13 +333,13 @@ contains
     if (size(x)/=n) then
        call set_error(4, info, error); return
     end if
-    call f_c_v_back_solve_ub(ub%bc, n, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
+    call f_z_v_back_solve_ub(ub%bc, n, ub%lbw, ub%ubw, get_lbwmax(ub), get_ubwmax(ub), &
          ub%numrotsu, ub%jsu, ub%csu, ub%ssu, x, c)
     call pop_id(error)
-  end subroutine c_v_back_solve_ub
+  end subroutine z_v_back_solve_ub
 
 
-  subroutine f_c_back_solve_ub(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, &
+  subroutine f_z_back_solve_ub(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, &
        csu, ssu, x, c, nc)
     complex(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(in) :: b_ub
     integer(kind=int32), dimension(n), intent(in) :: numrotsu
@@ -351,7 +351,7 @@ contains
     complex(kind=dp), dimension(n,nc), intent(out) :: x
 
     integer(kind=int32) :: j, k, l
-    type(c_rotation) :: rot
+    type(z_rotation) :: rot
 
     if (n==1) then
        x=c/b_ub(1,1); return
@@ -378,9 +378,9 @@ contains
        end do
        x(k,:)=c(k,:)/b_ub(ubw_ub+1,k)
     end do
-  end subroutine f_c_back_solve_ub
+  end subroutine f_z_back_solve_ub
 
-  subroutine f_c_v_back_solve_ub(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, &
+  subroutine f_z_v_back_solve_ub(b_ub, n, lbw_ub, ubw_ub, lbwmax_ub, ubwmax_ub, numrotsu, jsu, &
        csu, ssu, x, c)
     complex(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(in) :: b_ub
     integer(kind=int32), dimension(n), intent(in) :: numrotsu
@@ -392,7 +392,7 @@ contains
     complex(kind=dp), dimension(n), intent(out) :: x
 
     integer(kind=int32) :: j, k, l
-    type(c_rotation) :: rot
+    type(z_rotation) :: rot
 
     if (n==1) then
        x=c/b_ub(1,1); return
@@ -417,7 +417,7 @@ contains
        end do
        x(k)=c(k)/b_ub(ubw_ub+1,k)
     end do
-  end subroutine f_c_v_back_solve_ub
+  end subroutine f_z_v_back_solve_ub
 
 
   ! Forward solve:
@@ -610,34 +610,34 @@ contains
 
   ! Complex forward
 
-  function c_solve_bv(bv,c,error) result(x)
+  function z_solve_bv(bv,c,error) result(x)
     complex(kind=dp), dimension(:,:), allocatable :: x
     complex(kind=dp), dimension(:,:), intent(in) :: c
-    type(c_bv), intent(in) :: bv
+    type(z_bv), intent(in) :: bv
     type(error_info), intent(inout), optional :: error
 
     complex(kind=dp), dimension(:,:), allocatable :: c1
-    type(routine_info), parameter :: info=info_c_solve_bv
+    type(routine_info), parameter :: info=info_z_solve_bv
 
     if (failure(error)) return
     call push_id(info,error)
 
     c1=c
     allocate(x(size(c,1),size(c,2)))
-    call c_forward_solve_bv(x,bv,c1,error)
+    call z_forward_solve_bv(x,bv,c1,error)
     deallocate(c1)
     
     call pop_id(error)
 
-  end function c_solve_bv
+  end function z_solve_bv
 
 
-  subroutine c_forward_solve_bv(x,bv,c,error)
-    type(c_bv), intent(in) :: bv
+  subroutine z_forward_solve_bv(x,bv,c,error)
+    type(z_bv), intent(in) :: bv
     complex(kind=dp), dimension(:,:), intent(inout) :: c
     complex(kind=dp), dimension(:,:), intent(out) :: x
     type(error_info), intent(inout), optional :: error
-    type(routine_info), parameter :: info=info_c_forward_solve_bv
+    type(routine_info), parameter :: info=info_z_forward_solve_bv
 
     integer(kind=int32) :: n
     n=size(c,2)
@@ -655,12 +655,12 @@ contains
     if (size(x,2)/=n .or. size(x,1) /= size(c,1)) then
        call set_error(4, info, error); return
     end if
-    call f_c_forward_solve_bv(x, bv%br, n, bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
+    call f_z_forward_solve_bv(x, bv%br, n, bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
          bv%numrotsv, bv%ksv, bv%csv, bv%ssv, c, size(c,1))
     call pop_id(error)
-  end subroutine c_forward_solve_bv
+  end subroutine z_forward_solve_bv
 
-  subroutine f_c_forward_solve_bv(x, b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, &
+  subroutine f_z_forward_solve_bv(x, b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, &
        csv, ssv, c, mc)
     complex(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(in) :: b_bv
     integer(kind=int32), dimension(n), intent(in) :: numrotsv
@@ -672,7 +672,7 @@ contains
     complex(kind=dp), dimension(mc,n), intent(out) :: x
 
     integer(kind=int32) :: j, k, l
-    type(c_rotation) :: rot
+    type(z_rotation) :: rot
 
     if (n==1) then
        x=c/b_bv(1,1); return
@@ -699,34 +699,34 @@ contains
        end do
        x(:,j)=c(:,j)/b_bv(j,lbw_bv+1)
     end do
-  end subroutine f_c_forward_solve_bv
+  end subroutine f_z_forward_solve_bv
 
-  function c_v_solve_bv(bv,c,error) result(x)
+  function z_v_solve_bv(bv,c,error) result(x)
     complex(kind=dp), dimension(:), allocatable :: x
     complex(kind=dp), dimension(:), intent(in) :: c
-    type(c_bv), intent(in) :: bv
+    type(z_bv), intent(in) :: bv
     type(error_info), intent(inout), optional :: error
 
     complex(kind=dp), dimension(:), allocatable :: c1
-    type(routine_info), parameter :: info=info_c_v_solve_bv
+    type(routine_info), parameter :: info=info_z_v_solve_bv
 
     if (failure(error)) return
     call push_id(info,error)
 
     c1=c
     allocate(x(size(c)))
-    call c_v_forward_solve_bv(x,bv,c1,error)
+    call z_v_forward_solve_bv(x,bv,c1,error)
     deallocate(c1)
     
     call pop_id(error)
-  end function c_v_solve_bv
+  end function z_v_solve_bv
 
-  subroutine c_v_forward_solve_bv(x,bv,c,error)
-    type(c_bv), intent(in) :: bv
+  subroutine z_v_forward_solve_bv(x,bv,c,error)
+    type(z_bv), intent(in) :: bv
     complex(kind=dp), dimension(:), intent(inout) :: c
     complex(kind=dp), dimension(:), intent(out) :: x
     type(error_info), intent(inout), optional :: error
-    type(routine_info), parameter :: info=info_c_v_forward_solve_bv
+    type(routine_info), parameter :: info=info_z_v_forward_solve_bv
 
     integer(kind=int32) :: n
     n=size(c)
@@ -744,11 +744,11 @@ contains
     if (size(x)/=n) then
        call set_error(4, info, error); return
     end if
-    call f_c_v_forward_solve_bv(x, bv%br, n, bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
+    call f_z_v_forward_solve_bv(x, bv%br, n, bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
          bv%numrotsv, bv%ksv, bv%csv, bv%ssv, c)
-  end subroutine c_v_forward_solve_bv
+  end subroutine z_v_forward_solve_bv
 
-  subroutine f_c_v_forward_solve_bv(x, b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, &
+  subroutine f_z_v_forward_solve_bv(x, b_bv, n, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, &
        csv, ssv, c)
     complex(kind=dp), dimension(n, lbwmax_bv+ubwmax_bv+1), intent(in) :: b_bv
     integer(kind=int32), dimension(n), intent(in) :: numrotsv
@@ -760,7 +760,7 @@ contains
     complex(kind=dp), dimension(n), intent(out) :: x
 
     integer(kind=int32) :: j, k, l
-    type(c_rotation) :: rot
+    type(z_rotation) :: rot
 
     if (n==1) then
        x=c/b_bv(1,1); return
@@ -785,7 +785,7 @@ contains
        end do
        x(j)=c(j)/b_bv(j,lbw_bv+1)
     end do
-  end subroutine f_c_v_forward_solve_bv
+  end subroutine f_z_v_forward_solve_bv
 
 
 end module mod_solve

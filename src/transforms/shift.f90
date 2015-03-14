@@ -3,10 +3,10 @@ module mod_shift
   implicit none
 
   private
-  public :: shift, d_shift2, c_shift2, d_shift1, c_shift1, i_shift1
+  public :: shift, d_shift2, z_shift2, d_shift1, z_shift1, i_shift1
 
   interface shift
-     module procedure d_shift2, c_shift2, d_shift1, c_shift1, i_shift1
+     module procedure d_shift2, z_shift2, d_shift1, z_shift1, i_shift1
   end interface shift
 
 contains
@@ -30,7 +30,7 @@ contains
     end if
   end subroutine d_shift1
 
-  subroutine c_shift1(a,d)
+  subroutine z_shift1(a,d)
     complex(kind=dp), dimension(:), intent(inout) :: a
     integer(kind=int32), intent(in) :: d
     integer(kind=int32) :: n,j
@@ -47,7 +47,7 @@ contains
        end do
        a(n+d+1:n)=(0.0_dp,0.0_dp)
     end if
-  end subroutine c_shift1
+  end subroutine z_shift1
 
   subroutine i_shift1(a,d)
     integer(kind=int32), dimension(:), intent(inout) :: a
@@ -110,7 +110,7 @@ contains
     end if
   end subroutine d_shift2
 
-  subroutine c_shift2(a,dj,dk)
+  subroutine z_shift2(a,dj,dk)
     complex(kind=dp), dimension(:,:), intent(inout) :: a
     integer(kind=int32), intent(in) :: dj, dk
     integer(kind=int32) :: m,n,j,k
@@ -150,6 +150,6 @@ contains
        a(m+dj+1:m,:)=(0.0_dp,0.0_dp)
        a(:,n+dk+1:n)=(0.0_dp,0.0_dp)
     end if
-  end subroutine c_shift2
+  end subroutine z_shift2
 
 end module mod_shift

@@ -9,19 +9,19 @@ program test_solve
   !
 
   real(kind=dp), dimension(:,:), allocatable :: a_d, x_d, rhs_d, rhs0_d
-  complex(kind=dp), dimension(:,:), allocatable :: a_c, x_c, rhs_c, rhs0_c
+  complex(kind=dp), dimension(:,:), allocatable :: a_z, x_z, rhs_z, rhs0_z
 
   real(kind=dp), dimension(:), allocatable :: rhs_v_d, rhs0_v_d, x_v_d
-  complex(kind=dp), dimension(:), allocatable :: rhs_v_c, rhs0_v_c, x_v_c
+  complex(kind=dp), dimension(:), allocatable :: rhs_v_z, rhs0_v_z, x_v_z
 
   type(d_ubt), allocatable :: ubt_d
-  type(c_ubt), allocatable :: ubt_c
+  type(z_ubt), allocatable :: ubt_z
   type(d_rc), allocatable :: swbv_d
-  type(c_rc), allocatable :: swbv_c
+  type(z_rc), allocatable :: swbv_z
   type(d_qr), allocatable :: swub_d
-  type(c_qr), allocatable :: swub_c
+  type(z_qr), allocatable :: swub_z
   type(d_bv), allocatable :: bv_d
-  type(c_bv), allocatable :: bv_c
+  type(z_bv), allocatable :: bv_z
   
   call initialize_errors
   print *
@@ -66,39 +66,39 @@ program test_solve
        reshape(rhs_v_d/scale,[na,1]),ubwa,ubwa,t0,t1,c*tol,error)
 
   na=40; lbwa=5; ubwa=7; nc=3
-  rhs_c=c_random_matrix(na,nc)
-  rhs0_c=rhs_c
-  ubt_c=c_random_ubt(na,lbwa,ubwa,error=error)
-  a_c = general(ubt_c,error)
-  swbv_c=rc(ubt_c,error)
-  rhs_c=trp(swbv_c%sw) * rhs_c
-  swub_c=qr(swbv_c%bv,error)
-  rhs_c=trp(swub_c%sw) * rhs_c
+  rhs_z=z_random_matrix(na,nc)
+  rhs0_z=rhs_z
+  ubt_z=z_random_ubt(na,lbwa,ubwa,error=error)
+  a_z = general(ubt_z,error)
+  swbv_z=rc(ubt_z,error)
+  rhs_z=trp(swbv_z%sw) * rhs_z
+  swub_z=qr(swbv_z%bv,error)
+  rhs_z=trp(swub_z%sw) * rhs_z
   call cpu_time(t0)
-  x_c=solve(swub_c%ub, rhs_c, error)
+  x_z=solve(swub_z%ub, rhs_z, error)
   call cpu_time(t1)
-  rhs_c=matmul(a_c,x_c)
-  scale=maxabs(a_c)*maxabs(x_c)
+  rhs_z=matmul(a_z,x_z)
+  scale=maxabs(a_z)*maxabs(x_z)
   test_name = "Complex Back Subs. (n=40)"
-  call c_output_result_upper(test_name,rhs0_c/scale,rhs_c/scale,ubwa,ubwa,t0,t1,c*tol,error)
+  call z_output_result_upper(test_name,rhs0_z/scale,rhs_z/scale,ubwa,ubwa,t0,t1,c*tol,error)
 
   na=40; lbwa=5; ubwa=7
-  rhs_v_c=c_random_vector(na)
-  rhs0_v_c=rhs_v_c
-  ubt_c=c_random_ubt(na,lbwa,ubwa,error=error)
-  a_c = general(ubt_c,error)
-  swbv_c=rc(ubt_c,error)
-  rhs_v_c=trp(swbv_c%sw) * rhs_v_c
-  swub_c=qr(swbv_c%bv,error)
-  rhs_v_c=trp(swub_c%sw) * rhs_v_c
+  rhs_v_z=z_random_vector(na)
+  rhs0_v_z=rhs_v_z
+  ubt_z=z_random_ubt(na,lbwa,ubwa,error=error)
+  a_z = general(ubt_z,error)
+  swbv_z=rc(ubt_z,error)
+  rhs_v_z=trp(swbv_z%sw) * rhs_v_z
+  swub_z=qr(swbv_z%bv,error)
+  rhs_v_z=trp(swub_z%sw) * rhs_v_z
   call cpu_time(t0)
-  x_v_c=solve(swub_c%ub, rhs_v_c, error)
+  x_v_z=solve(swub_z%ub, rhs_v_z, error)
   call cpu_time(t1)
-  rhs_v_c=matmul(a_c,x_v_c)
-  scale=maxabs(a_c)*maxabs(x_v_c)
+  rhs_v_z=matmul(a_z,x_v_z)
+  scale=maxabs(a_z)*maxabs(x_v_z)
   test_name = "Complex Vector Back Subs. (n=40)"
-  call c_output_result_upper(test_name,reshape(rhs0_v_c/scale,[na,1]),&
-       reshape(rhs_v_c/scale,[na,1]),ubwa,ubwa,t0,t1,c*tol,error)
+  call z_output_result_upper(test_name,reshape(rhs0_v_z/scale,[na,1]),&
+       reshape(rhs_v_z/scale,[na,1]),ubwa,ubwa,t0,t1,c*tol,error)
 
   print *
   print *, "--------------------------------"
@@ -144,40 +144,40 @@ program test_solve
        reshape(rhs_v_d/scale,[1,na]),ubwa,ubwa,t0,t1,c*tol,error)
 
   na=40; lbwa=5; ubwa=7; nc=3
-  rhs_c=c_random_matrix(nc,na)
-  rhs0_c=rhs_c
-  ubt_c=c_random_ubt(na,lbwa,ubwa,error=error)
-  a_c = general(ubt_c,error)
-  swbv_c=rc(ubt_c,error)
-  swub_c=qr(swbv_c%bv,error)
-  bv_c=bv(swub_c%ub,error)
+  rhs_z=z_random_matrix(nc,na)
+  rhs0_z=rhs_z
+  ubt_z=z_random_ubt(na,lbwa,ubwa,error=error)
+  a_z = general(ubt_z,error)
+  swbv_z=rc(ubt_z,error)
+  swub_z=qr(swbv_z%bv,error)
+  bv_z=bv(swub_z%ub,error)
   call cpu_time(t0)
-  x_c=solve(bv_c, rhs_c, error)
+  x_z=solve(bv_z, rhs_z, error)
   call cpu_time(t1)
-  x_c = x_c * trp(swub_c%sw)
-  x_c = x_c * trp(swbv_c%sw)
-  rhs_c=matmul(x_c,a_c)
-  scale=maxabs(a_c)*maxabs(x_c)
+  x_z = x_z * trp(swub_z%sw)
+  x_z = x_z * trp(swbv_z%sw)
+  rhs_z=matmul(x_z,a_z)
+  scale=maxabs(a_z)*maxabs(x_z)
   test_name = "Complex Forward Subs. (n=40)"
-  call c_output_result_upper(test_name,rhs0_c/scale,rhs_c/scale,ubwa,ubwa,t0,t1,c*tol,error)
+  call z_output_result_upper(test_name,rhs0_z/scale,rhs_z/scale,ubwa,ubwa,t0,t1,c*tol,error)
 
   na=40; lbwa=5; ubwa=7
-  rhs_v_c=c_random_vector(na)
-  rhs0_v_c=rhs_v_c
-  ubt_c=c_random_ubt(na,lbwa,ubwa,error=error)
-  a_c = general(ubt_c,error)
-  swbv_c=rc(ubt_c,error)
-  swub_c=qr(swbv_c%bv,error)
-  bv_c=bv(swub_c%ub,error)
+  rhs_v_z=z_random_vector(na)
+  rhs0_v_z=rhs_v_z
+  ubt_z=z_random_ubt(na,lbwa,ubwa,error=error)
+  a_z = general(ubt_z,error)
+  swbv_z=rc(ubt_z,error)
+  swub_z=qr(swbv_z%bv,error)
+  bv_z=bv(swub_z%ub,error)
   call cpu_time(t0)
-  x_v_c=solve(bv_c, rhs_v_c, error)
+  x_v_z=solve(bv_z, rhs_v_z, error)
   call cpu_time(t1)
-  x_v_c = x_v_c * trp(swub_c%sw)
-  x_v_c = x_v_c * trp(swbv_c%sw)
-  rhs_v_c=matmul(x_v_c,a_c)
-  scale=maxabs(a_c)*maxabs(x_v_c)
+  x_v_z = x_v_z * trp(swub_z%sw)
+  x_v_z = x_v_z * trp(swbv_z%sw)
+  rhs_v_z=matmul(x_v_z,a_z)
+  scale=maxabs(a_z)*maxabs(x_v_z)
   test_name = "Complex Vector Forward Subs. (n=40)"
-  call c_output_result_upper(test_name,reshape(rhs0_v_c/scale,[1,na]),&
-       reshape(rhs_v_c/scale,[1,na]),ubwa,ubwa,t0,t1,c*tol,error)
+  call z_output_result_upper(test_name,reshape(rhs0_v_z/scale,[1,na]),&
+       reshape(rhs_v_z/scale,[1,na]),ubwa,ubwa,t0,t1,c*tol,error)
   
 end program test_solve

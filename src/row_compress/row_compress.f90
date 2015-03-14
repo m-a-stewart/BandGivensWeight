@@ -9,15 +9,15 @@ module mod_row_compress
   implicit none
 
   interface row_compress
-     module procedure d_row_compress, c_row_compress
+     module procedure d_row_compress, z_row_compress
   end interface row_compress
 
   interface f_row_compress
-     module procedure f_d_row_compress, f_c_row_compress
+     module procedure f_d_row_compress, f_z_row_compress
   end interface f_row_compress
 
   interface rc
-     module procedure d_rc_of, c_rc_of
+     module procedure d_rc_of, z_rc_of
   end interface rc
 
   type d_rc
@@ -25,10 +25,10 @@ module mod_row_compress
      type(d_bv), allocatable :: bv
   end type d_rc
 
-  type c_rc
-     type(c_sweeps), allocatable :: sw
-     type(c_bv), allocatable :: bv
-  end type c_rc
+  type z_rc
+     type(z_sweeps), allocatable :: sw
+     type(z_bv), allocatable :: bv
+  end type z_rc
   
 contains
 
@@ -208,13 +208,13 @@ contains
     lbw_bv=lbw; ubw_bv=ubw
   end subroutine f_d_row_compress
 
-  function c_rc_of(ubt,error) result(swbv)
-    type(c_rc) :: swbv
-    type(c_ubt), intent(in) :: ubt
+  function z_rc_of(ubt,error) result(swbv)
+    type(z_rc) :: swbv
+    type(z_ubt), intent(in) :: ubt
     type(error_info), intent(inout), optional :: error
-    type(routine_info), parameter :: info=info_c_rc_of
+    type(routine_info), parameter :: info=info_z_rc_of
     integer(kind=int32) :: n, lbwmax, ubwmax, lbw, ubw
-    type(c_ubt), allocatable :: ubt1
+    type(z_ubt), allocatable :: ubt1
 
     if (failure(error)) return
     call push_id(info,error)
@@ -224,14 +224,14 @@ contains
     ubwmax=get_ubwmax(ubt);
     lbw=ubt%lbw
     ubw=ubt%ubw
-    swbv%bv=c_new_bv(n,lbw,min(lbw+ubw,n-1))
-    ubt1=c_new_ubt(n,min(lbw+1,n-1),min(lbw+ubw+1,n-1))
+    swbv%bv=z_new_bv(n,lbw,min(lbw+ubw,n-1))
+    ubt1=z_new_ubt(n,min(lbw+1,n-1),min(lbw+ubw+1,n-1))
     call copy(ubt1,ubt)
-    swbv%sw=c_new_sweeps(n, 1, n-2, lbw)
-    call c_row_compress(ubt1, swbv%bv, swbv%sw, error)
+    swbv%sw=z_new_sweeps(n, 1, n-2, lbw)
+    call z_row_compress(ubt1, swbv%bv, swbv%sw, error)
     deallocate(ubt1)
     call pop_id(error)
-  end function c_rc_of
+  end function z_rc_of
 
   ! Errors
   ! 0: no error
@@ -240,12 +240,12 @@ contains
   ! 3: Not enough storage for the number of sweeps.
   ! 4: Not enough storage in ubt.
   ! 5: Not enough storage in bv.
-  subroutine c_row_compress(ubt,bv,sw,error)
-    type(c_ubt) :: ubt
-    type(c_bv) :: bv
-    type(c_sweeps) :: sw
+  subroutine z_row_compress(ubt,bv,sw,error)
+    type(z_ubt) :: ubt
+    type(z_bv) :: bv
+    type(z_sweeps) :: sw
     type(error_info), intent(inout), optional :: error
-    type(routine_info), parameter :: info=info_c_row_compress
+    type(routine_info), parameter :: info=info_z_row_compress
     integer(kind=int32) :: n, lbw
     lbw=ubt%lbw
     n=get_n(ubt)
@@ -269,16 +269,16 @@ contains
          get_ubwmax(bv) < min(ubt%lbw+ubt%ubw,n-1)) then
        call set_error(5, info, error); return
     end if
-    call f_c_row_compress(ubt%bc, get_n(ubt), ubt%lbw, ubt%ubw, get_lbwmax(ubt), &
+    call f_z_row_compress(ubt%bc, get_n(ubt), ubt%lbw, ubt%ubw, get_lbwmax(ubt), &
          get_ubwmax(ubt), ubt%numrotsu, ubt%jsu, ubt%csu, ubt%ssu, & 
          ubt%numrotst, ubt%kst, ubt%cst, ubt%sst, & 
          bv%br, bv%lbw, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), bv%numrotsv, bv%ksv, &
          bv%csv, bv%ssv, sw%left, sw%right, sw%inc, get_minind(sw), get_maxind(sw), &
          get_maxord(sw), sw%numrots, sw%js, sw%cs, sw%ss)
     call pop_id(error)
-  end subroutine c_row_compress
+  end subroutine z_row_compress
 
-  subroutine f_c_row_compress(b_ubt, n, lbw_ubt, ubw_ubt, lbwmax_ubt, ubwmax_ubt, numrotsu, &
+  subroutine f_z_row_compress(b_ubt, n, lbw_ubt, ubw_ubt, lbwmax_ubt, ubwmax_ubt, numrotsu, &
        jsu, csu, ssu, numrotst, kst, cst, sst, &
        b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, ssv, &
        leftq, rightq, incq, minind, maxind, maxord, numrotsq, jsq, csq, ssq)
@@ -308,7 +308,7 @@ contains
     integer(kind=int32), intent(out) :: leftq, rightq, incq
     integer(kind=int32) :: j, k, j0, j1, k0, k1, lbw, ubw, lbw1, ubw1
     logical :: full_ubw, full_lbw
-    type(c_rotation) :: rot
+    type(z_rotation) :: rot
 
     if (n == 1) then
        b_bv(1,1)=b_ubt(1,1);
@@ -386,7 +386,6 @@ contains
     end if
     call bc_to_br(b_ubt,b_bv,lbw,ubw)
     lbw_bv=lbw; ubw_bv=ubw
-  end subroutine f_c_row_compress
+  end subroutine f_z_row_compress
 
 end module mod_row_compress
-

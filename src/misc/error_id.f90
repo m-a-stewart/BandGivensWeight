@@ -34,125 +34,125 @@ module mod_error_id
   integer(int32), parameter :: id_d_ub_to_general=mod_id_assemble + 1
   integer(int32), parameter :: id_f_d_ub_to_general=mod_id_assemble + 0002
   integer(int32), parameter :: id_d_general_of_ub=mod_id_assemble + 0003
-  integer(int32), parameter :: id_c_ub_to_general=mod_id_assemble + 0004
-  integer(int32), parameter :: id_f_c_ub_to_general=mod_id_assemble + 0005
-  integer(int32), parameter :: id_c_general_of_ub=mod_id_assemble + 0006
+  integer(int32), parameter :: id_z_ub_to_general=mod_id_assemble + 0004
+  integer(int32), parameter :: id_f_z_ub_to_general=mod_id_assemble + 0005
+  integer(int32), parameter :: id_z_general_of_ub=mod_id_assemble + 0006
 
   integer(int32), parameter :: id_d_bt_to_general=mod_id_assemble + 0007
   integer(int32), parameter :: id_f_d_bt_to_general=mod_id_assemble + 0008
   integer(int32), parameter :: id_d_general_of_bt=mod_id_assemble + 0009
-  integer(int32), parameter :: id_c_bt_to_general=mod_id_assemble + 0010
-  integer(int32), parameter :: id_f_c_bt_to_general=mod_id_assemble + 0011
-  integer(int32), parameter :: id_c_general_of_bt=mod_id_assemble + 0012
+  integer(int32), parameter :: id_z_bt_to_general=mod_id_assemble + 0010
+  integer(int32), parameter :: id_f_z_bt_to_general=mod_id_assemble + 0011
+  integer(int32), parameter :: id_z_general_of_bt=mod_id_assemble + 0012
   
   integer(int32), parameter :: id_d_ubt_to_general=mod_id_assemble + 0013
   integer(int32), parameter :: id_f_d_ubt_to_general=mod_id_assemble + 0014
   integer(int32), parameter :: id_d_general_of_ubt=mod_id_assemble + 0015
-  integer(int32), parameter :: id_c_ubt_to_general=mod_id_assemble + 0016
-  integer(int32), parameter :: id_f_c_ubt_to_general=mod_id_assemble + 0017
-  integer(int32), parameter :: id_c_general_of_ubt=mod_id_assemble + 0018
+  integer(int32), parameter :: id_z_ubt_to_general=mod_id_assemble + 0016
+  integer(int32), parameter :: id_f_z_ubt_to_general=mod_id_assemble + 0017
+  integer(int32), parameter :: id_z_general_of_ubt=mod_id_assemble + 0018
 
   integer(int32), parameter :: id_d_bv_to_general=mod_id_assemble + 0019
   integer(int32), parameter :: id_f_d_bv_to_general=mod_id_assemble + 0020
   integer(int32), parameter :: id_d_general_of_bv=mod_id_assemble + 0021
-  integer(int32), parameter :: id_c_bv_to_general=mod_id_assemble + 0022
-  integer(int32), parameter :: id_f_c_bv_to_general=mod_id_assemble + 0023
-  integer(int32), parameter :: id_c_general_of_bv=mod_id_assemble + 0024
+  integer(int32), parameter :: id_z_bv_to_general=mod_id_assemble + 0022
+  integer(int32), parameter :: id_f_z_bv_to_general=mod_id_assemble + 0023
+  integer(int32), parameter :: id_z_general_of_bv=mod_id_assemble + 0024
 
   integer(int32), parameter :: id_d_wb_to_general=mod_id_assemble + 0025
   integer(int32), parameter :: id_f_d_wb_to_general=mod_id_assemble + 0026
   integer(int32), parameter :: id_d_general_of_wb=mod_id_assemble + 0027
-  integer(int32), parameter :: id_c_wb_to_general=mod_id_assemble + 0028
-  integer(int32), parameter :: id_f_c_wb_to_general=mod_id_assemble + 0029
-  integer(int32), parameter :: id_c_general_of_wb=mod_id_assemble + 0030
+  integer(int32), parameter :: id_z_wb_to_general=mod_id_assemble + 0028
+  integer(int32), parameter :: id_f_z_wb_to_general=mod_id_assemble + 0029
+  integer(int32), parameter :: id_z_general_of_wb=mod_id_assemble + 0030
   
   integer(int32), parameter :: id_d_wbv_to_general=mod_id_assemble + 0031
   integer(int32), parameter :: id_f_d_wbv_to_general=mod_id_assemble + 0032
   integer(int32), parameter :: id_d_general_of_wbv=mod_id_assemble + 0033
-  integer(int32), parameter :: id_c_wbv_to_general=mod_id_assemble + 0034
-  integer(int32), parameter :: id_f_c_wbv_to_general=mod_id_assemble + 0035
-  integer(int32), parameter :: id_c_general_of_wbv=mod_id_assemble + 0036
+  integer(int32), parameter :: id_z_wbv_to_general=mod_id_assemble + 0034
+  integer(int32), parameter :: id_f_z_wbv_to_general=mod_id_assemble + 0035
+  integer(int32), parameter :: id_z_general_of_wbv=mod_id_assemble + 0036
 
   type(routine_info), parameter :: info_d_ub_to_general=routine_info(id_d_ub_to_general, &
        'd_ub_to_general', [ character(len=error_message_length) :: 'Size error in A.' ] )
 
-  type(routine_info), parameter :: info_c_ub_to_general=routine_info(id_c_ub_to_general, &
-       'c_ub_to_general', [ character(len=error_message_length) :: 'Size error in A.' ] )
+  type(routine_info), parameter :: info_z_ub_to_general=routine_info(id_z_ub_to_general, &
+       'z_ub_to_general', [ character(len=error_message_length) :: 'Size error in A.' ] )
 
   type(routine_info), parameter :: info_d_general_of_ub=routine_info(id_d_general_of_ub, &
        'd_general_of_ub', [ character(len=error_message_length) :: '' ] )
 
-  type(routine_info), parameter :: info_c_general_of_ub=routine_info(id_c_general_of_ub, &
-       'c_general_of_ub', [ character(len=error_message_length) :: '' ] )
+  type(routine_info), parameter :: info_z_general_of_ub=routine_info(id_z_general_of_ub, &
+       'z_general_of_ub', [ character(len=error_message_length) :: '' ] )
   
   type(routine_info), parameter :: info_d_bt_to_general=routine_info(id_d_bt_to_general, &
        'd_bt_to_general', [ character(len=error_message_length) :: 'Size error in A.' ] )
 
-  type(routine_info), parameter :: info_c_bt_to_general=routine_info(id_c_bt_to_general, &
-       'c_bt_to_general', [ character(len=error_message_length) :: 'Size error in A.' ] )
+  type(routine_info), parameter :: info_z_bt_to_general=routine_info(id_z_bt_to_general, &
+       'z_bt_to_general', [ character(len=error_message_length) :: 'Size error in A.' ] )
 
   type(routine_info), parameter :: info_d_general_of_bt=routine_info(id_d_general_of_bt, &
        'd_general_of_bt', [ character(len=error_message_length) :: '' ] )
 
-  type(routine_info), parameter :: info_c_general_of_bt=routine_info(id_c_general_of_bt, &
-       'c_general_of_bt', [ character(len=error_message_length) :: '' ] )
+  type(routine_info), parameter :: info_z_general_of_bt=routine_info(id_z_general_of_bt, &
+       'z_general_of_bt', [ character(len=error_message_length) :: '' ] )
 
   type(routine_info), parameter :: info_d_ubt_to_general=routine_info(id_d_ubt_to_general, &
        'd_ubt_to_general', [ character(len=error_message_length) :: 'Size error in A.' ] )
 
-  type(routine_info), parameter :: info_c_ubt_to_general=routine_info(id_c_ubt_to_general, &
-       'c_ubt_to_general', [ character(len=error_message_length) :: 'Size error in A.' ] )
+  type(routine_info), parameter :: info_z_ubt_to_general=routine_info(id_z_ubt_to_general, &
+       'z_ubt_to_general', [ character(len=error_message_length) :: 'Size error in A.' ] )
 
   type(routine_info), parameter :: info_d_general_of_ubt=routine_info(id_d_general_of_ubt, &
        'd_general_of_ubt', [ character(len=error_message_length) :: '' ] )
 
-  type(routine_info), parameter :: info_c_general_of_ubt=routine_info(id_c_general_of_ubt, &
-       'c_general_of_ubt', [ character(len=error_message_length) :: '' ] )
+  type(routine_info), parameter :: info_z_general_of_ubt=routine_info(id_z_general_of_ubt, &
+       'z_general_of_ubt', [ character(len=error_message_length) :: '' ] )
 
   type(routine_info), parameter :: info_d_bv_to_general=routine_info(id_d_bv_to_general, &
        'd_bv_to_general', [ character(len=error_message_length) :: 'Size error in A.' ] )
   
-  type(routine_info), parameter :: info_c_bv_to_general=routine_info(id_c_bv_to_general, &
-       'c_bv_to_general', [ character(len=error_message_length) :: 'Size error in A.' ] )
+  type(routine_info), parameter :: info_z_bv_to_general=routine_info(id_z_bv_to_general, &
+       'z_bv_to_general', [ character(len=error_message_length) :: 'Size error in A.' ] )
 
   type(routine_info), parameter :: info_d_general_of_bv=routine_info(id_d_general_of_bv, &
        'd_general_of_bv', [ character(len=error_message_length) :: '' ] )
 
-  type(routine_info), parameter :: info_c_general_of_bv=routine_info(id_c_general_of_bv, &
-       'c_general_of_bv', [ character(len=error_message_length) :: '' ] )
+  type(routine_info), parameter :: info_z_general_of_bv=routine_info(id_z_general_of_bv, &
+       'z_general_of_bv', [ character(len=error_message_length) :: '' ] )
 
   type(routine_info), parameter :: info_d_wb_to_general=routine_info(id_d_wb_to_general, &
        'd_wb_to_general', [ character(len=error_message_length) :: 'Size error in A.' ] )
   
-  type(routine_info), parameter :: info_c_wb_to_general=routine_info(id_c_wb_to_general, &
-       'c_wb_to_general', [ character(len=error_message_length) :: 'Size error in A.' ] )
+  type(routine_info), parameter :: info_z_wb_to_general=routine_info(id_z_wb_to_general, &
+       'z_wb_to_general', [ character(len=error_message_length) :: 'Size error in A.' ] )
 
   type(routine_info), parameter :: info_d_general_of_wb=routine_info(id_d_general_of_wb, &
        'd_general_of_wb', [ character(len=error_message_length) :: '' ] )
 
-  type(routine_info), parameter :: info_c_general_of_wb=routine_info(id_c_general_of_wb, &
-       'c_general_of_wb', [ character(len=error_message_length) :: '' ] )
+  type(routine_info), parameter :: info_z_general_of_wb=routine_info(id_z_general_of_wb, &
+       'z_general_of_wb', [ character(len=error_message_length) :: '' ] )
   
   type(routine_info), parameter :: info_d_wbv_to_general=routine_info(id_d_wbv_to_general, &
        'd_wbv_to_general', [ character(len=error_message_length) :: 'Size error in A.' ] )
   
-  type(routine_info), parameter :: info_c_wbv_to_general=routine_info(id_c_wbv_to_general, &
-       'c_wbv_to_general', [ character(len=error_message_length) :: 'Size error in A.' ] )
+  type(routine_info), parameter :: info_z_wbv_to_general=routine_info(id_z_wbv_to_general, &
+       'z_wbv_to_general', [ character(len=error_message_length) :: 'Size error in A.' ] )
 
   type(routine_info), parameter :: info_d_general_of_wbv=routine_info(id_d_general_of_wbv, &
        'd_general_of_wbv', [ character(len=error_message_length) :: '' ] )
 
-  type(routine_info), parameter :: info_c_general_of_wbv=routine_info(id_c_general_of_wbv, &
-       'c_general_of_wbv', [ character(len=error_message_length) :: '' ] )
+  type(routine_info), parameter :: info_z_general_of_wbv=routine_info(id_z_general_of_wbv, &
+       'z_general_of_wbv', [ character(len=error_message_length) :: '' ] )
 
   ! src/convert/convert_bv_to_ub, 0100
   integer(int32), parameter :: mod_id_convert_bv_to_ub=100
   integer(int32), parameter :: id_d_convert_bv_to_ub=mod_id_convert_bv_to_ub+0
   integer(int32), parameter :: id_f_d_convert_bv_to_ub=mod_id_convert_bv_to_ub+1
   integer(int32), parameter :: id_d_ub_of_bv=mod_id_convert_bv_to_ub+2
-  integer(int32), parameter :: id_c_convert_bv_to_ub=mod_id_convert_bv_to_ub+3
-  integer(int32), parameter :: id_f_c_convert_bv_to_ub=mod_id_convert_bv_to_ub+4
-  integer(int32), parameter :: id_c_ub_of_bv=mod_id_convert_bv_to_ub+5
+  integer(int32), parameter :: id_z_convert_bv_to_ub=mod_id_convert_bv_to_ub+3
+  integer(int32), parameter :: id_f_z_convert_bv_to_ub=mod_id_convert_bv_to_ub+4
+  integer(int32), parameter :: id_z_ub_of_bv=mod_id_convert_bv_to_ub+5
 
   type(routine_info), parameter :: info_d_convert_bv_to_ub=routine_info(id_d_convert_bv_to_ub, &
        'd_convert_bv_to_ub', &
@@ -163,13 +163,13 @@ module mod_error_id
        'd_ub_of_bv', &
        [ character(len=error_message_length) :: '' ] )
 
-  type(routine_info), parameter :: info_c_convert_bv_to_ub=routine_info(id_c_convert_bv_to_ub, &
-       'c_convert_bv_to_ub', &
+  type(routine_info), parameter :: info_z_convert_bv_to_ub=routine_info(id_z_convert_bv_to_ub, &
+       'z_convert_bv_to_ub', &
        [ character(len=error_message_length) :: 'n<1', 'Insufficient storage in bv.', &
        'Insufficient Storage in ub.', 'ub%n /= bv%n' ] )
 
-  type(routine_info), parameter :: info_c_ub_of_bv=routine_info(id_c_ub_of_bv, &
-       'c_ub_of_bv', &
+  type(routine_info), parameter :: info_z_ub_of_bv=routine_info(id_z_ub_of_bv, &
+       'z_ub_of_bv', &
        [ character(len=error_message_length) :: '' ] )
 
   ! src/convert/convert_ub_to_bv, 200
@@ -177,9 +177,9 @@ module mod_error_id
   integer(int32), parameter :: id_d_convert_ub_to_bv=mod_id_convert_ub_to_bv + 0
   integer(int32), parameter :: id_f_d_convert_ub_to_bv=mod_id_convert_ub_to_bv + 1
   integer(int32), parameter :: id_d_bv_of_ub=mod_id_convert_ub_to_bv + 2
-  integer(int32), parameter :: id_c_convert_ub_to_bv=mod_id_convert_ub_to_bv + 3
-  integer(int32), parameter :: id_f_c_convert_ub_to_bv=mod_id_convert_ub_to_bv + 4
-  integer(int32), parameter :: id_c_bv_of_ub=mod_id_convert_ub_to_bv + 5
+  integer(int32), parameter :: id_z_convert_ub_to_bv=mod_id_convert_ub_to_bv + 3
+  integer(int32), parameter :: id_f_z_convert_ub_to_bv=mod_id_convert_ub_to_bv + 4
+  integer(int32), parameter :: id_z_bv_of_ub=mod_id_convert_ub_to_bv + 5
 
   type(routine_info), parameter :: info_d_convert_ub_to_bv=routine_info(id_d_convert_ub_to_bv, &
        'd_convert_ub_to_bv', &
@@ -189,22 +189,22 @@ module mod_error_id
   type(routine_info), parameter :: info_d_bv_of_ub=routine_info(id_d_bv_of_ub, &
        'd_bv_of_ub', [ character(len=error_message_length) :: '' ] )
   
-  type(routine_info), parameter :: info_c_convert_ub_to_bv=routine_info(id_c_convert_ub_to_bv, &
-       'c_convert_ub_to_bv', &
+  type(routine_info), parameter :: info_z_convert_ub_to_bv=routine_info(id_z_convert_ub_to_bv, &
+       'z_convert_ub_to_bv', &
        [ character(len=error_message_length) :: 'Insufficient storage in ub', &
        'Insufficient storage in bv.', 'ub%n /= bv%n' ] )
 
-  type(routine_info), parameter :: info_c_bv_of_ub=routine_info(id_c_bv_of_ub, &
-       'c_bv_of_ub', [ character(len=error_message_length) :: '' ] )
+  type(routine_info), parameter :: info_z_bv_of_ub=routine_info(id_z_bv_of_ub, &
+       'z_bv_of_ub', [ character(len=error_message_length) :: '' ] )
 
   ! src/convert/convert_wb_to_bt, 300
   integer(int32), parameter :: mod_id_convert_wb_to_bt=300
   integer(int32), parameter :: id_d_convert_wb_to_bt=mod_id_convert_wb_to_bt + 0
   integer(int32), parameter :: id_f_d_convert_wb_to_bt=mod_id_convert_wb_to_bt + 1
   integer(int32), parameter :: id_d_bt_of_wb=mod_id_convert_wb_to_bt + 2
-  integer(int32), parameter :: id_c_convert_wb_to_bt=mod_id_convert_wb_to_bt + 3
-  integer(int32), parameter :: id_f_c_convert_wb_to_bt=mod_id_convert_wb_to_bt + 4
-  integer(int32), parameter :: id_c_bt_of_wb=mod_id_convert_wb_to_bt + 5
+  integer(int32), parameter :: id_z_convert_wb_to_bt=mod_id_convert_wb_to_bt + 3
+  integer(int32), parameter :: id_f_z_convert_wb_to_bt=mod_id_convert_wb_to_bt + 4
+  integer(int32), parameter :: id_z_bt_of_wb=mod_id_convert_wb_to_bt + 5
 
   type(routine_info), parameter :: info_d_convert_wb_to_bt=routine_info(id_d_convert_wb_to_bt, &
        'd_convert_wb_to_bt', &
@@ -215,13 +215,13 @@ module mod_error_id
        'd_bt_of_wb', &
        [ character(len=error_message_length) :: '' ] )
 
-  type(routine_info), parameter :: info_c_convert_wb_to_bt=routine_info(id_c_convert_wb_to_bt, &
-       'c_convert_wb_to_bt', &
+  type(routine_info), parameter :: info_z_convert_wb_to_bt=routine_info(id_z_convert_wb_to_bt, &
+       'z_convert_wb_to_bt', &
        [ character(len=error_message_length) :: 'n<1', 'Insufficient storage in wb.', &
        'Insufficient Storage in bt.', 'bt%n /= wb%n' ] )
 
-  type(routine_info), parameter :: info_c_bt_of_wb=routine_info(id_c_bt_of_wb, &
-       'c_bt_of_wb', &
+  type(routine_info), parameter :: info_z_bt_of_wb=routine_info(id_z_bt_of_wb, &
+       'z_bt_of_wb', &
        [ character(len=error_message_length) :: '' ] )
 
   ! src/convert/convert_bt_to_wb, 400
@@ -229,9 +229,9 @@ module mod_error_id
   integer(int32), parameter :: id_d_convert_bt_to_wb=mod_id_convert_bt_to_wb + 0
   integer(int32), parameter :: id_f_d_convert_bt_to_wb=mod_id_convert_bt_to_wb + 1
   integer(int32), parameter :: id_d_wb_of_bt=mod_id_convert_bt_to_wb + 2
-  integer(int32), parameter :: id_c_convert_bt_to_wb=mod_id_convert_bt_to_wb + 3
-  integer(int32), parameter :: id_f_c_convert_bt_to_wb=mod_id_convert_bt_to_wb + 4
-  integer(int32), parameter :: id_c_wb_of_bt=mod_id_convert_bt_to_wb + 5
+  integer(int32), parameter :: id_z_convert_bt_to_wb=mod_id_convert_bt_to_wb + 3
+  integer(int32), parameter :: id_f_z_convert_bt_to_wb=mod_id_convert_bt_to_wb + 4
+  integer(int32), parameter :: id_z_wb_of_bt=mod_id_convert_bt_to_wb + 5
   
   type(routine_info), parameter :: info_d_convert_bt_to_wb=routine_info(id_d_convert_bt_to_wb, &
        'd_convert_bt_to_wb', &
@@ -242,13 +242,13 @@ module mod_error_id
        'd_wb_of_bt', &
        [ character(len=error_message_length) :: '' ] )
   
-  type(routine_info), parameter :: info_c_convert_bt_to_wb=routine_info(id_c_convert_bt_to_wb, &
-       'c_convert_bt_to_wb', &
+  type(routine_info), parameter :: info_z_convert_bt_to_wb=routine_info(id_z_convert_bt_to_wb, &
+       'z_convert_bt_to_wb', &
        [ character(len=error_message_length) :: 'n<1', 'Insufficient storage in bt.', &
        'Insufficient Storage in wb.', 'wb%n /= bt%n' ] )
 
-  type(routine_info), parameter :: info_c_wb_of_bt=routine_info(id_c_wb_of_bt, &
-       'c_wb_of_bt', &
+  type(routine_info), parameter :: info_z_wb_of_bt=routine_info(id_z_wb_of_bt, &
+       'z_wb_of_bt', &
        [ character(len=error_message_length) :: '' ] )
 
   ! src/convert/convert_wbv_to_ubt, 500
@@ -256,9 +256,9 @@ module mod_error_id
   integer(int32), parameter :: id_d_convert_wbv_to_ubt=mod_id_convert_wbv_to_ubt + 0
   integer(int32), parameter :: id_f_d_convert_wbv_to_ubt=mod_id_convert_wbv_to_ubt + 1
   integer(int32), parameter :: id_d_ubt_of_wbv=mod_id_convert_wbv_to_ubt + 2
-  integer(int32), parameter :: id_c_convert_wbv_to_ubt=mod_id_convert_wbv_to_ubt + 3
-  integer(int32), parameter :: id_f_c_convert_wbv_to_ubt=mod_id_convert_wbv_to_ubt + 4
-  integer(int32), parameter :: id_c_ubt_of_wbv=mod_id_convert_wbv_to_ubt + 5
+  integer(int32), parameter :: id_z_convert_wbv_to_ubt=mod_id_convert_wbv_to_ubt + 3
+  integer(int32), parameter :: id_f_z_convert_wbv_to_ubt=mod_id_convert_wbv_to_ubt + 4
+  integer(int32), parameter :: id_z_ubt_of_wbv=mod_id_convert_wbv_to_ubt + 5
 
   type(routine_info), parameter :: info_d_convert_wbv_to_ubt=routine_info(id_d_convert_wbv_to_ubt, &
        'd_convert_wbv_to_ubt', &
@@ -269,13 +269,13 @@ module mod_error_id
        'd_ubt_of_wbv', &
        [ character(len=error_message_length) :: '' ] )
   
-  type(routine_info), parameter :: info_c_convert_wbv_to_ubt=routine_info(id_c_convert_wbv_to_ubt, &
-       'c_convert_wbv_to_ubt', &
+  type(routine_info), parameter :: info_z_convert_wbv_to_ubt=routine_info(id_z_convert_wbv_to_ubt, &
+       'z_convert_wbv_to_ubt', &
        [ character(len=error_message_length) :: 'Insufficient storage in wbv', &
        'Insufficient storage in ubt.', 'wbv%n /= ubt%n' ] )
 
-  type(routine_info), parameter :: info_c_ubt_of_wbv=routine_info(id_c_ubt_of_wbv, &
-       'c_ubt_of_wbv', &
+  type(routine_info), parameter :: info_z_ubt_of_wbv=routine_info(id_z_ubt_of_wbv, &
+       'z_ubt_of_wbv', &
        [ character(len=error_message_length) :: '' ] )
 
   ! src/convert/convert_ubt_to_wbv, 600
@@ -283,9 +283,9 @@ module mod_error_id
   integer(int32), parameter :: id_d_convert_ubt_to_wbv=mod_id_convert_ubt_to_wbv + 0
   integer(int32), parameter :: id_f_d_convert_ubt_to_wbv=mod_id_convert_ubt_to_wbv + 1
   integer(int32), parameter :: id_d_wbv_of_ubt=mod_id_convert_ubt_to_wbv + 2
-  integer(int32), parameter :: id_c_convert_ubt_to_wbv=mod_id_convert_ubt_to_wbv + 3
-  integer(int32), parameter :: id_f_c_convert_ubt_to_wbv=mod_id_convert_ubt_to_wbv + 4
-  integer(int32), parameter :: id_c_wbv_of_ubt=mod_id_convert_ubt_to_wbv + 5
+  integer(int32), parameter :: id_z_convert_ubt_to_wbv=mod_id_convert_ubt_to_wbv + 3
+  integer(int32), parameter :: id_f_z_convert_ubt_to_wbv=mod_id_convert_ubt_to_wbv + 4
+  integer(int32), parameter :: id_z_wbv_of_ubt=mod_id_convert_ubt_to_wbv + 5
   
   type(routine_info), parameter :: info_d_convert_ubt_to_wbv=routine_info(id_d_convert_ubt_to_wbv, &
        'd_convert_ubt_to_wbv', &
@@ -296,13 +296,13 @@ module mod_error_id
        'd_wbv_of_ubt', &
        [ character(len=error_message_length) :: '' ] )
   
-  type(routine_info), parameter :: info_c_convert_ubt_to_wbv=routine_info(id_c_convert_ubt_to_wbv, &
-       'c_convert_ubt_to_wbv', &
+  type(routine_info), parameter :: info_z_convert_ubt_to_wbv=routine_info(id_z_convert_ubt_to_wbv, &
+       'z_convert_ubt_to_wbv', &
        [ character(len=error_message_length) :: 'Insufficient storage in ubt', &
        'Insufficient storage in wbv.', 'ubt%n /= wbv%n' ] )
 
-  type(routine_info), parameter :: info_c_wbv_of_ubt=routine_info(id_c_wbv_of_ubt, &
-       'c_wbv_of_ubt', &
+  type(routine_info), parameter :: info_z_wbv_of_ubt=routine_info(id_z_wbv_of_ubt, &
+       'z_wbv_of_ubt', &
        [ character(len=error_message_length) :: '' ] )
 
   ! src/general/general_bv, 700
@@ -311,10 +311,10 @@ module mod_error_id
   integer(int32), parameter :: id_d_general_to_bv=mod_id_general_bv + 1
   integer(int32), parameter :: id_f_d_general_to_bv=mod_id_general_bv + 2
   integer(int32), parameter :: id_f_d_general_bv=mod_id_general_bv + 3
-  integer(int32), parameter :: id_c_bv_of_general=mod_id_general_bv + 4
-  integer(int32), parameter :: id_c_general_to_bv=mod_id_general_bv + 5
-  integer(int32), parameter :: id_f_c_general_to_bv=mod_id_general_bv + 6
-  integer(int32), parameter :: id_f_c_general_bv=mod_id_general_bv + 7
+  integer(int32), parameter :: id_z_bv_of_general=mod_id_general_bv + 4
+  integer(int32), parameter :: id_z_general_to_bv=mod_id_general_bv + 5
+  integer(int32), parameter :: id_f_z_general_to_bv=mod_id_general_bv + 6
+  integer(int32), parameter :: id_f_z_general_bv=mod_id_general_bv + 7
 
   type(routine_info), parameter :: info_d_bv_of_general=routine_info(id_d_bv_of_general, &
        'd_bv_of_general', &
@@ -333,21 +333,21 @@ module mod_error_id
        'f_d_general_bv', &
        [ character(len=error_message_length) :: 'Insufficient General Bandwidth.' ])
 
-  type(routine_info), parameter :: info_c_bv_of_general=routine_info(id_c_bv_of_general, &
-       'c_bv_of_general', &
+  type(routine_info), parameter :: info_z_bv_of_general=routine_info(id_z_bv_of_general, &
+       'z_bv_of_general', &
        [ character(len=error_message_length) :: '' ] )
   
-  type(routine_info), parameter :: info_c_general_to_bv=routine_info(id_c_general_to_bv, &
-       'c_general_to_bv', &
+  type(routine_info), parameter :: info_z_general_to_bv=routine_info(id_z_general_to_bv, &
+       'z_general_to_bv', &
        [ character(len=error_message_length) :: 'n<1', 'bv%lbwmax < lbw', &
        'Size of a and bv not the same.' ] )
 
-  type(routine_info), parameter :: info_f_c_general_to_bv=routine_info(id_f_c_general_to_bv, &
-       'f_c_general_to_bv', &
+  type(routine_info), parameter :: info_f_z_general_to_bv=routine_info(id_f_z_general_to_bv, &
+       'f_z_general_to_bv', &
        [ character(len=error_message_length) :: 'n<1', 'Insufficient General Bandwidth in bv' ])
 
-  type(routine_info), parameter :: info_f_c_general_bv=routine_info(id_f_c_general_bv, &
-       'f_c_general_bv', &
+  type(routine_info), parameter :: info_f_z_general_bv=routine_info(id_f_z_general_bv, &
+       'f_z_general_bv', &
        [ character(len=error_message_length) :: 'Insufficient General Bandwidth.' ])
   
   !
@@ -358,10 +358,10 @@ module mod_error_id
   integer(int32), parameter :: id_d_general_to_ub=mod_id_general_ub + 1
   integer(int32), parameter :: id_f_d_general_to_ub=mod_id_general_ub + 2
   integer(int32), parameter :: id_f_d_general_ub=mod_id_general_ub + 3
-  integer(int32), parameter :: id_c_ub_of_general=mod_id_general_ub + 4
-  integer(int32), parameter :: id_c_general_to_ub=mod_id_general_ub + 5
-  integer(int32), parameter :: id_f_c_general_to_ub=mod_id_general_ub + 6
-  integer(int32), parameter :: id_f_c_general_ub=mod_id_general_ub + 7
+  integer(int32), parameter :: id_z_ub_of_general=mod_id_general_ub + 4
+  integer(int32), parameter :: id_z_general_to_ub=mod_id_general_ub + 5
+  integer(int32), parameter :: id_f_z_general_to_ub=mod_id_general_ub + 6
+  integer(int32), parameter :: id_f_z_general_ub=mod_id_general_ub + 7
 
   type(routine_info), parameter :: info_d_ub_of_general=routine_info(id_d_ub_of_general, &
        'd_ub_of_general', &
@@ -380,21 +380,21 @@ module mod_error_id
        'f_d_general_ub', &
        [ character(len=error_message_length) :: 'Insufficient General Bandwidth.' ])
 
-  type(routine_info), parameter :: info_c_ub_of_general=routine_info(id_c_ub_of_general, &
-       'c_ub_of_general', &
+  type(routine_info), parameter :: info_z_ub_of_general=routine_info(id_z_ub_of_general, &
+       'z_ub_of_general', &
        [ character(len=error_message_length) :: '' ] )
 
-  type(routine_info), parameter :: info_c_general_to_ub=routine_info(id_c_general_to_ub, &
-       'c_general_to_ub', &
+  type(routine_info), parameter :: info_z_general_to_ub=routine_info(id_z_general_to_ub, &
+       'z_general_to_ub', &
        [ character(len=error_message_length) :: 'n<1', 'ub%lbwmax < lbw', &
        'Size of a and ub not the same.' ] )
 
-  type(routine_info), parameter :: info_f_c_general_to_ub=routine_info(id_f_c_general_to_ub, &
-       'f_c_general_to_ub', &
+  type(routine_info), parameter :: info_f_z_general_to_ub=routine_info(id_f_z_general_to_ub, &
+       'f_z_general_to_ub', &
        [ character(len=error_message_length) :: 'Insufficient General Bandwidth in ub' ])
 
-  type(routine_info), parameter :: info_f_c_general_ub=routine_info(id_f_c_general_ub, &
-       'f_c_general_ub', &
+  type(routine_info), parameter :: info_f_z_general_ub=routine_info(id_f_z_general_ub, &
+       'f_z_general_ub', &
        [ character(len=error_message_length) :: 'Insufficient General Bandwidth.' ])
 
   ! /src/general/general_bt 900
@@ -403,10 +403,10 @@ module mod_error_id
   integer(int32), parameter :: id_d_general_to_bt=mod_id_general_bt + 1
   integer(int32), parameter :: id_f_d_general_to_bt=mod_id_general_bt + 2
   integer(int32), parameter :: id_f_d_general_bt=mod_id_general_bt + 3
-  integer(int32), parameter :: id_c_bt_of_general=mod_id_general_bt + 4
-  integer(int32), parameter :: id_c_general_to_bt=mod_id_general_bt + 5
-  integer(int32), parameter :: id_f_c_general_to_bt=mod_id_general_bt + 6
-  integer(int32), parameter :: id_f_c_general_bt=mod_id_general_bt + 7
+  integer(int32), parameter :: id_z_bt_of_general=mod_id_general_bt + 4
+  integer(int32), parameter :: id_z_general_to_bt=mod_id_general_bt + 5
+  integer(int32), parameter :: id_f_z_general_to_bt=mod_id_general_bt + 6
+  integer(int32), parameter :: id_f_z_general_bt=mod_id_general_bt + 7
 
   type(routine_info), parameter :: info_d_bt_of_general=routine_info(id_d_bt_of_general, &
        'd_bt_of_general', &
@@ -425,21 +425,21 @@ module mod_error_id
        'f_d_general_bt', &
        [ character(len=error_message_length) :: 'Insufficient general bandwidth.' ])
 
-  type(routine_info), parameter :: info_c_bt_of_general=routine_info(id_c_bt_of_general, &
-       'c_bt_of_general', &
+  type(routine_info), parameter :: info_z_bt_of_general=routine_info(id_z_bt_of_general, &
+       'z_bt_of_general', &
        [ character(len=error_message_length) :: '' ] )
   
-  type(routine_info), parameter :: info_c_general_to_bt=routine_info(id_c_general_to_bt, &
-       'c_general_to_bt', &
+  type(routine_info), parameter :: info_z_general_to_bt=routine_info(id_z_general_to_bt, &
+       'z_general_to_bt', &
        [ character(len=error_message_length) :: 'n<1', &
        'bt%ubwmax < ubw', 'Size of a and bt not the same.' ] )
 
-  type(routine_info), parameter :: info_f_c_general_to_bt=routine_info(id_f_c_general_to_bt, &
-       'f_c_general_to_bt', &
+  type(routine_info), parameter :: info_f_z_general_to_bt=routine_info(id_f_z_general_to_bt, &
+       'f_z_general_to_bt', &
        [ character(len=error_message_length) :: 'Insufficient general bandwidth in bt' ])
 
-  type(routine_info), parameter :: info_f_c_general_bt=routine_info(id_f_c_general_bt, &
-       'f_c_general_bt', &
+  type(routine_info), parameter :: info_f_z_general_bt=routine_info(id_f_z_general_bt, &
+       'f_z_general_bt', &
        [ character(len=error_message_length) :: 'Insufficient general bandwidth.' ])
 
 
@@ -449,10 +449,10 @@ module mod_error_id
   integer(int32), parameter :: id_d_general_to_wb=mod_id_general_wb + 1
   integer(int32), parameter :: id_f_d_general_to_wb=mod_id_general_wb + 2
   integer(int32), parameter :: id_f_d_general_wb=mod_id_general_wb + 3
-  integer(int32), parameter :: id_c_wb_of_general=mod_id_general_wb + 4
-  integer(int32), parameter :: id_c_general_to_wb=mod_id_general_wb + 5
-  integer(int32), parameter :: id_f_c_general_to_wb=mod_id_general_wb + 6
-  integer(int32), parameter :: id_f_c_general_wb=mod_id_general_wb + 7
+  integer(int32), parameter :: id_z_wb_of_general=mod_id_general_wb + 4
+  integer(int32), parameter :: id_z_general_to_wb=mod_id_general_wb + 5
+  integer(int32), parameter :: id_f_z_general_to_wb=mod_id_general_wb + 6
+  integer(int32), parameter :: id_f_z_general_wb=mod_id_general_wb + 7
   
   type(routine_info), parameter :: info_d_wb_of_general=routine_info(id_d_wb_of_general, &
        'd_wb_of_general', &
@@ -471,21 +471,21 @@ module mod_error_id
        'f_d_general_wb', &
        [ character(len=error_message_length) :: 'Insufficient general bandwidth.' ])
 
-  type(routine_info), parameter :: info_c_wb_of_general=routine_info(id_c_wb_of_general, &
-       'c_wb_of_general', &
+  type(routine_info), parameter :: info_z_wb_of_general=routine_info(id_z_wb_of_general, &
+       'z_wb_of_general', &
        [ character(len=error_message_length) :: '' ] )
 
-  type(routine_info), parameter :: info_c_general_to_wb=routine_info(id_c_general_to_wb, &
-       'c_general_to_wb', &
+  type(routine_info), parameter :: info_z_general_to_wb=routine_info(id_z_general_to_wb, &
+       'z_general_to_wb', &
        [ character(len=error_message_length) :: 'n<1', 'bt%ubwmax < ubw', &
        'Size of a and bt not the same.' ] )
 
-  type(routine_info), parameter :: info_f_c_general_to_wb=routine_info(id_f_c_general_to_wb, &
-       'f_c_general_to_wb', &
+  type(routine_info), parameter :: info_f_z_general_to_wb=routine_info(id_f_z_general_to_wb, &
+       'f_z_general_to_wb', &
        [ character(len=error_message_length) :: 'Insufficient general bandwidth in bt' ])
 
-  type(routine_info), parameter :: info_f_c_general_wb=routine_info(id_f_c_general_wb, &
-       'f_c_general_wb', &
+  type(routine_info), parameter :: info_f_z_general_wb=routine_info(id_f_z_general_wb, &
+       'f_z_general_wb', &
        [ character(len=error_message_length) :: 'Insufficient general bandwidth.' ])
 
   ! src/general/general_ubt, 1100
@@ -494,10 +494,10 @@ module mod_error_id
   integer(int32), parameter :: id_d_general_to_ubt=mod_id_general_ubt + 1
   integer(int32), parameter :: id_f_d_general_to_ubt=mod_id_general_ubt + 2
   integer(int32), parameter :: id_f_d_general_ubt=mod_id_general_ubt + 3
-  integer(int32), parameter :: id_c_ubt_of_general=mod_id_general_ubt + 4
-  integer(int32), parameter :: id_c_general_to_ubt=mod_id_general_ubt + 5
-  integer(int32), parameter :: id_f_c_general_to_ubt=mod_id_general_ubt + 6
-  integer(int32), parameter :: id_f_c_general_ubt=mod_id_general_ubt + 7
+  integer(int32), parameter :: id_z_ubt_of_general=mod_id_general_ubt + 4
+  integer(int32), parameter :: id_z_general_to_ubt=mod_id_general_ubt + 5
+  integer(int32), parameter :: id_f_z_general_to_ubt=mod_id_general_ubt + 6
+  integer(int32), parameter :: id_f_z_general_ubt=mod_id_general_ubt + 7
 
   type(routine_info), parameter :: info_d_ubt_of_general=routine_info(id_d_ubt_of_general, &
        'd_ubt_of_general', &
@@ -517,22 +517,22 @@ module mod_error_id
        'f_d_general_ubt', &
        [ character(len=error_message_length) :: '' ])
 
-  type(routine_info), parameter :: info_c_ubt_of_general=routine_info(id_c_ubt_of_general, &
-       'c_ubt_of_general', &
+  type(routine_info), parameter :: info_z_ubt_of_general=routine_info(id_z_ubt_of_general, &
+       'z_ubt_of_general', &
        [ character(len=error_message_length) :: '' ] )
 
-  type(routine_info), parameter :: info_c_general_to_ubt=routine_info(id_c_general_to_ubt, &
-       'c_general_to_ubt', &
+  type(routine_info), parameter :: info_z_general_to_ubt=routine_info(id_z_general_to_ubt, &
+       'z_general_to_ubt', &
        [ character(len=error_message_length) :: 'n<1', &
        'Size of a and ubt not the same.' ] )
 
-  type(routine_info), parameter :: info_f_c_general_to_ubt=routine_info(id_f_c_general_to_ubt, &
-       'f_c_general_to_ubt', &
+  type(routine_info), parameter :: info_f_z_general_to_ubt=routine_info(id_f_z_general_to_ubt, &
+       'f_z_general_to_ubt', &
        [ character(len=error_message_length) :: 'Insufficient general bandwidth in ubt', &
        'Insufficient general bandwidth in ubt' ])
 
-  type(routine_info), parameter :: info_f_c_general_ubt=routine_info(id_f_c_general_ubt, &
-       'f_c_general_ubt', &
+  type(routine_info), parameter :: info_f_z_general_ubt=routine_info(id_f_z_general_ubt, &
+       'f_z_general_ubt', &
        [ character(len=error_message_length) :: '' ])
 
   ! src/general/general_wbv, 1200
@@ -541,10 +541,10 @@ module mod_error_id
   integer(int32), parameter :: id_d_general_to_wbv=mod_id_general_wbv + 1
   integer(int32), parameter :: id_f_d_general_to_wbv=mod_id_general_wbv + 2
   integer(int32), parameter :: id_f_d_general_wbv=mod_id_general_wbv + 3
-  integer(int32), parameter :: id_c_wbv_of_general=mod_id_general_wbv + 4
-  integer(int32), parameter :: id_c_general_to_wbv=mod_id_general_wbv + 5
-  integer(int32), parameter :: id_f_c_general_to_wbv=mod_id_general_wbv + 6
-  integer(int32), parameter :: id_f_c_general_wbv=mod_id_general_wbv + 7
+  integer(int32), parameter :: id_z_wbv_of_general=mod_id_general_wbv + 4
+  integer(int32), parameter :: id_z_general_to_wbv=mod_id_general_wbv + 5
+  integer(int32), parameter :: id_f_z_general_to_wbv=mod_id_general_wbv + 6
+  integer(int32), parameter :: id_f_z_general_wbv=mod_id_general_wbv + 7
 
   type(routine_info), parameter :: info_d_wbv_of_general=routine_info(id_d_wbv_of_general, &
        'd_wbv_of_general', &
@@ -564,53 +564,53 @@ module mod_error_id
        'f_d_general_wbv', &
        [ character(len=error_message_length) :: '' ])
   
-  type(routine_info), parameter :: info_c_wbv_of_general=routine_info(id_c_wbv_of_general, &
-       'c_wbv_of_general', &
+  type(routine_info), parameter :: info_z_wbv_of_general=routine_info(id_z_wbv_of_general, &
+       'z_wbv_of_general', &
        [ character(len=error_message_length) :: '' ] )
 
-  type(routine_info), parameter :: info_c_general_to_wbv=routine_info(id_c_general_to_wbv, &
-       'c_general_to_wbv', &
+  type(routine_info), parameter :: info_z_general_to_wbv=routine_info(id_z_general_to_wbv, &
+       'z_general_to_wbv', &
        [ character(len=error_message_length) :: 'n<1', &
        'Size of a and wbv not the same.' ] )
 
-  type(routine_info), parameter :: info_f_c_general_to_wbv=routine_info(id_f_c_general_to_wbv, &
-       'f_c_general_to_wbv', &
+  type(routine_info), parameter :: info_f_z_general_to_wbv=routine_info(id_f_z_general_to_wbv, &
+       'f_z_general_to_wbv', &
        [ character(len=error_message_length) :: 'Insufficient general bandwidth in wbv', &
        'Insufficient general bandwidth in wbv' ])
 
-  type(routine_info), parameter :: info_f_c_general_wbv=routine_info(id_f_c_general_wbv, &
-       'f_c_general_wbv', &
+  type(routine_info), parameter :: info_f_z_general_wbv=routine_info(id_f_z_general_wbv, &
+       'f_z_general_wbv', &
        [ character(len=error_message_length) :: '' ])
 
   ! src/orth/gs 1300
   integer(int32), parameter :: mod_id_gs=1300
   integer(int32), parameter :: id_d_extend_gs_rows=mod_id_gs + 0
-  integer(int32), parameter :: id_c_extend_gs_rows=mod_id_gs + 1
+  integer(int32), parameter :: id_z_extend_gs_rows=mod_id_gs + 1
   integer(int32), parameter :: id_d_extend_gs_columns=mod_id_gs + 2
-  integer(int32), parameter :: id_c_extend_gs_columns=mod_id_gs + 3
+  integer(int32), parameter :: id_z_extend_gs_columns=mod_id_gs + 3
 
   type(routine_info), parameter :: info_d_extend_gs_rows=routine_info(id_d_extend_gs_rows, &
        'd_extend_gs_rows', &
        [ character(len=error_message_length) :: 'GS Orthogonalization Error' ])
 
-  type(routine_info), parameter :: info_c_extend_gs_rows=routine_info(id_c_extend_gs_rows, &
-       'c_extend_gs_rows', &
+  type(routine_info), parameter :: info_z_extend_gs_rows=routine_info(id_z_extend_gs_rows, &
+       'z_extend_gs_rows', &
        [ character(len=error_message_length) :: 'GS Orthogonalization Error' ])
 
   type(routine_info), parameter :: info_d_extend_gs_columns=routine_info(id_d_extend_gs_columns, &
        'd_extend_gs_columns', &
        [ character(len=error_message_length) :: 'GS Orthogonalization Error' ])
 
-  type(routine_info), parameter :: info_c_extend_gs_columns=routine_info(id_c_extend_gs_columns, &
-       'c_extend_gs_columns', &
+  type(routine_info), parameter :: info_z_extend_gs_columns=routine_info(id_z_extend_gs_columns, &
+       'z_extend_gs_columns', &
        [ character(len=error_message_length) :: 'GS Orthogonalization Error' ])
 
   ! src/orth/nullvec 1400
   integer(int32), parameter :: mod_id_nullvec=1400
   integer(int32), parameter :: id_f_d_lower_left_nullvec=mod_id_nullvec + 0
-  integer(int32), parameter :: id_f_c_lower_left_nullvec=mod_id_nullvec + 1
+  integer(int32), parameter :: id_f_z_lower_left_nullvec=mod_id_nullvec + 1
   integer(int32), parameter :: id_f_d_lower_right_nullvec=mod_id_nullvec + 2
-  integer(int32), parameter :: id_f_c_lower_right_nullvec=mod_id_nullvec + 3
+  integer(int32), parameter :: id_f_z_lower_right_nullvec=mod_id_nullvec + 3
 
   type(routine_info), parameter :: info_f_d_lower_left_nullvec= &
        routine_info(id_f_d_lower_left_nullvec, 'f_d_lower_left_nullvec', &
@@ -618,11 +618,11 @@ module mod_error_id
   type(routine_info), parameter :: info_f_d_lower_right_nullvec= &
        routine_info(id_f_d_lower_right_nullvec, 'f_d_lower_right_nullvec', &
        [ character(len=error_message_length) :: 'Failure to find a null vector.' ])
-  type(routine_info), parameter :: info_f_c_lower_left_nullvec= &
-       routine_info(id_f_c_lower_left_nullvec, 'f_c_lower_left_nullvec', &
+  type(routine_info), parameter :: info_f_z_lower_left_nullvec= &
+       routine_info(id_f_z_lower_left_nullvec, 'f_z_lower_left_nullvec', &
        [ character(len=error_message_length) :: 'Failure to find a null vector.' ])
-  type(routine_info), parameter :: info_f_c_lower_right_nullvec= &
-       routine_info(id_f_c_lower_right_nullvec, 'f_c_lower_right_nullvec', &
+  type(routine_info), parameter :: info_f_z_lower_right_nullvec= &
+       routine_info(id_f_z_lower_right_nullvec, 'f_z_lower_right_nullvec', &
        [ character(len=error_message_length) :: 'Failure to find a null vector.' ])
 
   ! src/qr_factorization/qr_factorization 1500
@@ -630,9 +630,9 @@ module mod_error_id
   integer(int32), parameter :: id_d_qr_of=mod_id_qr_factorization + 0
   integer(int32), parameter :: id_d_qr_bv_to_ub=mod_id_qr_factorization + 1
   integer(int32), parameter :: id_f_d_qr_bv_to_ub=mod_id_qr_factorization + 2
-  integer(int32), parameter :: id_c_qr_of=mod_id_qr_factorization + 3
-  integer(int32), parameter :: id_c_qr_bv_to_ub=mod_id_qr_factorization + 4
-  integer(int32), parameter :: id_f_c_qr_bv_to_ub=mod_id_qr_factorization + 5
+  integer(int32), parameter :: id_z_qr_of=mod_id_qr_factorization + 3
+  integer(int32), parameter :: id_z_qr_bv_to_ub=mod_id_qr_factorization + 4
+  integer(int32), parameter :: id_f_z_qr_bv_to_ub=mod_id_qr_factorization + 5
 
   type(routine_info), parameter :: info_d_qr_of=routine_info(id_d_qr_of, &
        'd_qr_of', [ character(len=error_message_length) :: '' ])
@@ -643,11 +643,11 @@ module mod_error_id
        'Not enough stroage for sweeps', 'Maxind or Minind out of bounds for sweeps.', &
        'Insufficient storage in bv', 'Insufficient storage in ub'])
 
-  type(routine_info), parameter :: info_c_qr_of=routine_info(id_c_qr_of, &
-       'c_qr_of', [ character(len=error_message_length) :: '' ])
+  type(routine_info), parameter :: info_z_qr_of=routine_info(id_z_qr_of, &
+       'z_qr_of', [ character(len=error_message_length) :: '' ])
 
-  type(routine_info), parameter :: info_c_qr_bv_to_ub=routine_info(id_c_qr_bv_to_ub, &
-       'c_qr_bv_to_ub', &
+  type(routine_info), parameter :: info_z_qr_bv_to_ub=routine_info(id_z_qr_bv_to_ub, &
+       'z_qr_bv_to_ub', &
        [ character(len=error_message_length) :: 'ub%n /= bv%n or sw%n /= ub%n', &
        'Not enough stroage for sweeps', 'Maxind or Minind out of bounds for sweeps.', &
        'Insufficient storage in bv', 'Insufficient storage in ub' ])
@@ -657,15 +657,15 @@ module mod_error_id
   integer(int32), parameter :: id_d_solve_ub=mod_id_solve + 0
   integer(int32), parameter :: id_d_back_solve_ub=mod_id_solve + 1
   integer(int32), parameter :: id_f_d_back_solve_ub=mod_id_solve + 2
-  integer(int32), parameter :: id_c_solve_ub=mod_id_solve + 3
-  integer(int32), parameter :: id_c_back_solve_ub=mod_id_solve + 4
-  integer(int32), parameter :: id_f_c_back_solve_ub=mod_id_solve + 5
+  integer(int32), parameter :: id_z_solve_ub=mod_id_solve + 3
+  integer(int32), parameter :: id_z_back_solve_ub=mod_id_solve + 4
+  integer(int32), parameter :: id_f_z_back_solve_ub=mod_id_solve + 5
   integer(int32), parameter :: id_d_v_solve_ub=mod_id_solve + 6
   integer(int32), parameter :: id_d_v_back_solve_ub=mod_id_solve + 7
   integer(int32), parameter :: id_f_d_v_back_solve_ub=mod_id_solve + 8
-  integer(int32), parameter :: id_c_v_solve_ub=mod_id_solve + 9
-  integer(int32), parameter :: id_c_v_back_solve_ub=mod_id_solve + 10
-  integer(int32), parameter :: id_f_c_v_back_solve_ub=mod_id_solve + 11
+  integer(int32), parameter :: id_z_v_solve_ub=mod_id_solve + 9
+  integer(int32), parameter :: id_z_v_back_solve_ub=mod_id_solve + 10
+  integer(int32), parameter :: id_f_z_v_back_solve_ub=mod_id_solve + 11
 
   type(routine_info), parameter :: info_d_solve_ub= &
        routine_info(id_d_solve_ub, &
@@ -678,13 +678,13 @@ module mod_error_id
        [ character(len=error_message_length) :: 'ub%n /= size(c,1)', 'ub%lbw /= 0', 'n < 1', &
        'x is not the same size as c.' ])
 
-  type(routine_info), parameter :: info_c_solve_ub= &
-       routine_info(id_c_solve_ub, &
+  type(routine_info), parameter :: info_z_solve_ub= &
+       routine_info(id_z_solve_ub, &
        'd_solve_ub', &
        [ character(len=error_message_length) :: '' ])
 
-  type(routine_info), parameter :: info_c_back_solve_ub= &
-       routine_info(id_c_back_solve_ub, &
+  type(routine_info), parameter :: info_z_back_solve_ub= &
+       routine_info(id_z_back_solve_ub, &
        'd_back_solve_ub', &
        [ character(len=error_message_length) :: 'ub%n /= size(c,1)', 'ub%lbw /= 0', 'n < 1', &
        'x is not the same size as c.' ])
@@ -700,13 +700,13 @@ module mod_error_id
        [ character(len=error_message_length) :: 'ub%n /= size(c)', 'ub%lbw /= 0', 'n < 1', &
        'x is not the same size as c.' ])
 
-  type(routine_info), parameter :: info_c_v_solve_ub= &
-       routine_info(id_c_v_solve_ub, &
+  type(routine_info), parameter :: info_z_v_solve_ub= &
+       routine_info(id_z_v_solve_ub, &
        'd_solve_ub', &
        [ character(len=error_message_length) :: '' ])
 
-  type(routine_info), parameter :: info_c_v_back_solve_ub= &
-       routine_info(id_c_v_back_solve_ub, &
+  type(routine_info), parameter :: info_z_v_back_solve_ub= &
+       routine_info(id_z_v_back_solve_ub, &
        'd_back_solve_ub', &
        [ character(len=error_message_length) :: 'ub%n /= size(c)', 'ub%lbw /= 0', 'n < 1', &
        'x is not the same size as c.' ])
@@ -717,12 +717,12 @@ module mod_error_id
   integer(int32), parameter :: id_d_v_solve_bv=mod_id_solve + 15
   integer(int32), parameter :: id_d_v_forward_solve_bv=mod_id_solve + 16
   integer(int32), parameter :: id_f_d_v_forward_solve_bv=mod_id_solve + 17
-  integer(int32), parameter :: id_c_solve_bv=mod_id_solve + 18
-  integer(int32), parameter :: id_c_forward_solve_bv=mod_id_solve + 19
-  integer(int32), parameter :: id_f_c_forward_solve_bv=mod_id_solve + 20
-  integer(int32), parameter :: id_c_v_solve_bv=mod_id_solve + 21
-  integer(int32), parameter :: id_c_v_forward_solve_bv=mod_id_solve + 22
-  integer(int32), parameter :: id_f_c_v_forward_solve_bv=mod_id_solve + 23
+  integer(int32), parameter :: id_z_solve_bv=mod_id_solve + 18
+  integer(int32), parameter :: id_z_forward_solve_bv=mod_id_solve + 19
+  integer(int32), parameter :: id_f_z_forward_solve_bv=mod_id_solve + 20
+  integer(int32), parameter :: id_z_v_solve_bv=mod_id_solve + 21
+  integer(int32), parameter :: id_z_v_forward_solve_bv=mod_id_solve + 22
+  integer(int32), parameter :: id_f_z_v_forward_solve_bv=mod_id_solve + 23
 
   type(routine_info), parameter :: info_d_solve_bv= &
        routine_info(id_d_solve_bv, &
@@ -735,13 +735,13 @@ module mod_error_id
        [ character(len=error_message_length) :: 'bv%n /= size(c,2)', 'bv%lbw /= 0', 'n < 1', &
        'x is not the same size as c.' ])
 
-  type(routine_info), parameter :: info_c_solve_bv= &
-       routine_info(id_c_solve_bv, &
+  type(routine_info), parameter :: info_z_solve_bv= &
+       routine_info(id_z_solve_bv, &
        'd_solve_bv', &
        [ character(len=error_message_length) :: '' ])
   
-  type(routine_info), parameter :: info_c_forward_solve_bv= &
-       routine_info(id_c_forward_solve_bv, &
+  type(routine_info), parameter :: info_z_forward_solve_bv= &
+       routine_info(id_z_forward_solve_bv, &
        'd_forward_solve_bv', &
        [ character(len=error_message_length) :: 'bv%n /= size(c,2)', 'bv%lbw /= 0', 'n < 1', &
        'x is not the same size as c.' ])
@@ -757,13 +757,13 @@ module mod_error_id
        [ character(len=error_message_length) :: 'bv%n /= size(c,2)', 'bv%lbw /= 0', 'n < 1', &
        'x is not the same size as c.' ])
 
-  type(routine_info), parameter :: info_c_v_solve_bv= &
-       routine_info(id_c_v_solve_bv, &
+  type(routine_info), parameter :: info_z_v_solve_bv= &
+       routine_info(id_z_v_solve_bv, &
        'd_solve_bv', &
        [ character(len=error_message_length) :: '' ])
 
-  type(routine_info), parameter :: info_c_v_forward_solve_bv= &
-       routine_info(id_c_v_forward_solve_bv, &
+  type(routine_info), parameter :: info_z_v_forward_solve_bv= &
+       routine_info(id_z_v_forward_solve_bv, &
        'd_forward_solve_bv', &
        [ character(len=error_message_length) :: 'bv%n /= size(c,1)', 'bv%lbw /= 0', 'n < 1', &
        'x is not the same size as c.' ])
@@ -773,9 +773,9 @@ module mod_error_id
   integer(int32), parameter :: id_d_rc_of=mod_id_row_compress + 0  
   integer(int32), parameter :: id_d_row_compress=mod_id_row_compress + 1
   integer(int32), parameter :: id_f_d_row_compress=mod_id_row_compress + 2
-  integer(int32), parameter :: id_c_rc_of=mod_id_row_compress + 3
-  integer(int32), parameter :: id_c_row_compress=mod_id_row_compress + 4
-  integer(int32), parameter :: id_f_c_row_compress=mod_id_row_compress + 5
+  integer(int32), parameter :: id_z_rc_of=mod_id_row_compress + 3
+  integer(int32), parameter :: id_z_row_compress=mod_id_row_compress + 4
+  integer(int32), parameter :: id_f_z_row_compress=mod_id_row_compress + 5
 
   type(routine_info), parameter :: info_d_rc_of=routine_info(id_d_rc_of, &
        'd_rc_of', [ character(len=error_message_length) :: '' ])
@@ -786,11 +786,11 @@ module mod_error_id
        'Not enough stroage for each sweeps', 'Not enough storage for number of sweeps', &
        'Insufficient storage in ubt.', 'Insufficient storage in bv.'])
 
-  type(routine_info), parameter :: info_c_rc_of=routine_info(id_c_rc_of, &
-       'c_rc_of', [ character(len=error_message_length) :: '' ])
+  type(routine_info), parameter :: info_z_rc_of=routine_info(id_z_rc_of, &
+       'z_rc_of', [ character(len=error_message_length) :: '' ])
 
-  type(routine_info), parameter :: info_c_row_compress=routine_info(id_c_row_compress, &
-       'c_row_compress', &
+  type(routine_info), parameter :: info_z_row_compress=routine_info(id_z_row_compress, &
+       'z_row_compress', &
        [ character(len=error_message_length) :: 'ub%n /= bv%n or sw%n /= ub%n', &
        'Not enough stroage for each sweeps', 'Not enough storage for number of sweeps', &
        'Insufficient storage in ubt.', 'Insufficient storage in bv.'])
@@ -814,21 +814,21 @@ module mod_error_id
   integer(int32), parameter :: id_d_random_wbv1=mod_id_random + 13
   
 
-  integer(int32), parameter :: id_c_random_bc=mod_id_random + 14
-  integer(int32), parameter :: id_c_random_br=mod_id_random + 15
-  integer(int32), parameter :: id_c_random_ub0=mod_id_random + 16
-  integer(int32), parameter :: id_c_random_bv0=mod_id_random + 17
-  integer(int32), parameter :: id_c_random_bt0=mod_id_random + 18
-  integer(int32), parameter :: id_c_random_wb0=mod_id_random + 19
-  integer(int32), parameter :: id_c_random_ubt0=mod_id_random + 20
-  integer(int32), parameter :: id_c_random_wbv0=mod_id_random + 21
+  integer(int32), parameter :: id_z_random_bc=mod_id_random + 14
+  integer(int32), parameter :: id_z_random_br=mod_id_random + 15
+  integer(int32), parameter :: id_z_random_ub0=mod_id_random + 16
+  integer(int32), parameter :: id_z_random_bv0=mod_id_random + 17
+  integer(int32), parameter :: id_z_random_bt0=mod_id_random + 18
+  integer(int32), parameter :: id_z_random_wb0=mod_id_random + 19
+  integer(int32), parameter :: id_z_random_ubt0=mod_id_random + 20
+  integer(int32), parameter :: id_z_random_wbv0=mod_id_random + 21
 
-  integer(int32), parameter :: id_c_random_ub1=mod_id_random + 22
-  integer(int32), parameter :: id_c_random_bv1=mod_id_random + 23
-  integer(int32), parameter :: id_c_random_bt1=mod_id_random + 24
-  integer(int32), parameter :: id_c_random_wb1=mod_id_random + 25
-  integer(int32), parameter :: id_c_random_ubt1=mod_id_random + 26
-  integer(int32), parameter :: id_c_random_wbv1=mod_id_random + 27
+  integer(int32), parameter :: id_z_random_ub1=mod_id_random + 22
+  integer(int32), parameter :: id_z_random_bv1=mod_id_random + 23
+  integer(int32), parameter :: id_z_random_bt1=mod_id_random + 24
+  integer(int32), parameter :: id_z_random_wb1=mod_id_random + 25
+  integer(int32), parameter :: id_z_random_ubt1=mod_id_random + 26
+  integer(int32), parameter :: id_z_random_wbv1=mod_id_random + 27
   
   type(routine_info), parameter :: info_d_random_bc=routine_info(id_d_random_bc, &
        'd_random_bc', &
@@ -903,75 +903,75 @@ module mod_error_id
 
   ! complex
   
-  type(routine_info), parameter :: info_c_random_bc=routine_info(id_c_random_bc, &
-       'c_random_bc', &
+  type(routine_info), parameter :: info_z_random_bc=routine_info(id_z_random_bc, &
+       'z_random_bc', &
        [ character(len=error_message_length) :: 'n < 1', &
        'lbw > lbwmax', 'ubw > ubwmax'])
 
-  type(routine_info), parameter :: info_c_random_br=routine_info(id_c_random_br, &
-       'c_random_br', &
+  type(routine_info), parameter :: info_z_random_br=routine_info(id_z_random_br, &
+       'z_random_br', &
        [ character(len=error_message_length) :: 'n < 1', &
        'lbw > lbwmax', 'ubw > ubwmax'])
 
-  type(routine_info), parameter :: info_c_random_ub0=routine_info(id_c_random_ub0, &
-       'c_random_ub0', &
+  type(routine_info), parameter :: info_z_random_ub0=routine_info(id_z_random_ub0, &
+       'z_random_ub0', &
        [ character(len=error_message_length) :: 'n < 1', &
        'lbw > lbwmax', 'ubw > ubwmax'])
 
-  type(routine_info), parameter :: info_c_random_bv0=routine_info(id_c_random_bv0, &
-       'c_random_bv0', &
+  type(routine_info), parameter :: info_z_random_bv0=routine_info(id_z_random_bv0, &
+       'z_random_bv0', &
        [ character(len=error_message_length) :: 'n < 1', &
        'lbw > lbwmax', 'ubw > ubwmax'])
 
-  type(routine_info), parameter :: info_c_random_bt0=routine_info(id_c_random_bt0, &
-       'c_random_bt0', &
+  type(routine_info), parameter :: info_z_random_bt0=routine_info(id_z_random_bt0, &
+       'z_random_bt0', &
        [ character(len=error_message_length) :: 'n < 1', &
        'lbw > lbwmax', 'ubw > ubwmax'])
 
-  type(routine_info), parameter :: info_c_random_wb0=routine_info(id_c_random_wb0, &
-       'c_random_wb0', &
+  type(routine_info), parameter :: info_z_random_wb0=routine_info(id_z_random_wb0, &
+       'z_random_wb0', &
        [ character(len=error_message_length) :: 'n < 1', &
        'lbw > lbwmax', 'ubw > ubwmax'])
 
-  type(routine_info), parameter :: info_c_random_ubt0=routine_info(id_c_random_ubt0, &
-       'c_random_ubt0', &
+  type(routine_info), parameter :: info_z_random_ubt0=routine_info(id_z_random_ubt0, &
+       'z_random_ubt0', &
        [ character(len=error_message_length) :: 'n < 1', &
        'lbw > lbwmax', 'ubw > ubwmax'])
   
-  type(routine_info), parameter :: info_c_random_wbv0=routine_info(id_c_random_wbv0, &
-       'c_random_wbv0', &
+  type(routine_info), parameter :: info_z_random_wbv0=routine_info(id_z_random_wbv0, &
+       'z_random_wbv0', &
        [ character(len=error_message_length) :: 'n < 1', &
        'lbw > lbwmax', 'ubw > ubwmax'])
 
   ! array versions
   
-  type(routine_info), parameter :: info_c_random_ub1=routine_info(id_c_random_ub1, &
-       'c_random_ub1', &
+  type(routine_info), parameter :: info_z_random_ub1=routine_info(id_z_random_ub1, &
+       'z_random_ub1', &
        [ character(len=error_message_length) :: 'n < 1', &
        'lbw > lbwmax', 'ubw > ubwmax'])
 
-  type(routine_info), parameter :: info_c_random_bv1=routine_info(id_c_random_bv1, &
-       'c_random_bv1', &
+  type(routine_info), parameter :: info_z_random_bv1=routine_info(id_z_random_bv1, &
+       'z_random_bv1', &
        [ character(len=error_message_length) :: 'n < 1', &
        'lbw > lbwmax', 'ubw > ubwmax'])
 
-  type(routine_info), parameter :: info_c_random_bt1=routine_info(id_c_random_bt1, &
-       'c_random_bt1', &
+  type(routine_info), parameter :: info_z_random_bt1=routine_info(id_z_random_bt1, &
+       'z_random_bt1', &
        [ character(len=error_message_length) :: 'n < 1', &
        'lbw > lbwmax', 'ubw > ubwmax'])
 
-  type(routine_info), parameter :: info_c_random_wb1=routine_info(id_c_random_wb1, &
-       'c_random_wb1', &
+  type(routine_info), parameter :: info_z_random_wb1=routine_info(id_z_random_wb1, &
+       'z_random_wb1', &
        [ character(len=error_message_length) :: 'n < 1', &
        'lbw > lbwmax', 'ubw > ubwmax'])
 
-  type(routine_info), parameter :: info_c_random_ubt1=routine_info(id_c_random_ubt1, &
-       'c_random_ubt1', &
+  type(routine_info), parameter :: info_z_random_ubt1=routine_info(id_z_random_ubt1, &
+       'z_random_ubt1', &
        [ character(len=error_message_length) :: 'n < 1', &
        'lbw > lbwmax', 'ubw > ubwmax'])
   
-  type(routine_info), parameter :: info_c_random_wbv1=routine_info(id_c_random_wbv1, &
-       'c_random_wbv1', &
+  type(routine_info), parameter :: info_z_random_wbv1=routine_info(id_z_random_wbv1, &
+       'z_random_wbv1', &
        [ character(len=error_message_length) :: 'n < 1', &
        'lbw > lbwmax', 'ubw > ubwmax'])
   
@@ -1069,156 +1069,156 @@ contains
        info_index = info_empty
        ! assemble.f90
        info_index(info_d_ub_to_general%routine_id)=info_d_ub_to_general
-       info_index(info_c_ub_to_general%routine_id)=info_c_ub_to_general
+       info_index(info_z_ub_to_general%routine_id)=info_z_ub_to_general
 
        info_index(info_d_bt_to_general%routine_id)=info_d_bt_to_general
-       info_index(info_c_bt_to_general%routine_id)=info_c_bt_to_general
+       info_index(info_z_bt_to_general%routine_id)=info_z_bt_to_general
 
        info_index(info_d_ubt_to_general%routine_id)=info_d_ubt_to_general
-       info_index(info_c_ubt_to_general%routine_id)=info_c_ubt_to_general
+       info_index(info_z_ubt_to_general%routine_id)=info_z_ubt_to_general
 
        info_index(info_d_bv_to_general%routine_id)=info_d_bv_to_general
-       info_index(info_c_bv_to_general%routine_id)=info_c_bv_to_general
+       info_index(info_z_bv_to_general%routine_id)=info_z_bv_to_general
 
        info_index(info_d_wb_to_general%routine_id)=info_d_wb_to_general
-       info_index(info_c_wb_to_general%routine_id)=info_c_wb_to_general
+       info_index(info_z_wb_to_general%routine_id)=info_z_wb_to_general
 
        info_index(info_d_wbv_to_general%routine_id)=info_d_wbv_to_general
-       info_index(info_c_wbv_to_general%routine_id)=info_c_wbv_to_general
+       info_index(info_z_wbv_to_general%routine_id)=info_z_wbv_to_general
 
        ! convert_bv_to_ub
        info_index(info_d_convert_bv_to_ub%routine_id)=info_d_convert_bv_to_ub
        info_index(info_d_ub_of_bv%routine_id)=info_d_ub_of_bv
-       info_index(info_c_convert_bv_to_ub%routine_id)=info_c_convert_bv_to_ub
-       info_index(info_c_ub_of_bv%routine_id)=info_c_ub_of_bv
+       info_index(info_z_convert_bv_to_ub%routine_id)=info_z_convert_bv_to_ub
+       info_index(info_z_ub_of_bv%routine_id)=info_z_ub_of_bv
 
        ! convert_ub_to_bv
        info_index(info_d_convert_ub_to_bv%routine_id)=info_d_convert_ub_to_bv
        info_index(info_d_bv_of_ub%routine_id)=info_d_bv_of_ub
-       info_index(info_c_convert_ub_to_bv%routine_id)=info_c_convert_ub_to_bv
-       info_index(info_c_bv_of_ub%routine_id)=info_c_bv_of_ub
+       info_index(info_z_convert_ub_to_bv%routine_id)=info_z_convert_ub_to_bv
+       info_index(info_z_bv_of_ub%routine_id)=info_z_bv_of_ub
        
        ! convert_wb_to_bt
        info_index(info_d_convert_wb_to_bt%routine_id)=info_d_convert_wb_to_bt
        info_index(info_d_bt_of_wb%routine_id)=info_d_bt_of_wb
-       info_index(info_c_convert_wb_to_bt%routine_id)=info_c_convert_wb_to_bt
-       info_index(info_c_bt_of_wb%routine_id)=info_c_bt_of_wb
+       info_index(info_z_convert_wb_to_bt%routine_id)=info_z_convert_wb_to_bt
+       info_index(info_z_bt_of_wb%routine_id)=info_z_bt_of_wb
 
        ! convert_bt_to_wb
        info_index(info_d_convert_bt_to_wb%routine_id)=info_d_convert_bt_to_wb
        info_index(info_d_wb_of_bt%routine_id)=info_d_wb_of_bt
-       info_index(info_c_convert_bt_to_wb%routine_id)=info_c_convert_bt_to_wb
-       info_index(info_c_wb_of_bt%routine_id)=info_c_wb_of_bt
+       info_index(info_z_convert_bt_to_wb%routine_id)=info_z_convert_bt_to_wb
+       info_index(info_z_wb_of_bt%routine_id)=info_z_wb_of_bt
 
        ! convert_wbv_to_ubt
        info_index(info_d_convert_wbv_to_ubt%routine_id)=info_d_convert_wbv_to_ubt
        info_index(info_d_ubt_of_wbv%routine_id)=info_d_ubt_of_wbv
-       info_index(info_c_convert_wbv_to_ubt%routine_id)=info_c_convert_wbv_to_ubt
-       info_index(info_c_ubt_of_wbv%routine_id)=info_c_ubt_of_wbv
+       info_index(info_z_convert_wbv_to_ubt%routine_id)=info_z_convert_wbv_to_ubt
+       info_index(info_z_ubt_of_wbv%routine_id)=info_z_ubt_of_wbv
        
        ! convert_ubt_to_wbv
        info_index(info_d_convert_ubt_to_wbv%routine_id)=info_d_convert_ubt_to_wbv
        info_index(info_d_wbv_of_ubt%routine_id)=info_d_wbv_of_ubt
-       info_index(info_c_convert_ubt_to_wbv%routine_id)=info_c_convert_ubt_to_wbv
-       info_index(info_c_wbv_of_ubt%routine_id)=info_c_wbv_of_ubt
+       info_index(info_z_convert_ubt_to_wbv%routine_id)=info_z_convert_ubt_to_wbv
+       info_index(info_z_wbv_of_ubt%routine_id)=info_z_wbv_of_ubt
        
        ! general_bv
 
        info_index(info_d_general_to_bv%routine_id)=info_d_general_to_bv
        info_index(info_f_d_general_to_bv%routine_id)=info_f_d_general_to_bv
        info_index(info_f_d_general_bv%routine_id)=info_f_d_general_bv
-       info_index(info_c_general_to_bv%routine_id)=info_c_general_to_bv
-       info_index(info_f_c_general_to_bv%routine_id)=info_f_c_general_to_bv
-       info_index(info_f_c_general_bv%routine_id)=info_f_c_general_bv
+       info_index(info_z_general_to_bv%routine_id)=info_z_general_to_bv
+       info_index(info_f_z_general_to_bv%routine_id)=info_f_z_general_to_bv
+       info_index(info_f_z_general_bv%routine_id)=info_f_z_general_bv
 
        ! general_ub
 
        info_index(info_d_general_to_ub%routine_id)=info_d_general_to_ub
        info_index(info_f_d_general_to_ub%routine_id)=info_f_d_general_to_ub
        info_index(info_f_d_general_ub%routine_id)=info_f_d_general_ub
-       info_index(info_c_general_to_ub%routine_id)=info_c_general_to_ub
-       info_index(info_f_c_general_to_ub%routine_id)=info_f_c_general_to_ub
-       info_index(info_f_c_general_ub%routine_id)=info_f_c_general_ub
+       info_index(info_z_general_to_ub%routine_id)=info_z_general_to_ub
+       info_index(info_f_z_general_to_ub%routine_id)=info_f_z_general_to_ub
+       info_index(info_f_z_general_ub%routine_id)=info_f_z_general_ub
 
        ! general_bt
 
        info_index(info_d_general_to_bt%routine_id)=info_d_general_to_bt
        info_index(info_f_d_general_to_bt%routine_id)=info_f_d_general_to_bt
        info_index(info_f_d_general_bt%routine_id)=info_f_d_general_bt
-       info_index(info_c_general_to_bt%routine_id)=info_c_general_to_bt
-       info_index(info_f_c_general_to_bt%routine_id)=info_f_c_general_to_bt
-       info_index(info_f_c_general_bt%routine_id)=info_f_c_general_bt
+       info_index(info_z_general_to_bt%routine_id)=info_z_general_to_bt
+       info_index(info_f_z_general_to_bt%routine_id)=info_f_z_general_to_bt
+       info_index(info_f_z_general_bt%routine_id)=info_f_z_general_bt
 
        ! general_wb
 
        info_index(info_d_general_to_wb%routine_id)=info_d_general_to_wb
        info_index(info_f_d_general_to_wb%routine_id)=info_f_d_general_to_wb
        info_index(info_f_d_general_wb%routine_id)=info_f_d_general_wb
-       info_index(info_c_general_to_wb%routine_id)=info_c_general_to_wb
-       info_index(info_f_c_general_to_wb%routine_id)=info_f_c_general_to_wb
-       info_index(info_f_c_general_wb%routine_id)=info_f_c_general_wb
+       info_index(info_z_general_to_wb%routine_id)=info_z_general_to_wb
+       info_index(info_f_z_general_to_wb%routine_id)=info_f_z_general_to_wb
+       info_index(info_f_z_general_wb%routine_id)=info_f_z_general_wb
 
        ! general_ubt
 
        info_index(info_d_general_to_ubt%routine_id)=info_d_general_to_ubt
        info_index(info_f_d_general_to_ubt%routine_id)=info_f_d_general_to_ubt
        info_index(info_f_d_general_ubt%routine_id)=info_f_d_general_ubt
-       info_index(info_c_general_to_ubt%routine_id)=info_c_general_to_ubt
-       info_index(info_f_c_general_to_ubt%routine_id)=info_f_c_general_to_ubt
-       info_index(info_f_c_general_ubt%routine_id)=info_f_c_general_ubt
+       info_index(info_z_general_to_ubt%routine_id)=info_z_general_to_ubt
+       info_index(info_f_z_general_to_ubt%routine_id)=info_f_z_general_to_ubt
+       info_index(info_f_z_general_ubt%routine_id)=info_f_z_general_ubt
 
        ! general_wbv
 
        info_index(info_d_general_to_wbv%routine_id)=info_d_general_to_wbv
        info_index(info_f_d_general_to_wbv%routine_id)=info_f_d_general_to_wbv
        info_index(info_f_d_general_wbv%routine_id)=info_f_d_general_wbv
-       info_index(info_c_general_to_wbv%routine_id)=info_c_general_to_wbv
-       info_index(info_f_c_general_to_wbv%routine_id)=info_f_c_general_to_wbv
-       info_index(info_f_c_general_wbv%routine_id)=info_f_c_general_wbv
+       info_index(info_z_general_to_wbv%routine_id)=info_z_general_to_wbv
+       info_index(info_f_z_general_to_wbv%routine_id)=info_f_z_general_to_wbv
+       info_index(info_f_z_general_wbv%routine_id)=info_f_z_general_wbv
 
        ! gs
        info_index(info_d_extend_gs_rows%routine_id)=info_d_extend_gs_rows
-       info_index(info_c_extend_gs_rows%routine_id)=info_c_extend_gs_rows
+       info_index(info_z_extend_gs_rows%routine_id)=info_z_extend_gs_rows
        info_index(info_d_extend_gs_columns%routine_id)=info_d_extend_gs_columns
-       info_index(info_c_extend_gs_columns%routine_id)=info_c_extend_gs_columns
+       info_index(info_z_extend_gs_columns%routine_id)=info_z_extend_gs_columns
        
        ! nullvec
        info_index(info_f_d_lower_left_nullvec%routine_id)=info_f_d_lower_left_nullvec
-       info_index(info_f_c_lower_left_nullvec%routine_id)=info_f_c_lower_left_nullvec
+       info_index(info_f_z_lower_left_nullvec%routine_id)=info_f_z_lower_left_nullvec
        info_index(info_f_d_lower_right_nullvec%routine_id)=info_f_d_lower_right_nullvec
-       info_index(info_f_c_lower_right_nullvec%routine_id)=info_f_c_lower_right_nullvec
+       info_index(info_f_z_lower_right_nullvec%routine_id)=info_f_z_lower_right_nullvec
 
        ! qr_factorization
 
        info_index(info_d_qr_bv_to_ub%routine_id)=info_d_qr_bv_to_ub
        info_index(info_d_qr_of%routine_id)=info_d_qr_of
-       info_index(info_c_qr_bv_to_ub%routine_id)=info_c_qr_bv_to_ub
-       info_index(info_c_qr_of%routine_id)=info_c_qr_of
+       info_index(info_z_qr_bv_to_ub%routine_id)=info_z_qr_bv_to_ub
+       info_index(info_z_qr_of%routine_id)=info_z_qr_of
        
        ! solve
        info_index(info_d_solve_ub%routine_id)=info_d_solve_ub
        info_index(info_d_back_solve_ub%routine_id)=info_d_back_solve_ub
-       info_index(info_c_solve_ub%routine_id)=info_c_solve_ub       
-       info_index(info_c_back_solve_ub%routine_id)=info_c_back_solve_ub
+       info_index(info_z_solve_ub%routine_id)=info_z_solve_ub       
+       info_index(info_z_back_solve_ub%routine_id)=info_z_back_solve_ub
        info_index(info_d_v_solve_ub%routine_id)=info_d_v_solve_ub
        info_index(info_d_v_back_solve_ub%routine_id)=info_d_v_back_solve_ub
-       info_index(info_c_v_solve_ub%routine_id)=info_c_v_solve_ub
-       info_index(info_c_v_back_solve_ub%routine_id)=info_c_v_back_solve_ub
+       info_index(info_z_v_solve_ub%routine_id)=info_z_v_solve_ub
+       info_index(info_z_v_back_solve_ub%routine_id)=info_z_v_back_solve_ub
 
        info_index(info_d_solve_bv%routine_id)=info_d_solve_bv
        info_index(info_d_forward_solve_bv%routine_id)=info_d_forward_solve_bv
-       info_index(info_c_solve_bv%routine_id)=info_c_solve_bv       
-       info_index(info_c_forward_solve_bv%routine_id)=info_c_forward_solve_bv
+       info_index(info_z_solve_bv%routine_id)=info_z_solve_bv       
+       info_index(info_z_forward_solve_bv%routine_id)=info_z_forward_solve_bv
        info_index(info_d_v_solve_bv%routine_id)=info_d_v_solve_bv
        info_index(info_d_v_forward_solve_bv%routine_id)=info_d_v_forward_solve_bv
-       info_index(info_c_v_solve_bv%routine_id)=info_c_v_solve_bv
-       info_index(info_c_v_forward_solve_bv%routine_id)=info_c_v_forward_solve_bv
+       info_index(info_z_v_solve_bv%routine_id)=info_z_v_solve_bv
+       info_index(info_z_v_forward_solve_bv%routine_id)=info_z_v_forward_solve_bv
 
        ! row_compress
        info_index(info_d_rc_of%routine_id)=info_d_rc_of
        info_index(info_d_row_compress%routine_id)=info_d_row_compress
-       info_index(info_c_rc_of%routine_id)=info_c_rc_of
-       info_index(info_c_row_compress%routine_id)=info_c_row_compress
+       info_index(info_z_rc_of%routine_id)=info_z_rc_of
+       info_index(info_z_row_compress%routine_id)=info_z_row_compress
 
        ! random
 
@@ -1238,21 +1238,21 @@ contains
        info_index(info_d_random_ubt1%routine_id)=info_d_random_ubt1
        info_index(info_d_random_wbv1%routine_id)=info_d_random_wbv1
        
-       info_index(info_c_random_bc%routine_id)=info_c_random_bc
-       info_index(info_c_random_br%routine_id)=info_c_random_br
-       info_index(info_c_random_ub0%routine_id)=info_c_random_ub0
-       info_index(info_c_random_bv0%routine_id)=info_c_random_bv0
-       info_index(info_c_random_bt0%routine_id)=info_c_random_bt0
-       info_index(info_c_random_wb0%routine_id)=info_c_random_wb0
-       info_index(info_c_random_ubt0%routine_id)=info_c_random_ubt0
-       info_index(info_c_random_wbv0%routine_id)=info_c_random_wbv0
+       info_index(info_z_random_bc%routine_id)=info_z_random_bc
+       info_index(info_z_random_br%routine_id)=info_z_random_br
+       info_index(info_z_random_ub0%routine_id)=info_z_random_ub0
+       info_index(info_z_random_bv0%routine_id)=info_z_random_bv0
+       info_index(info_z_random_bt0%routine_id)=info_z_random_bt0
+       info_index(info_z_random_wb0%routine_id)=info_z_random_wb0
+       info_index(info_z_random_ubt0%routine_id)=info_z_random_ubt0
+       info_index(info_z_random_wbv0%routine_id)=info_z_random_wbv0
 
-       info_index(info_c_random_ub1%routine_id)=info_c_random_ub1
-       info_index(info_c_random_bv1%routine_id)=info_c_random_bv1
-       info_index(info_c_random_bt1%routine_id)=info_c_random_bt1
-       info_index(info_c_random_wb1%routine_id)=info_c_random_wb1
-       info_index(info_c_random_ubt1%routine_id)=info_c_random_ubt1
-       info_index(info_c_random_wbv1%routine_id)=info_c_random_wbv1
+       info_index(info_z_random_ub1%routine_id)=info_z_random_ub1
+       info_index(info_z_random_bv1%routine_id)=info_z_random_bv1
+       info_index(info_z_random_bt1%routine_id)=info_z_random_bt1
+       info_index(info_z_random_wb1%routine_id)=info_z_random_wb1
+       info_index(info_z_random_ubt1%routine_id)=info_z_random_ubt1
+       info_index(info_z_random_wbv1%routine_id)=info_z_random_wbv1
     end if
   end subroutine initialize_errors
 
