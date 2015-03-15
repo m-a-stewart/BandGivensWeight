@@ -160,7 +160,6 @@ contains
     type(routine_info), parameter :: info=info_f_d_general_bv
     type(error_info) :: errornv
     integer(kind=int32) :: coffs1, k1, ubw1, ml, ml1
-    logical :: null
     !
     if (failure(error)) return
     call push_id(info, error)
@@ -181,30 +180,29 @@ contains
        q(1:n-1,1)=q(1:n-1,1)/a(n-1,n)
     end if
     nl=1
-    ! k is the trailing principal submatrix size.
-    trailing_loop: do k=1,n-1
+    ! k is the leading principal submatrix size.
+    leading_loop: do k=n-1,1,-1
        ! Current L should be contained in
-       ! a(n-k-nl+1:n-k,n-k+1:n-k+nl) or a(roffs+1:roffs+nl,coffs+1:coffs+nl)
-       roffs=n-k-nl
-       coffs=n-k
+       ! a(k-nl+1:k,k+1:k+nl) or a(roffs+1:roffs+nl,coffs+1:coffs+nl)
+       roffs=k-nl
+       coffs=k
        pl => a(roffs+1:roffs+nl, coffs+1:coffs+nl)
-       pq => q(1:n-k,1:nl)
+       pq => q(1:k,1:nl)
        call clear_error(errornv)
        call clear_routines(errornv)
        errornv%halt=.false.
        call lower_right_nullvec(x(1:nl),pl,tol,nullmaxits,p,errornv)
        if (success(errornv)) then
-          null=.true.
           ! if there is a right null vector then introduce a zero column.
           ubws(k)=nl-1
           ! null vec in x(p:nl)
-          numrotsv(n-k)=nl-p;
+          numrotsv(k)=nl-p;
           do j=p+1,nl ! apply v_k while preserving the triangular structure of L
              rot=lgivens2(x(j-1),x(j))
              call rotation_times_general(trp_rot(rot),x, j-1,j)
              call general_times_rotation(pl,rot,j-1,j)
-             csv(n-k,nl-j+1)=rot%cosine; ssv(n-k,nl-j+1)=rot%sine
-             ksv(n-k,nl-j+1)=coffs+j-1
+             csv(k,nl-j+1)=rot%cosine; ssv(k,nl-j+1)=rot%sine
+             ksv(k,nl-j+1)=coffs+j-1
              rot=lgivens2(pl(j-1,j),pl(j,j))
              call rotation_times_general(trp_rot(rot), pl(:,1:j), j-1,j)
              call general_times_rotation(pq,rot,j-1,j)
@@ -220,39 +218,39 @@ contains
           end do
 
           ! now L is (nl-1) x (nl-1) with a zero row stored
-          ! directly below it in a and q is (n-k) x (nl-1).
-          ! reveal row n-k of a of into the zero row below L.
-          pq(:,nl)=0.0_dp; pq(n-k,nl)=1.0_dp
+          ! directly below it in a and q is k x (nl-1).
+          ! reveal row k of a of into the zero row below L.
+          pq(:,nl)=0.0_dp; pq(k,nl)=1.0_dp
           call extend_gs_columns(pq(:,1:nl-1), x(1:nl-1), x(nl), pq(:,nl), error)
           if (failure(error)) return
           do j=1,nl-1
-             rot=rgivens2(pq(n-k,j),pq(n-k,nl))
+             rot=rgivens2(pq(k,j),pq(k,nl))
              call general_times_rotation(pq,rot,j,nl)
              call rotation_times_general(trp_rot(rot),pl(:,1:j),j,nl)
           end do
-          pl(nl,:)=pq(n-k,nl)*pl(nl,:)
+          pl(nl,:)=pq(k,nl)*pl(nl,:)
           ! now L is (nl-1) x (nl-1) stored in
-          ! A(n-k-nl+1:n-k-1,n-k+1:n-k+nl-1) and Q is (n-k-1) x (nl-1).
-          if (k+nl==n) then
+          ! A(k-nl+1:k-1,k+1:k+nl-1) and Q is (k-1) x (nl-1).
+          if (k==nl) then          
              ! q is square and (nl-1) x (nl-1)
              ! extend the QL decomposition by one column and exit
              ! with (nl-1) x nl L contained in
              ! a(1:nl-1,nl:2*nl-1) or
              x(1:nl-1)=matmul(transpose(pq(1:nl-1,1:nl-1)),a(1:nl-1,coffs))
              a(1:nl-1,coffs)=x(1:nl-1)
-             k1 = k+1 ! v_{n-k-1} is next to be applied
+             k1 = k-1 ! v_{k-1} is next to be applied
              coffs1 = nl-1
              ubw1=nl-1
              ml1=nl-1
-             exit trailing_loop ! terminate
+             exit leading_loop ! terminate
           else
-             ! Q is rectangular and (n-k-1) x (nl-1).
+             ! Q is rectangular and (k-1) x (nl-1).
              ! Extend the QL decomposition with an additional column
-             ! A(1:n-k-1,coffs) so that L is nl x nl and in
-             ! A(n-k-nl:n-k-1,n-k:n-k+nl-1) and q is (n-k-1) x nl
+             ! A(1:k-1,coffs) so that L is nl x nl and in
+             ! A(k-nl:k-1,k:k+nl-1) and q is (k-1) x nl
              call shift(pq,0,1)
-             pq => q(1:n-k-1,1:nl)
-             pq(:,1)=a(1:n-k-1,coffs)
+             pq => q(1:k-1,1:nl)
+             pq(:,1)=a(1:k-1,coffs)
              pl => a(roffs:roffs+nl-1, coffs:coffs+nl-1)
              call extend_gs_columns(pq(:,2:nl),pl(2:nl,1),pl(1,1),pq(:,1),error)
              if (failure(error)) return
@@ -260,14 +258,13 @@ contains
           end if
        else
           ! no null vector found.
-          ! L is nl x nl in a(n-k-nl+1:n-k,n-k+1:n-k+nl) and
-          ! q is n-k x nl.
-          null=.false.
+          ! L is nl x nl in a(k-nl+1:k,k+1:k+nl) and
+          ! q is k x nl.
           if (ubwmax < nl) then
              call set_error(1, info, error); return
           end if
           ubws(k)=nl
-          if (k+nl == n) then
+          if (k==nl) then          
              ! q is square and nl x nl.  L is nl x nl
              ! and in A(1:nl,nl+1:2*nl).
              ! Downdate row nl of A so that
@@ -278,44 +275,43 @@ contains
                 call rotation_times_general(trp_rot(rot),pl,j-1,j)
              end do
              pl(nl,:)=pq(nl,nl)*pl(nl,:)
-             k1=k+1 ! v_{n-k-1} is the next transformation.
+             k1=k-1 ! v_{k-1} is the next transformation.
              coffs1=nl
              ubw1=nl
              ml1=nl-1
-             exit trailing_loop
+             exit leading_loop
           end if
 
           ! Downdate a row of A so that L is nl x nl and
-          ! stored in A(n-k-nl:n-k-1)
+          ! stored in A(k-nl:k-1)
           pl => a(roffs:roffs+nl, coffs+1:coffs+nl) ! extend pl up
           call shift(pl,-1,0)
-          pq => q(1:n-k,1:nl+1)
-          pq(:,nl+1)=0.0_dp; pq(n-k,nl+1)=1.0_dp
+          pq => q(1:k,1:nl+1)
+          pq(:,nl+1)=0.0_dp; pq(k,nl+1)=1.0_dp
           call extend_gs_columns(pq(:,1:nl),x(1:nl), x(nl+1),pq(:,nl+1),error)
           if (failure(error)) return
           do j=1,nl
-             rot=rgivens2(pq(n-k,j),pq(n-k,nl+1))
+             rot=rgivens2(pq(k,j),pq(k,nl+1))
              call general_times_rotation(pq,rot,j,nl+1)
              call rotation_times_general(trp_rot(rot),pl(:,1:j),j,nl+1)
           end do
-          pl(nl+1,:)=pl(nl+1,:)*pq(n-k,nl+1)
-          if (nl==n-k-1) then
+          pl(nl+1,:)=pl(nl+1,:)*pq(k,nl+1)
+          if (nl==k-1) then
              ! q is now nl x nl.  Extend the QL factorization left
              ! one column before stopping so that l is nl x (nl+1)
              ! and stored in 
              pq => q(1:nl,1:nl)
              x(1:nl)=matmul(transpose(pq),a(1:nl,coffs))
              a(1:nl,coffs)=x(1:nl)
-             k1=k+1 ! v_{n-k-1} is the next transformation
+             k1=k-1 ! v_{k-1} is the next transformation
              coffs1=nl
              ubw1=nl
              ml1=nl
-             null=.true.
-             exit trailing_loop
+             exit leading_loop
           else ! q is not square.  Make L (nl+1)x(nl+1)
-             pq => q(1:n-k-1,1:nl+1)
+             pq => q(1:k-1,1:nl+1)
              call shift(pq,0,1)
-             pq(:,1)=a(1:n-k-1,coffs)
+             pq(:,1)=a(1:k-1,coffs)
              pl => a(roffs-1:roffs-1+nl,coffs:coffs+nl)
              call extend_gs_columns(pq(:,2:nl+1), pl(2:nl+1,1), &
                   pl(1,1), pq(:,1), error)
@@ -324,27 +320,28 @@ contains
              nl=nl+1
           end if
        end if ! null vector check
-    end do trailing_loop
+    end do leading_loop
 
     ! There is an ml1 x ml1+1 lower trapezoidal matrix in
     ! A(1:ml1,coffs1+1:coffs1+ml1+1).  The upper bandwidth
     ! of all later blocks is ubw1.  The next transformation
-    ! should be v_{n-k1}.
+    ! should be v_{k1}.
     if (ubwmax<ubw1) then
        call set_error(1, info, error); return
     end if
-    ubws(k:n-1)=ubw1
+    ubws(1:k)=ubw1
     coffs=coffs1
     do i=1,ml1
        ml=ml1-i+1
-       k=k1+i-1
+       !       k=k1+i-1
+       k=k1-i+1       
        pl=>a(1:ml,coffs+1:coffs+ml+1)
        pq=>q(1:ml,1:ml)
-       numrotsv(n-k)=ml
+       numrotsv(k)=ml
        do j=1,ml
           rot=rgivens(pl(j,j),pl(j,j+1))
-          csv(n-k,ml-j+1)=rot%cosine; ssv(n-k,ml-j+1)=rot%sine
-          ksv(n-k,ml-j+1)=coffs+j
+          csv(k,ml-j+1)=rot%cosine; ssv(k,ml-j+1)=rot%sine
+          ksv(k,ml-j+1)=coffs+j
           call general_times_rotation(pl(j:ml,:),rot,j,j+1)
           pl(j,j+1)=0.0_dp
        end do
@@ -475,7 +472,6 @@ contains
     type(routine_info), parameter :: info=info_f_z_general_bv
     type(error_info) :: errornv
     integer(kind=int32) :: coffs1, k1, ubw1, ml, ml1
-    logical :: null
     !
     if (failure(error)) return
     call push_id(info, error)
@@ -496,30 +492,29 @@ contains
        q(1:n-1,1)=q(1:n-1,1)/a(n-1,n)
     end if
     nl=1
-    ! k is the trailing principal submatrix size.
-    trailing_loop: do k=1,n-1
+    ! k is the leading principal submatrix size.
+    leading_loop: do k=n-1,1,-1
        ! Current L should be contained in
-       ! a(n-k-nl+1:n-k,n-k+1:n-k+nl) or a(roffs+1:roffs+nl,coffs+1:coffs+nl)
-       roffs=n-k-nl
-       coffs=n-k
+       ! a(k-nl+1:k,k+1:k+nl) or a(roffs+1:roffs+nl,coffs+1:coffs+nl)
+       roffs=k-nl
+       coffs=k
        pl => a(roffs+1:roffs+nl, coffs+1:coffs+nl)
-       pq => q(1:n-k,1:nl)
+       pq => q(1:k,1:nl)
        call clear_error(errornv)
        call clear_routines(errornv)
        errornv%halt=.false.
        call lower_right_nullvec(x(1:nl),pl,tol,nullmaxits,p,errornv)
        if (success(errornv)) then
-          null=.true.
           ! if there is a right null vector then introduce a zero column.
           ubws(k)=nl-1
-
-          numrotsv(n-k)=nl-p;
+          ! null vec in x(p:nl)
+          numrotsv(k)=nl-p;
           do j=p+1,nl ! apply v_k while preserving the triangular structure of L
              rot=lgivens2(x(j-1),x(j))
              call rotation_times_general(trp_rot(rot),x, j-1,j)
              call general_times_rotation(pl,rot,j-1,j)
-             csv(n-k,nl-j+1)=rot%cosine; ssv(n-k,nl-j+1)=rot%sine
-             ksv(n-k,nl-j+1)=coffs+j-1
+             csv(k,nl-j+1)=rot%cosine; ssv(k,nl-j+1)=rot%sine
+             ksv(k,nl-j+1)=coffs+j-1
              rot=lgivens2(pl(j-1,j),pl(j,j))
              call rotation_times_general(trp_rot(rot), pl(:,1:j), j-1,j)
              call general_times_rotation(pq,rot,j-1,j)
@@ -535,39 +530,39 @@ contains
           end do
 
           ! now L is (nl-1) x (nl-1) with a zero row stored
-          ! directly below it in a and q is (n-k) x (nl-1).
-          ! reveal row n-k of a of into the zero row below L.
-          pq(:,nl)=(0.0_dp,0.0_dp); pq(n-k,nl)=(1.0_dp,0.0_dp)
+          ! directly below it in a and q is k x (nl-1).
+          ! reveal row k of a of into the zero row below L.
+          pq(:,nl)=(0.0_dp,0.0_dp); pq(k,nl)=(1.0_dp,0.0_dp)
           call extend_gs_columns(pq(:,1:nl-1), x(1:nl-1), x(nl), pq(:,nl), error)
           if (failure(error)) return
           do j=1,nl-1
-             rot=rgivens2(pq(n-k,j),pq(n-k,nl))
+             rot=rgivens2(pq(k,j),pq(k,nl))
              call general_times_rotation(pq,rot,j,nl)
              call rotation_times_general(trp_rot(rot),pl(:,1:j),j,nl)
           end do
-          pl(nl,:)=pq(n-k,nl)*pl(nl,:)
+          pl(nl,:)=pq(k,nl)*pl(nl,:)
           ! now L is (nl-1) x (nl-1) stored in
-          ! A(n-k-nl+1:n-k-1,n-k+1:n-k+nl-1) and Q is (n-k-1) x (nl-1).
-          if (k+nl==n) then
+          ! A(k-nl+1:k-1,k+1:k+nl-1) and Q is (k-1) x (nl-1).
+          if (k==nl) then          
              ! q is square and (nl-1) x (nl-1)
              ! extend the QL decomposition by one column and exit
              ! with (nl-1) x nl L contained in
              ! a(1:nl-1,nl:2*nl-1) or
              x(1:nl-1)=matmul(transpose(conjg(pq(1:nl-1,1:nl-1))),a(1:nl-1,coffs))
              a(1:nl-1,coffs)=x(1:nl-1)
-             k1 = k+1 ! v_{n-k-1} is next to be applied
+             k1 = k-1 ! v_{k-1} is next to be applied
              coffs1 = nl-1
              ubw1=nl-1
              ml1=nl-1
-             exit trailing_loop ! terminate
+             exit leading_loop ! terminate
           else
-             ! Q is rectangular and (n-k-1) x (nl-1).
+             ! Q is rectangular and (k-1) x (nl-1).
              ! Extend the QL decomposition with an additional column
-             ! A(1:n-k-1,coffs) so that L is nl x nl and in
-             ! A(n-k-nl:n-k-1,n-k:n-k+nl-1) and q is (n-k-1) x nl
+             ! A(1:k-1,coffs) so that L is nl x nl and in
+             ! A(k-nl:k-1,k:k+nl-1) and q is (k-1) x nl
              call shift(pq,0,1)
-             pq => q(1:n-k-1,1:nl)
-             pq(:,1)=a(1:n-k-1,coffs)
+             pq => q(1:k-1,1:nl)
+             pq(:,1)=a(1:k-1,coffs)
              pl => a(roffs:roffs+nl-1, coffs:coffs+nl-1)
              call extend_gs_columns(pq(:,2:nl),pl(2:nl,1),pl(1,1),pq(:,1),error)
              if (failure(error)) return
@@ -575,14 +570,13 @@ contains
           end if
        else
           ! no null vector found.
-          ! L is nl x nl in a(n-k-nl+1:n-k,n-k+1:n-k+nl) and
-          ! q is n-k x nl.
-          null=.false.
+          ! L is nl x nl in a(k-nl+1:k,k+1:k+nl) and
+          ! q is k x nl.
           if (ubwmax < nl) then
              call set_error(1, info, error); return
           end if
           ubws(k)=nl
-          if (k+nl == n) then
+          if (k==nl) then          
              ! q is square and nl x nl.  L is nl x nl
              ! and in A(1:nl,nl+1:2*nl).
              ! Downdate row nl of A so that
@@ -593,44 +587,43 @@ contains
                 call rotation_times_general(trp_rot(rot),pl,j-1,j)
              end do
              pl(nl,:)=pq(nl,nl)*pl(nl,:)
-             k1=k+1 ! v_{n-k-1} is the next transformation.
+             k1=k-1 ! v_{k-1} is the next transformation.
              coffs1=nl
              ubw1=nl
              ml1=nl-1
-             exit trailing_loop
+             exit leading_loop
           end if
 
           ! Downdate a row of A so that L is nl x nl and
-          ! stored in A(n-k-nl:n-k-1)
+          ! stored in A(k-nl:k-1)
           pl => a(roffs:roffs+nl, coffs+1:coffs+nl) ! extend pl up
           call shift(pl,-1,0)
-          pq => q(1:n-k,1:nl+1)
-          pq(:,nl+1)=(0.0_dp,0.0_dp); pq(n-k,nl+1)=(1.0_dp,0.0_dp)
+          pq => q(1:k,1:nl+1)
+          pq(:,nl+1)=(0.0_dp,0.0_dp); pq(k,nl+1)=(1.0_dp,0.0_dp)
           call extend_gs_columns(pq(:,1:nl),x(1:nl), x(nl+1),pq(:,nl+1),error)
           if (failure(error)) return
           do j=1,nl
-             rot=rgivens2(pq(n-k,j),pq(n-k,nl+1))
+             rot=rgivens2(pq(k,j),pq(k,nl+1))
              call general_times_rotation(pq,rot,j,nl+1)
              call rotation_times_general(trp_rot(rot),pl(:,1:j),j,nl+1)
           end do
-          pl(nl+1,:)=pl(nl+1,:)*pq(n-k,nl+1)
-          if (nl==n-k-1) then
+          pl(nl+1,:)=pl(nl+1,:)*pq(k,nl+1)
+          if (nl==k-1) then
              ! q is now nl x nl.  Extend the QL factorization left
              ! one column before stopping so that l is nl x (nl+1)
              ! and stored in 
              pq => q(1:nl,1:nl)
              x(1:nl)=matmul(transpose(conjg(pq)),a(1:nl,coffs))
              a(1:nl,coffs)=x(1:nl)
-             k1=k+1 ! v_{n-k-1} is the next transformation
+             k1=k-1 ! v_{k-1} is the next transformation
              coffs1=nl
              ubw1=nl
              ml1=nl
-             null=.true.
-             exit trailing_loop
+             exit leading_loop
           else ! q is not square.  Make L (nl+1)x(nl+1)
-             pq => q(1:n-k-1,1:nl+1)
+             pq => q(1:k-1,1:nl+1)
              call shift(pq,0,1)
-             pq(:,1)=a(1:n-k-1,coffs)
+             pq(:,1)=a(1:k-1,coffs)
              pl => a(roffs-1:roffs-1+nl,coffs:coffs+nl)
              call extend_gs_columns(pq(:,2:nl+1), pl(2:nl+1,1), &
                   pl(1,1), pq(:,1), error)
@@ -639,27 +632,28 @@ contains
              nl=nl+1
           end if
        end if ! null vector check
-    end do trailing_loop
+    end do leading_loop
 
     ! There is an ml1 x ml1+1 lower trapezoidal matrix in
     ! A(1:ml1,coffs1+1:coffs1+ml1+1).  The upper bandwidth
     ! of all later blocks is ubw1.  The next transformation
-    ! should be v_{n-k1}.
+    ! should be v_{k1}.
     if (ubwmax<ubw1) then
        call set_error(1, info, error); return
     end if
-    ubws(k:n-1)=ubw1
+    ubws(1:k)=ubw1
     coffs=coffs1
     do i=1,ml1
        ml=ml1-i+1
-       k=k1+i-1
+       !       k=k1+i-1
+       k=k1-i+1       
        pl=>a(1:ml,coffs+1:coffs+ml+1)
        pq=>q(1:ml,1:ml)
-       numrotsv(n-k)=ml
+       numrotsv(k)=ml
        do j=1,ml
           rot=rgivens(pl(j,j),pl(j,j+1))
-          csv(n-k,ml-j+1)=rot%cosine; ssv(n-k,ml-j+1)=rot%sine
-          ksv(n-k,ml-j+1)=coffs+j
+          csv(k,ml-j+1)=rot%cosine; ssv(k,ml-j+1)=rot%sine
+          ksv(k,ml-j+1)=coffs+j
           call general_times_rotation(pl(j:ml,:),rot,j,j+1)
           pl(j,j+1)=(0.0_dp,0.0_dp)
        end do
