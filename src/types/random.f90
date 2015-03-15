@@ -307,7 +307,7 @@ contains
     ub=d_new_ub(n,lbwmax,ubwmax)
     ub%ubw=ubw; ub%lbw=lbw
     call f_d_random_bc(ub%bc,n,lbw,ubw,lbwmax,ubwmax)
-    call f_d_random_rotations_ub(n,lbw,ubw,lbwmax,ubwmax,ub%numrotsu, ub%jsu, ub%csu, ub%ssu)
+    call f_d_random_rotations_ub(n,lbw,ubw,ubwmax,ub%numrotsu, ub%jsu, ub%csu, ub%ssu)
     call pop_id(error)
   end function d_random_ub0
 
@@ -339,16 +339,15 @@ contains
     ub=d_new_ub(n,lbwmax,ubwmax)
     ub%ubw=ubw; ub%lbw=lbw
     call f_d_random_bc(ub%bc,n,lbw,ubw,lbwmax,ubwmax)
-    call d_truncate_profile_bc(ub%bc,n,lbw,ubw,lbwmax,ubwmax,lbws,ubws)
-    call f_d_random_rotations_ub(n,lbw,ubw,lbwmax,ubwmax,ub%numrotsu, ub%jsu, &
+    call d_truncate_profile_bc(ub%bc,n,ubw,lbwmax,ubwmax,lbws,ubws)
+    call f_d_random_rotations_ub(n,lbw,ubw,ubwmax,ub%numrotsu, ub%jsu, &
          ub%csu, ub%ssu,ubws)
     call pop_id(error)
   end function d_random_ub1
   
-  subroutine f_d_random_rotations_ub(n,lbw,ubw,lbwmax,ubwmax,numrotsu,jsu,csu,ssu, &
+  subroutine f_d_random_rotations_ub(n,lbw,ubw,ubwmax,numrotsu,jsu,csu,ssu, &
        upper)
-    integer(kind=int32), intent(in) :: n, lbw, ubw
-    integer(kind=int32), intent(in) :: lbwmax, ubwmax
+    integer(kind=int32), intent(in) :: n, lbw, ubw, ubwmax
     integer(kind=int32), dimension(n), intent(out) :: numrotsu
     integer(kind=int32), dimension(ubwmax,n), intent(out) :: jsu
     real(kind=dp), dimension(ubwmax,n), intent(out) :: csu, ssu
@@ -405,7 +404,7 @@ contains
     ub=z_new_ub(n,lbwmax,ubwmax)
     ub%ubw=ubw; ub%lbw=lbw
     call f_z_random_bc(ub%bc,n,lbw,ubw,lbwmax,ubwmax)
-    call f_z_random_rotations_ub(n,lbw,ubw,lbwmax,ubwmax,ub%numrotsu, ub%jsu, ub%csu, ub%ssu)
+    call f_z_random_rotations_ub(n,lbw,ubw,ubwmax,ub%numrotsu, ub%jsu, ub%csu, ub%ssu)
     call pop_id(error)
   end function z_random_ub0
 
@@ -437,16 +436,15 @@ contains
     ub=z_new_ub(n,lbwmax,ubwmax)
     ub%ubw=ubw; ub%lbw=lbw
     call f_z_random_bc(ub%bc,n,lbw,ubw,lbwmax,ubwmax)
-    call z_truncate_profile_bc(ub%bc,n,lbw,ubw,lbwmax,ubwmax,lbws,ubws)
-    call f_z_random_rotations_ub(n,lbw,ubw,lbwmax,ubwmax,ub%numrotsu, ub%jsu, &
+    call z_truncate_profile_bc(ub%bc,n,ubw,lbwmax,ubwmax,lbws,ubws)
+    call f_z_random_rotations_ub(n,lbw,ubw,ubwmax,ub%numrotsu, ub%jsu, &
          ub%csu, ub%ssu,ubws)
     call pop_id(error)
   end function z_random_ub1
 
-  subroutine f_z_random_rotations_ub(n,lbw,ubw,lbwmax,ubwmax,numrotsu,jsu,csu,ssu, &
+  subroutine f_z_random_rotations_ub(n,lbw,ubw,ubwmax,numrotsu,jsu,csu,ssu, &
        upper)
-    integer(kind=int32), intent(in) :: n, lbw, ubw
-    integer(kind=int32), intent(in) :: lbwmax, ubwmax
+    integer(kind=int32), intent(in) :: n, lbw, ubw, ubwmax
     integer(kind=int32), dimension(n), intent(out) :: numrotsu
     integer(kind=int32), dimension(ubwmax,n), intent(out) :: jsu
     real(kind=dp), dimension(ubwmax,n), intent(out) :: csu
@@ -505,7 +503,7 @@ contains
     bv=d_new_bv(n,lbwmax,ubwmax)
     bv%ubw=ubw; bv%lbw=lbw
     call f_d_random_br(bv%br,n,lbw,ubw,lbwmax,ubwmax)
-    call f_d_random_rotations_bv(n,lbw,ubw,lbwmax,ubwmax,bv%numrotsv, bv%ksv, bv%csv, bv%ssv)
+    call f_d_random_rotations_bv(n,lbw,ubw,ubwmax,bv%numrotsv, bv%ksv, bv%csv, bv%ssv)
     call pop_id(error)
 
   end function d_random_bv0
@@ -537,16 +535,15 @@ contains
     bv=d_new_bv(n,lbwmax,ubwmax)
     bv%ubw=ubw; bv%lbw=lbw
     call f_d_random_br(bv%br,n,lbw,ubw,lbwmax,ubwmax)
-    call d_truncate_profile_br(bv%br,n,lbw,ubw,lbwmax,ubwmax,lbws,ubws)
-    call f_d_random_rotations_bv(n,lbw,ubw,lbwmax,ubwmax,bv%numrotsv, bv%ksv, &
+    call d_truncate_profile_br(bv%br,n,lbw,lbwmax,ubwmax,lbws,ubws)
+    call f_d_random_rotations_bv(n,lbw,ubw,ubwmax,bv%numrotsv, bv%ksv, &
          bv%csv, bv%ssv,ubws)
     call pop_id(error)
   end function d_random_bv1
   
-  subroutine f_d_random_rotations_bv(n,lbw,ubw,lbwmax,ubwmax,numrotsv,ksv,csv,ssv, &
+  subroutine f_d_random_rotations_bv(n,lbw,ubw,ubwmax,numrotsv,ksv,csv,ssv, &
        upper)
-    integer(kind=int32), intent(in) :: n, lbw, ubw
-    integer(kind=int32), intent(in) :: lbwmax, ubwmax
+    integer(kind=int32), intent(in) :: n, lbw, ubw, ubwmax
     integer(kind=int32), dimension(n), intent(out) :: numrotsv
     integer(kind=int32), dimension(n,ubwmax), intent(out) :: ksv
     real(kind=dp), dimension(n,ubwmax), intent(out) :: csv, ssv
@@ -602,7 +599,7 @@ contains
     bv=z_new_bv(n,lbwmax,ubwmax)
     bv%ubw=ubw; bv%lbw=lbw
     call f_z_random_br(bv%br,n,lbw,ubw,lbwmax,ubwmax)
-    call f_z_random_rotations_bv(n,lbw,ubw,lbwmax,ubwmax,bv%numrotsv, bv%ksv, bv%csv, bv%ssv)
+    call f_z_random_rotations_bv(n,lbw,ubw,ubwmax,bv%numrotsv, bv%ksv, bv%csv, bv%ssv)
     call pop_id(error)
   end function z_random_bv0
 
@@ -633,16 +630,15 @@ contains
     bv=z_new_bv(n,lbwmax,ubwmax)
     bv%ubw=ubw; bv%lbw=lbw
     call f_z_random_br(bv%br,n,lbw,ubw,lbwmax,ubwmax)
-    call z_truncate_profile_br(bv%br,n,lbw,ubw,lbwmax,ubwmax,lbws,ubws)
-    call f_z_random_rotations_bv(n,lbw,ubw,lbwmax,ubwmax,bv%numrotsv, bv%ksv, &
+    call z_truncate_profile_br(bv%br,n,lbw,lbwmax,ubwmax,lbws,ubws)
+    call f_z_random_rotations_bv(n,lbw,ubw,ubwmax,bv%numrotsv, bv%ksv, &
          bv%csv, bv%ssv,ubws)
     call pop_id(error)
   end function z_random_bv1
 
-  subroutine f_z_random_rotations_bv(n,lbw,ubw,lbwmax,ubwmax,numrotsv,ksv,csv,ssv, &
+  subroutine f_z_random_rotations_bv(n,lbw,ubw,ubwmax,numrotsv,ksv,csv,ssv, &
        upper)
-    integer(kind=int32), intent(in) :: n, lbw, ubw
-    integer(kind=int32), intent(in) :: lbwmax, ubwmax
+    integer(kind=int32), intent(in) :: n, lbw, ubw, ubwmax
     integer(kind=int32), dimension(n), intent(out) :: numrotsv
     integer(kind=int32), dimension(n,ubwmax), intent(out) :: ksv
     real(kind=dp), dimension(n,ubwmax), intent(out) :: csv
@@ -700,7 +696,7 @@ contains
     bt=d_new_bt(n,lbwmax,ubwmax)
     bt%ubw=ubw; bt%lbw=lbw
     call f_d_random_br(bt%br,n,lbw,ubw,lbwmax,ubwmax)
-    call f_d_random_rotations_bt(n,lbw,ubw,lbwmax,ubwmax,bt%numrotst, bt%kst, bt%cst, bt%sst)
+    call f_d_random_rotations_bt(n,lbw,ubw,lbwmax,bt%numrotst, bt%kst, bt%cst, bt%sst)
     call pop_id(error)
   end function d_random_bt0
 
@@ -730,16 +726,15 @@ contains
     bt=d_new_bt(n,lbwmax,ubwmax)
     bt%ubw=ubw; bt%lbw=lbw
     call f_d_random_br(bt%br,n,lbw,ubw,lbwmax,ubwmax)
-    call d_truncate_profile_br(bt%br,n,lbw,ubw,lbwmax,ubwmax,lbws,ubws)
-    call f_d_random_rotations_bt(n,lbw,ubw,lbwmax,ubwmax,bt%numrotst, bt%kst, &
+    call d_truncate_profile_br(bt%br,n,lbw,lbwmax,ubwmax,lbws,ubws)
+    call f_d_random_rotations_bt(n,lbw,ubw,lbwmax,bt%numrotst, bt%kst, &
          bt%cst, bt%sst,lbws)
     call pop_id(error)
   end function d_random_bt1
   
-  subroutine f_d_random_rotations_bt(n,lbw,ubw,lbwmax,ubwmax,numrotst,kst,cst,sst, &
+  subroutine f_d_random_rotations_bt(n,lbw,ubw,lbwmax,numrotst,kst,cst,sst, &
        lower)
-    integer(kind=int32), intent(in) :: n, lbw, ubw
-    integer(kind=int32), intent(in) :: lbwmax, ubwmax
+    integer(kind=int32), intent(in) :: n, lbw, ubw, lbwmax
     integer(kind=int32), dimension(n), intent(out) :: numrotst
     integer(kind=int32), dimension(n,lbwmax), intent(out) :: kst
     real(kind=dp), dimension(n,lbwmax), intent(out) :: cst, sst
@@ -793,7 +788,7 @@ contains
     bt=z_new_bt(n,lbwmax,ubwmax)
     bt%ubw=ubw; bt%lbw=lbw
     call f_z_random_br(bt%br,n,lbw,ubw,lbwmax,ubwmax)
-    call f_z_random_rotations_bt(n,lbw,ubw,lbwmax,ubwmax,bt%numrotst, bt%kst, bt%cst, bt%sst)
+    call f_z_random_rotations_bt(n,lbw,ubw,lbwmax,bt%numrotst, bt%kst, bt%cst, bt%sst)
     call pop_id(error)
   end function z_random_bt0
 
@@ -823,15 +818,14 @@ contains
     bt=z_new_bt(n,lbwmax,ubwmax)
     bt%ubw=ubw; bt%lbw=lbw
     call f_z_random_br(bt%br,n,lbw,ubw,lbwmax,ubwmax)
-    call z_truncate_profile_br(bt%br,n,lbw,ubw,lbwmax,ubwmax,lbws,ubws)
-    call f_z_random_rotations_bt(n,lbw,ubw,lbwmax,ubwmax,bt%numrotst, bt%kst, &
+    call z_truncate_profile_br(bt%br,n,lbw,lbwmax,ubwmax,lbws,ubws)
+    call f_z_random_rotations_bt(n,lbw,ubw,lbwmax,bt%numrotst, bt%kst, &
          bt%cst, bt%sst,lbws)
     call pop_id(error)
   end function z_random_bt1
   
-  subroutine f_z_random_rotations_bt(n,lbw,ubw,lbwmax,ubwmax,numrotst,kst,cst,sst,lower)
-    integer(kind=int32), intent(in) :: n, lbw, ubw
-    integer(kind=int32), intent(in) :: lbwmax, ubwmax
+  subroutine f_z_random_rotations_bt(n,lbw,ubw,lbwmax,numrotst,kst,cst,sst,lower)
+    integer(kind=int32), intent(in) :: n, lbw, ubw, lbwmax
     integer(kind=int32), dimension(n), intent(out) :: numrotst
     integer(kind=int32), dimension(n,lbwmax), intent(out) :: kst
     real(kind=dp), dimension(n,lbwmax), intent(out) :: cst
@@ -888,7 +882,7 @@ contains
     wb=d_new_wb(n,lbwmax,ubwmax)
     wb%ubw=ubw; wb%lbw=lbw
     call f_d_random_bc(wb%bc,n,lbw,ubw,lbwmax,ubwmax)
-    call f_d_random_rotations_wb(n,lbw,ubw,lbwmax,ubwmax,wb%numrotsw, wb%jsw, wb%csw, wb%ssw)
+    call f_d_random_rotations_wb(n,lbw,ubw,lbwmax,wb%numrotsw, wb%jsw, wb%csw, wb%ssw)
     call pop_id(error)
   end function d_random_wb0
 
@@ -918,15 +912,14 @@ contains
     wb=d_new_wb(n,lbwmax,ubwmax)
     wb%ubw=ubw; wb%lbw=lbw
     call f_d_random_bc(wb%bc,n,lbw,ubw,lbwmax,ubwmax)
-    call d_truncate_profile_bc(wb%bc,n,lbw,ubw,lbwmax,ubwmax,lbws,ubws)
-    call f_d_random_rotations_wb(n,lbw,ubw,lbwmax,ubwmax,wb%numrotsw, wb%jsw, &
+    call d_truncate_profile_bc(wb%bc,n,ubw,lbwmax,ubwmax,lbws,ubws)
+    call f_d_random_rotations_wb(n,lbw,ubw,lbwmax,wb%numrotsw, wb%jsw, &
          wb%csw, wb%ssw,lbws)
     call pop_id(error)
   end function d_random_wb1
   
-  subroutine f_d_random_rotations_wb(n,lbw,ubw,lbwmax,ubwmax,numrotsw,jsw,csw,ssw,lower)
-    integer(kind=int32), intent(in) :: n, lbw, ubw
-    integer(kind=int32), intent(in) :: lbwmax, ubwmax
+  subroutine f_d_random_rotations_wb(n,lbw,ubw,lbwmax,numrotsw,jsw,csw,ssw,lower)
+    integer(kind=int32), intent(in) :: n, lbw, ubw, lbwmax
     integer(kind=int32), dimension(n), intent(out) :: numrotsw
     integer(kind=int32), dimension(lbwmax,n), intent(out) :: jsw
     real(kind=dp), dimension(lbwmax,n), intent(out) :: csw, ssw
@@ -980,7 +973,7 @@ contains
     wb=z_new_wb(n,lbwmax,ubwmax)
     wb%ubw=ubw; wb%lbw=lbw
     call f_z_random_bc(wb%bc,n,lbw,ubw,lbwmax,ubwmax)
-    call f_z_random_rotations_wb(n,lbw,ubw,lbwmax,ubwmax,wb%numrotsw, wb%jsw, wb%csw, wb%ssw)
+    call f_z_random_rotations_wb(n,lbw,ubw,lbwmax,wb%numrotsw, wb%jsw, wb%csw, wb%ssw)
     call pop_id(error)
   end function z_random_wb0
 
@@ -1010,15 +1003,14 @@ contains
     wb=z_new_wb(n,lbwmax,ubwmax)
     wb%ubw=ubw; wb%lbw=lbw
     call f_z_random_bc(wb%bc,n,lbw,ubw,lbwmax,ubwmax)
-    call z_truncate_profile_bc(wb%bc,n,lbw,ubw,lbwmax,ubwmax,lbws,ubws)
-    call f_z_random_rotations_wb(n,lbw,ubw,lbwmax,ubwmax,wb%numrotsw, wb%jsw, &
+    call z_truncate_profile_bc(wb%bc,n,ubw,lbwmax,ubwmax,lbws,ubws)
+    call f_z_random_rotations_wb(n,lbw,ubw,lbwmax,wb%numrotsw, wb%jsw, &
          wb%csw, wb%ssw,lbws)
     call pop_id(error)
   end function z_random_wb1
 
-  subroutine f_z_random_rotations_wb(n,lbw,ubw,lbwmax,ubwmax,numrotsw,jsw,csw,ssw,lower)
-    integer(kind=int32), intent(in) :: n, lbw, ubw
-    integer(kind=int32), intent(in) :: lbwmax, ubwmax
+  subroutine f_z_random_rotations_wb(n,lbw,ubw,lbwmax,numrotsw,jsw,csw,ssw,lower)
+    integer(kind=int32), intent(in) :: n, lbw, ubw, lbwmax
     integer(kind=int32), dimension(n), intent(out) :: numrotsw
     integer(kind=int32), dimension(lbwmax,n), intent(out) :: jsw
     real(kind=dp), dimension(lbwmax,n), intent(out) :: csw
@@ -1073,8 +1065,8 @@ contains
     ubt=d_new_ubt(n,lbwmax,ubwmax)
     ubt%ubw=ubw; ubt%lbw=lbw
     call f_d_random_bc(ubt%bc,n,lbw,ubw,lbwmax,ubwmax)
-    call f_d_random_rotations_ub(n,lbw,ubw,lbwmax,ubwmax,ubt%numrotsu, ubt%jsu, ubt%csu, ubt%ssu)
-    call f_d_random_rotations_bt(n,lbw,ubw,lbwmax,ubwmax,ubt%numrotst, ubt%kst, ubt%cst, ubt%sst)
+    call f_d_random_rotations_ub(n,lbw,ubw,ubwmax,ubt%numrotsu, ubt%jsu, ubt%csu, ubt%ssu)
+    call f_d_random_rotations_bt(n,lbw,ubw,lbwmax,ubt%numrotst, ubt%kst, ubt%cst, ubt%sst)
     call pop_id(error)
   end function d_random_ubt0
 
@@ -1104,10 +1096,10 @@ contains
     ubt=d_new_ubt(n,lbwmax,ubwmax)
     ubt%ubw=ubw; ubt%lbw=lbw
     call f_d_random_bc(ubt%bc,n,lbw,ubw,lbwmax,ubwmax)
-    call d_truncate_profile_bc(ubt%bc,n,lbw,ubw,lbwmax,ubwmax,lbws,ubws)
-    call f_d_random_rotations_ub(n,lbw,ubw,lbwmax,ubwmax,ubt%numrotsu, ubt%jsu, &
+    call d_truncate_profile_bc(ubt%bc,n,ubw,lbwmax,ubwmax,lbws,ubws)
+    call f_d_random_rotations_ub(n,lbw,ubw,ubwmax,ubt%numrotsu, ubt%jsu, &
          ubt%csu, ubt%ssu, ubws)
-    call f_d_random_rotations_bt(n,lbw,ubw,lbwmax,ubwmax,ubt%numrotst, ubt%kst, &
+    call f_d_random_rotations_bt(n,lbw,ubw,lbwmax,ubt%numrotst, ubt%kst, &
          ubt%cst, ubt%sst, lbws)
     call pop_id(error)
   end function d_random_ubt1
@@ -1135,8 +1127,8 @@ contains
     ubt=z_new_ubt(n,lbwmax,ubwmax)
     ubt%ubw=ubw; ubt%lbw=lbw
     call f_z_random_bc(ubt%bc,n,lbw,ubw,lbwmax,ubwmax)
-    call f_z_random_rotations_ub(n,lbw,ubw,lbwmax,ubwmax,ubt%numrotsu, ubt%jsu, ubt%csu, ubt%ssu)
-    call f_z_random_rotations_bt(n,lbw,ubw,lbwmax,ubwmax,ubt%numrotst, ubt%kst, ubt%cst, ubt%sst)
+    call f_z_random_rotations_ub(n,lbw,ubw,ubwmax,ubt%numrotsu, ubt%jsu, ubt%csu, ubt%ssu)
+    call f_z_random_rotations_bt(n,lbw,ubw,lbwmax,ubt%numrotst, ubt%kst, ubt%cst, ubt%sst)
     call pop_id(error)
   end function z_random_ubt0
 
@@ -1166,10 +1158,10 @@ contains
     ubt=z_new_ubt(n,lbwmax,ubwmax)
     ubt%ubw=ubw; ubt%lbw=lbw
     call f_z_random_bc(ubt%bc,n,lbw,ubw,lbwmax,ubwmax)
-    call z_truncate_profile_bc(ubt%bc,n,lbw,ubw,lbwmax,ubwmax,lbws,ubws)
-    call f_z_random_rotations_ub(n,lbw,ubw,lbwmax,ubwmax,ubt%numrotsu, ubt%jsu, &
+    call z_truncate_profile_bc(ubt%bc,n,ubw,lbwmax,ubwmax,lbws,ubws)
+    call f_z_random_rotations_ub(n,lbw,ubw,ubwmax,ubt%numrotsu, ubt%jsu, &
          ubt%csu, ubt%ssu, ubws)
-    call f_z_random_rotations_bt(n,lbw,ubw,lbwmax,ubwmax,ubt%numrotst, ubt%kst, &
+    call f_z_random_rotations_bt(n,lbw,ubw,lbwmax,ubt%numrotst, ubt%kst, &
          ubt%cst, ubt%sst, lbws)
     call pop_id(error)
   end function z_random_ubt1
@@ -1197,8 +1189,8 @@ contains
     wbv=d_new_wbv(n,lbwmax,ubwmax)
     wbv%ubw=ubw; wbv%lbw=lbw
     call f_d_random_br(wbv%br,n,lbw,ubw,lbwmax,ubwmax)
-    call f_d_random_rotations_wb(n,lbw,ubw,lbwmax,ubwmax,wbv%numrotsw, wbv%jsw, wbv%csw, wbv%ssw)
-    call f_d_random_rotations_bv(n,lbw,ubw,lbwmax,ubwmax,wbv%numrotsv, wbv%ksv, wbv%csv, wbv%ssv)
+    call f_d_random_rotations_wb(n,lbw,ubw,lbwmax,wbv%numrotsw, wbv%jsw, wbv%csw, wbv%ssw)
+    call f_d_random_rotations_bv(n,lbw,ubw,ubwmax,wbv%numrotsv, wbv%ksv, wbv%csv, wbv%ssv)
     call pop_id(error)
   end function d_random_wbv0
 
@@ -1228,10 +1220,10 @@ contains
     wbv=d_new_wbv(n,lbwmax,ubwmax)
     wbv%ubw=ubw; wbv%lbw=lbw
     call f_d_random_br(wbv%br,n,lbw,ubw,lbwmax,ubwmax)
-    call d_truncate_profile_br(wbv%br,n,lbw,ubw,lbwmax,ubwmax,lbws,ubws)
-    call f_d_random_rotations_wb(n,lbw,ubw,lbwmax,ubwmax,wbv%numrotsw, wbv%jsw, &
+    call d_truncate_profile_br(wbv%br,n,lbw,lbwmax,ubwmax,lbws,ubws)
+    call f_d_random_rotations_wb(n,lbw,ubw,lbwmax,wbv%numrotsw, wbv%jsw, &
          wbv%csw, wbv%ssw,lbws)
-    call f_d_random_rotations_bv(n,lbw,ubw,lbwmax,ubwmax,wbv%numrotsv, wbv%ksv, &
+    call f_d_random_rotations_bv(n,lbw,ubw,ubwmax,wbv%numrotsv, wbv%ksv, &
          wbv%csv, wbv%ssv,ubws)
     call pop_id(error)
   end function d_random_wbv1
@@ -1259,8 +1251,8 @@ contains
     wbv=z_new_wbv(n,lbwmax,ubwmax)
     wbv%ubw=ubw; wbv%lbw=lbw
     call f_z_random_br(wbv%br,n,lbw,ubw,lbwmax,ubwmax)
-    call f_z_random_rotations_wb(n,lbw,ubw,lbwmax,ubwmax,wbv%numrotsw, wbv%jsw, wbv%csw, wbv%ssw)
-    call f_z_random_rotations_bv(n,lbw,ubw,lbwmax,ubwmax,wbv%numrotsv, wbv%ksv, wbv%csv, wbv%ssv)
+    call f_z_random_rotations_wb(n,lbw,ubw,lbwmax,wbv%numrotsw, wbv%jsw, wbv%csw, wbv%ssw)
+    call f_z_random_rotations_bv(n,lbw,ubw,ubwmax,wbv%numrotsv, wbv%ksv, wbv%csv, wbv%ssv)
     call pop_id(error)
   end function z_random_wbv0
 
@@ -1290,10 +1282,10 @@ contains
     wbv=z_new_wbv(n,lbwmax,ubwmax)
     wbv%ubw=ubw; wbv%lbw=lbw
     call f_z_random_br(wbv%br,n,lbw,ubw,lbwmax,ubwmax)
-    call z_truncate_profile_br(wbv%br,n,lbw,ubw,lbwmax,ubwmax,lbws,ubws)
-    call f_z_random_rotations_wb(n,lbw,ubw,lbwmax,ubwmax,wbv%numrotsw, wbv%jsw, &
+    call z_truncate_profile_br(wbv%br,n,lbw,lbwmax,ubwmax,lbws,ubws)
+    call f_z_random_rotations_wb(n,lbw,ubw,lbwmax,wbv%numrotsw, wbv%jsw, &
          wbv%csw, wbv%ssw,lbws)
-    call f_z_random_rotations_bv(n,lbw,ubw,lbwmax,ubwmax,wbv%numrotsv, wbv%ksv, &
+    call f_z_random_rotations_bv(n,lbw,ubw,ubwmax,wbv%numrotsv, wbv%ksv, &
          wbv%csv, wbv%ssv,ubws)
     call pop_id(error)
   end function z_random_wbv1

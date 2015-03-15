@@ -817,7 +817,7 @@ contains
     type(d_ub), intent(inout) :: ub
     integer(kind=int32), dimension(:), intent(in), optional :: lower, upper
 
-    call d_truncate_profile_bc(ub%bc,get_n(ub), ub%lbw, ub%ubw, get_lbwmax(ub), &
+    call d_truncate_profile_bc(ub%bc,get_n(ub), ub%ubw, get_lbwmax(ub), &
          get_ubwmax(ub), lower, upper)
   end subroutine d_truncate_profile_ub
 
@@ -825,7 +825,7 @@ contains
     type(z_ub), intent(inout) :: ub
     integer(kind=int32), dimension(:), intent(in), optional :: lower, upper
 
-    call z_truncate_profile_bc(ub%bc,get_n(ub), ub%lbw, ub%ubw, get_lbwmax(ub), &
+    call z_truncate_profile_bc(ub%bc,get_n(ub), ub%ubw, get_lbwmax(ub), &
          get_ubwmax(ub), lower, upper)
   end subroutine z_truncate_profile_ub
 
@@ -833,7 +833,7 @@ contains
     type(d_bt), intent(inout) :: bt
     integer(kind=int32), dimension(:), intent(in), optional :: lower, upper
 
-    call d_truncate_profile_br(bt%br,get_n(bt), bt%lbw, bt%ubw, get_lbwmax(bt), &
+    call d_truncate_profile_br(bt%br,get_n(bt), bt%lbw, get_lbwmax(bt), &
          get_ubwmax(bt), lower, upper)
   end subroutine d_truncate_profile_bt
 
@@ -841,7 +841,7 @@ contains
     type(z_bt), intent(inout) :: bt
     integer(kind=int32), dimension(:), intent(in), optional :: lower, upper
 
-    call z_truncate_profile_br(bt%br,get_n(bt), bt%lbw, bt%ubw, get_lbwmax(bt), &
+    call z_truncate_profile_br(bt%br,get_n(bt), bt%lbw, get_lbwmax(bt), &
          get_ubwmax(bt), lower, upper)
   end subroutine z_truncate_profile_bt
 
@@ -849,7 +849,7 @@ contains
     type(d_bv), intent(inout) :: bv
     integer(kind=int32), dimension(:), intent(in), optional :: lower, upper
 
-    call d_truncate_profile_br(bv%br,get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), &
+    call d_truncate_profile_br(bv%br,get_n(bv), bv%lbw, get_lbwmax(bv), &
          get_ubwmax(bv), lower, upper)
   end subroutine d_truncate_profile_bv
 
@@ -857,7 +857,7 @@ contains
     type(z_bv), intent(inout) :: bv
     integer(kind=int32), dimension(:), intent(in), optional :: lower, upper
 
-    call z_truncate_profile_br(bv%br,get_n(bv), bv%lbw, bv%ubw, get_lbwmax(bv), &
+    call z_truncate_profile_br(bv%br,get_n(bv), bv%lbw, get_lbwmax(bv), &
          get_ubwmax(bv), lower, upper)
   end subroutine z_truncate_profile_bv
 
@@ -865,7 +865,7 @@ contains
     type(d_ubt), intent(inout) :: ubt
     integer(kind=int32), dimension(:), intent(in), optional :: lower, upper
 
-    call d_truncate_profile_bc(ubt%bc,get_n(ubt), ubt%lbw, ubt%ubw, get_lbwmax(ubt), &
+    call d_truncate_profile_bc(ubt%bc,get_n(ubt), ubt%ubw, get_lbwmax(ubt), &
          get_ubwmax(ubt), lower, upper)
   end subroutine d_truncate_profile_ubt
 
@@ -873,7 +873,7 @@ contains
     type(z_ubt), intent(inout) :: ubt
     integer(kind=int32), dimension(:), intent(in), optional :: lower, upper
 
-    call z_truncate_profile_bc(ubt%bc,get_n(ubt), ubt%lbw, ubt%ubw, get_lbwmax(ubt), &
+    call z_truncate_profile_bc(ubt%bc,get_n(ubt), ubt%ubw, get_lbwmax(ubt), &
          get_ubwmax(ubt), lower, upper)
   end subroutine z_truncate_profile_ubt
   
@@ -881,7 +881,7 @@ contains
     type(d_wbv), intent(inout) :: wbv
     integer(kind=int32), dimension(:), intent(in), optional :: lower, upper
 
-    call d_truncate_profile_br(wbv%br,get_n(wbv), wbv%lbw, wbv%ubw, get_lbwmax(wbv), &
+    call d_truncate_profile_br(wbv%br,get_n(wbv), wbv%lbw, get_lbwmax(wbv), &
          get_ubwmax(wbv), lower, upper)
   end subroutine d_truncate_profile_wbv
 
@@ -889,7 +889,7 @@ contains
     type(z_wbv), intent(inout) :: wbv
     integer(kind=int32), dimension(:), intent(in), optional :: lower, upper
 
-    call z_truncate_profile_br(wbv%br,get_n(wbv), wbv%lbw, wbv%ubw, get_lbwmax(wbv), &
+    call z_truncate_profile_br(wbv%br,get_n(wbv), wbv%lbw, get_lbwmax(wbv), &
          get_ubwmax(wbv), lower, upper)
   end subroutine z_truncate_profile_wbv
 
@@ -897,7 +897,7 @@ contains
     type(d_wb), intent(inout) :: wb
     integer(kind=int32), dimension(:), intent(in), optional :: lower, upper
 
-    call d_truncate_profile_bc(wb%bc,get_n(wb), wb%lbw, wb%ubw, get_lbwmax(wb), &
+    call d_truncate_profile_bc(wb%bc,get_n(wb), wb%ubw, get_lbwmax(wb), &
          get_ubwmax(wb), lower, upper)
   end subroutine d_truncate_profile_wb
 
@@ -905,7 +905,7 @@ contains
     type(z_wb), intent(inout) :: wb
     integer(kind=int32), dimension(:), intent(in), optional :: lower, upper
 
-    call z_truncate_profile_bc(wb%bc,get_n(wb), wb%lbw, wb%ubw, get_lbwmax(wb), &
+    call z_truncate_profile_bc(wb%bc,get_n(wb), wb%ubw, get_lbwmax(wb), &
          get_ubwmax(wb), lower, upper)
   end subroutine z_truncate_profile_wb
   

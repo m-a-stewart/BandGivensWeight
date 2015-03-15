@@ -29,11 +29,7 @@ module mod_band_types
        rotation_times_tbr, d_rotation_times_tbr, z_rotation_times_tbr
 
   public :: bc_to_br, d_bc_to_br, z_bc_to_br, &
-       br_to_bc, d_br_to_bc, z_br_to_bc, &
-       f_bw_expand_bc, f_d_bw_expand_bc, f_z_bw_expand_bc, &
-       f_bw_expand_br, f_d_bw_expand_br, f_z_bw_expand_br, &
-       f_bw_contract_bc, f_d_bw_contract_bc, f_z_bw_contract_bc, &
-       f_bw_contract_br, f_d_bw_contract_br, f_z_bw_contract_br
+       br_to_bc, d_br_to_bc, z_br_to_bc
 
   public :: extract_diagonals_bc, d_extract_diagonals_bc, z_extract_diagonals_bc, &
        extract_diagonals_br, d_extract_diagonals_br, z_extract_diagonals_br
@@ -124,22 +120,6 @@ module mod_band_types
      module procedure d_br_to_bc, z_br_to_bc
   end interface br_to_bc
 
-  interface f_bw_expand_bc
-     module procedure f_d_bw_expand_bc, f_z_bw_expand_bc
-  end interface f_bw_expand_bc
-
-  interface f_bw_expand_br
-     module procedure f_d_bw_expand_br, f_z_bw_expand_br
-  end interface f_bw_expand_br
-
-  interface f_bw_contract_bc
-     module procedure f_d_bw_contract_bc, f_z_bw_contract_bc
-  end interface f_bw_contract_bc
-
-  interface f_bw_contract_br
-     module procedure f_d_bw_contract_br, f_z_bw_contract_br
-  end interface f_bw_contract_br
-
   interface extract_diagonals_br
      module procedure d_extract_diagonals_br, z_extract_diagonals_br 
   end interface extract_diagonals_br
@@ -160,64 +140,64 @@ contains
 
   ! Get and set functions for band row and band column.
 
-  real(kind=dp) function d_get_el_bc(b,ubw,j,k) result(x)
-    real(kind=dp), dimension(:,:), intent(in) :: b
+  real(kind=dp) function d_get_el_bc(bc,ubw,j,k) result(x)
+    real(kind=dp), dimension(:,:), intent(in) :: bc
     integer(kind=int32), intent(in) :: ubw,j,k
     !
-    x=b(j-k+ubw+1,k)
+    x=bc(j-k+ubw+1,k)
   end function d_get_el_bc
 
-  complex(kind=dp) function z_get_el_bc(b,ubw,j,k) result(x)
-    complex(kind=dp), dimension(:,:), intent(in) :: b
+  complex(kind=dp) function z_get_el_bc(bc,ubw,j,k) result(x)
+    complex(kind=dp), dimension(:,:), intent(in) :: bc
     integer(kind=int32), intent(in) :: ubw,j,k
     !
-    x=b(j-k+ubw+1,k)
+    x=bc(j-k+ubw+1,k)
   end function z_get_el_bc
 
-  subroutine d_set_el_bc(b,ubw,j,k,x)
-    real(kind=dp), dimension(:,:), intent(inout) :: b
+  subroutine d_set_el_bc(bc,ubw,j,k,x)
+    real(kind=dp), dimension(:,:), intent(inout) :: bc
     integer(kind=int32), intent(in) :: ubw,j,k
     real(kind=dp), intent(in) :: x
     !
-    b(j-k+ubw+1,k) = x
+    bc(j-k+ubw+1,k) = x
   end subroutine d_set_el_bc
 
-  subroutine z_set_el_bc(b,ubw,j,k,x)
-    complex(kind=dp), dimension(:,:), intent(inout) :: b
+  subroutine z_set_el_bc(bc,ubw,j,k,x)
+    complex(kind=dp), dimension(:,:), intent(inout) :: bc
     integer(kind=int32), intent(in) :: ubw,j,k
     complex(kind=dp), intent(in) :: x
     !
-    b(j-k+ubw+1,k) = x
+    bc(j-k+ubw+1,k) = x
   end subroutine z_set_el_bc
 
-  real(kind=dp) function d_get_el_br(b,lbw,j,k) result(x)
-    real(kind=dp), dimension(:,:), intent(in) :: b
+  real(kind=dp) function d_get_el_br(br,lbw,j,k) result(x)
+    real(kind=dp), dimension(:,:), intent(in) :: br
     integer(kind=int32), intent(in) :: lbw,j,k
     !
-    x=b(j,k-j+lbw+1)
+    x=br(j,k-j+lbw+1)
   end function d_get_el_br
 
-  complex(kind=dp) function z_get_el_br(b,lbw,j,k) result(x)
-    complex(kind=dp), dimension(:,:), intent(in) :: b
+  complex(kind=dp) function z_get_el_br(br,lbw,j,k) result(x)
+    complex(kind=dp), dimension(:,:), intent(in) :: br
     integer(kind=int32), intent(in) :: lbw,j,k
     !
-    x=b(j,k-j+lbw+1)
+    x=br(j,k-j+lbw+1)
   end function z_get_el_br
 
-  subroutine d_set_el_br(b,lbw,j,k,x)
-    real(kind=dp), dimension(:,:), intent(inout) :: b
+  subroutine d_set_el_br(br,lbw,j,k,x)
+    real(kind=dp), dimension(:,:), intent(inout) :: br
     integer(kind=int32), intent(in) :: lbw,j,k
     real(kind=dp), intent(in) :: x
     !
-    b(j,k-j+lbw+1)=x
+    br(j,k-j+lbw+1)=x
   end subroutine d_set_el_br
 
-  subroutine z_set_el_br(b,lbw,j,k,x)
-    complex(kind=dp), dimension(:,:), intent(inout) :: b
+  subroutine z_set_el_br(br,lbw,j,k,x)
+    complex(kind=dp), dimension(:,:), intent(inout) :: br
     integer(kind=int32), intent(in) :: lbw,j,k
     complex(kind=dp), intent(in) :: x
     !
-    b(j,k-j+lbw+1)=x
+    br(j,k-j+lbw+1)=x
   end subroutine z_set_el_br
 
   ! band to general
@@ -505,8 +485,8 @@ contains
     end do
   end subroutine z_rotation_times_tbc
 
-  ! apply a rotation to columns k and k+1 of a truncated band matrix with aligned columns.
-  ! first l and last p rows are not modified.
+  ! apply a rotation to columns k and k+1 of a truncated band matrix with
+  ! aligned columns. first l and last p rows are not modified.
   subroutine d_tbc_times_rotation(b,n,lbw,ubw,l,p,r,k)
     real(kind=dp), dimension(:,:), intent(inout) :: b
     type(d_rotation), intent(in) :: r
@@ -719,226 +699,6 @@ contains
     end do
   end subroutine z_br_to_bc
 
-  ! expand lbw and ubw with permanent and temporary extra diagonals.
-  ! dubw, dubw_tmp, dlbw, dlbw_tmp give requested values.
-  ! On output they contain actual values, constrained by the size of the matrix.
-  subroutine f_d_bw_expand_bc(b_bc, n, lbw_bc, ubw_bc, lbwmax_bc, ubwmax_bc, &
-       dlbw, dlbw_tmp, dubw, dubw_tmp, lbw_br, ubw_br)
-    integer(kind=int32), intent(in) :: n, lbwmax_bc, ubwmax_bc
-    integer(kind=int32), intent(inout) :: lbw_bc, ubw_bc, dubw, dlbw, dubw_tmp, dlbw_tmp
-    real(kind=dp), dimension(lbwmax_bc+ubwmax_bc+1,n), intent(out) :: b_bc
-    integer(kind=int32), intent(out) :: lbw_br, ubw_br
-
-
-    integer(kind=int32) :: j
-
-    ! add extra subdiagonals and put in zeros as needed.
-    if (lbw_bc+dlbw >= n-1) then
-       dlbw=n-1 - lbw_bc
-       dlbw_tmp=0
-    else if (lbw_bc+dlbw+dlbw_tmp >= n-1) then
-       dlbw_tmp = n-1 - lbw_bc - dlbw
-    end if
-    if (dlbw+dlbw_tmp > 0) then
-       b_bc(lbw_bc+ubw_bc+2:lbw_bc+ubw_bc+1+dlbw + dlbw_tmp,:)=0.0_dp
-    end if
-    lbw_br=lbw_bc+dlbw
-    lbw_bc=lbw_bc+dlbw+dlbw_tmp
-
-    ! add extra superdiagonals and shift as needed.
-    if (ubw_bc+dubw >= n-1) then
-       dubw=n-1 - ubw_bc
-       dubw_tmp=0
-    else if (ubw_bc+dubw+dubw_tmp >= n-1) then
-       dubw_tmp = n-1 - ubw_bc - dubw
-    end if
-    do j=1,dubw+dubw_tmp
-       call shift(b_bc,1,0)
-    end do
-    ubw_br=ubw_bc+dubw
-    ubw_bc=ubw_bc+dubw+dubw_tmp
-
-  end subroutine f_d_bw_expand_bc
-
-  subroutine f_z_bw_expand_bc(b_bc, n, lbw_bc, ubw_bc, lbwmax_bc, ubwmax_bc, &
-       dlbw, dlbw_tmp, dubw, dubw_tmp, lbw_br, ubw_br)
-    integer(kind=int32), intent(in) :: n, lbwmax_bc, ubwmax_bc
-    integer(kind=int32), intent(inout) :: lbw_bc, ubw_bc, dubw, dlbw, dubw_tmp, dlbw_tmp
-    complex(kind=dp), dimension(lbwmax_bc+ubwmax_bc+1,n), intent(out) :: b_bc
-    integer(kind=int32), intent(out) :: lbw_br, ubw_br
-
-
-    integer(kind=int32) :: j
-
-    ! add extra subdiagonals and put in zeros as needed.
-    if (lbw_bc+dlbw >= n-1) then
-       dlbw=n-1 - lbw_bc
-       dlbw_tmp=0
-    else if (lbw_bc+dlbw+dlbw_tmp >= n-1) then
-       dlbw_tmp = n-1 - lbw_bc - dlbw
-    end if
-    if (dlbw+dlbw_tmp > 0) then
-       b_bc(lbw_bc+ubw_bc+2:lbw_bc+ubw_bc+1+dlbw + dlbw_tmp,:)=(0.0_dp, 0.0_dp)
-    end if
-    lbw_br=lbw_bc+dlbw
-    lbw_bc=lbw_bc+dlbw+dlbw_tmp
-
-    ! add extra superdiagonals and shift as needed.
-    if (ubw_bc+dubw >= n-1) then
-       dubw=n-1 - ubw_bc
-       dubw_tmp=0
-    else if (ubw_bc+dubw+dubw_tmp >= n-1) then
-       dubw_tmp = n-1 - ubw_bc - dubw
-    end if
-    do j=1,dubw+dubw_tmp
-       call shift(b_bc,1,0)
-    end do
-    ubw_br=ubw_bc+dubw
-    ubw_bc=ubw_bc+dubw+dubw_tmp
-
-  end subroutine f_z_bw_expand_bc
-
-  subroutine f_d_bw_contract_bc(b_bc, n, lbw_bc, ubw_bc, lbwmax_bc, ubwmax_bc, &
-       dlbw, dlbw_tmp, dubw, dubw_tmp)
-    integer(kind=int32), intent(in) :: n, lbwmax_bc, ubwmax_bc
-    integer(kind=int32), intent(inout) :: lbw_bc, ubw_bc, dubw, dlbw, dubw_tmp, dlbw_tmp
-    real(kind=dp), dimension(lbwmax_bc+ubwmax_bc+1,n), intent(out) :: b_bc
-
-    integer(kind=int32) :: j
-
-    lbw_bc=lbw_bc - dlbw_tmp
-    ubw_bc=ubw_bc-dubw_tmp
-    do j=1,dubw_tmp
-       call shift(b_bc,-1,0)
-    end do
-
-  end subroutine f_d_bw_contract_bc
-
-  subroutine f_z_bw_contract_bc(b_bc, n, lbw_bc, ubw_bc, lbwmax_bc, ubwmax_bc, &
-       dlbw, dlbw_tmp, dubw, dubw_tmp)
-    integer(kind=int32), intent(in) :: n, lbwmax_bc, ubwmax_bc
-    integer(kind=int32), intent(inout) :: lbw_bc, ubw_bc, dubw, dlbw, dubw_tmp, dlbw_tmp
-    complex(kind=dp), dimension(lbwmax_bc+ubwmax_bc+1,n), intent(out) :: b_bc
-
-    integer(kind=int32) :: j
-
-    lbw_bc=lbw_bc - dlbw_tmp
-    ubw_bc=ubw_bc-dubw_tmp
-    do j=1,dubw_tmp
-       call shift(b_bc,-1,0)
-    end do
-
-  end subroutine f_z_bw_contract_bc
-
-  ! expand lbw and ubw with permanent and temporary extra diagonals.
-  ! dubw, dubw_tmp, dlbw, dlbw_tmp give requested values.
-  ! On output they contain actual values, constrained by the size of the matrix.
-  subroutine f_d_bw_expand_br(b_br, n, lbw_br, ubw_br, lbwmax_br, ubwmax_br, &
-       dlbw, dlbw_tmp, dubw, dubw_tmp, lbw_bc, ubw_bc)
-    integer(kind=int32), intent(in) :: n, lbwmax_br, ubwmax_br
-    integer(kind=int32), intent(inout) :: lbw_br, ubw_br, dubw, dlbw, dubw_tmp, dlbw_tmp
-    real(kind=dp), dimension(n,lbwmax_br+ubwmax_br+1), intent(out) :: b_br
-    integer(kind=int32), intent(out) :: lbw_bc, ubw_bc
-
-    integer(kind=int32) :: j
-
-    ! add extra subdiagonals and shift as needed
-    if (lbw_br+dlbw >= n-1) then
-       dlbw=n-1 - lbw_br
-       dlbw_tmp=0
-    else if (lbw_br+dlbw+dlbw_tmp >= n-1) then
-       dlbw_tmp = n-1 - lbw_br - dlbw
-    end if
-    lbw_bc=lbw_br+dlbw
-    lbw_br=lbw_br+dlbw+dlbw_tmp
-    do j=1,dlbw+dlbw_tmp
-       call shift(b_br,0,1)
-    end do
-
-    ! add extra superdiagonals.
-    if (ubw_br+dubw >= n-1) then
-       dubw=n-1 - ubw_br
-       dubw_tmp=0
-    else if (ubw_br+dubw+dubw_tmp >= n-1) then
-       dubw_tmp = n-1 - ubw_br - dubw
-    end if
-    if (dubw+dubw_tmp > 0) then
-       b_br(:,lbw_br+ubw_br+2:lbw_br+ubw_br+1+dubw + dubw_tmp)=0.0_dp
-    end if
-    ubw_bc=ubw_br+dubw
-    ubw_br=ubw_br+dubw+dubw_tmp
-
-  end subroutine f_d_bw_expand_br
-
-  subroutine f_z_bw_expand_br(b_br, n, lbw_br, ubw_br, lbwmax_br, ubwmax_br, &
-       dlbw, dlbw_tmp, dubw, dubw_tmp, lbw_bc, ubw_bc)
-    integer(kind=int32), intent(in) :: n, lbwmax_br, ubwmax_br
-    integer(kind=int32), intent(inout) :: lbw_br, ubw_br, dubw, dlbw, dubw_tmp, dlbw_tmp
-    complex(kind=dp), dimension(n,lbwmax_br+ubwmax_br+1), intent(out) :: b_br
-    integer(kind=int32), intent(out) :: lbw_bc, ubw_bc
-
-    integer(kind=int32) :: j
-
-    ! add extra subdiagonals and shift as needed
-    if (lbw_br+dlbw >= n-1) then
-       dlbw=n-1 - lbw_br
-       dlbw_tmp=0
-    else if (lbw_br+dlbw+dlbw_tmp >= n-1) then
-       dlbw_tmp = n-1 - lbw_br - dlbw
-    end if
-    lbw_bc=lbw_br+dlbw
-    lbw_br=lbw_br+dlbw+dlbw_tmp
-    do j=1,dlbw+dlbw_tmp
-       call shift(b_br,0,1)
-    end do
-
-    ! add extra superdiagonals.
-    if (ubw_br+dubw >= n-1) then
-       dubw=n-1 - ubw_br
-       dubw_tmp=0
-    else if (ubw_br+dubw+dubw_tmp >= n-1) then
-       dubw_tmp = n-1 - ubw_br - dubw
-    end if
-    if (dubw+dubw_tmp > 0) then
-       b_br(:,lbw_br+ubw_br+2:lbw_br+ubw_br+1+dubw + dubw_tmp)=(0.0_dp,0.0_dp)
-    end if
-    ubw_bc=ubw_br+dubw
-    ubw_br=ubw_br+dubw+dubw_tmp
-
-  end subroutine f_z_bw_expand_br
-
-  subroutine f_d_bw_contract_br(b_br, n, lbw_br, ubw_br, lbwmax_br, ubwmax_br, &
-       dlbw, dlbw_tmp, dubw, dubw_tmp)
-    integer(kind=int32), intent(in) :: n, lbwmax_br, ubwmax_br
-    integer(kind=int32), intent(inout) :: lbw_br, ubw_br, dubw, dlbw, dubw_tmp, dlbw_tmp
-    real(kind=dp), dimension(n,lbwmax_br+ubwmax_br+1), intent(out) :: b_br
-
-    integer(kind=int32) :: j
-
-    lbw_br=lbw_br - dlbw_tmp
-    ubw_br=ubw_br - dubw_tmp
-    do j=1,dlbw_tmp
-       call shift(b_br,0,-1)
-    end do
-
-  end subroutine f_d_bw_contract_br
-
-  subroutine f_z_bw_contract_br(b_br, n, lbw_br, ubw_br, lbwmax_br, ubwmax_br, &
-       dlbw, dlbw_tmp, dubw, dubw_tmp)
-    integer(kind=int32), intent(in) :: n, lbwmax_br, ubwmax_br
-    integer(kind=int32), intent(inout) :: lbw_br, ubw_br, dubw, dlbw, dubw_tmp, dlbw_tmp
-    complex(kind=dp), dimension(n,lbwmax_br+ubwmax_br+1), intent(out) :: b_br
-
-    integer(kind=int32) :: j
-
-    lbw_br=lbw_br - dlbw_tmp
-    ubw_br=ubw_br - dubw_tmp
-    do j=1,dlbw_tmp
-       call shift(b_br,0,-1)
-    end do
-
-  end subroutine f_z_bw_contract_br
-
   subroutine d_extract_diagonals_bc(a, n, b, lbw, ubw, lbwmax, ubwmax)
     real(kind=dp), target, dimension(n,n), intent(in) :: a
     real(kind=dp), dimension(lbwmax+ubwmax+1,n), intent(out) :: b
@@ -1019,87 +779,88 @@ contains
     end do
   end subroutine z_extract_diagonals_br
 
-  subroutine d_truncate_profile_br(b,n,lbw,ubw,lbwmax,ubwmax,lower,upper)
-    real(kind=dp), dimension(n,lbwmax+ubwmax+1), intent(inout) :: b
-    integer(kind=int32), intent(in) :: n, lbw, ubw, lbwmax, ubwmax
+  subroutine d_truncate_profile_br(br,n,lbw,lbwmax,ubwmax,lower,upper)
+    real(kind=dp), dimension(n,lbwmax+ubwmax+1), intent(inout) :: br
+    integer(kind=int32), intent(in) :: n, lbw, lbwmax, ubwmax
     integer(kind=int32), dimension(n), intent(in), optional :: lower, upper
     
     integer(kind=int32) :: j
 
     if (present(upper)) then
        do j=1,n
-          b(j,lbw+2+upper(j):lbwmax+ubwmax+1) = 0.0_dp
+          br(j,lbw+2+upper(j):lbwmax+ubwmax+1) = 0.0_dp
        end do
     end if
 
     if (present(lower)) then
        do j=1,n
-          b(j,1:lbw-lower(j)) = 0.0_dp
+          br(j,1:lbw-lower(j)) = 0.0_dp
        end do
     end if
     
   end subroutine d_truncate_profile_br
 
-  subroutine z_truncate_profile_br(b,n,lbw,ubw,lbwmax,ubwmax,lower,upper)
-    complex(kind=dp), dimension(n,lbwmax+ubwmax+1), intent(inout) :: b
-    integer(kind=int32), intent(in) :: n, lbw, ubw, lbwmax, ubwmax
+  subroutine z_truncate_profile_br(br,n,lbw,lbwmax,ubwmax,lower,upper)
+    complex(kind=dp), dimension(n,lbwmax+ubwmax+1), intent(inout) :: br
+    integer(kind=int32), intent(in) :: n, lbw, lbwmax, ubwmax
     integer(kind=int32), dimension(n), intent(in), optional :: lower, upper
     
     integer(kind=int32) :: j
 
     if (present(upper)) then
        do j=1,n
-          b(j,lbw+2+upper(j):lbwmax+ubwmax+1) = (0.0_dp,0.0_dp)
+          br(j,lbw+2+upper(j):lbwmax+ubwmax+1) = (0.0_dp,0.0_dp)
        end do
     end if
 
     if (present(lower)) then
        do j=1,n
-          b(j,1:lbw-lower(j)) = (0.0_dp,0.0_dp)
+          br(j,1:lbw-lower(j)) = (0.0_dp,0.0_dp)
        end do
     end if
   end subroutine z_truncate_profile_br
 
-  subroutine d_truncate_profile_bc(b,n,lbw,ubw,lbwmax,ubwmax,lower,upper)
-    real(kind=dp), dimension(lbwmax+ubwmax+1,n), intent(inout) :: b
-    integer(kind=int32), intent(in) :: n, lbw, ubw, lbwmax, ubwmax
+  subroutine d_truncate_profile_bc(bc,n,ubw,lbwmax,ubwmax,lower,upper)
+    real(kind=dp), dimension(lbwmax+ubwmax+1,n), intent(inout) :: bc
+    integer(kind=int32), intent(in) :: n, ubw, lbwmax, ubwmax
     integer(kind=int32), dimension(n), intent(in), optional :: lower, upper
     
     integer(kind=int32) :: j
 
     if (present(upper)) then
        do j=1,n
-          b(1:ubw-upper(j),j)=0.0_dp
+          bc(1:ubw-upper(j),j)=0.0_dp
        end do
     end if
 
     if (present(lower)) then
        do j=1,n
-          b(ubw+2+lower(j):lbwmax+ubwmax+1,j)=0.0_dp
+          bc(ubw+2+lower(j):lbwmax+ubwmax+1,j)=0.0_dp
        end do
     end if
     
   end subroutine d_truncate_profile_bc
 
-  subroutine z_truncate_profile_bc(b,n,lbw,ubw,lbwmax,ubwmax,lower,upper)
-    complex(kind=dp), dimension(lbwmax+ubwmax+1,n), intent(inout) :: b
-    integer(kind=int32), intent(in) :: n, lbw, ubw, lbwmax, ubwmax
+  subroutine z_truncate_profile_bc(bc,n,ubw,lbwmax,ubwmax,lower,upper)
+    complex(kind=dp), dimension(lbwmax+ubwmax+1,n), intent(inout) :: bc
+    integer(kind=int32), intent(in) :: n, ubw, lbwmax, ubwmax
     integer(kind=int32), dimension(n), intent(in), optional :: lower, upper
     
     integer(kind=int32) :: j
 
     if (present(upper)) then
        do j=1,n
-          b(1:ubw-upper(j),j)=(0.0_dp,0.0_dp)
+          bc(1:ubw-upper(j),j)=(0.0_dp,0.0_dp)
        end do
     end if
 
     if (present(lower)) then
        do j=1,n
-          b(ubw+2+lower(j):lbwmax+ubwmax+1,j)=(0.0_dp,0.0_dp)
+          bc(ubw+2+lower(j):lbwmax+ubwmax+1,j)=(0.0_dp,0.0_dp)
        end do
     end if
     
   end subroutine z_truncate_profile_bc
 
 end module mod_band_types
+

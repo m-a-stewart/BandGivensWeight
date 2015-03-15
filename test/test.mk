@@ -33,10 +33,6 @@ run_general : $(BINDIR)/test_general_ub $(BINDIR)/test_general_bv $(BINDIR)/test
 	$(BINDIR)/test_general_ubt
 	$(BINDIR)/test_general_wbv
 
-.PHONY : run_general_bv
-run_general_bv : $(BINDIR)/test_general_bv
-	$(BINDIR)/test_general_bv
-
 .PHONY : run_general_ub
 run_general_ub : $(BINDIR)/test_general_ub
 	$(BINDIR)/test_general_ub
