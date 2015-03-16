@@ -1,4 +1,4 @@
-module mod_orth_rank
+module mod_orb
   use mod_misc
   use mod_general
   use mod_assemble
@@ -8,4 +8,4 @@ module mod_orth_rank
   use mod_solve
   use mod_types
   use mod_transforms
-end module mod_orth_rank
+end module mod_orb

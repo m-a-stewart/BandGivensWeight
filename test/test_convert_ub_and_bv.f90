@@ -1,5 +1,5 @@
 program test_convert_ub_and_bv
-  use mod_orth_rank
+  use mod_orb
   use mod_test_data
   implicit none
 

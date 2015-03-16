@@ -1,6 +1,5 @@
 program test_general_wb
-
-  use mod_orth_rank
+  use mod_orb
   use mod_test_data
   implicit none
   real(kind=dp) :: t0, t1

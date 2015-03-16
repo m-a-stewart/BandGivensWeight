@@ -81,7 +81,7 @@ run_qr_factorization : $(BINDIR)/test_qr_factorization
 run_solve : $(BINDIR)/test_solve
 	$(BINDIR)/test_solve
 
-$(OBJDIR)/test_data.o : $(OBJDIR)/orth_rank.o
+$(OBJDIR)/test_data.o : $(OBJDIR)/orb.o
 $(OBJDIR)/test_general_ub.o : $(OBJDIR)/test_data.o
 $(OBJDIR)/test_general_bv.o : $(OBJDIR)/test_data.o
 $(OBJDIR)/test_general_bt.o : $(OBJDIR)/test_data.o

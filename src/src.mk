@@ -1,6 +1,6 @@
 # module dependencies
 
-_ORTHRANK = general assemble qr_factorization solve \
+_ORB = general assemble qr_factorization solve \
 	row_compress transforms convert types misc
 
 _MISC = error_id utility
@@ -69,7 +69,7 @@ _QR_FACTORIZATION = prec error_id \
 _SOLVE = prec error_id orth_band_types \
 	band_types rotation
 
-ORTHRANK=$(patsubst %,$(OBJDIR)/%.o,$(_ORTHRANK))
+ORB=$(patsubst %,$(OBJDIR)/%.o,$(_ORB))
 MISC=$(patsubst %,$(OBJDIR)/%.o,$(_MISC))
 ERROR_ID=$(patsubst %,$(OBJDIR)/%.o,$(_ERROR_ID))
 UTILITY=$(patsubst %,$(OBJDIR)/%.o,$(_UTILITY))
@@ -104,7 +104,7 @@ ROW_COMPRESS=$(patsubst %,$(OBJDIR)/%.o,$(_ROW_COMPRESS))
 QR_FACTORIZATION=$(patsubst %,$(OBJDIR)/%.o,$(_QR_FACTORIZATION))
 SOLVE=$(patsubst %,$(OBJDIR)/%.o,$(_SOLVE))
 
-$(OBJDIR)/orth_rank.o : $(ORTHRANK)
+$(OBJDIR)/orb.o : $(ORB)
 
 $(OBJDIR)/misc.o : $(MISC)
 
@@ -178,4 +178,4 @@ _CONVERTOBJS = convert convert_ub_to_bv \
 _OBJS =  $(_MISCOBJS) $(_TYPESOBJS) $(_TRANSFORMSOBJS) $(_ORTHOBJS) $(_GENERALOBJS) \
 	$(_CONVERTOBJS) assemble \
 	qr_factorization solve \
-	orth_rank row_compress
+	orb row_compress
