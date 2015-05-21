@@ -1,6 +1,6 @@
 module mod_prec
 
-  integer, parameter :: dp = selected_real_kind(12)
+  integer, parameter :: dp = kind(0.0d0)
   integer, parameter :: int32 = selected_int_kind(8)
   real(kind=dp), parameter :: eps=epsilon(1.0_dp)/2
 
