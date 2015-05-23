@@ -18,8 +18,6 @@ module mod_utility
 
   public :: ip_transpose, d_ip_transpose, z_ip_transpose
 
-  public :: z_delta, d_delta
-
   public :: equals_option, i_equals_option
 
   interface maybe_deallocate
@@ -677,24 +675,6 @@ contains
     call random_number(y)
     a=z_random_scale*cmplx(x,y)+z_random_shift
   end subroutine z_s_random_matrix_to
-
-  real(kind=dp) function d_delta(j,k)
-    integer(kind=int32), intent(in) :: j,k
-    if (j==k) then
-       d_delta=1.0_dp
-    else
-       d_delta=0.0_dp
-    end if
-  end function d_delta
-
-  complex(kind=dp) function z_delta(j,k)
-    integer(kind=int32), intent(in) :: j,k
-    if (j==k) then
-       z_delta=(1.0_dp,0.0_dp)
-    else
-       z_delta=(0.0_dp,0.0_dp)
-    end if
-  end function z_delta
 
   integer(kind=int32) function i_equals_option(j,k) result(i)
     integer(kind=int32) :: j
