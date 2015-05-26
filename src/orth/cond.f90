@@ -32,9 +32,8 @@ contains
     integer(kind=int32), intent(in) :: maxit
     integer(kind=int32), intent(out) :: p
 
-    integer(kind=int32) :: n, j, k
+    integer(kind=int32) :: n, k
     real(kind=dp) :: nrmx
-    real(kind=dp) :: d, tmp
     real(kind=dp), dimension(size(x)) :: y
     type(routine_info), parameter :: info=info_d_lower_left_nullvec
     !
@@ -91,9 +90,8 @@ contains
     integer(kind=int32), intent(in) :: maxit
     integer(kind=int32), intent(out) :: p
     !
-    integer(kind=int32) :: n, j, k
+    integer(kind=int32) :: n, k
     real(kind=dp) :: nrmx
-    complex(kind=dp) :: d, tmp
     complex(kind=dp), dimension(size(x)) :: y
     type(routine_info), parameter :: info=info_z_lower_left_nullvec
     !
@@ -151,9 +149,8 @@ contains
     integer(kind=int32), intent(in) :: maxit
     integer(kind=int32), intent(out) :: p
     !
-    integer(kind=int32) :: n, j, k
+    integer(kind=int32) :: n, k
     real(kind=dp) :: nrmx
-    real(kind=dp) :: d, tmp
     real(kind=dp), dimension(size(x)) :: y
     type(routine_info), parameter :: info=info_d_lower_right_nullvec
     !
@@ -208,9 +205,8 @@ contains
     integer(kind=int32), intent(in) :: maxit
     integer(kind=int32), intent(out) :: p
     !
-    integer(kind=int32) :: n, j, k
+    integer(kind=int32) :: n, k
     real(kind=dp) :: nrmx
-    complex(kind=dp) :: d, tmp
     complex(kind=dp), dimension(size(x)) :: y
     type(routine_info), parameter :: info=info_z_lower_right_nullvec
     !
