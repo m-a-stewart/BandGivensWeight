@@ -19,18 +19,18 @@ _ROTATION = prec
 _SWEEPS = band_types prec utility
 _SHIFT = prec
 
-_ORTH = triangular gs nullvec
+_ORTH = triangular gs cond
 _TRIANGULAR = prec
-_NULLVEC = prec error_id utility triangular
+_COND = prec error_id utility triangular
 _GS = utility prec error_id
 
 _ASSEMBLE = prec error_id band_types orth_band_types rotation
 
 _GENERAL = general_bv general_ub general_bt \
 	general_wb general_ubt general_wbv
-_GENERAL_BV = prec utility error_id nullvec gs shift rotation \
+_GENERAL_BV = prec utility error_id cond gs shift rotation \
 	orth_band_types band_types
-_GENERAL_UB = prec utility error_id nullvec gs shift rotation \
+_GENERAL_UB = prec utility error_id cond gs shift rotation \
 	orth_band_types band_types
 _GENERAL_BT = prec error_id utility \
 	orth_band_types band_types general_ub
@@ -83,7 +83,7 @@ SWEEPS=$(patsubst %,$(OBJDIR)/%.o,$(_SWEEPS))
 SHIFT=$(patsubst %,$(OBJDIR)/%.o,$(_SHIFT))
 ORTH=$(patsubst %,$(OBJDIR)/%.o,$(_ORTH))
 TRIANGULAR=$(patsubst %,$(OBJDIR)/%.o,$(_TRIANGULAR))
-NULLVEC=$(patsubst %,$(OBJDIR)/%.o,$(_NULLVEC))
+COND=$(patsubst %,$(OBJDIR)/%.o,$(_COND))
 GS=$(patsubst %,$(OBJDIR)/%.o,$(_GS))
 ASSEMBLE=$(patsubst %,$(OBJDIR)/%.o,$(_ASSEMBLE))
 GENERAL=$(patsubst %,$(OBJDIR)/%.o,$(_GENERAL))
@@ -124,7 +124,7 @@ $(OBJDIR)/shift.o : $(SHIFT)
 
 $(OBJDIR)/orth.o : $(ORTH)
 $(OBJDIR)/triangular.o : $(TRIANGULAR)
-$(OBJDIR)/nullvec.o : $(NULLVEC)
+$(OBJDIR)/cond.o : $(COND)
 $(OBJDIR)/gs.o : $(GS)
 
 
@@ -164,7 +164,7 @@ _TYPESOBJS = types band_types orth_band_types \
 _TRANSFORMSOBJS = transforms rotation shift \
 	sweeps
 
-_ORTHOBJS = triangular nullvec gs
+_ORTHOBJS = triangular cond gs
 
 _GENERALOBJS = general general_bv general_ub \
 	general_bt general_wb general_ubt \

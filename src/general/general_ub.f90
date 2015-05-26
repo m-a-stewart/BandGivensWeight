@@ -3,7 +3,7 @@ module mod_general_ub
   use mod_utility
   use mod_error_id
   use mod_gs
-  use mod_nullvec
+  use mod_cond
   use mod_shift
   use mod_rotation
   use mod_orth_band_types

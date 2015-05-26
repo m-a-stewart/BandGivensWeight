@@ -1,4 +1,4 @@
-module mod_nullvec
+module mod_cond
   use mod_triangular
   use mod_prec
   use mod_error_id
@@ -257,4 +257,4 @@ contains
     end if
   end subroutine z_lower_right_nullvec
 
-end module mod_nullvec
+end module mod_cond

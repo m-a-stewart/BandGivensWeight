@@ -607,14 +607,14 @@ module mod_error_id
        'z_extend_gs_columns', &
        [ character(len=error_message_length) :: 'GS Orthogonalization Error' ])
 
-  ! src/orth/nullvec 1400
-  integer(int32), parameter :: mod_id_nullvec=1400
-  integer(int32), parameter :: id_d_lower_left_nullvec=mod_id_nullvec + 0
-  integer(int32), parameter :: id_z_lower_left_nullvec=mod_id_nullvec + 1
-  integer(int32), parameter :: id_d_lower_right_nullvec=mod_id_nullvec + 2
-  integer(int32), parameter :: id_z_lower_right_nullvec=mod_id_nullvec + 3
-  integer(int32), parameter :: id_d_cond2_upper=mod_id_nullvec + 4
-  integer(int32), parameter :: id_z_cond2_upper=mod_id_nullvec + 5
+  ! src/orth/cond 1400
+  integer(int32), parameter :: mod_id_cond=1400
+  integer(int32), parameter :: id_d_lower_left_nullvec=mod_id_cond + 0
+  integer(int32), parameter :: id_z_lower_left_nullvec=mod_id_cond + 1
+  integer(int32), parameter :: id_d_lower_right_nullvec=mod_id_cond + 2
+  integer(int32), parameter :: id_z_lower_right_nullvec=mod_id_cond + 3
+  integer(int32), parameter :: id_d_cond2_upper=mod_id_cond + 4
+  integer(int32), parameter :: id_z_cond2_upper=mod_id_cond + 5
 
   type(routine_info), parameter :: info_d_lower_left_nullvec= &
        routine_info(id_d_lower_left_nullvec, 'd_lower_left_nullvec', &
@@ -1198,7 +1198,7 @@ contains
        info_index(info_d_extend_gs_columns%routine_id)=info_d_extend_gs_columns
        info_index(info_z_extend_gs_columns%routine_id)=info_z_extend_gs_columns
        
-       ! nullvec
+       ! cond
        info_index(info_d_lower_left_nullvec%routine_id)=info_d_lower_left_nullvec
        info_index(info_z_lower_left_nullvec%routine_id)=info_z_lower_left_nullvec
        info_index(info_d_lower_right_nullvec%routine_id)=info_d_lower_right_nullvec
