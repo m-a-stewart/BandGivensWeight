@@ -7,15 +7,15 @@ module mod_nullvec
 
   private
 
-  public :: lower_left_nullvec, f_z_lower_left_nullvec, f_d_lower_left_nullvec, &
-       lower_right_nullvec, f_z_lower_right_nullvec, f_d_lower_right_nullvec
+  public :: lower_left_nullvec, z_lower_left_nullvec, d_lower_left_nullvec, &
+       lower_right_nullvec, z_lower_right_nullvec, d_lower_right_nullvec
 
   interface lower_left_nullvec
-     module procedure f_z_lower_left_nullvec, f_d_lower_left_nullvec
+     module procedure z_lower_left_nullvec, d_lower_left_nullvec
   end interface lower_left_nullvec
 
   interface lower_right_nullvec
-     module procedure f_z_lower_right_nullvec, f_d_lower_right_nullvec
+     module procedure z_lower_right_nullvec, d_lower_right_nullvec
   end interface lower_right_nullvec
 
 contains
@@ -24,19 +24,19 @@ contains
   ! error: 1 no null vector within tolerance
   ! p returns a value such that x(p+1:n)=0
   ! If tol=0.0_dp, just do maxits iterations.
-  subroutine f_d_lower_left_nullvec(x,l,tol,maxit, p, error)
+  subroutine d_lower_left_nullvec(x,l,tol,maxit, p, error)
     real(kind=dp), dimension(:,:), intent(in) :: l
     real(kind=dp), dimension(:), intent(out) :: x
     real(kind=dp), intent(in) :: tol
     type(error_info), intent(inout), optional :: error
     integer(kind=int32), intent(in) :: maxit
     integer(kind=int32), intent(out) :: p
-    !
+
     integer(kind=int32) :: n, j, k
     real(kind=dp) :: nrmx
     real(kind=dp) :: d, tmp
     real(kind=dp), dimension(size(x)) :: y
-    type(routine_info), parameter :: info=info_f_d_lower_left_nullvec
+    type(routine_info), parameter :: info=info_d_lower_left_nullvec
     !
     if (failure(error)) return
     call push_id(info, error)
@@ -55,29 +55,12 @@ contains
        call lower_right_invert(x(1:p-1),l(1:p-1, 1:p-1), -l(p,1:p-1))
        call pop_id(error); return
     else
-       p=n
        ! Otherwise use the Linpack condition estimator approach.
-       x(n)=1.0_dp/l(n,n)
-       do k=n-1,1,-1
-          tmp = 0.0_dp
-          do j=k+1,n
-             tmp = tmp + x(j)*l(j,k)
-          end do
-          if (tmp==0) then
-             d=1.0_dp
-          else
-             d=-tmp/abs(tmp)
-          end if
-          x(k) = (d-tmp)/l(k,k)
-       end do
-       x=x/maxabs(x)
-       ! solve y^T L^T = x^T
-       call lower_tr_right_invert(y,l,x)
-       y=y/norm2(y)
-       ! solve x^T L = y^T
-       call lower_right_invert(x,l,y)
+       p=n
+       call lower_right_invert_linpack(x,l,y)
        nrmx=norm2(x)
        x=x/nrmx
+       nrmx=nrmx/norm2(y)
        k=1
        do while (k < maxit)
           if (1/nrmx < tol) then
@@ -97,10 +80,10 @@ contains
           call set_error(1, info, error); return
        end if
     end if
-  end subroutine f_d_lower_left_nullvec
+  end subroutine d_lower_left_nullvec
 
   ! null vector of a lower triangular matrix.
-  subroutine f_z_lower_left_nullvec(x,l,tol,maxit,p, error)
+  subroutine z_lower_left_nullvec(x,l,tol,maxit,p, error)
     complex(kind=dp), dimension(:,:), intent(in) :: l
     complex(kind=dp), dimension(:), intent(out) :: x
     real(kind=dp), intent(in) :: tol
@@ -112,7 +95,7 @@ contains
     real(kind=dp) :: nrmx
     complex(kind=dp) :: d, tmp
     complex(kind=dp), dimension(size(x)) :: y
-    type(routine_info), parameter :: info=info_f_z_lower_left_nullvec
+    type(routine_info), parameter :: info=info_z_lower_left_nullvec
     !
     n=size(l,1)
     if (failure(error)) return
@@ -131,29 +114,12 @@ contains
        call lower_right_invert(x(1:p-1),l(1:p-1, 1:p-1), -l(p,1:p-1))
        call pop_id(error); return
     else
-       p=n
        ! Otherwise use the Linpack condition estimator.
-       x(n)=(1.0_dp,0.0_dp)/l(n,n)
-       do k=n-1,1,-1
-          tmp = (0.0_dp, 0.0_dp)
-          do j=k+1,n
-             tmp = tmp + x(j)*l(j,k)
-          end do
-          if (tmp==0) then
-             d=(1.0_dp,0.0_dp)
-          else
-             d=-tmp/abs(tmp)
-          end if
-          x(k) = (d-tmp)/l(k,k)
-       end do
-       x=x/maxabs(x)
-       ! solve y^T L^H = x^T
-       call lower_tr_right_invert(y,l,x)
-       y=y/norm2(y)
-       ! solve x^T L = y^T       
-       call lower_right_invert(x,l,y)
+       p=n
+       call lower_right_invert_linpack(x,l,y)
        nrmx=norm2(x)
        x=x/nrmx
+       nrmx=nrmx/norm2(y)
        k=1
        do while (k < maxit)
           if (1/nrmx < tol) then
@@ -173,11 +139,11 @@ contains
           call set_error(1, info, error); return
        end if
     end if
-  end subroutine f_z_lower_left_nullvec
+  end subroutine z_lower_left_nullvec
 
   ! right null vector of a lower triangular matrix.
   ! Returns p such that x(1:p-1)=0
-  subroutine f_d_lower_right_nullvec(x,l,tol,maxit, p, error)
+  subroutine d_lower_right_nullvec(x,l,tol,maxit, p, error)
     real(kind=dp), dimension(:,:), intent(in) :: l
     real(kind=dp), dimension(:), intent(out) :: x
     real(kind=dp), intent(in) :: tol
@@ -189,7 +155,7 @@ contains
     real(kind=dp) :: nrmx
     real(kind=dp) :: d, tmp
     real(kind=dp), dimension(size(x)) :: y
-    type(routine_info), parameter :: info=info_f_d_lower_right_nullvec
+    type(routine_info), parameter :: info=info_d_lower_right_nullvec
     !
     n=size(l,1)
     if (failure(error)) return
@@ -207,29 +173,12 @@ contains
        call lower_left_invert(l(p+1:n,p+1:n),x(p+1:n),-l(p+1:n,p))
        call pop_id(error); return
     else
-       p=1
        ! Otherwise use the Linpack condition estimator approach.
-       x(1)=1.0_dp/l(1,1)
-       do k=2,n
-          tmp = 0.0_dp
-          do j=1,k
-             tmp=tmp+l(k,j)*x(j)
-          end do
-          if (tmp==0) then
-             d=1.0_dp
-          else
-             d=-tmp/abs(tmp)
-          end if
-          x(k)=(d-tmp)/l(k,k)
-       end do
-       x=x/maxabs(x)
-       ! solve L^T y = x
-       call lower_tr_left_invert(l,y,x)
-       y=y/norm2(y)
-       ! and L x = y
-       call lower_left_invert(l,x,y)
+       p=1
+       call lower_left_invert_linpack(l,x,y)
        nrmx=norm2(x)
        x=x/nrmx
+       nrmx=nrmx/norm2(y)
        k=1
        do while (k < maxit)
           if (1/nrmx < tol) then
@@ -248,10 +197,10 @@ contains
           call set_error(1, info, error); return
        end if
     end if
-  end subroutine f_d_lower_right_nullvec
+  end subroutine d_lower_right_nullvec
 
   ! right null vector of a lower triangular matrix.
-  subroutine f_z_lower_right_nullvec(x, l, tol, maxit, p, error)
+  subroutine z_lower_right_nullvec(x, l, tol, maxit, p, error)
     complex(kind=dp), dimension(:,:), intent(in) :: l
     complex(kind=dp), dimension(:), intent(out) :: x
     real(kind=dp), intent(in) :: tol
@@ -263,7 +212,7 @@ contains
     real(kind=dp) :: nrmx
     complex(kind=dp) :: d, tmp
     complex(kind=dp), dimension(size(x)) :: y
-    type(routine_info), parameter :: info=info_f_z_lower_right_nullvec
+    type(routine_info), parameter :: info=info_z_lower_right_nullvec
     !
     n=size(l,1)
     if (failure(error)) return
@@ -281,29 +230,12 @@ contains
        call lower_left_invert(l(p+1:n,p+1:n),x(p+1:n),-l(p+1:n,p))
        call pop_id(error); return
     else
-       p=1
        ! Otherwise use the Linpack condition estimator approach.
-       x(1)=(1.0_dp,0.0_dp)/l(1,1)
-       do k=2,n
-          tmp = (0.0_dp, 0.0_dp)
-          do j=1,k
-             tmp=tmp+l(k,j)*x(j)
-          end do
-          if (tmp==0) then
-             d=(1.0_dp, 0.0_dp)
-          else
-             d=-tmp/abs(tmp)
-          end if
-          x(k)=(d-tmp)/l(k,k)
-       end do
-       x=x/maxabs(x)
-       ! solve L^T y = x
-       call lower_tr_left_invert(l,y,x)
-       y=y/norm2(y)
-       ! and L x = y
-       call lower_left_invert(l,x,y)
+       p=1
+       call lower_left_invert_linpack(l,x,y)
        nrmx=norm2(x)
        x=x/nrmx
+       nrmx=nrmx/norm2(y)
        k=1
        do while (k < maxit)
           if (1/nrmx < tol) then
@@ -323,6 +255,6 @@ contains
           call set_error(1, info, error); return
        end if
     end if
-  end subroutine f_z_lower_right_nullvec
+  end subroutine z_lower_right_nullvec
 
 end module mod_nullvec

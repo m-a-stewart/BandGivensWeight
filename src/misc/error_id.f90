@@ -18,10 +18,12 @@ module mod_error_id
      character(len=error_message_length), dimension(max_errors) :: error_messages=''
   end type routine_info
 
+  ! Error type.  error%routines and the index error%rix act as a
+  ! stack for keeping track of the calls that led up to the error.
   type error_info
      integer(kind=int32) :: code=0, rix=1
      integer(kind=int32), dimension(max_routines) :: routines=0
-     logical :: halt=.true.
+     logical :: halt=.true. ! If .true., halt at the first error.
   end type error_info
 
   type(routine_info), parameter :: info_empty=routine_info(0, &
@@ -607,23 +609,37 @@ module mod_error_id
 
   ! src/orth/nullvec 1400
   integer(int32), parameter :: mod_id_nullvec=1400
-  integer(int32), parameter :: id_f_d_lower_left_nullvec=mod_id_nullvec + 0
-  integer(int32), parameter :: id_f_z_lower_left_nullvec=mod_id_nullvec + 1
-  integer(int32), parameter :: id_f_d_lower_right_nullvec=mod_id_nullvec + 2
-  integer(int32), parameter :: id_f_z_lower_right_nullvec=mod_id_nullvec + 3
+  integer(int32), parameter :: id_d_lower_left_nullvec=mod_id_nullvec + 0
+  integer(int32), parameter :: id_z_lower_left_nullvec=mod_id_nullvec + 1
+  integer(int32), parameter :: id_d_lower_right_nullvec=mod_id_nullvec + 2
+  integer(int32), parameter :: id_z_lower_right_nullvec=mod_id_nullvec + 3
+  integer(int32), parameter :: id_d_cond2_upper=mod_id_nullvec + 4
+  integer(int32), parameter :: id_z_cond2_upper=mod_id_nullvec + 5
 
-  type(routine_info), parameter :: info_f_d_lower_left_nullvec= &
-       routine_info(id_f_d_lower_left_nullvec, 'f_d_lower_left_nullvec', &
+  type(routine_info), parameter :: info_d_lower_left_nullvec= &
+       routine_info(id_d_lower_left_nullvec, 'd_lower_left_nullvec', &
        [ character(len=error_message_length) :: 'Failure to find a null vector.' ])
-  type(routine_info), parameter :: info_f_d_lower_right_nullvec= &
-       routine_info(id_f_d_lower_right_nullvec, 'f_d_lower_right_nullvec', &
+  type(routine_info), parameter :: info_d_lower_right_nullvec= &
+       routine_info(id_d_lower_right_nullvec, 'd_lower_right_nullvec', &
        [ character(len=error_message_length) :: 'Failure to find a null vector.' ])
-  type(routine_info), parameter :: info_f_z_lower_left_nullvec= &
-       routine_info(id_f_z_lower_left_nullvec, 'f_z_lower_left_nullvec', &
+  type(routine_info), parameter :: info_z_lower_left_nullvec= &
+       routine_info(id_z_lower_left_nullvec, 'z_lower_left_nullvec', &
        [ character(len=error_message_length) :: 'Failure to find a null vector.' ])
-  type(routine_info), parameter :: info_f_z_lower_right_nullvec= &
-       routine_info(id_f_z_lower_right_nullvec, 'f_z_lower_right_nullvec', &
+  type(routine_info), parameter :: info_z_lower_right_nullvec= &
+       routine_info(id_z_lower_right_nullvec, 'z_lower_right_nullvec', &
        [ character(len=error_message_length) :: 'Failure to find a null vector.' ])
+
+  type(routine_info), parameter :: info_d_cond2_upper= &
+       routine_info(id_d_cond2_upper, 'd_cond2_upper', &
+       [ character(len=error_message_length) :: 'A is not square.', &
+       'Failure to converge for norm of A.', &
+       'Failure to converge for norm of inverse(A).'])
+  type(routine_info), parameter :: info_z_cond2_upper= &
+       routine_info(id_z_cond2_upper, 'd_cond2_upper', &
+       [ character(len=error_message_length) :: 'A is not square.', &
+       'Failure to converge for norm of A.', &
+       'Failure to converge for norm of inverse(A).'])
+  
 
   ! src/qr_factorization/qr_factorization 1500
   integer(int32), parameter :: mod_id_qr_factorization=1500
@@ -1183,10 +1199,10 @@ contains
        info_index(info_z_extend_gs_columns%routine_id)=info_z_extend_gs_columns
        
        ! nullvec
-       info_index(info_f_d_lower_left_nullvec%routine_id)=info_f_d_lower_left_nullvec
-       info_index(info_f_z_lower_left_nullvec%routine_id)=info_f_z_lower_left_nullvec
-       info_index(info_f_d_lower_right_nullvec%routine_id)=info_f_d_lower_right_nullvec
-       info_index(info_f_z_lower_right_nullvec%routine_id)=info_f_z_lower_right_nullvec
+       info_index(info_d_lower_left_nullvec%routine_id)=info_d_lower_left_nullvec
+       info_index(info_z_lower_left_nullvec%routine_id)=info_z_lower_left_nullvec
+       info_index(info_d_lower_right_nullvec%routine_id)=info_d_lower_right_nullvec
+       info_index(info_z_lower_right_nullvec%routine_id)=info_z_lower_right_nullvec
 
        ! qr_factorization
 
