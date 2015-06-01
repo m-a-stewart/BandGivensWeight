@@ -41,6 +41,18 @@ program test_cond
      write (*, fmt_sv) "Lower Min SV", sigma_d, tmp, norm2(res_d), norm2(res_d1), "FAILED"
   end if
 
+  sigma_d=lower_max_sv(l_d,u_d,v_d,res_d,tol,1000,error)
+  tmp=norm2(res_d)
+  call lower_left_multiply(l_d,v_d,res_d)
+  res_d=res_d-sigma_d*u_d
+  call lower_tr_left_multiply(l_d,u_d,res_d1)
+  res_d1=res_d1-sigma_d*v_d
+  if (tmp < tol1 .and. norm2(res_d) < tol1 .and. norm2(res_d1) < tol1) then
+     write (*, fmt_sv) "Lower Max SV", sigma_d, tmp, norm2(res_d), norm2(res_d1), "PASSED"
+  else
+     write (*, fmt_sv) "Lower Max SV", sigma_d, tmp, norm2(res_d), norm2(res_d1), "FAILED"
+  end if
+  
   l_d(5,5)=2.3e-40_dp
   l_d(10,10)=2.3e-40_dp
   sigma_d=lower_min_sv(l_d,u_d,v_d,res_d,tol,1000,error)
@@ -54,7 +66,6 @@ program test_cond
   else
      write (*, fmt_sv) "Lower Min SV", sigma_d, tmp, norm2(res_d), norm2(res_d1), "FAILED"
   end if
-  print *
   deallocate(l_d,u_d,v_d,res_d,res_d1)
 
   !upper
@@ -78,6 +89,18 @@ program test_cond
      write (*, fmt_sv) "Upper Min SV", sigma_d, tmp, norm2(res_d), norm2(res_d1), "FAILED"
   end if
 
+  sigma_d=upper_max_sv(r_d,u_d,v_d,res_d,tol,1000,error)
+  tmp=norm2(res_d)
+  call upper_left_multiply(r_d,v_d,res_d)
+  res_d=res_d-sigma_d*u_d
+  call upper_tr_left_multiply(r_d,u_d,res_d1)
+  res_d1=res_d1-sigma_d*v_d
+  if (tmp < tol1 .and. norm2(res_d) < tol1 .and. norm2(res_d1) < tol1) then
+     write (*, fmt_sv) "Upper Max SV", sigma_d, tmp, norm2(res_d), norm2(res_d1), "PASSED"
+  else
+     write (*, fmt_sv) "Upper Max SV", sigma_d, tmp, norm2(res_d), norm2(res_d1), "FAILED"
+  end if
+  
   r_d(5,5)=2.3e-40_dp
   r_d(10,10)=2.3e-40_dp
   sigma_d=upper_min_sv(r_d,u_d,v_d,res_d,tol,1000,error)
@@ -106,7 +129,7 @@ program test_cond
         l_c(j,k)=(0.0_dp,0.0_dp)
      end do
   end do
-  ! Test 1
+
   sigma_c=lower_min_sv(l_c,u_c,v_c,res_c,1.0e-14_dp,1000,error)
 
   tmp=norm2(res_c)
@@ -120,7 +143,18 @@ program test_cond
      write (*, fmt_sv) "Lower Min SV", sigma_c, tmp, norm2(res_c), norm2(res_c1), "FAILED"
   end if
 
-  ! Test 2
+  sigma_c=lower_max_sv(l_c,u_c,v_c,res_c,tol,1000,error)
+  tmp=norm2(res_c)
+  call lower_left_multiply(l_c,v_c,res_c)
+  res_c=res_c-sigma_c*u_c
+  call lower_tr_left_multiply(l_c,u_c,res_c1)
+  res_c1=res_c1-sigma_c*v_c
+  if (tmp < tol1 .and. norm2(res_c) < tol1 .and. norm2(res_c1) < tol1) then
+     write (*, fmt_sv) "Lower Max SV", sigma_c, tmp, norm2(res_c), norm2(res_c1), "PASSED"
+  else
+     write (*, fmt_sv) "Lower Max SV", sigma_c, tmp, norm2(res_c), norm2(res_c1), "FAILED"
+  end if
+
   l_c(5,5)=(2.3e-40_dp,5e-40_dp)
   l_c(10,10)=(2.3e-40_dp,5e-40_dp)
   sigma_c=lower_min_sv(l_c,u_c,v_c,res_c,1.0e-14_dp,1000,error)
@@ -135,7 +169,6 @@ program test_cond
   else
      write (*, fmt_sv) "Lower Min SV", sigma_c, tmp, norm2(res_c), norm2(res_c1), "FAILED"
   end if
-  print *
   deallocate(l_c,u_c,v_c,res_c,res_c1)
   
   !upper
@@ -159,6 +192,18 @@ program test_cond
      write (*, fmt_sv) "Upper Min SV", sigma_c, tmp, norm2(res_c), norm2(res_c1), "FAILED"
   end if
 
+  sigma_c=upper_max_sv(r_c,u_c,v_c,res_c,tol,1000,error)
+  tmp=norm2(res_c)
+  call upper_left_multiply(r_c,v_c,res_c)
+  res_c=res_c-sigma_c*u_c
+  call upper_tr_left_multiply(r_c,u_c,res_c1)
+  res_c1=res_c1-sigma_c*v_c
+  if (tmp < tol1 .and. norm2(res_c) < tol1 .and. norm2(res_c1) < tol1) then
+     write (*, fmt_sv) "Upper Max SV", sigma_c, tmp, norm2(res_c), norm2(res_c1), "PASSED"
+  else
+     write (*, fmt_sv) "Upper Max SV", sigma_c, tmp, norm2(res_c), norm2(res_c1), "FAILED"
+  end if
+
   r_c(5,5)=(2.3e-40_dp,5e-40_dp)
   r_c(10,10)=(2.3e-40_dp,5e-40_dp)
   sigma_c=upper_min_sv(r_c,u_c,v_c,res_c,tol,1000,error)
@@ -173,6 +218,6 @@ program test_cond
      write (*, fmt_sv) "Upper Min SV", sigma_c, tmp, norm2(res_c), norm2(res_c1), "FAILED"
   end if
   deallocate(r_c,u_c,v_c,res_c,res_c1)
-
+  print *
 
 end program test_cond

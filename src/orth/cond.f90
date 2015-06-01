@@ -10,7 +10,9 @@ module mod_cond
   public :: lower_left_nullvec, z_lower_left_nullvec, d_lower_left_nullvec, &
        lower_right_nullvec, z_lower_right_nullvec, d_lower_right_nullvec, &
        lower_min_sv, d_lower_min_sv, z_lower_min_sv, &
-       upper_min_sv, d_upper_min_sv, z_upper_min_sv
+       lower_max_sv, d_lower_max_sv, z_lower_max_sv, &
+       upper_min_sv, d_upper_min_sv, z_upper_min_sv, &
+       upper_max_sv, d_upper_max_sv, z_upper_max_sv
 
   interface lower_left_nullvec
      module procedure z_lower_left_nullvec, d_lower_left_nullvec
@@ -24,16 +26,162 @@ module mod_cond
      module procedure  d_lower_min_sv, z_lower_min_sv
   end interface lower_min_sv
 
+  interface lower_max_sv
+     module procedure  d_lower_max_sv, z_lower_max_sv
+  end interface lower_max_sv
+  
   interface upper_min_sv
      module procedure  d_upper_min_sv, z_upper_min_sv
   end interface upper_min_sv
 
+  interface upper_max_sv
+     module procedure  d_upper_max_sv, z_upper_max_sv
+  end interface upper_max_sv
+  
   
   integer(kind=int32), parameter :: default_maxit=20
   real(kind=dp), parameter :: default_tol=4*eps, default_tolres=4*eps
 
 contains
 
+  real(kind=dp) function d_upper_max_sv(r,u1,v1,res,tolres0, &
+       maxit0,error) result(sigmau)
+    real(kind=dp), dimension(:,:), intent(in) :: r
+    real(kind=dp), dimension(:), intent(out) :: u1,v1,res
+    real(kind=dp), intent(in), optional :: tolres0
+    type(error_info), intent(inout), optional :: error
+    integer(kind=int32), intent(in), optional :: maxit0
+
+    integer(kind=int32) :: n, k, maxit
+    real(kind=dp) :: tolres, sigmav, sigmau0, maxr
+    type(routine_info), parameter :: info=info_d_upper_max_sv
+    !
+    if (failure(error)) return
+    call push_id(info, error)
+
+    n=size(r,1)
+    if (n<1) then
+       call set_error(1, info, error); return
+    else if (n /= size(r,2)) then
+       call set_error(2, info, error); return
+    end if
+    
+    maxr=maxabs(r)
+    maxit=equals_option(default_maxit,maxit0)
+    tolres=equals_option(maxr*default_tolres,tolres0)
+
+    u1=0.0_dp
+    v1=0.0_dp
+    if (maxr==0.0_dp) then
+       u1(1)=1.0_dp; v1(1)=1.0_dp
+       sigmau=0.0_dp
+       res=0.0_dp
+       call pop_id(error)
+       return
+    else
+       ! Get initial vectors.
+       call upper_tr_left_multiply_linpack(r,u1,v1)
+       sigmau=norm2(v1)
+       v1=v1/sigmau
+       sigmav=norm2(u1) ! not really sigmav.
+       sigmau=sigmau/sigmav
+       u1=u1/sigmav
+       k=1
+       do while (k < maxit)
+          ! Update u1
+          res=u1; sigmau0=sigmau
+          call upper_left_multiply(r,v1,u1)
+          sigmav=norm2(u1)
+          u1=u1/sigmav
+          ! Update v1
+          call upper_tr_left_multiply(r,u1,v1)
+          sigmau=norm2(v1)
+          v1=v1/sigmau
+          res = u1*sigmav-res*sigmau0
+          if (norm2(res) < tolres) then
+             call pop_id(error)
+             return
+          end if
+          k=k+1
+       end do
+       if (tolres==0.0_dp) then
+          ! maxits is OK if tolerance is zero.
+          call pop_id(error)
+       else
+          call set_error(3, info, error); return
+       end if
+    end if
+  end function d_upper_max_sv
+
+  real(kind=dp) function z_upper_max_sv(r,u1,v1,res,tolres0, &
+       maxit0,error) result(sigmau)
+    complex(kind=dp), dimension(:,:), intent(in) :: r
+    complex(kind=dp), dimension(:), intent(out) :: u1,v1,res
+    real(kind=dp), intent(in), optional :: tolres0
+    type(error_info), intent(inout), optional :: error
+    integer(kind=int32), intent(in), optional :: maxit0
+
+    integer(kind=int32) :: n, k, maxit
+    real(kind=dp) :: tolres, sigmav, sigmau0, maxr
+    type(routine_info), parameter :: info=info_z_upper_max_sv
+    !
+    if (failure(error)) return
+    call push_id(info, error)
+
+    n=size(r,1)
+    if (n<1) then
+       call set_error(1, info, error); return
+    else if (n /= size(r,2)) then
+       call set_error(2, info, error); return
+    end if
+    
+    maxr=maxabs(r)
+    maxit=equals_option(default_maxit,maxit0)
+    tolres=equals_option(maxr*default_tolres,tolres0)
+
+    u1=(0.0_dp,0.0_dp)
+    v1=(0.0_dp,0.0_dp)
+    if (maxr==0.0_dp) then
+       u1(1)=(1.0_dp,0.0_dp); v1(1)=(1.0_dp,0.0_dp)
+       sigmau=0.0_dp
+       res=(0.0_dp,0.0_dp)
+       call pop_id(error)
+       return
+    else
+       ! Get initial vectors.
+       call upper_tr_left_multiply_linpack(r,u1,v1)
+       sigmau=norm2(v1)
+       v1=v1/sigmau
+       sigmav=norm2(u1) ! not really sigmav.
+       sigmau=sigmau/sigmav
+       u1=u1/sigmav
+       k=1
+       do while (k < maxit)
+          ! Update u1
+          res=u1; sigmau0=sigmau
+          call upper_left_multiply(r,v1,u1)
+          sigmav=norm2(u1)
+          u1=u1/sigmav
+          ! Update v1
+          call upper_tr_left_multiply(r,u1,v1)
+          sigmau=norm2(v1)
+          v1=v1/sigmau
+          res = u1*sigmav-res*sigmau0
+          if (norm2(res) < tolres) then
+             call pop_id(error)
+             return
+          end if
+          k=k+1
+       end do
+       if (tolres==0.0_dp) then
+          ! maxits is OK if tolerance is zero.
+          call pop_id(error)
+       else
+          call set_error(3, info, error); return
+       end if
+    end if
+  end function z_upper_max_sv
+  
   real(kind=dp) function d_upper_min_sv(r,un,vn,res,tolres0, &
        maxit0,error) result(sigmau)
     real(kind=dp), dimension(:,:), intent(in) :: r
@@ -50,9 +198,16 @@ contains
     call push_id(info, error)
 
     n=size(r,1)
+    if (n<1) then
+       call set_error(1, info, error); return
+    else if (n /= size(r,2)) then
+       call set_error(2, info, error); return
+    end if
+
     maxr=maxabs(r)
     maxit=equals_option(default_maxit,maxit0)
     tolres=equals_option(maxr*default_tolres,tolres0)
+    
 
     un=0.0_dp
     vn=0.0_dp
@@ -106,7 +261,7 @@ contains
              ! maxits is OK if tolerance is zero.
              call pop_id(error)
           else
-             call set_error(1, info, error); return
+             call set_error(3, info, error); return
           end if
        end if
     end if
@@ -128,6 +283,12 @@ contains
     call push_id(info, error)
 
     n=size(r,1)
+    if (n<1) then
+       call set_error(1, info, error); return
+    else if (n /= size(r,2)) then
+       call set_error(2, info, error); return
+    end if
+
     maxr=maxabs(r)
     maxit=equals_option(default_maxit,maxit0)
     tolres=equals_option(maxr*default_tolres,tolres0)
@@ -184,13 +345,150 @@ contains
              ! maxits is OK if tolerance is zero.
              call pop_id(error)
           else
-             call set_error(1, info, error); return
+             call set_error(3, info, error); return
           end if
        end if
     end if
   end function z_upper_min_sv
   
+  real(kind=dp) function d_lower_max_sv(l,u1,v1,res,tolres0, &
+       maxit0,error) result(sigmau)
+    real(kind=dp), dimension(:,:), intent(in) :: l
+    real(kind=dp), dimension(:), intent(out) :: u1,v1,res
+    real(kind=dp), intent(in), optional :: tolres0
+    type(error_info), intent(inout), optional :: error
+    integer(kind=int32), intent(in), optional :: maxit0
 
+    integer(kind=int32) :: n, k, maxit
+    real(kind=dp) :: tolres, sigmav, sigmau0, maxl
+    type(routine_info), parameter :: info=info_d_lower_max_sv
+    !
+    if (failure(error)) return
+    call push_id(info, error)
+
+    n=size(l,1)
+    if (n<1) then
+       call set_error(1, info, error); return
+    else if (n /= size(l,2)) then
+       call set_error(2, info, error); return
+    end if
+    
+    maxl=maxabs(l)
+    maxit=equals_option(default_maxit,maxit0)
+    tolres=equals_option(maxl*default_tolres,tolres0)
+
+    u1=0.0_dp
+    v1=0.0_dp
+    if (maxl==0.0_dp) then
+       u1(1)=1.0_dp; v1(1)=1.0_dp
+       sigmau=0.0_dp
+       res=0.0_dp
+       call pop_id(error)
+       return
+    else
+       ! Get initial vectors.
+       call lower_tr_left_multiply_linpack(l,u1,v1)
+       sigmau=norm2(v1)
+       v1=v1/sigmau
+       sigmav=norm2(u1) ! not really sigmav.
+       sigmau=sigmau/sigmav
+       u1=u1/sigmav
+       k=1
+       do while (k < maxit)
+          ! Update u1
+          res=u1; sigmau0=sigmau
+          call lower_left_multiply(l,v1,u1)
+          sigmav=norm2(u1)
+          u1=u1/sigmav
+          ! Update v1
+          call lower_tr_left_multiply(l,u1,v1)
+          sigmau=norm2(v1)
+          v1=v1/sigmau
+          res = u1*sigmav-res*sigmau0
+          if (norm2(res) < tolres) then
+             call pop_id(error)
+             return
+          end if
+          k=k+1
+       end do
+       if (tolres==0.0_dp) then
+          ! maxits is OK if tolerance is zero.
+          call pop_id(error)
+       else
+          call set_error(3, info, error); return
+       end if
+    end if
+  end function d_lower_max_sv
+
+  real(kind=dp) function z_lower_max_sv(l,u1,v1,res,tolres0, &
+       maxit0,error) result(sigmau)
+    complex(kind=dp), dimension(:,:), intent(in) :: l
+    complex(kind=dp), dimension(:), intent(out) :: u1,v1,res
+    real(kind=dp), intent(in), optional :: tolres0
+    type(error_info), intent(inout), optional :: error
+    integer(kind=int32), intent(in), optional :: maxit0
+
+    integer(kind=int32) :: n, k, maxit
+    real(kind=dp) :: tolres, sigmav, sigmau0, maxl
+    type(routine_info), parameter :: info=info_z_lower_max_sv
+    !
+    if (failure(error)) return
+    call push_id(info, error)
+
+    n=size(l,1)
+    if (n<1) then
+       call set_error(1, info, error); return
+    else if (n /= size(l,2)) then
+       call set_error(2, info, error); return
+    end if
+    
+    maxl=maxabs(l)
+    maxit=equals_option(default_maxit,maxit0)
+    tolres=equals_option(maxl*default_tolres,tolres0)
+
+    u1=(0.0_dp,0.0_dp)
+    v1=(0.0_dp,0.0_dp)
+    if (maxl==0.0_dp) then
+       u1(1)=(1.0_dp,0.0_dp); v1(1)=(1.0_dp,0.0_dp)
+       sigmau=0.0_dp
+       res=(0.0_dp,0.0_dp)
+       call pop_id(error)
+       return
+    else
+       ! Get initial vectors.
+       call lower_tr_left_multiply_linpack(l,u1,v1)
+       sigmau=norm2(v1)
+       v1=v1/sigmau
+       sigmav=norm2(u1) ! not really sigmav.
+       sigmau=sigmau/sigmav
+       u1=u1/sigmav
+       k=1
+       do while (k < maxit)
+          ! Update u1
+          res=u1; sigmau0=sigmau
+          call lower_left_multiply(l,v1,u1)
+          sigmav=norm2(u1)
+          u1=u1/sigmav
+          ! Update v1
+          call lower_tr_left_multiply(l,u1,v1)
+          sigmau=norm2(v1)
+          v1=v1/sigmau
+          res = u1*sigmav-res*sigmau0
+          if (norm2(res) < tolres) then
+             call pop_id(error)
+             return
+          end if
+          k=k+1
+       end do
+       if (tolres==0.0_dp) then
+          ! maxits is OK if tolerance is zero.
+          call pop_id(error)
+       else
+          call set_error(3, info, error); return
+       end if
+    end if
+  end function z_lower_max_sv
+  
   real(kind=dp) function d_lower_min_sv(l,un,vn,res,tolres0, &
        maxit0,error) result(sigmau)
     real(kind=dp), dimension(:,:), intent(in) :: l
@@ -207,6 +505,12 @@ contains
     call push_id(info, error)
 
     n=size(l,1)
+    if (n<1) then
+       call set_error(1, info, error); return
+    else if (n /= size(l,2)) then
+       call set_error(2, info, error); return
+    end if
+
     maxl=maxabs(l)
     maxit=equals_option(default_maxit,maxit0)
     tolres=equals_option(maxl*default_tolres,tolres0)
@@ -262,7 +566,7 @@ contains
              ! maxits is OK if tolerance is zero.
              call pop_id(error)
           else
-             call set_error(1, info, error); return
+             call set_error(3, info, error); return
           end if
        end if
     end if
@@ -285,6 +589,12 @@ contains
     call push_id(info, error)
 
     n=size(l,1)
+    if (n<1) then
+       call set_error(1, info, error); return
+    else if (n /= size(l,2)) then
+       call set_error(2, info, error); return
+    end if
+
     maxl=maxabs(l)
     maxit=equals_option(default_maxit,maxit0)
     tolres=equals_option(maxl*default_tolres,tolres0)
@@ -341,7 +651,7 @@ contains
              ! maxits shouldn't raise an error if the tolerance is zero.
              call pop_id(error)
           else
-             call set_error(1, info, error); return
+             call set_error(3, info, error); return
           end if
        end if
     end if

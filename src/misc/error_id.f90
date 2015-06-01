@@ -619,6 +619,10 @@ module mod_error_id
   integer(int32), parameter :: id_z_lower_min_sv=mod_id_cond + 7
   integer(int32), parameter :: id_d_upper_min_sv=mod_id_cond + 8
   integer(int32), parameter :: id_z_upper_min_sv=mod_id_cond + 9
+  integer(int32), parameter :: id_d_lower_max_sv=mod_id_cond + 10
+  integer(int32), parameter :: id_z_lower_max_sv=mod_id_cond + 11
+  integer(int32), parameter :: id_d_upper_max_sv=mod_id_cond + 12
+  integer(int32), parameter :: id_z_upper_max_sv=mod_id_cond + 13
 
   type(routine_info), parameter :: info_d_lower_left_nullvec= &
        routine_info(id_d_lower_left_nullvec, 'd_lower_left_nullvec', &
@@ -646,24 +650,38 @@ module mod_error_id
 
   type(routine_info), parameter :: info_d_lower_min_sv= &
        routine_info(id_d_lower_min_sv, 'd_lower_min_sv', &
-       [ character(len=error_message_length) :: 'A is not square.', &
-       'Failure to converge for norm of A.', &
-       'Failure to converge for norm of inverse(A).'])
+       [ character(len=error_message_length) :: 'n<1', 'A is not square.', &
+       'Failure to converge.'])
   type(routine_info), parameter :: info_z_lower_min_sv= &
        routine_info(id_z_lower_min_sv, 'z_lower_min_sv', &
-       [ character(len=error_message_length) :: 'A is not square.', &
-       'Failure to converge for norm of A.', &
-       'Failure to converge for norm of inverse(A).'])
+       [ character(len=error_message_length) :: 'n<1', 'A is not square.', &
+       'Failure to converge.'])
   type(routine_info), parameter :: info_d_upper_min_sv= &
        routine_info(id_d_upper_min_sv, 'd_upper_min_sv', &
-       [ character(len=error_message_length) :: 'A is not square.', &
-       'Failure to converge for norm of A.', &
-       'Failure to converge for norm of inverse(A).'])
+       [ character(len=error_message_length) :: 'n<1', 'A is not square.', &
+       'Failure to converge.'])
   type(routine_info), parameter :: info_z_upper_min_sv= &
        routine_info(id_z_upper_min_sv, 'z_upper_min_sv', &
-       [ character(len=error_message_length) :: 'A is not square.', &
-       'Failure to converge for norm of A.', &
-       'Failure to converge for norm of inverse(A).'])
+       [ character(len=error_message_length) :: 'n<1', 'A is not square.', &
+       'Failure to converge.'])
+
+  type(routine_info), parameter :: info_d_lower_max_sv= &
+       routine_info(id_d_lower_max_sv, 'd_lower_max_sv', &
+       [ character(len=error_message_length) :: 'n<1', 'A is not square.', &
+       'Failure to converge.'])
+  type(routine_info), parameter :: info_z_lower_max_sv= &
+       routine_info(id_z_lower_max_sv, 'z_lower_max_sv', &
+       [ character(len=error_message_length) :: 'n<1', 'A is not square.', &
+       'Failure to converge.'])
+  type(routine_info), parameter :: info_d_upper_max_sv= &
+       routine_info(id_d_upper_max_sv, 'd_upper_max_sv', &
+       [ character(len=error_message_length) :: 'n<1', 'A is not square.', &
+       'Failure to converge.'])
+  type(routine_info), parameter :: info_z_upper_max_sv= &
+       routine_info(id_z_upper_max_sv, 'z_upper_max_sv', &
+       [ character(len=error_message_length) :: 'n<1', 'A is not square.', &
+       'Failure to converge.'])
+  
   
 
   ! src/qr_factorization/qr_factorization 1500
@@ -1233,6 +1251,11 @@ contains
        info_index(info_z_lower_min_sv%routine_id)=info_z_lower_min_sv
        info_index(info_d_upper_min_sv%routine_id)=info_d_upper_min_sv
        info_index(info_z_upper_min_sv%routine_id)=info_z_upper_min_sv
+
+       info_index(info_d_lower_max_sv%routine_id)=info_d_lower_max_sv
+       info_index(info_z_lower_max_sv%routine_id)=info_z_lower_max_sv
+       info_index(info_d_upper_max_sv%routine_id)=info_d_upper_max_sv
+       info_index(info_z_upper_max_sv%routine_id)=info_z_upper_max_sv
        
        ! qr_factorization
 
