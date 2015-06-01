@@ -2,26 +2,31 @@ OBJDIR = mod
 BINDIR = bin
 SRCDIR = src
 TESTDIR = test
+EXPDIR = exp
 SRCDIRS = src src/convert src/general src/misc src/orth \
 	src/solve src/transforms src/types
 FC = gfortran
 LFLAGS =
-#CFLAGS = -fbounds-check -mcmodel=medium -Waliasing -Wampersand -Wconversion -Wsurprising \
-#	-Wintrinsics-std -Wno-tabs -Wintrinsic-shadow -Wline-truncation -Wreal-q-constant -Wunused
 CFLAGS = -Wall -Wno-maybe-uninitialized -O2 -mcmodel=medium
-#PROFLFLAGS = -pg
-#PROFCFLAGS = -pg
 PROFLFLAGS =
 PROFCFLAGS =
+VIEWER = evince
 
-vpath %.f90 $(SRCDIRS) test
+vpath %.f90 $(SRCDIRS) test exp
 
 .PHONY : all
 all : $(OBJDIR)/orb.o
 
-include $(SRCDIR)/src.mk
+notes.pdf : notes.md
+	pandoc -o notes.pdf notes.md
 
+.PHONY : view_notes
+view_notes : notes.pdf
+	$(VIEWER) notes.pdf
+
+include $(SRCDIR)/src.mk
 include $(TESTDIR)/test.mk
+include $(EXPDIR)/exp.mk
 
 $(OBJDIR)/%.o : %.f90
 	$(FC) $(CFLAGS) $(PROFCFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@
@@ -32,8 +37,4 @@ $(BINDIR)/% : $(OBJDIR)/%.o
 .PHONY : clean
 clean :
 	rm $(OBJDIR)/* $(BINDIR)/*
-
-# prof : test_general
-# 	gprof -c -q --no-time='__general_ub_MOD_f_d_upper_to_ub' \
-# 		-no-time='__assemble_MOD_d_bv_to_upper' test_general | less
 

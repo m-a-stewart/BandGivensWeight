@@ -8,4 +8,5 @@ module mod_orb
   use mod_solve
   use mod_types
   use mod_transforms
+  use mod_orth
 end module mod_orb

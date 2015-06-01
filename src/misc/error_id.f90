@@ -615,6 +615,8 @@ module mod_error_id
   integer(int32), parameter :: id_z_lower_right_nullvec=mod_id_cond + 3
   integer(int32), parameter :: id_d_cond2_upper=mod_id_cond + 4
   integer(int32), parameter :: id_z_cond2_upper=mod_id_cond + 5
+  integer(int32), parameter :: id_d_lower_min_sv=mod_id_cond + 6
+  integer(int32), parameter :: id_z_lower_min_sv=mod_id_cond + 7
 
   type(routine_info), parameter :: info_d_lower_left_nullvec= &
        routine_info(id_d_lower_left_nullvec, 'd_lower_left_nullvec', &
@@ -635,7 +637,18 @@ module mod_error_id
        'Failure to converge for norm of A.', &
        'Failure to converge for norm of inverse(A).'])
   type(routine_info), parameter :: info_z_cond2_upper= &
-       routine_info(id_z_cond2_upper, 'd_cond2_upper', &
+       routine_info(id_z_cond2_upper, 'z_cond2_upper', &
+       [ character(len=error_message_length) :: 'A is not square.', &
+       'Failure to converge for norm of A.', &
+       'Failure to converge for norm of inverse(A).'])
+
+  type(routine_info), parameter :: info_d_lower_min_sv= &
+       routine_info(id_d_lower_min_sv, 'd_lower_min_sv', &
+       [ character(len=error_message_length) :: 'A is not square.', &
+       'Failure to converge for norm of A.', &
+       'Failure to converge for norm of inverse(A).'])
+  type(routine_info), parameter :: info_z_lower_min_sv= &
+       routine_info(id_z_lower_min_sv, 'z_lower_min_sv', &
        [ character(len=error_message_length) :: 'A is not square.', &
        'Failure to converge for norm of A.', &
        'Failure to converge for norm of inverse(A).'])

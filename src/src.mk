@@ -1,7 +1,7 @@
 # module dependencies
 
 _ORB = general assemble qr_factorization solve \
-	row_compress transforms convert types misc
+	row_compress transforms convert types misc orth
 
 _MISC = error_id utility
 

@@ -2,7 +2,7 @@ _TESTS = test_general_ub test_general_bv test_general_bt test_general_wb \
 	test_general_ubt test_general_wbv \
 	test_convert_ub_and_bv test_convert_wb_and_bt \
 	test_convert_ubt_and_wbv test_row_compress \
-	test_qr_factorization test_solve
+	test_qr_factorization test_solve test_cond
 TESTS = $(patsubst %,$(BINDIR)/%,$(_TESTS))
 
 .PHONY : all_tests
@@ -10,6 +10,7 @@ all_tests : $(TESTS)
 
 .PHONY : run_all_tests
 run_all_tests : $(TESTS)
+	$(BINDIR)/test_cond
 	$(BINDIR)/test_general_ub
 	$(BINDIR)/test_general_bv
 	$(BINDIR)/test_general_bt
@@ -22,6 +23,10 @@ run_all_tests : $(TESTS)
 	$(BINDIR)/test_row_compress
 	$(BINDIR)/test_qr_factorization
 	$(BINDIR)/test_solve
+
+.PHONY : run_cond
+run_cond : $(BINDIR)/test_cond
+	$(BINDIR)/test_cond
 
 .PHONY : run_general
 run_general : $(BINDIR)/test_general_ub $(BINDIR)/test_general_bv $(BINDIR)/test_general_bt \
@@ -82,6 +87,7 @@ run_solve : $(BINDIR)/test_solve
 	$(BINDIR)/test_solve
 
 $(OBJDIR)/test_data.o : $(OBJDIR)/orb.o
+$(OBJDIR)/test_cond.o : $(OBJDIR)/test_data.o
 $(OBJDIR)/test_general_ub.o : $(OBJDIR)/test_data.o
 $(OBJDIR)/test_general_bv.o : $(OBJDIR)/test_data.o
 $(OBJDIR)/test_general_bt.o : $(OBJDIR)/test_data.o

@@ -8,6 +8,7 @@ module mod_test_data
   character(len=*), parameter :: fmt_lower="(A40, 'Time: ',ES8.2,', lbw: ',I3,', error: ',ES8.2, ', ', A10)"
   character(len=*), parameter :: fmt_lower_upper="(A40, 'Time: ',ES8.2,', lbw: ',I3,', ubw: ', I3,', error: ',ES8.2, ', ', A10)"
   character(len=*), parameter :: fmt_qr="(A25, 'Time: ',ES8.2,', ubw: ',I3,', errors: ',ES8.2, ', ', ES8.2, ', ', ES8.2, ', ', A10)"
+
 contains
 
   subroutine d_output_result_upper(name,a0,a1,ubw0,ubw1,t0,t1,bnd,error)

@@ -18,7 +18,7 @@ module mod_utility
 
   public :: ip_transpose, d_ip_transpose, z_ip_transpose
 
-  public :: equals_option, i_equals_option
+  public :: equals_option, i_equals_option, d_equals_option, z_equals_option
 
   interface maybe_deallocate
      module procedure d_maybe_deallocate2, z_maybe_deallocate2, i_maybe_deallocate2, &
@@ -26,7 +26,8 @@ module mod_utility
   end interface maybe_deallocate
 
   interface not_all_allocated
-     module procedure d_not_all_allocated2, z_not_all_allocated2, i_not_all_allocated2, &
+     module procedure d_not_all_allocated2, z_not_all_allocated2, &
+          i_not_all_allocated2, &
           d_not_all_allocated1, z_not_all_allocated1, i_not_all_allocated1
   end interface not_all_allocated
 
@@ -56,7 +57,7 @@ module mod_utility
   end interface ip_transpose
 
   interface equals_option
-     module procedure i_equals_option
+     module procedure i_equals_option, d_equals_option, z_equals_option
   end interface equals_option
 
   real(kind=dp), parameter :: d_random_shift=-1.0_dp, d_random_scale=2.0_dp
@@ -687,6 +688,28 @@ contains
     end if
   end function i_equals_option
 
+  real(kind=dp) function d_equals_option(x,y) result(z)
+    real(kind=dp) :: x
+    real(kind=dp), optional :: y
+
+    if(present(y)) then
+       z=y
+    else
+       z=x
+    end if
+  end function d_equals_option
+
+  complex(kind=dp) function z_equals_option(x,y) result(z)
+    complex(kind=dp) :: x
+    complex(kind=dp), optional :: y
+
+    if(present(y)) then
+       z=y
+    else
+       z=x
+    end if
+  end function z_equals_option
+  
   subroutine d_ip_transpose(a)
     real(kind=dp), dimension(:,:), intent(inout) :: a
     real(kind=dp) :: tmp
