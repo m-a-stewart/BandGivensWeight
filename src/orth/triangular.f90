@@ -456,7 +456,7 @@ contains
     end do
   end subroutine f_d_upper_tr_left_multiply
 
-  ! U^T x = b
+  ! U^* x = b
   subroutine f_z_upper_tr_left_multiply(u,x,b)
     complex(kind=dp), dimension(:,:), intent(in) :: u
     complex(kind=dp), dimension(:), intent(out) :: b
@@ -468,7 +468,7 @@ contains
     do j=1,m
        b(j)=(0.0_dp,0.0_dp)
        do k=1,j
-          b(j)=b(j)+u(k,j)*x(k)
+          b(j)=b(j)+conjg(u(k,j))*x(k)
        end do
     end do
   end subroutine f_z_upper_tr_left_multiply

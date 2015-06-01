@@ -9,7 +9,8 @@ module mod_cond
 
   public :: lower_left_nullvec, z_lower_left_nullvec, d_lower_left_nullvec, &
        lower_right_nullvec, z_lower_right_nullvec, d_lower_right_nullvec, &
-       lower_min_sv, d_lower_min_sv, z_lower_min_sv
+       lower_min_sv, d_lower_min_sv, z_lower_min_sv, &
+       upper_min_sv, d_upper_min_sv, z_upper_min_sv
 
   interface lower_left_nullvec
      module procedure z_lower_left_nullvec, d_lower_left_nullvec
@@ -23,10 +24,172 @@ module mod_cond
      module procedure  d_lower_min_sv, z_lower_min_sv
   end interface lower_min_sv
 
+  interface upper_min_sv
+     module procedure  d_upper_min_sv, z_upper_min_sv
+  end interface upper_min_sv
+
+  
   integer(kind=int32), parameter :: default_maxit=20
   real(kind=dp), parameter :: default_tol=4*eps, default_tolres=4*eps
 
 contains
+
+  real(kind=dp) function d_upper_min_sv(r,un,vn,res,tolres0, &
+       maxit0,error) result(sigmau)
+    real(kind=dp), dimension(:,:), intent(in) :: r
+    real(kind=dp), dimension(:), intent(out) :: un,vn,res
+    real(kind=dp), intent(in), optional :: tolres0
+    type(error_info), intent(inout), optional :: error
+    integer(kind=int32), intent(in), optional :: maxit0
+
+    integer(kind=int32) :: n, k, maxit, p, q
+    real(kind=dp) :: tolres, sigmav, maxr
+    type(routine_info), parameter :: info=info_d_upper_min_sv
+    !
+    if (failure(error)) return
+    call push_id(info, error)
+
+    n=size(r,1)
+    maxr=maxabs(r)
+    maxit=equals_option(default_maxit,maxit0)
+    tolres=equals_option(maxr*default_tolres,tolres0)
+
+    un=0.0_dp
+    vn=0.0_dp
+    if (maxr==0.0_dp) then
+       un(1)=1.0_dp; vn(1)=1.0_dp
+       sigmau=0.0_dp
+       res=0.0_dp
+       call pop_id(error)
+       return
+    else
+       ! treat very small diagonal elements as hard zeros.
+       p=first_zero_diagonal(r, maxr*eps*eps)
+       q=reverse_first_zero_diagonal(r, maxr*eps*eps)
+       if (p<=n .or. q >= 1) then
+          vn(p)=1.0_dp
+          un(q)=1.0_dp
+          if (p > 1) call upper_left_invert(r(1:p-1,1:p-1),vn(1:p-1),-r(1:p-1,p))
+          if (q < n) call upper_right_invert(un(q+1:n),r(q+1:n,q+1:n),-r(q,q+1:n))
+          ! un=conjg(un)
+          un=un/norm2(un); vn=vn/norm2(vn)
+          sigmau=0.0_dp
+          ! Residual is R*vn-sigma*un or just R*vn
+          res=0.0_dp
+          call upper_left_multiply(r(1:p,1:p),vn(1:p),res(1:p))
+          call pop_id(error); return
+       else
+          ! Get initial vectors.
+          call upper_tr_left_invert_linpack(r,un,vn)
+          sigmau=1/norm2(un)
+          un=sigmau*un
+          sigmau=sigmau*norm2(vn)
+          k=1
+          do while (k < maxit)
+             ! Update v
+             call upper_left_invert(r,vn,un)
+             sigmav=1/norm2(vn)
+             vn=sigmav*vn
+             ! Update un
+             res=un
+             call upper_tr_left_invert(r,un,vn)
+             sigmau=1/norm2(un)
+             un=sigmau*un
+             res=res*sigmav - un*sigmau
+             if (norm2(res) < tolres) then
+                call pop_id(error)
+                return
+             end if
+             k=k+1
+          end do
+          if (tolres==0.0_dp) then
+             ! maxits is OK if tolerance is zero.
+             call pop_id(error)
+          else
+             call set_error(1, info, error); return
+          end if
+       end if
+    end if
+  end function d_upper_min_sv
+
+  real(kind=dp) function z_upper_min_sv(r,un,vn,res,tolres0, &
+       maxit0,error) result(sigmau)
+    complex(kind=dp), dimension(:,:), intent(in) :: r
+    complex(kind=dp), dimension(:), intent(out) :: un,vn,res
+    real(kind=dp), intent(in), optional :: tolres0
+    type(error_info), intent(inout), optional :: error
+    integer(kind=int32), intent(in), optional :: maxit0
+
+    integer(kind=int32) :: n, k, maxit, p, q
+    real(kind=dp) :: tolres, sigmav, maxr
+    type(routine_info), parameter :: info=info_z_upper_min_sv
+    !
+    if (failure(error)) return
+    call push_id(info, error)
+
+    n=size(r,1)
+    maxr=maxabs(r)
+    maxit=equals_option(default_maxit,maxit0)
+    tolres=equals_option(maxr*default_tolres,tolres0)
+
+    un=(0.0_dp,0.0_dp)
+    vn=(0.0_dp,0.0_dp)
+    if (maxr==0.0_dp) then
+       un(1)=(1.0_dp,0.0_dp); vn(1)=(1.0_dp,0.0_dp)
+       sigmau=0.0_dp
+       res=(0.0_dp,0.0_dp)
+       call pop_id(error)
+       return
+    else
+       ! treat very small diagonal elements as hard zeros.
+       p=first_zero_diagonal(r, maxr*eps*eps)
+       q=reverse_first_zero_diagonal(r, maxr*eps*eps)
+       if (p<=n .or. q >= 1) then
+          vn(p)=(1.0_dp,0.0_dp)
+          un(q)=(1.0_dp,0.0_dp)
+          if (p > 1) call upper_left_invert(r(1:p-1,1:p-1),vn(1:p-1),-r(1:p-1,p))
+          if (q < n) call upper_right_invert(un(q+1:n),r(q+1:n,q+1:n),-r(q,q+1:n))
+          un=conjg(un)
+          un=un/norm2(un); vn=vn/norm2(vn)
+          sigmau=0.0_dp
+          ! Residual is R*vn-sigma*un or just R*vn
+          res=(0.0_dp,0.0_dp)
+          call upper_left_multiply(r(1:p,1:p),vn(1:p),res(1:p))
+          call pop_id(error); return
+       else
+          ! Get initial vectors.
+          call upper_tr_left_invert_linpack(r,un,vn)
+          sigmau=1/norm2(un)
+          un=sigmau*un
+          sigmau=sigmau*norm2(vn)
+          k=1
+          do while (k < maxit)
+             ! Update v
+             call upper_left_invert(r,vn,un)
+             sigmav=1/norm2(vn)
+             vn=sigmav*vn
+             ! Update un
+             res=un
+             call upper_tr_left_invert(r,un,vn)
+             sigmau=1/norm2(un)
+             un=sigmau*un
+             res=res*sigmav - un*sigmau
+             if (norm2(res) < tolres) then
+                call pop_id(error)
+                return
+             end if
+             k=k+1
+          end do
+          if (tolres==0.0_dp) then
+             ! maxits is OK if tolerance is zero.
+             call pop_id(error)
+          else
+             call set_error(1, info, error); return
+          end if
+       end if
+    end if
+  end function z_upper_min_sv
+  
 
   real(kind=dp) function d_lower_min_sv(l,un,vn,res,tolres0, &
        maxit0,error) result(sigmau)
@@ -69,13 +232,11 @@ contains
           sigmau=0.0_dp
           ! Residual is L*vn-sigma*un or just L*vn
           res=0.0_dp
-          res(q)=l(q,q)*vn(q)
-          call lower_left_multiply(l(q+1:n,q+1:n),vn(q+1:n),res(q+1:n))
-          res(q+1:n)=res(q+1:n)+l(q+1:n,q)*vn(q)
+          call lower_left_multiply(l(q:n,q:n),vn(q:n),res(q:n))
           call pop_id(error); return
        else
           ! Get initial vectors.
-          call lower_right_invert_linpack(un,l,vn)
+          call lower_tr_left_invert_linpack(l,un,vn)
           sigmau=1/norm2(un)
           un=sigmau*un
           sigmau=sigmau*norm2(vn)
@@ -150,13 +311,11 @@ contains
           sigmau=0.0_dp
           ! Residual is L*v-sigma*u or just L*v
           res=(0.0_dp,0.0_dp)
-          res(q)=l(q,q)*vn(q)
-          call lower_left_multiply(l(q+1:n,q+1:n),vn(q+1:n),res(q+1:n))
-          res(q+1:n)=res(q+1:n)+l(q+1:n,q)*vn(q)
+          call lower_left_multiply(l(q:n,q:n),vn(q:n),res(q:n))
           call pop_id(error); return
        else
           ! Get initial vectors.
-          call lower_right_invert_linpack(un,l,vn)
+          call lower_tr_left_invert_linpack(l,un,vn)
           sigmau=1/norm2(un)
           un=sigmau*un
           sigmau=sigmau*norm2(vn)

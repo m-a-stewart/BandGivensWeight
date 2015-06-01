@@ -617,6 +617,8 @@ module mod_error_id
   integer(int32), parameter :: id_z_cond2_upper=mod_id_cond + 5
   integer(int32), parameter :: id_d_lower_min_sv=mod_id_cond + 6
   integer(int32), parameter :: id_z_lower_min_sv=mod_id_cond + 7
+  integer(int32), parameter :: id_d_upper_min_sv=mod_id_cond + 8
+  integer(int32), parameter :: id_z_upper_min_sv=mod_id_cond + 9
 
   type(routine_info), parameter :: info_d_lower_left_nullvec= &
        routine_info(id_d_lower_left_nullvec, 'd_lower_left_nullvec', &
@@ -649,6 +651,16 @@ module mod_error_id
        'Failure to converge for norm of inverse(A).'])
   type(routine_info), parameter :: info_z_lower_min_sv= &
        routine_info(id_z_lower_min_sv, 'z_lower_min_sv', &
+       [ character(len=error_message_length) :: 'A is not square.', &
+       'Failure to converge for norm of A.', &
+       'Failure to converge for norm of inverse(A).'])
+  type(routine_info), parameter :: info_d_upper_min_sv= &
+       routine_info(id_d_upper_min_sv, 'd_upper_min_sv', &
+       [ character(len=error_message_length) :: 'A is not square.', &
+       'Failure to converge for norm of A.', &
+       'Failure to converge for norm of inverse(A).'])
+  type(routine_info), parameter :: info_z_upper_min_sv= &
+       routine_info(id_z_upper_min_sv, 'z_upper_min_sv', &
        [ character(len=error_message_length) :: 'A is not square.', &
        'Failure to converge for norm of A.', &
        'Failure to converge for norm of inverse(A).'])
@@ -1217,6 +1229,11 @@ contains
        info_index(info_d_lower_right_nullvec%routine_id)=info_d_lower_right_nullvec
        info_index(info_z_lower_right_nullvec%routine_id)=info_z_lower_right_nullvec
 
+       info_index(info_d_lower_min_sv%routine_id)=info_d_lower_min_sv
+       info_index(info_z_lower_min_sv%routine_id)=info_z_lower_min_sv
+       info_index(info_d_upper_min_sv%routine_id)=info_d_upper_min_sv
+       info_index(info_z_upper_min_sv%routine_id)=info_z_upper_min_sv
+       
        ! qr_factorization
 
        info_index(info_d_qr_bv_to_ub%routine_id)=info_d_qr_bv_to_ub
