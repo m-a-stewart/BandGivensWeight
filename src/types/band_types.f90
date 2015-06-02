@@ -15,9 +15,6 @@ module mod_band_types
   public :: bc_to_general, d_bc_to_general, z_bc_to_general, &
        br_to_general, d_br_to_general, z_br_to_general
 
-  public :: submatrix_bc, d_submatrix_bc, z_submatrix_bc, &
-       submatrix_br, d_submatrix_br, z_submatrix_br
-
   public :: print_bc, d_print_bc, z_print_bc, &
        print_br, d_print_br, z_print_br, &
        print_abs_bc, d_print_abs_bc, z_print_abs_bc, &
@@ -62,16 +59,6 @@ module mod_band_types
   interface br_to_general
      module procedure d_br_to_general, z_br_to_general
   end interface br_to_general
-
-  ! submatrices
-
-  interface submatrix_bc
-     module procedure d_submatrix_bc, z_submatrix_bc
-  end interface submatrix_bc
-
-  interface submatrix_br
-     module procedure d_submatrix_br, z_submatrix_br
-  end interface submatrix_br
 
   ! printing
 
@@ -281,68 +268,6 @@ contains
        end do
     end do
   end subroutine z_br_to_general
-
-  ! Submatrix
-
-  subroutine d_submatrix_bc(bc,lbw,ubw,j1,j2,k1,k2,a)
-    real(kind=dp), dimension(:,:), intent(in) :: bc
-    integer(kind=int32), intent(in) :: ubw, lbw,j1,j2,k1,k2
-    real(kind=dp), dimension(:,:), intent(out) :: a
-    ! 
-    integer(kind=int32) :: n, k, j
-    a=0.0_dp
-    n=size(bc,2)
-    do k=k1,k2
-       do j=max(k-ubw,j1),min(k+lbw,j2)
-          a(j-j1+1,k-k1+1)=bc(j-k+ubw+1,k)
-       end do
-    end do
-  end subroutine d_submatrix_bc
-
-  subroutine z_submatrix_bc(bc,lbw,ubw,j1,j2,k1,k2,a)
-    complex(kind=dp), dimension(:,:), intent(in) :: bc
-    integer(kind=int32), intent(in) :: ubw, lbw,j1,j2,k1,k2
-    complex(kind=dp), dimension(:,:), intent(out) :: a
-    ! 
-    integer(kind=int32) :: n, k, j
-    a=(0.0_dp,0.0_dp)
-    n=size(bc,2)
-    do k=k1,k2
-       do j=max(k-ubw,j1),min(k+lbw,j2)
-          a(j-j1+1,k-k1+1)=bc(j-k+ubw+1,k)
-       end do
-    end do
-  end subroutine z_submatrix_bc
-
-  subroutine d_submatrix_br(br,lbw,ubw,j1,j2,k1,k2,a)
-    real(kind=dp), dimension(:,:), intent(in) :: br
-    integer(kind=int32), intent(in) :: ubw, lbw,j1,j2,k1,k2
-    real(kind=dp), dimension(:,:), intent(out) :: a
-    ! 
-    integer(kind=int32) :: n, k, j
-    a=0.0_dp
-    n=size(br,2)
-    do j=j1,j2
-       do k=max(j-lbw,k1),min(j+ubw,k2)
-          a(j-j1+1,k-k1+1)=br(j,k-j+lbw+1)
-       end do
-    end do
-  end subroutine d_submatrix_br
-
-  subroutine z_submatrix_br(br,lbw,ubw,j1,j2,k1,k2,a)
-    complex(kind=dp), dimension(:,:), intent(in) :: br
-    integer(kind=int32), intent(in) :: ubw, lbw,j1,j2,k1,k2
-    complex(kind=dp), dimension(:,:), intent(out) :: a
-    ! 
-    integer(kind=int32) :: n, k, j
-    a=(0.0_dp,0.0_dp)
-    n=size(br,2)
-    do j=j1,j2
-       do k=max(j-lbw,k1),min(j+ubw,k2)
-          a(j-j1+1,k-k1+1)=br(j,k-j+lbw+1)
-       end do
-    end do
-  end subroutine z_submatrix_br
 
   ! printing
 
