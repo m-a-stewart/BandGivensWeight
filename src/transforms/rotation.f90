@@ -1,7 +1,9 @@
 module mod_rotation
   use mod_prec
   implicit none
-
+ ! A simple derived type for rotations, routines for computing
+ ! rotations that introduce zeros, and routines for applying the
+ ! rotations to matrices and vectors.
   private
 
   public :: d_rotation, z_rotation

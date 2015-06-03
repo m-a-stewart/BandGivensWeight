@@ -5,6 +5,16 @@ module mod_sweeps
   use mod_utility
   implicit none
 
+  ! Derived types for sequences of sweeps of plane rotations that act
+  ! on adjacent rows.  The format is flexible with separate arrays for
+  ! the cosines, sines, and the rows on which the rotations act.  See
+  ! the module for more detail.  The primary use is in representing
+  ! sequences of order r leading or trailing transformations used in
+  ! the computation of a row compression or QR factorization.  There
+  ! are also routines for applying such transformations to
+  ! unstructured matrices (with or without transposition) and routines
+  ! for generating random sweeps (used in test code).
+
   private
 
   public :: d_sweeps, z_sweeps
@@ -43,8 +53,8 @@ module mod_sweeps
        z_general_times_trp_sweeps, &
        d_v_general_times_trp_sweeps, z_v_general_times_trp_sweeps
 
-  ! These types represent a sequence of sweeps of plane rotations.
-  ! In particular
+  ! The types d_sweeps and z_sweeps represent a sequence of sweeps of
+  ! plane rotations.  In particular
   !
   ! Q = Q_{left} Q_{left+inc}... Q_{right}
   !

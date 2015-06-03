@@ -5,7 +5,10 @@ module mod_solve
   use mod_orth_band_types
   use mod_band_types
   implicit none
-
+  ! Various routines for fast backward and forward substitution for
+  ! upper triangular matrices represented by BV or UB decompositions.
+  ! The backward substitution solves $Rx=b$ while the forward
+  ! substitution solve $x^T R = b^T$.
   private
 
   public :: back_solve_ub, d_back_solve_ub, z_back_solve_ub, &

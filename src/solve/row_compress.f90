@@ -8,6 +8,11 @@ module mod_row_compress
   use mod_shift
   implicit none
 
+  ! Routines that when given a rank structured matrix A parameterized
+  ! by a UBT decomposition, compute the BV decomposition of a row
+  ! compression A=QC where C has band structure in its lower
+  ! triangular part and rank structure in its upper triangular part.
+
   interface row_compress
      module procedure d_row_compress, z_row_compress
   end interface row_compress

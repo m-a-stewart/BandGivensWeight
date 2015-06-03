@@ -9,6 +9,10 @@ module mod_qr_factorization
   use mod_orth_band_types
   implicit none
 
+  ! Routines that compute a QR factorization of a row compressed
+  ! matrix C, where C is represented by a BV decomposition and the
+  ! computed R is represented by a UB decomposition.
+
   private
 
   public d_qr, z_qr

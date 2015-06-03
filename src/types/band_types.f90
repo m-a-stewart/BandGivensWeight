@@ -4,6 +4,23 @@ module mod_band_types
   use mod_shift
   use mod_utility
   implicit none
+  ! Routines for working with compact representations of banded
+  ! matrices.  A banded matrix $A=[a_{jk}]$ with $a_{jk}=0$ for
+  ! $k-j>s$ and $k-j < -r$ is stored in one of two ways: In the first
+  ! format, elements of $A$ are stored in a matrix $B$ with columns
+  ! aligned with those of $A$ and $a_{j,k}=b_{j-k+s+1,k}$. Thus each
+  ! row of $B$ corresponds to a diagonal of $A$ and $B$ can be chosen
+  ! to be $(r+s+1)\times n$.  Routines working with this format are
+  ! given the tag `_bc`. In the second format, $B$ has rows aligned
+  ! with those of $A$ and $a_{j,k}=b_{j,k-j+r+1}$.  In this case, each
+  ! column of $B$ corresponds to a diagonal of $A$ and $B$ can be
+  ! chosen to be $n\times (r+s+1)$.  Routines working with this format
+  ! are given the tag `_br`.  The module provides routines for getting
+  ! and setting elements $a_{jk}$ of a matrix $A$ stored in this
+  ! format; for applying applying rotations in a truncated manner
+  ! corresponding to $j$-leading or $j$-trailing transformations; for
+  ! printing band matrices in a readable format; and for converting
+  ! between different storage formats.
 
   private
 
@@ -704,6 +721,8 @@ contains
     end do
   end subroutine z_extract_diagonals_br
 
+  ! Impose a particular upper and lower variable bandwidth on a band
+  ! matrix.  Used for generating random band matrices for tests.
   subroutine d_truncate_profile_br(br,n,lbw,lbwmax,ubwmax,lower,upper)
     real(kind=dp), dimension(n,lbwmax+ubwmax+1), intent(inout) :: br
     integer(kind=int32), intent(in) :: n, lbw, lbwmax, ubwmax

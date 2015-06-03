@@ -1,7 +1,7 @@
 module mod_shift
   use mod_prec
   implicit none
-
+  ! Simple routines for applying shifts to vectors and matrices.
   private
   public :: shift, d_shift2, z_shift2, d_shift1, z_shift1, i_shift1
 

@@ -3,7 +3,12 @@ module mod_orth_band_types
   use mod_utility
   use mod_band_types
   implicit none
-
+  ! This module contains derived types for UB, BV, WB, BT, UBT, and
+  ! WBV decompositions.  The types include components to store a band
+  ! matrix, information on the bandwidth and amount of available
+  ! storage, sines and cosines for rotations, and information on the
+  ! rows or columns on which the rotations act.  There are special
+  ! allocation and deallocation routines for each type.
   private
 
   public :: d_ub, d_bt, d_ubt, z_ub, z_bt, z_ubt, &

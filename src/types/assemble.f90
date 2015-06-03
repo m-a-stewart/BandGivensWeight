@@ -5,6 +5,9 @@ module mod_assemble
   use mod_orth_band_types
   use mod_rotation
   implicit none
+  ! This module contains routines for assembling a Givens weight
+  ! parameterized matrix into an unstructured representation in
+  ! general $n\times n$ array.
 
   private
 
