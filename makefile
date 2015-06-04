@@ -15,7 +15,7 @@ VIEWER = evince
 vpath %.f90 $(SRCDIRS) test exp
 
 .PHONY : all
-all : $(OBJDIR)/orb.o
+all : $(OBJDIR)/orrb.o
 
 notes.pdf : notes.md
 	pandoc -o notes.pdf notes.md

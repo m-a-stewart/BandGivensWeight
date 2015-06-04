@@ -1,5 +1,5 @@
 program exp
-  use mod_orb
+  use mod_orrb
   implicit none
 
   type(error_info) :: error

@@ -1,5 +1,5 @@
 program test_convert_ub_and_bv
-  use mod_orb
+  use mod_orrb
   use mod_test_data
   implicit none
 

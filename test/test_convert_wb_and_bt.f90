@@ -1,5 +1,5 @@
 program test_convert_wb_and_bt
-  use mod_orb
+  use mod_orrb
   use mod_test_data
   implicit none
 

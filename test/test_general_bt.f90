@@ -1,6 +1,5 @@
 program test_general_bt
-
-  use mod_orb
+  use mod_orrb
   use mod_test_data
   implicit none
   real(kind=dp) :: t0, t1

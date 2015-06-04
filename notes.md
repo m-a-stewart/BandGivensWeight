@@ -293,7 +293,7 @@ $QR$ factorization $C=\hat{Q}R$, and then solves the system $Ax=b$.
 
 ```
 program example
-    use mod_orb
+    use mod_orrb
     implicit none
     !
     type(error_info) :: error

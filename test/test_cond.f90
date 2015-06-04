@@ -1,5 +1,5 @@
 program test_cond
-  use mod_orb
+  use mod_orrb
   implicit none
 
   integer(kind=int32) :: n, j, k

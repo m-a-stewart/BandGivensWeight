@@ -1,4 +1,4 @@
-module mod_orb
+module mod_orrb
   use mod_misc
   use mod_general
   use mod_assemble
@@ -9,4 +9,4 @@ module mod_orb
   use mod_types
   use mod_transforms
   use mod_orth
-end module mod_orb
+end module mod_orrb
