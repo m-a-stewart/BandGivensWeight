@@ -56,6 +56,7 @@ contains
     real(kind=dp) :: tolres, sigmav, sigmau0, maxr
     type(routine_info), parameter :: info=info_d_upper_max_sv
     !
+    sigmau=0.0_dp
     if (failure(error)) return
     call push_id(info, error)
 
@@ -125,6 +126,7 @@ contains
     real(kind=dp) :: tolres, sigmav, sigmau0, maxr
     type(routine_info), parameter :: info=info_z_upper_max_sv
     !
+    sigmau=0.0_dp
     if (failure(error)) return
     call push_id(info, error)
 
@@ -194,6 +196,7 @@ contains
     real(kind=dp) :: tolres, sigmav, maxr
     type(routine_info), parameter :: info=info_d_upper_min_sv
     !
+    sigmau=0.0_dp
     if (failure(error)) return
     call push_id(info, error)
 
@@ -279,6 +282,7 @@ contains
     real(kind=dp) :: tolres, sigmav, maxr
     type(routine_info), parameter :: info=info_z_upper_min_sv
     !
+    sigmau=0.0_dp
     if (failure(error)) return
     call push_id(info, error)
 
@@ -363,6 +367,7 @@ contains
     real(kind=dp) :: tolres, sigmav, sigmau0, maxl
     type(routine_info), parameter :: info=info_d_lower_max_sv
     !
+    sigmau=0.0_dp
     if (failure(error)) return
     call push_id(info, error)
 
@@ -432,6 +437,7 @@ contains
     real(kind=dp) :: tolres, sigmav, sigmau0, maxl
     type(routine_info), parameter :: info=info_z_lower_max_sv
     !
+    sigmau=0.0_dp
     if (failure(error)) return
     call push_id(info, error)
 
@@ -501,6 +507,7 @@ contains
     real(kind=dp) :: tolres, sigmav, maxl
     type(routine_info), parameter :: info=info_d_lower_min_sv
     !
+    sigmau=0.0_dp
     if (failure(error)) return
     call push_id(info, error)
 
@@ -585,6 +592,7 @@ contains
     real(kind=dp) :: tolres, sigmav, maxl
     type(routine_info), parameter :: info=info_z_lower_min_sv
     !
+    sigmau=0.0_dp
     if (failure(error)) return
     call push_id(info, error)
 
