@@ -12,4 +12,4 @@ run_all_exps : $(EXPS)
 run_exp : $(BINDIR)/exp
 	$(BINDIR)/exp
 
-$(OBJDIR)/exp.o : $(OBJDIR)/orrb.o $(OBJDIR)/test_data.o
+$(OBJDIR)/exp.o : $(OBJDIR)/orrb.o

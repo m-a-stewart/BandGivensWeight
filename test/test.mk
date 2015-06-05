@@ -86,17 +86,17 @@ run_qr_factorization : $(BINDIR)/test_qr_factorization
 run_solve : $(BINDIR)/test_solve
 	$(BINDIR)/test_solve
 
-$(OBJDIR)/test_data.o : $(OBJDIR)/orrb.o
-$(OBJDIR)/test_cond.o : $(OBJDIR)/test_data.o
-$(OBJDIR)/test_general_ub.o : $(OBJDIR)/test_data.o
-$(OBJDIR)/test_general_bv.o : $(OBJDIR)/test_data.o
-$(OBJDIR)/test_general_bt.o : $(OBJDIR)/test_data.o
-$(OBJDIR)/test_general_wb.o : $(OBJDIR)/test_data.o
-$(OBJDIR)/test_general_ubt.o : $(OBJDIR)/test_data.o
-$(OBJDIR)/test_general_wbv.o : $(OBJDIR)/test_data.o
-$(OBJDIR)/test_convert_ub_and_bv.o : $(OBJDIR)/test_data.o
-$(OBJDIR)/test_convert_wb_and_bt.o : $(OBJDIR)/test_data.o
-$(OBJDIR)/test_convert_ubt_and_wbv.o : $(OBJDIR)/test_data.o
-$(OBJDIR)/test_row_compress.o : $(OBJDIR)/test_data.o
-$(OBJDIR)/test_qr_factorization.o : $(OBJDIR)/test_data.o
-$(OBJDIR)/test_solve.o : $(OBJDIR)/test_data.o
+$(OBJDIR)/test_cond.o : $(OBJDIR)/orrb.o
+$(OBJDIR)/test_products.o : $(OBJDIR)/orrb.o
+$(OBJDIR)/test_general_ub.o : $(OBJDIR)/orrb.o
+$(OBJDIR)/test_general_bv.o : $(OBJDIR)/orrb.o
+$(OBJDIR)/test_general_bt.o : $(OBJDIR)/orrb.o
+$(OBJDIR)/test_general_wb.o : $(OBJDIR)/orrb.o
+$(OBJDIR)/test_general_ubt.o : $(OBJDIR)/orrb.o
+$(OBJDIR)/test_general_wbv.o : $(OBJDIR)/orrb.o
+$(OBJDIR)/test_convert_ub_and_bv.o : $(OBJDIR)/orrb.o
+$(OBJDIR)/test_convert_wb_and_bt.o : $(OBJDIR)/orrb.o
+$(OBJDIR)/test_convert_ubt_and_wbv.o : $(OBJDIR)/orrb.o
+$(OBJDIR)/test_row_compress.o : $(OBJDIR)/orrb.o
+$(OBJDIR)/test_qr_factorization.o : $(OBJDIR)/orrb.o
+$(OBJDIR)/test_solve.o : $(OBJDIR)/orrb.o

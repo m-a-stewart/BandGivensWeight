@@ -1,11 +1,12 @@
 program test_convert_ub_and_bv
   use mod_orrb
-  use mod_test_data
   implicit none
 
   !
   ! Note: This does not cover large rank cases (e.g. ubw=n-1).
   !
+  character(len=40) :: test_name
+  character(len=*), parameter :: fmt="(A40, 'Time: ',ES8.2,', ubw: ',I3,', error: ',ES8.2, ', ', A10)"
 
   real(kind=dp) :: t0, t1
   integer(kind=int32) :: na, lbwa, ubwa
@@ -36,7 +37,7 @@ program test_convert_ub_and_bv
   call cpu_time(t1)
   a1_d=general(bv_d,error)
   test_name = "Real UB to BV, n=40;"
-  call d_output_result_upper(test_name,a0_d,a1_d,ubwa,bv_d%ubw,t0,t1,c*tol,error)
+  call d_output_result(test_name,a0_d,a1_d,ubwa,bv_d%ubw,t0,t1,c*tol,error)
 
   na=1
   lbwa=0; ubwa=0
@@ -47,7 +48,7 @@ program test_convert_ub_and_bv
   call cpu_time(t1)
   a1_d=general(bv_d,error)
   test_name = "Real UB to BV, n=1;"
-  call d_output_result_upper(test_name,a0_d,a1_d,ubwa,bv_d%ubw,t0,t1,c*tol,error)
+  call d_output_result(test_name,a0_d,a1_d,ubwa,bv_d%ubw,t0,t1,c*tol,error)
 
   na=2
   lbwa=1; ubwa=1
@@ -58,7 +59,7 @@ program test_convert_ub_and_bv
   call cpu_time(t1)
   a1_d=general(bv_d,error)
   test_name = "Real UB to BV, n=2;"
-  call d_output_result_upper(test_name,a0_d,a1_d,ubwa,bv_d%ubw,t0,t1,c*tol,error)
+  call d_output_result(test_name,a0_d,a1_d,ubwa,bv_d%ubw,t0,t1,c*tol,error)
 
   na=3
   lbwa=1; ubwa=1
@@ -69,7 +70,7 @@ program test_convert_ub_and_bv
   call cpu_time(t1)
   a1_d=general(bv_d,error)
   test_name = "Real UB to BV, n=3;"
-  call d_output_result_upper(test_name,a0_d,a1_d,ubwa,bv_d%ubw,t0,t1,c*tol,error)
+  call d_output_result(test_name,a0_d,a1_d,ubwa,bv_d%ubw,t0,t1,c*tol,error)
 
   na=4
   lbwa=2; ubwa=2
@@ -80,7 +81,7 @@ program test_convert_ub_and_bv
   call cpu_time(t1)
   a1_d=general(bv_d,error)
   test_name = "Real UB to BV, n=4;"
-  call d_output_result_upper(test_name,a0_d,a1_d,ubwa,bv_d%ubw,t0,t1,c*tol,error)
+  call d_output_result(test_name,a0_d,a1_d,ubwa,bv_d%ubw,t0,t1,c*tol,error)
   print *
 
   na=40
@@ -92,7 +93,7 @@ program test_convert_ub_and_bv
   call cpu_time(t1)
   a1_d=general(ub_d,error)
   test_name = "Real BV to UB, n=40;"
-  call d_output_result_upper(test_name,a0_d,a1_d,ubwa,ub_d%ubw,t0,t1,c*tol,error)
+  call d_output_result(test_name,a0_d,a1_d,ubwa,ub_d%ubw,t0,t1,c*tol,error)
 
   na=1
   lbwa=0; ubwa=0
@@ -103,7 +104,7 @@ program test_convert_ub_and_bv
   call cpu_time(t1)
   a1_d=general(ub_d,error)
   test_name = "Real BV to UB, n=1;"
-  call d_output_result_upper(test_name,a0_d,a1_d,ubwa,ub_d%ubw,t0,t1,c*tol,error)
+  call d_output_result(test_name,a0_d,a1_d,ubwa,ub_d%ubw,t0,t1,c*tol,error)
 
   na=2
   lbwa=1; ubwa=1
@@ -114,7 +115,7 @@ program test_convert_ub_and_bv
   call cpu_time(t1)
   a1_d=general(ub_d,error)
   test_name = "Real BV to UB, n=2;"
-  call d_output_result_upper(test_name,a0_d,a1_d,ubwa,ub_d%ubw,t0,t1,c*tol,error)
+  call d_output_result(test_name,a0_d,a1_d,ubwa,ub_d%ubw,t0,t1,c*tol,error)
 
   na=3
   lbwa=1; ubwa=1
@@ -125,7 +126,7 @@ program test_convert_ub_and_bv
   call cpu_time(t1)
   a1_d=general(ub_d,error)
   test_name = "Real BV to UB, n=3;"
-  call d_output_result_upper(test_name,a0_d,a1_d,ubwa,ub_d%ubw,t0,t1,c*tol,error)
+  call d_output_result(test_name,a0_d,a1_d,ubwa,ub_d%ubw,t0,t1,c*tol,error)
 
   na=4
   lbwa=2; ubwa=2
@@ -136,7 +137,7 @@ program test_convert_ub_and_bv
   call cpu_time(t1)
   a1_d=general(ub_d,error)
   test_name = "Real BV to UB, n=4;"
-  call d_output_result_upper(test_name,a0_d,a1_d,ubwa,ub_d%ubw,t0,t1,c*tol,error)
+  call d_output_result(test_name,a0_d,a1_d,ubwa,ub_d%ubw,t0,t1,c*tol,error)
   
 
   
@@ -155,7 +156,7 @@ program test_convert_ub_and_bv
   call cpu_time(t1)
   a1_z=general(bv_z,error)
   test_name = "Complex UB to BV, n=40;"
-  call z_output_result_upper(test_name,a0_z,a1_z,ubwa,bv_z%ubw,t0,t1,c*tol,error)
+  call z_output_result(test_name,a0_z,a1_z,ubwa,bv_z%ubw,t0,t1,c*tol,error)
 
   na=1
   lbwa=0; ubwa=0
@@ -166,7 +167,7 @@ program test_convert_ub_and_bv
   call cpu_time(t1)
   a1_z=general(bv_z,error)
   test_name = "Complex UB to BV, n=1;"
-  call z_output_result_upper(test_name,a0_z,a1_z,ubwa,bv_z%ubw,t0,t1,c*tol,error)
+  call z_output_result(test_name,a0_z,a1_z,ubwa,bv_z%ubw,t0,t1,c*tol,error)
 
   na=2
   lbwa=1; ubwa=1
@@ -177,7 +178,7 @@ program test_convert_ub_and_bv
   call cpu_time(t1)
   a1_z=general(bv_z,error)
   test_name = "Complex UB to BV, n=2;"
-  call z_output_result_upper(test_name,a0_z,a1_z,ubwa,bv_z%ubw,t0,t1,c*tol,error)
+  call z_output_result(test_name,a0_z,a1_z,ubwa,bv_z%ubw,t0,t1,c*tol,error)
 
   na=3
   lbwa=1; ubwa=1
@@ -188,7 +189,7 @@ program test_convert_ub_and_bv
   call cpu_time(t1)
   a1_z=general(bv_z,error)
   test_name = "Complex UB to BV, n=3;"
-  call z_output_result_upper(test_name,a0_z,a1_z,ubwa,bv_z%ubw,t0,t1,c*tol,error)
+  call z_output_result(test_name,a0_z,a1_z,ubwa,bv_z%ubw,t0,t1,c*tol,error)
 
   na=4
   lbwa=2; ubwa=2
@@ -199,7 +200,7 @@ program test_convert_ub_and_bv
   call cpu_time(t1)
   a1_z=general(bv_z,error)
   test_name = "Complex UB to BV, n=4;"
-  call z_output_result_upper(test_name,a0_z,a1_z,ubwa,bv_z%ubw,t0,t1,c*tol,error)
+  call z_output_result(test_name,a0_z,a1_z,ubwa,bv_z%ubw,t0,t1,c*tol,error)
   print *
 
   na=40
@@ -211,7 +212,7 @@ program test_convert_ub_and_bv
   call cpu_time(t1)
   a1_z=general(ub_z,error)
   test_name = "Complex BV to UB, n=40;"
-  call z_output_result_upper(test_name,a0_z,a1_z,ubwa,ub_z%ubw,t0,t1,c*tol,error)
+  call z_output_result(test_name,a0_z,a1_z,ubwa,ub_z%ubw,t0,t1,c*tol,error)
 
   na=1
   lbwa=0; ubwa=0
@@ -222,7 +223,7 @@ program test_convert_ub_and_bv
   call cpu_time(t1)
   a1_z=general(ub_z,error)
   test_name = "Complex BV to UB, n=1;"
-  call z_output_result_upper(test_name,a0_z,a1_z,ubwa,ub_z%ubw,t0,t1,c*tol,error)
+  call z_output_result(test_name,a0_z,a1_z,ubwa,ub_z%ubw,t0,t1,c*tol,error)
 
   na=2
   lbwa=1; ubwa=1
@@ -233,7 +234,7 @@ program test_convert_ub_and_bv
   call cpu_time(t1)
   a1_z=general(ub_z,error)
   test_name = "Complex BV to UB, n=2;"
-  call z_output_result_upper(test_name,a0_z,a1_z,ubwa,ub_z%ubw,t0,t1,c*tol,error)
+  call z_output_result(test_name,a0_z,a1_z,ubwa,ub_z%ubw,t0,t1,c*tol,error)
 
   na=3
   lbwa=1; ubwa=1
@@ -244,7 +245,7 @@ program test_convert_ub_and_bv
   call cpu_time(t1)
   a1_z=general(ub_z,error)
   test_name = "Complex BV to UB, n=3;"
-  call z_output_result_upper(test_name,a0_z,a1_z,ubwa,ub_z%ubw,t0,t1,c*tol,error)
+  call z_output_result(test_name,a0_z,a1_z,ubwa,ub_z%ubw,t0,t1,c*tol,error)
 
   na=4
   lbwa=2; ubwa=2
@@ -255,6 +256,55 @@ program test_convert_ub_and_bv
   call cpu_time(t1)
   a1_z=general(ub_z,error)
   test_name = "Complex BV to UB, n=4;"
-  call z_output_result_upper(test_name,a0_z,a1_z,ubwa,ub_z%ubw,t0,t1,c*tol,error)
+  call z_output_result(test_name,a0_z,a1_z,ubwa,ub_z%ubw,t0,t1,c*tol,error)
+
+contains
+
+  subroutine d_output_result(name,a0,a1,ubw0,ubw1,t0,t1,bnd,error)
+    character(len=*) :: name
+    real(kind=dp), dimension(:,:) :: a0, a1     
+    real(kind=dp) :: bnd, t0, t1
+    integer(kind=int32) :: ubw0, ubw1
+    type(error_info) :: error
+
+    real(kind=dp) :: berr
+    character(len=10) :: test_result
+
+    if (error%code > 0) then
+       print *, "Calling error in test: ", name
+    else
+       berr = maxabs(a1-a0)
+       if (ubw0==ubw1 .and. berr < bnd) then
+          test_result="PASSED"
+       else
+          test_result="    FAILED"
+       end if
+       write (*,fmt) name, t1-t0, ubw1, berr, test_result
+    end if
+  end subroutine d_output_result
+
+  subroutine z_output_result(name,a0,a1,ubw0,ubw1,t0,t1,bnd,error)
+    character(len=*) :: name
+    complex(kind=dp), dimension(:,:) :: a0, a1     
+    real(kind=dp) :: bnd, t0, t1
+    integer(kind=int32) :: ubw0, ubw1
+    type(error_info) :: error
+
+    real(kind=dp) :: berr
+    character(len=10) :: test_result
+
+    if (error%code > 0) then
+       print *, "Calling error in test: ", name
+    else
+       berr = maxabs(a1-a0)
+       if (ubw0==ubw1 .and. berr < bnd) then
+          test_result="PASSED"
+       else
+          test_result="    FAILED"
+       end if
+       write (*,fmt) name, t1-t0, ubw1, berr, test_result
+    end if
+  end subroutine z_output_result
+  
 
 end program test_convert_ub_and_bv

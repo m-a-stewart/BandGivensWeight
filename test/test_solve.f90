@@ -1,7 +1,10 @@
 program test_solve
   use mod_orrb
-  use mod_test_data
   implicit none
+
+  character(len=40) :: test_name
+  character(len=*), parameter :: fmt="(A40, 'Time: ',ES8.2,', ubw: ',I3,', error: ',ES8.2, ', ', A10)"
+  
   real(kind=dp) :: t0, t1, scale
   integer(kind=int32) :: na, lbwa, ubwa, nc
   type(error_info) :: error
@@ -45,7 +48,7 @@ program test_solve
   rhs_d=matmul(a_d,x_d)
   scale=maxabs(a_d)*maxabs(x_d)
   test_name = "Real Back Subs. (n=40)"
-  call d_output_result_upper(test_name,rhs0_d/scale,rhs_d/scale,ubwa,ubwa,t0,t1,c*tol,error)
+  call d_output_result(test_name,rhs0_d/scale,rhs_d/scale,ubwa,ubwa,t0,t1,c*tol,error)
 
   na=40; lbwa=5; ubwa=7
   rhs_v_d=d_random_vector(na)
@@ -62,7 +65,7 @@ program test_solve
   rhs_v_d=matmul(a_d,x_v_d)
   scale=maxabs(a_d)*maxabs(x_v_d)
   test_name = "Real Vector Back Subs. (n=40)"
-  call d_output_result_upper(test_name,reshape(rhs0_v_d/scale,[na,1]),&
+  call d_output_result(test_name,reshape(rhs0_v_d/scale,[na,1]),&
        reshape(rhs_v_d/scale,[na,1]),ubwa,ubwa,t0,t1,c*tol,error)
 
   na=40; lbwa=5; ubwa=7; nc=3
@@ -80,7 +83,7 @@ program test_solve
   rhs_z=matmul(a_z,x_z)
   scale=maxabs(a_z)*maxabs(x_z)
   test_name = "Complex Back Subs. (n=40)"
-  call z_output_result_upper(test_name,rhs0_z/scale,rhs_z/scale,ubwa,ubwa,t0,t1,c*tol,error)
+  call z_output_result(test_name,rhs0_z/scale,rhs_z/scale,ubwa,ubwa,t0,t1,c*tol,error)
 
   na=40; lbwa=5; ubwa=7
   rhs_v_z=z_random_vector(na)
@@ -97,7 +100,7 @@ program test_solve
   rhs_v_z=matmul(a_z,x_v_z)
   scale=maxabs(a_z)*maxabs(x_v_z)
   test_name = "Complex Vector Back Subs. (n=40)"
-  call z_output_result_upper(test_name,reshape(rhs0_v_z/scale,[na,1]),&
+  call z_output_result(test_name,reshape(rhs0_v_z/scale,[na,1]),&
        reshape(rhs_v_z/scale,[na,1]),ubwa,ubwa,t0,t1,c*tol,error)
 
   print *
@@ -122,7 +125,7 @@ program test_solve
   rhs_d=matmul(x_d,a_d)
   scale=maxabs(a_d)*maxabs(x_d)
   test_name = "Real Forward Subs. (n=40)"
-  call d_output_result_upper(test_name,rhs0_d/scale,rhs_d/scale,ubwa,ubwa,t0,t1,c*tol,error)
+  call d_output_result(test_name,rhs0_d/scale,rhs_d/scale,ubwa,ubwa,t0,t1,c*tol,error)
 
   na=40; lbwa=5; ubwa=7
   rhs_v_d=d_random_vector(na)
@@ -140,7 +143,7 @@ program test_solve
   rhs_v_d=matmul(x_v_d,a_d)
   scale=maxabs(a_d)*maxabs(x_v_d)
   test_name = "Real Vector Forward Subs. (n=40)"
-  call d_output_result_upper(test_name,reshape(rhs0_v_d/scale,[1,na]),&
+  call d_output_result(test_name,reshape(rhs0_v_d/scale,[1,na]),&
        reshape(rhs_v_d/scale,[1,na]),ubwa,ubwa,t0,t1,c*tol,error)
 
   na=40; lbwa=5; ubwa=7; nc=3
@@ -159,7 +162,7 @@ program test_solve
   rhs_z=matmul(x_z,a_z)
   scale=maxabs(a_z)*maxabs(x_z)
   test_name = "Complex Forward Subs. (n=40)"
-  call z_output_result_upper(test_name,rhs0_z/scale,rhs_z/scale,ubwa,ubwa,t0,t1,c*tol,error)
+  call z_output_result(test_name,rhs0_z/scale,rhs_z/scale,ubwa,ubwa,t0,t1,c*tol,error)
 
   na=40; lbwa=5; ubwa=7
   rhs_v_z=z_random_vector(na)
@@ -177,7 +180,58 @@ program test_solve
   rhs_v_z=matmul(x_v_z,a_z)
   scale=maxabs(a_z)*maxabs(x_v_z)
   test_name = "Complex Vector Forward Subs. (n=40)"
-  call z_output_result_upper(test_name,reshape(rhs0_v_z/scale,[1,na]),&
+  call z_output_result(test_name,reshape(rhs0_v_z/scale,[1,na]),&
        reshape(rhs_v_z/scale,[1,na]),ubwa,ubwa,t0,t1,c*tol,error)
+
+contains
+
+
+  subroutine d_output_result(name,a0,a1,ubw0,ubw1,t0,t1,bnd,error)
+    character(len=*) :: name
+    real(kind=dp), dimension(:,:) :: a0, a1     
+    real(kind=dp) :: bnd, t0, t1
+    integer(kind=int32) :: ubw0, ubw1
+    type(error_info) :: error
+
+    real(kind=dp) :: berr
+    character(len=10) :: test_result
+
+    if (error%code > 0) then
+       print *, "Calling error in test: ", name
+    else
+       berr = maxabs(a1-a0)
+       if (ubw0==ubw1 .and. berr < bnd) then
+          test_result="PASSED"
+       else
+          test_result="    FAILED"
+       end if
+       write (*,fmt) name, t1-t0, ubw1, berr, test_result
+    end if
+  end subroutine d_output_result
+
+  subroutine z_output_result(name,a0,a1,ubw0,ubw1,t0,t1,bnd,error)
+    character(len=*) :: name
+    complex(kind=dp), dimension(:,:) :: a0, a1     
+    real(kind=dp) :: bnd, t0, t1
+    integer(kind=int32) :: ubw0, ubw1
+    type(error_info) :: error
+
+    real(kind=dp) :: berr
+    character(len=10) :: test_result
+
+    if (error%code > 0) then
+       print *, "Calling error in test: ", name
+    else
+       berr = maxabs(a1-a0)
+       if (ubw0==ubw1 .and. berr < bnd) then
+          test_result="PASSED"
+       else
+          test_result="    FAILED"
+       end if
+       write (*,fmt) name, t1-t0, ubw1, berr, test_result
+    end if
+  end subroutine z_output_result
+  
+
   
 end program test_solve
