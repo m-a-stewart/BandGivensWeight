@@ -1,6 +1,6 @@
 # module dependencies
 
-_ORRB = general assemble qr_factorization solve \
+_ORRB = general assemble products qr_factorization solve \
 	row_compress transforms convert types misc orth
 
 _MISC = error_id utility
@@ -13,6 +13,8 @@ _TYPES = band_types orth_band_types random
 _BAND_TYPES = rotation utility shift prec
 _ORTH_BAND_TYPES = prec utility band_types
 _RANDOM = prec utility band_types orth_band_types
+_ASSEMBLE = prec error_id band_types orth_band_types rotation
+_PRODUCTS = prec error_id band_types orth_band_types rotation
 
 _TRANSFORMS = sweeps rotation shift
 _ROTATION = prec
@@ -24,7 +26,6 @@ _TRIANGULAR = prec
 _COND = prec error_id utility triangular
 _GS = utility prec error_id
 
-_ASSEMBLE = prec error_id band_types orth_band_types rotation
 
 _GENERAL = general_bv general_ub general_bt \
 	general_wb general_ubt general_wbv
@@ -86,6 +87,7 @@ TRIANGULAR=$(patsubst %,$(OBJDIR)/%.o,$(_TRIANGULAR))
 COND=$(patsubst %,$(OBJDIR)/%.o,$(_COND))
 GS=$(patsubst %,$(OBJDIR)/%.o,$(_GS))
 ASSEMBLE=$(patsubst %,$(OBJDIR)/%.o,$(_ASSEMBLE))
+PRODUCTS=$(patsubst %,$(OBJDIR)/%.o,$(_PRODUCTS))
 GENERAL=$(patsubst %,$(OBJDIR)/%.o,$(_GENERAL))
 GENERAL_BV=$(patsubst %,$(OBJDIR)/%.o,$(_GENERAL_BV))
 GENERAL_UB=$(patsubst %,$(OBJDIR)/%.o,$(_GENERAL_UB))
@@ -129,6 +131,7 @@ $(OBJDIR)/gs.o : $(GS)
 
 
 $(OBJDIR)/assemble.o : $(ASSEMBLE)
+$(OBJDIR)/products.o : $(PRODUCTS)
 
 $(OBJDIR)/general.o : $(GENERAL)
 $(OBJDIR)/general_bv.o : $(GENERAL_BV)
@@ -159,7 +162,7 @@ OBJS=$(patsubst %,$(OBJDIR)/%.o,$(_OBJS))
 _MISCOBJS = misc prec utility error_id
 
 _TYPESOBJS = types band_types orth_band_types \
-	random
+	random assemble products
 
 _TRANSFORMSOBJS = transforms rotation shift \
 	sweeps
@@ -176,6 +179,4 @@ _CONVERTOBJS = convert convert_ub_to_bv \
 	convert_ubt_to_wbv 
 
 _OBJS =  $(_MISCOBJS) $(_TYPESOBJS) $(_TRANSFORMSOBJS) $(_ORTHOBJS) $(_GENERALOBJS) \
-	$(_CONVERTOBJS) assemble \
-	qr_factorization solve \
-	orrb row_compress
+	$(_CONVERTOBJS) qr_factorization solve orrb row_compress

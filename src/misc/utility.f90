@@ -20,6 +20,8 @@ module mod_utility
 
   public :: equals_option, i_equals_option, d_equals_option, z_equals_option
 
+  public :: dot_no_conjg
+
   interface maybe_deallocate
      module procedure d_maybe_deallocate2, z_maybe_deallocate2, i_maybe_deallocate2, &
           d_maybe_deallocate1, z_maybe_deallocate1, i_maybe_deallocate1
@@ -740,5 +742,15 @@ contains
        a(j,j)=conjg(a(j,j))
     end do
   end subroutine z_ip_transpose
+
+  function dot_no_conjg(x,y) result(xy)
+    complex(kind=dp), dimension(:), intent(in) :: x, y
+    complex(kind=dp) :: xy
+    integer(kind=int32) :: j
+    xy=(0.0_dp,0.0_dp)
+    do j=1,size(x)
+       xy=xy+x(j)*y(j)
+    end do
+  end function dot_no_conjg
 
 end module mod_utility
