@@ -15,8 +15,12 @@ program test_products
 
   type(d_ub), allocatable :: ub_d
   type(d_bv), allocatable :: bv_d
+  type(d_wb), allocatable :: wb_d
+  type(d_bt), allocatable :: bt_d
   type(z_ub), allocatable :: ub_z
   type(z_bv), allocatable :: bv_z
+  type(z_wb), allocatable :: wb_z
+  type(z_bt), allocatable :: bt_z
   
   call initialize_errors
   print *
@@ -46,6 +50,28 @@ program test_products
   c1_d=matmul(b_d,a_d)
   test_name = "Real BV Times Gen. (40x10)"
   call d_output_result(test_name,c0_d,c1_d,t0,t1,c*tol,error)
+
+  ma=40; na=10; lbwb=5; ubwb=7
+  a_d=d_random_matrix(ma,na)
+  wb_d=d_random_wb(ma,lbwb,ubwb,error=error)
+  b_d = general(wb_d,error)
+  call cpu_time(t0)
+  c0_d=d_product_of_wb_and_general(wb_d,a_d,error)
+  call cpu_time(t1)
+  c1_d=matmul(b_d,a_d)
+  test_name = "Real WB Times Gen. (40x10)"
+  call d_output_result(test_name,c0_d,c1_d,t0,t1,c*tol,error)
+
+  ma=40; na=10; lbwb=5; ubwb=7
+  a_d=d_random_matrix(ma,na)
+  bt_d=d_random_bt(ma,lbwb,ubwb,error=error)
+  b_d = general(bt_d,error)
+  call cpu_time(t0)
+  c0_d=d_product_of_bt_and_general(bt_d,a_d,error)
+  call cpu_time(t1)
+  c1_d=matmul(b_d,a_d)
+  test_name = "Real BT Times Gen. (40x10)"
+  call d_output_result(test_name,c0_d,c1_d,t0,t1,c*tol,error)
   
   print *
   print *, "--------------------------------"
@@ -73,6 +99,28 @@ program test_products
   call cpu_time(t1)
   c1_z=matmul(b_z,a_z)
   test_name = "Complex BV Times Gen. (40x10)"
+  call z_output_result(test_name,c0_z,c1_z,t0,t1,c*tol,error)
+
+  ma=40; na=10; lbwb=5; ubwb=7
+  a_z=z_random_matrix(ma,na)
+  wb_z=z_random_wb(ma,lbwb,ubwb,error=error)
+  b_z = general(wb_z,error)
+  call cpu_time(t0)
+  c0_z=z_product_of_wb_and_general(wb_z,a_z,error)
+  call cpu_time(t1)
+  c1_z=matmul(b_z,a_z)
+  test_name = "Complex WB Times Gen. (40x10)"
+  call z_output_result(test_name,c0_z,c1_z,t0,t1,c*tol,error)
+  
+  ma=40; na=10; lbwb=5; ubwb=7
+  a_z=z_random_matrix(ma,na)
+  bt_z=z_random_bt(ma,lbwb,ubwb,error=error)
+  b_z = general(bt_z,error)
+  call cpu_time(t0)
+  c0_z=z_product_of_bt_and_general(bt_z,a_z,error)
+  call cpu_time(t1)
+  c1_z=matmul(b_z,a_z)
+  test_name = "Complex BT Times Gen. (40x10)"
   call z_output_result(test_name,c0_z,c1_z,t0,t1,c*tol,error)
 
 contains

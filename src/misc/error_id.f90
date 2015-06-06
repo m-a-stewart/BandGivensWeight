@@ -1040,11 +1040,22 @@ module mod_error_id
   integer(int32), parameter :: id_d_product_of_ub_and_general=mod_id_products + 1
   integer(int32), parameter :: id_z_ub_times_general=mod_id_products + 2
   integer(int32), parameter :: id_z_product_of_ub_and_general=mod_id_products + 3
+
   integer(int32), parameter :: id_d_bv_times_general=mod_id_products + 4
   integer(int32), parameter :: id_d_product_of_bv_and_general=mod_id_products + 5
   integer(int32), parameter :: id_z_bv_times_general=mod_id_products + 6
   integer(int32), parameter :: id_z_product_of_bv_and_general=mod_id_products + 7
 
+  integer(int32), parameter :: id_d_wb_times_general=mod_id_products + 8
+  integer(int32), parameter :: id_d_product_of_wb_and_general=mod_id_products + 9
+  integer(int32), parameter :: id_z_wb_times_general=mod_id_products + 10
+  integer(int32), parameter :: id_z_product_of_wb_and_general=mod_id_products + 11
+
+  integer(int32), parameter :: id_d_bt_times_general=mod_id_products + 12
+  integer(int32), parameter :: id_d_product_of_bt_and_general=mod_id_products + 13
+  integer(int32), parameter :: id_z_bt_times_general=mod_id_products + 14
+  integer(int32), parameter :: id_z_product_of_bt_and_general=mod_id_products + 15
+  
   type(routine_info), parameter :: info_d_ub_times_general=routine_info(id_d_ub_times_general, &
        'd_ub_times_general', &
        [ character(len=error_message_length) :: 'ub%n<1', &
@@ -1088,6 +1099,50 @@ module mod_error_id
        'z_product_of_bv_and_general', &
        [ character(len=error_message_length) :: 'bv%n<1', &
        'bv%n /= size(a,1)', 'size(a) /= size(c)'])
+
+  type(routine_info), parameter :: info_d_wb_times_general=routine_info(id_d_wb_times_general, &
+       'd_wb_times_general', &
+       [ character(len=error_message_length) :: 'wb%n<1', &
+       'wb%n /= size(a,1)', 'size(a) /= size(c)'])
+
+  type(routine_info), parameter :: info_d_product_of_wb_and_general= &
+       routine_info(id_d_product_of_wb_and_general, &
+       'd_product_of_wb_and_general', &
+       [ character(len=error_message_length) :: 'wb%n<1', &
+       'wb%n /= size(a,1)', 'size(a) /= size(c)'])
+
+  type(routine_info), parameter :: info_z_wb_times_general=routine_info(id_z_wb_times_general, &
+       'z_wb_times_general', &
+       [ character(len=error_message_length) :: 'wb%n<1', &
+       'wb%n /= size(a,1)', 'size(a) /= size(c)'])
+
+  type(routine_info), parameter :: info_z_product_of_wb_and_general= &
+       routine_info(id_z_product_of_wb_and_general, &
+       'z_product_of_wb_and_general', &
+       [ character(len=error_message_length) :: 'wb%n<1', &
+       'wb%n /= size(a,1)', 'size(a) /= size(c)'])
+
+  type(routine_info), parameter :: info_d_bt_times_general=routine_info(id_d_bt_times_general, &
+       'd_bt_times_general', &
+       [ character(len=error_message_length) :: 'bt%n<1', &
+       'bt%n /= size(a,1)', 'size(a) /= size(c)'])
+
+  type(routine_info), parameter :: info_d_product_of_bt_and_general= &
+       routine_info(id_d_product_of_bt_and_general, &
+       'd_product_of_bt_and_general', &
+       [ character(len=error_message_length) :: 'bt%n<1', &
+       'bt%n /= size(a,1)', 'size(a) /= size(c)'])
+
+  type(routine_info), parameter :: info_z_bt_times_general=routine_info(id_z_bt_times_general, &
+       'z_bt_times_general', &
+       [ character(len=error_message_length) :: 'bt%n<1', &
+       'bt%n /= size(a,1)', 'size(a) /= size(c)'])
+
+  type(routine_info), parameter :: info_z_product_of_bt_and_general= &
+       routine_info(id_z_product_of_bt_and_general, &
+       'z_product_of_bt_and_general', &
+       [ character(len=error_message_length) :: 'bt%n<1', &
+       'bt%n /= size(a,1)', 'size(a) /= size(c)'])
   
 contains
 
@@ -1384,11 +1439,22 @@ contains
        info_index(info_d_product_of_ub_and_general%routine_id)=info_d_product_of_ub_and_general
        info_index(info_z_ub_times_general%routine_id)=info_z_ub_times_general
        info_index(info_z_product_of_ub_and_general%routine_id)=info_z_product_of_ub_and_general
+
        info_index(info_d_bv_times_general%routine_id)=info_d_bv_times_general
        info_index(info_d_product_of_bv_and_general%routine_id)=info_d_product_of_bv_and_general
        info_index(info_z_bv_times_general%routine_id)=info_z_bv_times_general
        info_index(info_z_product_of_bv_and_general%routine_id)=info_z_product_of_bv_and_general
 
+       info_index(info_d_wb_times_general%routine_id)=info_d_wb_times_general
+       info_index(info_d_product_of_wb_and_general%routine_id)=info_d_product_of_wb_and_general
+       info_index(info_z_wb_times_general%routine_id)=info_z_wb_times_general
+       info_index(info_z_product_of_wb_and_general%routine_id)=info_z_product_of_wb_and_general
+
+       info_index(info_d_bt_times_general%routine_id)=info_d_bt_times_general
+       info_index(info_d_product_of_bt_and_general%routine_id)=info_d_product_of_bt_and_general
+       info_index(info_z_bt_times_general%routine_id)=info_z_bt_times_general
+       info_index(info_z_product_of_bt_and_general%routine_id)=info_z_product_of_bt_and_general
+       
     end if
   end subroutine initialize_errors
 
