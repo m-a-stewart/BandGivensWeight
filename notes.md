@@ -196,8 +196,9 @@ Routines related to QR decomposition and rank determination:
 * `mod_triangular` in `./src/orth/triangular.f90`: Solve and multiply
   routines for triangular matrices, including routines implementing
   the back-substitution from the LINPACK condition estimator.
-* `mod_cond` in `./src/orth/cond.f90`: Routines for condition estimation
-  and computation of null vectors for triangular matrices.
+* `mod_cond_triangular` in `./src/orth/cond_triangular.f90`: Routines
+  for condition estimation and computation of null vectors for
+  triangular matrices.
 * `gs` in `./src/orth/gs.f90`: Routines for updating modified
   Gram-Schmidt QR decompositions.
 * `orth` in `./src/orth/orth.f90`: A module that exists solely to

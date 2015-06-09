@@ -1,4 +1,4 @@
-module mod_cond
+module mod_cond_triangular
   use mod_triangular
   use mod_prec
   use mod_error_id
@@ -664,36 +664,6 @@ contains
        end if
     end if
   end function z_lower_min_sv
-   
-  ! errors:
-  ! 1: A is not square.
-  ! 2: failure to converge in computing norm2(A)
-  ! 3: failure to converge in computing norm2(inverse(A))
-  ! real(kind=dp) function d_cond2_upper(a,tol,maxit,error) result(k2)
-  !   real(kind=dp), dimension(:,:), intent(in) :: a
-  !   real(kind=dp), intent(in) :: tol
-  !   integer(kind=int32), intent(in) :: maxit
-  !   type(error_info), intent(inout), optional :: error
-    
-  !   integer(kind=int32) :: n, j, k
-  !   real(kind=dp) :: maxa, nrma, nrmainv
-  !   real(kind=dp) :: d, tmp
-  !   real(kind=dp), dimension(size(a,1)) :: y, x
-  !   type(routine_info), parameter :: info=info_d_cond2_upper
-
-  !   if (failure(error)) return
-  !   call push_id(info, error)
-  !   n=size(a,1)
-  !   if (size(a,2)/=n) then
-  !      call set_error(1, info, error); return       
-  !   end if
-    
-  !   x=0.0_dp
-  !   y=0.0_dp
-  !   maxa=maxabs(a)
-
-  !   k2=0.0_dp
-  ! end function d_cond2_upper
 
   ! null vector of a lower triangular matrix.
   ! error: 1 no null vector within tolerance
@@ -928,4 +898,4 @@ contains
     end if
   end subroutine z_lower_right_nullvec
 
-end module mod_cond
+end module mod_cond_triangular

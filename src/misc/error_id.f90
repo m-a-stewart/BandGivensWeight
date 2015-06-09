@@ -607,22 +607,20 @@ module mod_error_id
        'z_extend_gs_columns', &
        [ character(len=error_message_length) :: 'GS Orthogonalization Error' ])
 
-  ! src/orth/cond 1400
-  integer(int32), parameter :: mod_id_cond=1400
-  integer(int32), parameter :: id_d_lower_left_nullvec=mod_id_cond + 0
-  integer(int32), parameter :: id_z_lower_left_nullvec=mod_id_cond + 1
-  integer(int32), parameter :: id_d_lower_right_nullvec=mod_id_cond + 2
-  integer(int32), parameter :: id_z_lower_right_nullvec=mod_id_cond + 3
-  integer(int32), parameter :: id_d_cond2_upper=mod_id_cond + 4
-  integer(int32), parameter :: id_z_cond2_upper=mod_id_cond + 5
-  integer(int32), parameter :: id_d_lower_min_sv=mod_id_cond + 6
-  integer(int32), parameter :: id_z_lower_min_sv=mod_id_cond + 7
-  integer(int32), parameter :: id_d_upper_min_sv=mod_id_cond + 8
-  integer(int32), parameter :: id_z_upper_min_sv=mod_id_cond + 9
-  integer(int32), parameter :: id_d_lower_max_sv=mod_id_cond + 10
-  integer(int32), parameter :: id_z_lower_max_sv=mod_id_cond + 11
-  integer(int32), parameter :: id_d_upper_max_sv=mod_id_cond + 12
-  integer(int32), parameter :: id_z_upper_max_sv=mod_id_cond + 13
+  ! src/orth/cond_triangular 1400
+  integer(int32), parameter :: mod_id_cond_triangular=1400
+  integer(int32), parameter :: id_d_lower_left_nullvec=mod_id_cond_triangular + 0
+  integer(int32), parameter :: id_z_lower_left_nullvec=mod_id_cond_triangular + 1
+  integer(int32), parameter :: id_d_lower_right_nullvec=mod_id_cond_triangular + 2
+  integer(int32), parameter :: id_z_lower_right_nullvec=mod_id_cond_triangular + 3
+  integer(int32), parameter :: id_d_lower_min_sv=mod_id_cond_triangular + 4
+  integer(int32), parameter :: id_z_lower_min_sv=mod_id_cond_triangular + 5
+  integer(int32), parameter :: id_d_upper_min_sv=mod_id_cond_triangular + 6
+  integer(int32), parameter :: id_z_upper_min_sv=mod_id_cond_triangular + 7
+  integer(int32), parameter :: id_d_lower_max_sv=mod_id_cond_triangular + 8
+  integer(int32), parameter :: id_z_lower_max_sv=mod_id_cond_triangular + 9
+  integer(int32), parameter :: id_d_upper_max_sv=mod_id_cond_triangular + 10
+  integer(int32), parameter :: id_z_upper_max_sv=mod_id_cond_triangular + 11
 
   type(routine_info), parameter :: info_d_lower_left_nullvec= &
        routine_info(id_d_lower_left_nullvec, 'd_lower_left_nullvec', &
@@ -636,17 +634,6 @@ module mod_error_id
   type(routine_info), parameter :: info_z_lower_right_nullvec= &
        routine_info(id_z_lower_right_nullvec, 'z_lower_right_nullvec', &
        [ character(len=error_message_length) :: 'Failure to find a null vector.' ])
-
-  type(routine_info), parameter :: info_d_cond2_upper= &
-       routine_info(id_d_cond2_upper, 'd_cond2_upper', &
-       [ character(len=error_message_length) :: 'A is not square.', &
-       'Failure to converge for norm of A.', &
-       'Failure to converge for norm of inverse(A).'])
-  type(routine_info), parameter :: info_z_cond2_upper= &
-       routine_info(id_z_cond2_upper, 'z_cond2_upper', &
-       [ character(len=error_message_length) :: 'A is not square.', &
-       'Failure to converge for norm of A.', &
-       'Failure to converge for norm of inverse(A).'])
 
   type(routine_info), parameter :: info_d_lower_min_sv= &
        routine_info(id_d_lower_min_sv, 'd_lower_min_sv', &
@@ -681,8 +668,6 @@ module mod_error_id
        routine_info(id_z_upper_max_sv, 'z_upper_max_sv', &
        [ character(len=error_message_length) :: 'n<1', 'A is not square.', &
        'Failure to converge.'])
-  
-  
 
   ! src/qr_factorization/qr_factorization 1500
   integer(int32), parameter :: mod_id_qr_factorization=1500

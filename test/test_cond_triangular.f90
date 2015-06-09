@@ -1,4 +1,4 @@
-program test_cond
+program test_cond_triangular
   use mod_orrb
   implicit none
   integer(kind=int32) :: n, j, k
@@ -18,7 +18,7 @@ program test_cond
   print *
   print *, "--------------------------------"
   print *
-  print *, "Real Condition Estimation Tests"
+  print *, "Real Triangular Condition Estimation Tests"
   print *
 
   n=30
@@ -103,7 +103,7 @@ program test_cond
   print *
   print *, "--------------------------------"
   print *
-  print *, "Complex Condition Estimation Tests"
+  print *, "Complex Triangular Condition Estimation Tests"
   print *
   n=30
   allocate(l_z(n,n),u_z(n),v_z(n),res_z(n),res_z1(n))
@@ -205,4 +205,4 @@ contains
     end if
   end subroutine output_result
 
-end program test_cond
+end program test_cond_triangular
