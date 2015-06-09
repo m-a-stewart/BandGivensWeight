@@ -20,10 +20,16 @@ module mod_products
        z_wb_times_general, z_product_of_wb_and_general, &
        d_bt_times_general, d_product_of_bt_and_general, &
        z_bt_times_general, z_product_of_bt_and_general, &
+       d_ubt_times_general, d_product_of_ubt_and_general, &
+       d_wbv_times_general, d_product_of_wbv_and_general, &
+       z_wbv_times_general, z_product_of_wbv_and_general, &
+       z_ubt_times_general, z_product_of_ubt_and_general, &       
        f_d_ub_times_general_plus, f_z_ub_times_general_plus, &
        f_d_bv_times_general_plus, f_z_bv_times_general_plus, &
        f_d_wb_times_general_plus, f_z_wb_times_general_plus, &
-       f_d_bt_times_general_plus, f_z_bt_times_general_plus, &       
+       f_d_bt_times_general_plus, f_z_bt_times_general_plus, &
+       f_d_ubt_times_general_plus, f_z_ubt_times_general_plus, &
+       f_d_wbv_times_general_plus, f_z_wbv_times_general_plus, &
        operator(*)
        
   interface ub_times_general
@@ -74,12 +80,37 @@ module mod_products
      module procedure d_product_of_bt_and_general, z_product_of_bt_and_general
   end interface product_of_bt_and_general
 
+  interface ubt_times_general
+     module procedure d_ubt_times_general, z_ubt_times_general
+  end interface ubt_times_general
+
+  interface f_ubt_times_general
+     module procedure f_d_ubt_times_general_plus, f_z_ubt_times_general_plus
+  end interface f_ubt_times_general
+  
+  interface product_of_ubt_and_general
+     module procedure d_product_of_ubt_and_general, z_product_of_ubt_and_general
+  end interface product_of_ubt_and_general
+
+  interface wbv_times_general
+     module procedure d_wbv_times_general, z_wbv_times_general
+  end interface wbv_times_general
+
+  interface f_wbv_times_general
+     module procedure f_d_wbv_times_general_plus, f_z_wbv_times_general_plus
+  end interface f_wbv_times_general
+  
+  interface product_of_wbv_and_general
+     module procedure d_product_of_wbv_and_general , z_product_of_wbv_and_general
+  end interface product_of_wbv_and_general
   
   interface operator (*)
      module procedure d_product_of_ub_and_general0,  z_product_of_ub_and_general0, &
           d_product_of_bv_and_general0, z_product_of_bv_and_general0, &
           d_product_of_wb_and_general0, z_product_of_wb_and_general0, &
-          d_product_of_bt_and_general0, z_product_of_bt_and_general0          
+          d_product_of_bt_and_general0, z_product_of_bt_and_general0, &
+          d_product_of_ubt_and_general0,  z_product_of_ubt_and_general0, &
+          d_product_of_wbv_and_general0,  z_product_of_wbv_and_general0
   end interface operator (*)
 
 contains
@@ -679,7 +710,6 @@ contains
          get_ubwmax(bt), bt%numrotst, bt%kst, bt%cst, bt%sst, a, size(a,2), c)
     call pop_id(error)
   end subroutine d_bt_times_general
-  
 
   subroutine f_d_bt_times_general_plus(br, n, lbw, ubw, lbwmax, ubwmax, numrotst, &
        kst, cst, sst, a, na, c)
@@ -694,6 +724,7 @@ contains
     integer(kind=int32) :: j,k,l,lbwj,ubwj,d0
     real(kind=dp), dimension(n) :: x
     type(d_rotation) :: rot
+    
     d0=lbw+1
     do k=1,na
        x=a(:,k)
@@ -803,5 +834,331 @@ contains
        end do
     end do
   end subroutine f_z_bt_times_general_plus
+
+  ! ubt times general
+
+  function d_product_of_ubt_and_general0(ubt, a) result(c)
+    real(kind=dp), dimension(:,:), intent(in) :: a
+    real(kind=dp), dimension(:,:), allocatable :: c
+    type(d_ubt), intent(in) :: ubt
+    
+    allocate(c(size(a,1),size(a,2)))
+    call d_ubt_times_general(ubt,a,c)
+  end function d_product_of_ubt_and_general0
+  
+
+  function d_product_of_ubt_and_general(ubt, a, error) result(c)
+    real(kind=dp), dimension(:,:), intent(in) :: a
+    real(kind=dp), dimension(:,:), allocatable :: c
+    type(d_ubt), intent(in) :: ubt
+    type(error_info), intent(inout), optional :: error
+    type(routine_info), parameter :: info=info_d_product_of_ubt_and_general
+
+    if (failure(error)) return
+    call push_id(info, error)
+    
+    allocate(c(size(a,1),size(a,2)))
+    call d_ubt_times_general(ubt,a,c,error)
+    call pop_id(error)
+  end function d_product_of_ubt_and_general
+
+  ! Errors
+  ! 0: no error
+  ! 1 ubt%n < 1
+  ! 2: ubt%n /= size(a,1)
+  ! 3: size(a) /= size(c)
+  subroutine d_ubt_times_general(ubt,a,c,error)
+    type(d_ubt), intent(in) :: ubt
+    real(kind=dp), target, dimension(:,:), intent(in) :: a
+    real(kind=dp), target, dimension(:,:), intent(out) :: c    
+    type(error_info), intent(inout), optional :: error
+    type(routine_info), parameter :: info=info_d_ubt_times_general
+
+    if (failure(error)) return
+    call push_id(info, error)
+    if (get_n(ubt) < 1) then
+       call set_error(1, info, error); return
+    end if
+    if (get_n(ubt) /= size(a,1)) then
+       call set_error(2, info, error); return
+    end if
+    if (size(a,1) /= size(c,1) .or. size(a,2) /= size(c,2)) then
+       call set_error(3, info, error); return
+    end if
+    c=0.0_dp
+    call f_d_ubt_times_general_plus(ubt%bc, get_n(ubt), ubt%lbw, ubt%ubw, get_lbwmax(ubt), &
+         get_ubwmax(ubt), ubt%numrotsu, ubt%jsu, ubt%csu, ubt%ssu, &
+         ubt%numrotst, ubt%kst, ubt%cst, ubt%sst, a, size(a,2), c)
+    call pop_id(error)
+  end subroutine d_ubt_times_general
+  
+
+  subroutine f_d_ubt_times_general_plus(bc, n, lbw, ubw, lbwmax, ubwmax, numrotsu, &
+       jsu, csu, ssu, numrotst, kst, cst, sst, a, na, c)
+    real(kind=dp), dimension(lbwmax+ubwmax+1,n), intent(in) :: bc
+    real(kind=dp), target, dimension(n,na), intent(in) :: a
+    real(kind=dp), target, dimension(n,na), intent(out) :: c    
+    integer(kind=int32), dimension(ubwmax,n), intent(in) :: jsu
+    real(kind=dp), dimension(ubwmax,n), intent(in) :: csu, ssu
+    integer(kind=int32), dimension(n), intent(in) :: numrotsu
+    integer(kind=int32), dimension(n,lbwmax), intent(in) :: kst
+    real(kind=dp), dimension(n,lbwmax), intent(in) :: cst, sst
+    integer(kind=int32), dimension(n), intent(in) :: numrotst    
+    integer(kind=int32), intent(in) :: ubw, lbw, n, lbwmax, ubwmax, na
+    !
+    real(kind=dp), dimension(n,lbw+1) :: brl
+
+    call f_d_ub_times_general_plus(bc,n,0,ubw,lbwmax,ubwmax, numrotsu,jsu,csu,ssu,a,na,c)
+    call bc_to_br(bc(ubw+1:lbw+ubw+1,:),brl,lbw,0)
+    brl(:,lbw+1)=0.0_dp
+    
+    call f_d_bt_times_general_plus(brl,n,lbw,0,lbw,0,numrotst,kst(:,1:lbw),  &
+         cst(:,1:lbw),sst(:,1:lbw),a,na,c)
+  end subroutine f_d_ubt_times_general_plus
+
+  function z_product_of_ubt_and_general0(ubt, a) result(c)
+    complex(kind=dp), dimension(:,:), intent(in) :: a
+    complex(kind=dp), dimension(:,:), allocatable :: c
+    type(z_ubt), intent(in) :: ubt
+    
+    allocate(c(size(a,1),size(a,2)))
+    call z_ubt_times_general(ubt,a,c)
+  end function z_product_of_ubt_and_general0
+  
+
+  function z_product_of_ubt_and_general(ubt, a, error) result(c)
+    complex(kind=dp), dimension(:,:), intent(in) :: a
+    complex(kind=dp), dimension(:,:), allocatable :: c
+    type(z_ubt), intent(in) :: ubt
+    type(error_info), intent(inout), optional :: error
+    type(routine_info), parameter :: info=info_z_product_of_ubt_and_general
+
+    if (failure(error)) return
+    call push_id(info, error)
+    
+    allocate(c(size(a,1),size(a,2)))
+    call z_ubt_times_general(ubt,a,c,error)
+    call pop_id(error)
+  end function z_product_of_ubt_and_general
+
+  ! Errors
+  ! 0: no error
+  ! 1 ubt%n < 1
+  ! 2: ubt%n /= size(a,1)
+  ! 3: size(a) /= size(c)
+  subroutine z_ubt_times_general(ubt,a,c,error)
+    type(z_ubt), intent(in) :: ubt
+    complex(kind=dp), target, dimension(:,:), intent(in) :: a
+    complex(kind=dp), target, dimension(:,:), intent(out) :: c    
+    type(error_info), intent(inout), optional :: error
+    type(routine_info), parameter :: info=info_z_ubt_times_general
+
+    if (failure(error)) return
+    call push_id(info, error)
+    if (get_n(ubt) < 1) then
+       call set_error(1, info, error); return
+    end if
+    if (get_n(ubt) /= size(a,1)) then
+       call set_error(2, info, error); return
+    end if
+    if (size(a,1) /= size(c,1) .or. size(a,2) /= size(c,2)) then
+       call set_error(3, info, error); return
+    end if
+    c=(0.0_dp,0.0_dp)
+    call f_z_ubt_times_general_plus(ubt%bc, get_n(ubt), ubt%lbw, ubt%ubw, get_lbwmax(ubt), &
+         get_ubwmax(ubt), ubt%numrotsu, ubt%jsu, ubt%csu, ubt%ssu, &
+         ubt%numrotst, ubt%kst, ubt%cst, ubt%sst, a, size(a,2), c)
+    call pop_id(error)
+  end subroutine z_ubt_times_general
+  
+
+  subroutine f_z_ubt_times_general_plus(bc, n, lbw, ubw, lbwmax, ubwmax, numrotsu, &
+       jsu, csu, ssu, numrotst, kst, cst, sst, a, na, c)
+    complex(kind=dp), dimension(lbwmax+ubwmax+1,n), intent(in) :: bc
+    complex(kind=dp), target, dimension(n,na), intent(in) :: a
+    complex(kind=dp), target, dimension(n,na), intent(out) :: c    
+    integer(kind=int32), dimension(ubwmax,n), intent(in) :: jsu
+    real(kind=dp), dimension(ubwmax,n), intent(in) :: csu
+    complex(kind=dp), dimension(ubwmax,n), intent(in) :: ssu    
+    integer(kind=int32), dimension(n), intent(in) :: numrotsu
+    integer(kind=int32), dimension(n,lbwmax), intent(in) :: kst
+    real(kind=dp), dimension(n,lbwmax), intent(in) :: cst
+    complex(kind=dp), dimension(n,lbwmax), intent(in) :: sst
+    integer(kind=int32), dimension(n), intent(in) :: numrotst    
+    integer(kind=int32), intent(in) :: ubw, lbw, n, lbwmax, ubwmax, na
+    !
+    complex(kind=dp), dimension(n,lbw+1) :: brl
+
+    call f_z_ub_times_general_plus(bc,n,0,ubw,lbwmax,ubwmax, numrotsu,jsu,csu,ssu,a,na,c)
+    call bc_to_br(bc(ubw+1:lbw+ubw+1,:),brl,lbw,0)
+    brl(:,lbw+1)=(0.0_dp,0.0_dp)
+    
+    call f_z_bt_times_general_plus(brl,n,lbw,0,lbw,0,numrotst,kst(:,1:lbw),  &
+         cst(:,1:lbw),sst(:,1:lbw),a,na,c)
+  end subroutine f_z_ubt_times_general_plus
+
+  ! WBV times general
+
+  function d_product_of_wbv_and_general0(wbv, a) result(c)
+    real(kind=dp), dimension(:,:), intent(in) :: a
+    real(kind=dp), dimension(:,:), allocatable :: c
+    type(d_wbv), intent(in) :: wbv
+    
+    allocate(c(size(a,1),size(a,2)))
+    call d_wbv_times_general(wbv,a,c)
+  end function d_product_of_wbv_and_general0
+  
+
+  function d_product_of_wbv_and_general(wbv, a, error) result(c)
+    real(kind=dp), dimension(:,:), intent(in) :: a
+    real(kind=dp), dimension(:,:), allocatable :: c
+    type(d_wbv), intent(in) :: wbv
+    type(error_info), intent(inout), optional :: error
+    type(routine_info), parameter :: info=info_d_product_of_wbv_and_general
+
+    if (failure(error)) return
+    call push_id(info, error)
+    
+    allocate(c(size(a,1),size(a,2)))
+    call d_wbv_times_general(wbv,a,c,error)
+    call pop_id(error)
+  end function d_product_of_wbv_and_general
+
+  ! Errors
+  ! 0: no error
+  ! 1 wbv%n < 1
+  ! 2: wbv%n /= size(a,1)
+  ! 3: size(a) /= size(c)
+  subroutine d_wbv_times_general(wbv,a,c,error)
+    type(d_wbv), intent(in) :: wbv
+    real(kind=dp), target, dimension(:,:), intent(in) :: a
+    real(kind=dp), target, dimension(:,:), intent(out) :: c    
+    type(error_info), intent(inout), optional :: error
+    type(routine_info), parameter :: info=info_d_wbv_times_general
+
+    if (failure(error)) return
+    call push_id(info, error)
+    if (get_n(wbv) < 1) then
+       call set_error(1, info, error); return
+    end if
+    if (get_n(wbv) /= size(a,1)) then
+       call set_error(2, info, error); return
+    end if
+    if (size(a,1) /= size(c,1) .or. size(a,2) /= size(c,2)) then
+       call set_error(3, info, error); return
+    end if
+    c=0.0_dp
+    call f_d_wbv_times_general_plus(wbv%br, get_n(wbv), wbv%lbw, wbv%ubw, get_lbwmax(wbv), &
+         get_ubwmax(wbv), wbv%numrotsw, wbv%jsw, wbv%csw, wbv%ssw, &
+         wbv%numrotsv, wbv%ksv, wbv%csv, wbv%ssv, a, size(a,2), c)
+    call pop_id(error)
+  end subroutine d_wbv_times_general
+
+  subroutine f_d_wbv_times_general_plus(br, n, lbw, ubw, lbwmax, ubwmax, numrotsw, &
+       jsw, csw, ssw, numrotsv, ksv, csv, ssv, a, na, c)
+    real(kind=dp), target, dimension(n,na), intent(in) :: a
+    real(kind=dp), target, dimension(n,na), intent(out) :: c    
+    integer(kind=int32), dimension(n), intent(in) :: numrotsw
+    integer(kind=int32), dimension(lbwmax,n), intent(in) :: jsw
+    real(kind=dp), dimension(lbwmax,n), intent(in) :: csw, ssw
+    integer(kind=int32), dimension(n), intent(in) :: numrotsv
+    integer(kind=int32), dimension(n,ubwmax), intent(in) :: ksv
+    real(kind=dp), dimension(n,ubwmax), intent(in) :: csv, ssv
+    real(kind=dp), dimension(n,lbwmax+ubwmax+1), intent(in) :: br
+    integer(kind=int32), intent(in) :: ubw, lbw, n, lbwmax, ubwmax, na
+    !
+    real(kind=dp), dimension(lbw+1,n) :: bcl
+
+    call f_d_bv_times_general_plus(br(:,lbw+1:lbw+ubw+1),n,0,ubw,0,ubw, &
+         numrotsv,ksv(:,1:ubw),csv(:,1:ubw),ssv(:,1:ubw),a,na,c)
+
+    call br_to_bc(br(:,1:lbw+1),bcl,lbw,0)
+    bcl(1,:)=0.0_dp
+    call f_d_wb_times_general_plus(bcl,n,lbw,0,lbw,0,numrotsw,jsw(1:lbw,:),csw(1:lbw,:), &
+         ssw(1:lbw,:), a, na, c)
+    
+  end subroutine f_d_wbv_times_general_plus
+
+  function z_product_of_wbv_and_general0(wbv, a) result(c)
+    complex(kind=dp), dimension(:,:), intent(in) :: a
+    complex(kind=dp), dimension(:,:), allocatable :: c
+    type(z_wbv), intent(in) :: wbv
+    
+    allocate(c(size(a,1),size(a,2)))
+    call z_wbv_times_general(wbv,a,c)
+  end function z_product_of_wbv_and_general0
+  
+
+  function z_product_of_wbv_and_general(wbv, a, error) result(c)
+    complex(kind=dp), dimension(:,:), intent(in) :: a
+    complex(kind=dp), dimension(:,:), allocatable :: c
+    type(z_wbv), intent(in) :: wbv
+    type(error_info), intent(inout), optional :: error
+    type(routine_info), parameter :: info=info_z_product_of_wbv_and_general
+
+    if (failure(error)) return
+    call push_id(info, error)
+    
+    allocate(c(size(a,1),size(a,2)))
+    call z_wbv_times_general(wbv,a,c,error)
+    call pop_id(error)
+  end function z_product_of_wbv_and_general
+
+  ! Errors
+  ! 0: no error
+  ! 1 wbv%n < 1
+  ! 2: wbv%n /= size(a,1)
+  ! 3: size(a) /= size(c)
+  subroutine z_wbv_times_general(wbv,a,c,error)
+    type(z_wbv), intent(in) :: wbv
+    complex(kind=dp), target, dimension(:,:), intent(in) :: a
+    complex(kind=dp), target, dimension(:,:), intent(out) :: c    
+    type(error_info), intent(inout), optional :: error
+    type(routine_info), parameter :: info=info_z_wbv_times_general
+
+    if (failure(error)) return
+    call push_id(info, error)
+    if (get_n(wbv) < 1) then
+       call set_error(1, info, error); return
+    end if
+    if (get_n(wbv) /= size(a,1)) then
+       call set_error(2, info, error); return
+    end if
+    if (size(a,1) /= size(c,1) .or. size(a,2) /= size(c,2)) then
+       call set_error(3, info, error); return
+    end if
+    c=(0.0_dp,0.0_dp)
+    call f_z_wbv_times_general_plus(wbv%br, get_n(wbv), wbv%lbw, wbv%ubw, get_lbwmax(wbv), &
+         get_ubwmax(wbv), wbv%numrotsw, wbv%jsw, wbv%csw, wbv%ssw, &
+         wbv%numrotsv, wbv%ksv, wbv%csv, wbv%ssv, a, size(a,2), c)
+    call pop_id(error)
+  end subroutine z_wbv_times_general
+
+  subroutine f_z_wbv_times_general_plus(br, n, lbw, ubw, lbwmax, ubwmax, numrotsw, &
+       jsw, csw, ssw, numrotsv, ksv, csv, ssv, a, na, c)
+    complex(kind=dp), target, dimension(n,na), intent(in) :: a
+    complex(kind=dp), target, dimension(n,na), intent(out) :: c    
+    integer(kind=int32), dimension(n), intent(in) :: numrotsw
+    integer(kind=int32), dimension(lbwmax,n), intent(in) :: jsw
+    real(kind=dp), dimension(lbwmax,n), intent(in) :: csw
+    complex(kind=dp), dimension(lbwmax,n), intent(in) :: ssw
+    integer(kind=int32), dimension(n), intent(in) :: numrotsv
+    integer(kind=int32), dimension(n,ubwmax), intent(in) :: ksv
+    real(kind=dp), dimension(n,ubwmax), intent(in) :: csv
+    complex(kind=dp), dimension(n,ubwmax), intent(in) :: ssv    
+    complex(kind=dp), dimension(n,lbwmax+ubwmax+1), intent(in) :: br
+    integer(kind=int32), intent(in) :: ubw, lbw, n, lbwmax, ubwmax, na
+    !
+    complex(kind=dp), dimension(lbw+1,n) :: bcl
+
+    call f_z_bv_times_general_plus(br(:,lbw+1:lbw+ubw+1),n,0,ubw,0,ubw, &
+         numrotsv,ksv(:,1:ubw),csv(:,1:ubw),ssv(:,1:ubw),a,na,c)
+
+    call br_to_bc(br(:,1:lbw+1),bcl,lbw,0)
+    bcl(1,:)=(0.0_dp,0.0_dp)
+    call f_z_wb_times_general_plus(bcl,n,lbw,0,lbw,0,numrotsw,jsw(1:lbw,:),csw(1:lbw,:), &
+         ssw(1:lbw,:), a, na, c)
+    
+  end subroutine f_z_wbv_times_general_plus
   
 end module mod_products

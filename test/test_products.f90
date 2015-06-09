@@ -8,7 +8,7 @@ program test_products
   real(kind=dp) :: t0, t1
   integer(kind=int32) :: ma, na, lbwb, ubwb
   type(error_info) :: error
-  real(kind=dp), parameter :: tol=1e-15, c=5.0
+  real(kind=dp), parameter :: tol=1e-15, c=7.0
   !
   real(kind=dp), dimension(:,:), allocatable :: b_d, a_d, c0_d, c1_d
   complex(kind=dp), dimension(:,:), allocatable :: b_z, a_z, c0_z, c1_z
@@ -17,10 +17,15 @@ program test_products
   type(d_bv), allocatable :: bv_d
   type(d_wb), allocatable :: wb_d
   type(d_bt), allocatable :: bt_d
+  type(d_ubt), allocatable :: ubt_d
+  type(d_wbv), allocatable :: wbv_d
+  
   type(z_ub), allocatable :: ub_z
   type(z_bv), allocatable :: bv_z
   type(z_wb), allocatable :: wb_z
   type(z_bt), allocatable :: bt_z
+  type(z_ubt), allocatable :: ubt_z
+  type(z_wbv), allocatable :: wbv_z
   
   call initialize_errors
   print *
@@ -72,6 +77,28 @@ program test_products
   c1_d=matmul(b_d,a_d)
   test_name = "Real BT Times Gen. (40x10)"
   call d_output_result(test_name,c0_d,c1_d,t0,t1,c*tol,error)
+
+  ma=40; na=10; lbwb=5; ubwb=7
+  a_d=d_random_matrix(ma,na)
+  ubt_d=d_random_ubt(ma,lbwb,ubwb,error=error)
+  b_d = general(ubt_d,error)
+  call cpu_time(t0)
+  c0_d=d_product_of_ubt_and_general(ubt_d,a_d,error)
+  call cpu_time(t1)
+  c1_d=matmul(b_d,a_d)
+  test_name = "Real UBT Times Gen. (40x10)"
+  call d_output_result(test_name,c0_d,c1_d,t0,t1,c*tol,error)
+
+  ma=40; na=10; lbwb=5; ubwb=7
+  a_d=d_random_matrix(ma,na)
+  wbv_d=d_random_wbv(ma,lbwb,ubwb,error=error)
+  b_d = general(wbv_d,error)
+  call cpu_time(t0)
+  c0_d=d_product_of_wbv_and_general(wbv_d,a_d,error)
+  call cpu_time(t1)
+  c1_d=matmul(b_d,a_d)
+  test_name = "Real WBV Times Gen. (40x10)"
+  call d_output_result(test_name,c0_d,c1_d,t0,t1,c*tol,error)
   
   print *
   print *, "--------------------------------"
@@ -122,6 +149,29 @@ program test_products
   c1_z=matmul(b_z,a_z)
   test_name = "Complex BT Times Gen. (40x10)"
   call z_output_result(test_name,c0_z,c1_z,t0,t1,c*tol,error)
+
+  ma=40; na=10; lbwb=5; ubwb=7
+  a_z=z_random_matrix(ma,na)
+  ubt_z=z_random_ubt(ma,lbwb,ubwb,error=error)
+  b_z = general(ubt_z,error)
+  call cpu_time(t0)
+  c0_z=z_product_of_ubt_and_general(ubt_z,a_z,error)
+  call cpu_time(t1)
+  c1_z=matmul(b_z,a_z)
+  test_name = "Complex UBT Times Gen. (40x10)"
+  call z_output_result(test_name,c0_z,c1_z,t0,t1,c*tol,error)
+
+  ma=40; na=10; lbwb=5; ubwb=7
+  a_z=z_random_matrix(ma,na)
+  wbv_z=z_random_wbv(ma,lbwb,ubwb,error=error)
+  b_z = general(wbv_z,error)
+  call cpu_time(t0)
+  c0_z=z_product_of_wbv_and_general(wbv_z,a_z,error)
+  call cpu_time(t1)
+  c1_z=matmul(b_z,a_z)
+  test_name = "Complex WBV Times Gen. (40x10)"
+  call z_output_result(test_name,c0_z,c1_z,t0,t1,c*tol,error)
+  
 
 contains
 

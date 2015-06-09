@@ -9,7 +9,7 @@ _ERROR_ID = prec shift
 
 _UTILITY = prec
 
-_TYPES = band_types orth_band_types random
+_TYPES = band_types orth_band_types random products
 _BAND_TYPES = rotation utility shift prec
 _ORTH_BAND_TYPES = prec utility band_types
 _RANDOM = prec utility band_types orth_band_types

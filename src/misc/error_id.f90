@@ -1055,6 +1055,17 @@ module mod_error_id
   integer(int32), parameter :: id_d_product_of_bt_and_general=mod_id_products + 13
   integer(int32), parameter :: id_z_bt_times_general=mod_id_products + 14
   integer(int32), parameter :: id_z_product_of_bt_and_general=mod_id_products + 15
+
+  integer(int32), parameter :: id_d_ubt_times_general=mod_id_products + 16
+  integer(int32), parameter :: id_d_product_of_ubt_and_general=mod_id_products + 17
+  integer(int32), parameter :: id_z_ubt_times_general=mod_id_products + 18
+  integer(int32), parameter :: id_z_product_of_ubt_and_general=mod_id_products + 19
+
+  integer(int32), parameter :: id_d_wbv_times_general=mod_id_products + 20
+  integer(int32), parameter :: id_d_product_of_wbv_and_general=mod_id_products + 21
+  integer(int32), parameter :: id_z_wbv_times_general=mod_id_products + 22
+  integer(int32), parameter :: id_z_product_of_wbv_and_general=mod_id_products + 23
+
   
   type(routine_info), parameter :: info_d_ub_times_general=routine_info(id_d_ub_times_general, &
        'd_ub_times_general', &
@@ -1144,6 +1155,50 @@ module mod_error_id
        [ character(len=error_message_length) :: 'bt%n<1', &
        'bt%n /= size(a,1)', 'size(a) /= size(c)'])
   
+  type(routine_info), parameter :: info_d_ubt_times_general=routine_info(id_d_ubt_times_general, &
+       'd_ubt_times_general', &
+       [ character(len=error_message_length) :: 'ubt%n<1', &
+       'ubt%n /= size(a,1)', 'size(a) /= size(c)'])
+
+  type(routine_info), parameter :: info_d_product_of_ubt_and_general= &
+       routine_info(id_d_product_of_ubt_and_general, &
+       'd_product_of_ubt_and_general', &
+       [ character(len=error_message_length) :: 'ubt%n<1', &
+       'ubt%n /= size(a,1)', 'size(a) /= size(c)'])
+
+  type(routine_info), parameter :: info_z_ubt_times_general=routine_info(id_z_ubt_times_general, &
+       'z_ubt_times_general', &
+       [ character(len=error_message_length) :: 'ubt%n<1', &
+       'ubt%n /= size(a,1)', 'size(a) /= size(c)'])
+
+  type(routine_info), parameter :: info_z_product_of_ubt_and_general= &
+       routine_info(id_z_product_of_ubt_and_general, &
+       'z_product_of_ubt_and_general', &
+       [ character(len=error_message_length) :: 'ubt%n<1', &
+       'ubt%n /= size(a,1)', 'size(a) /= size(c)'])
+
+  type(routine_info), parameter :: info_d_wbv_times_general=routine_info(id_d_wbv_times_general, &
+       'd_wbv_times_general', &
+       [ character(len=error_message_length) :: 'wbv%n<1', &
+       'wbv%n /= size(a,1)', 'size(a) /= size(c)'])
+
+  type(routine_info), parameter :: info_d_product_of_wbv_and_general= &
+       routine_info(id_d_product_of_wbv_and_general, &
+       'd_product_of_wbv_and_general', &
+       [ character(len=error_message_length) :: 'wbv%n<1', &
+       'wbv%n /= size(a,1)', 'size(a) /= size(c)'])
+
+  type(routine_info), parameter :: info_z_wbv_times_general=routine_info(id_z_wbv_times_general, &
+       'z_wbv_times_general', &
+       [ character(len=error_message_length) :: 'wbv%n<1', &
+       'wbv%n /= size(a,1)', 'size(a) /= size(c)'])
+
+  type(routine_info), parameter :: info_z_product_of_wbv_and_general= &
+       routine_info(id_z_product_of_wbv_and_general, &
+       'z_product_of_wbv_and_general', &
+       [ character(len=error_message_length) :: 'wbv%n<1', &
+       'wbv%n /= size(a,1)', 'size(a) /= size(c)'])
+
 contains
 
   subroutine push_id(info,err)
