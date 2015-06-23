@@ -65,6 +65,8 @@ contains
        call set_error(1, info, error); return
     else if (n /= size(r,2)) then
        call set_error(2, info, error); return
+    else if (n /= size(u1) .or. n /= size(v1) .or. n /= size(res)) then
+       call set_error(3, info, error); return       
     end if
     
     maxr=maxabs(r)
@@ -109,7 +111,7 @@ contains
           ! maxits is OK if tolerance is zero.
           call pop_id(error)
        else
-          call set_error(3, info, error); return
+          call set_error(4, info, error); return
        end if
     end if
   end function d_upper_max_sv
@@ -135,6 +137,8 @@ contains
        call set_error(1, info, error); return
     else if (n /= size(r,2)) then
        call set_error(2, info, error); return
+    else if (n /= size(u1) .or. n /= size(v1) .or. n /= size(res)) then
+       call set_error(3, info, error); return       
     end if
     
     maxr=maxabs(r)
@@ -179,7 +183,7 @@ contains
           ! maxits is OK if tolerance is zero.
           call pop_id(error)
        else
-          call set_error(3, info, error); return
+          call set_error(4, info, error); return
        end if
     end if
   end function z_upper_max_sv
@@ -205,12 +209,13 @@ contains
        call set_error(1, info, error); return
     else if (n /= size(r,2)) then
        call set_error(2, info, error); return
+    else if (n /= size(un) .or. n /= size(vn) .or. n /= size(res)) then
+       call set_error(3, info, error); return       
     end if
 
     maxr=maxabs(r)
     maxit=equals_option(default_maxit,maxit0)
     tolres=equals_option(maxr*default_tolres,tolres0)
-    
 
     un=0.0_dp
     vn=0.0_dp
@@ -264,7 +269,7 @@ contains
              ! maxits is OK if tolerance is zero.
              call pop_id(error)
           else
-             call set_error(3, info, error); return
+             call set_error(4, info, error); return
           end if
        end if
     end if
@@ -291,6 +296,8 @@ contains
        call set_error(1, info, error); return
     else if (n /= size(r,2)) then
        call set_error(2, info, error); return
+    else if (n /= size(un) .or. n /= size(vn) .or. n /= size(res)) then
+       call set_error(3, info, error); return       
     end if
 
     maxr=maxabs(r)
@@ -349,7 +356,7 @@ contains
              ! maxits is OK if tolerance is zero.
              call pop_id(error)
           else
-             call set_error(3, info, error); return
+             call set_error(4, info, error); return
           end if
        end if
     end if
@@ -376,6 +383,8 @@ contains
        call set_error(1, info, error); return
     else if (n /= size(l,2)) then
        call set_error(2, info, error); return
+    else if (n /= size(u1) .or. n /= size(v1) .or. n /= size(res)) then
+       call set_error(3, info, error); return       
     end if
     
     maxl=maxabs(l)
@@ -420,7 +429,7 @@ contains
           ! maxits is OK if tolerance is zero.
           call pop_id(error)
        else
-          call set_error(3, info, error); return
+          call set_error(4, info, error); return
        end if
     end if
   end function d_lower_max_sv
@@ -446,6 +455,8 @@ contains
        call set_error(1, info, error); return
     else if (n /= size(l,2)) then
        call set_error(2, info, error); return
+    else if (n /= size(u1) .or. n /= size(v1) .or. n /= size(res)) then
+       call set_error(3, info, error); return       
     end if
     
     maxl=maxabs(l)
@@ -490,7 +501,7 @@ contains
           ! maxits is OK if tolerance is zero.
           call pop_id(error)
        else
-          call set_error(3, info, error); return
+          call set_error(4, info, error); return
        end if
     end if
   end function z_lower_max_sv
@@ -516,6 +527,8 @@ contains
        call set_error(1, info, error); return
     else if (n /= size(l,2)) then
        call set_error(2, info, error); return
+    else if (n /= size(un) .or. n /= size(vn) .or. n /= size(res)) then
+       call set_error(3, info, error); return       
     end if
 
     maxl=maxabs(l)
@@ -573,7 +586,7 @@ contains
              ! maxits is OK if tolerance is zero.
              call pop_id(error)
           else
-             call set_error(3, info, error); return
+             call set_error(4, info, error); return
           end if
        end if
     end if
@@ -601,6 +614,8 @@ contains
        call set_error(1, info, error); return
     else if (n /= size(l,2)) then
        call set_error(2, info, error); return
+    else if (n /= size(un) .or. n /= size(vn) .or. n /= size(res)) then
+       call set_error(3, info, error); return       
     end if
 
     maxl=maxabs(l)
@@ -659,7 +674,7 @@ contains
              ! maxits shouldn't raise an error if the tolerance is zero.
              call pop_id(error)
           else
-             call set_error(3, info, error); return
+             call set_error(4, info, error); return
           end if
        end if
     end if

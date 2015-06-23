@@ -22,6 +22,12 @@ module mod_utility
 
   public :: dot_no_conjg
 
+  public :: first_zero_diagonal, z_first_zero_diagonal, d_first_zero_diagonal, &
+       reverse_first_zero_diagonal, z_reverse_first_zero_diagonal, d_reverse_first_zero_diagonal
+
+  public :: first_zero, z_first_zero, d_first_zero, &
+       reverse_first_zero, z_reverse_first_zero, d_reverse_first_zero
+  
   interface maybe_deallocate
      module procedure d_maybe_deallocate2, z_maybe_deallocate2, i_maybe_deallocate2, &
           d_maybe_deallocate1, z_maybe_deallocate1, i_maybe_deallocate1
@@ -61,7 +67,24 @@ module mod_utility
   interface equals_option
      module procedure i_equals_option, d_equals_option, z_equals_option
   end interface equals_option
+  
+  interface first_zero_diagonal
+     module procedure z_first_zero_diagonal, d_first_zero_diagonal
+  end interface first_zero_diagonal
 
+  interface reverse_first_zero_diagonal
+     module procedure z_reverse_first_zero_diagonal, d_reverse_first_zero_diagonal
+  end interface reverse_first_zero_diagonal
+
+  interface first_zero
+     module procedure z_first_zero, d_first_zero
+  end interface first_zero
+
+  interface reverse_first_zero
+     module procedure z_reverse_first_zero, d_reverse_first_zero
+  end interface reverse_first_zero
+
+  
   real(kind=dp), parameter :: d_random_shift=-1.0_dp, d_random_scale=2.0_dp
   complex(kind=dp), parameter :: z_random_shift=(-1.0_dp,-1.0_dp), z_random_scale=(2.0_dp,0.0_dp)
 
@@ -752,5 +775,111 @@ contains
        xy=xy+x(j)*y(j)
     end do
   end function dot_no_conjg
+
+  ! finding zeros in a vector
+
+  integer(kind=int32) function d_first_zero(a,tol) result(d)
+    real(kind=dp), dimension(:), intent(in) :: a
+    real(kind=dp), intent(in) :: tol
+    !
+    integer(kind=int32) :: j
+    d=1
+    do j=1,size(a)
+       if (abs(a(j)) <= tol) return
+       d=d+1
+    end do
+  end function d_first_zero
+
+  integer(kind=int32) function z_first_zero(a,tol) result(d)
+    complex(kind=dp), dimension(:), intent(in) :: a
+    real(kind=dp), intent(in) :: tol
+    !
+    integer(kind=int32) :: j
+    d=1
+    do j=1,size(a)
+       if (abs(a(j)) <= tol) return
+       d=d+1
+    end do
+  end function z_first_zero
+  
+  integer(kind=int32) function d_reverse_first_zero(a,tol) result(d)
+    real(kind=dp), dimension(:), intent(in) :: a
+    real(kind=dp), intent(in) :: tol
+    !
+    integer(kind=int32) :: j
+    d=size(a)
+    do j=d,1,-1
+       if (abs(a(j)) <= tol) return
+       d=d-1
+    end do
+  end function d_reverse_first_zero
+
+  integer(kind=int32) function z_reverse_first_zero(a,tol) result(d)
+    complex(kind=dp), dimension(:), intent(in) :: a
+    real(kind=dp), intent(in) :: tol
+    !
+    integer(kind=int32) :: j
+    d=size(a)
+    do j=d,1,-1
+       if (abs(a(j)) <= tol) return
+       d=d-1
+    end do
+  end function z_reverse_first_zero
+  
+
+  ! finding zeros on the diagonal
+
+  integer(kind=int32) function d_first_zero_diagonal(a,tol) result(d)
+    real(kind=dp), dimension(:,:), intent(in) :: a
+    real(kind=dp), intent(in) :: tol
+    !
+    integer(kind=int32) :: j, n
+    n=min(size(a,1), size(a,2))
+    d=1
+    do j=1,n
+       if (abs(a(j,j)) <= tol) return
+       d=d+1
+    end do
+  end function d_first_zero_diagonal
+
+  integer(kind=int32) function z_first_zero_diagonal(a,tol) result(d)
+    complex(kind=dp), dimension(:,:), intent(in) :: a
+    real(kind=dp), intent(in) :: tol
+    !
+    integer(kind=int32) :: j, n
+    n=min(size(a,1), size(a,2))
+    d=1
+    do j=1,n
+       if (abs(a(j,j)) <= tol) return
+       d=d+1
+    end do
+  end function z_first_zero_diagonal
+
+  ! Return the first zero diagonal from the bottom right.
+  integer(kind=int32) function d_reverse_first_zero_diagonal(a,tol) result(d)
+    real(kind=dp), dimension(:,:), intent(in) :: a
+    real(kind=dp), intent(in) :: tol
+    !
+    integer(kind=int32) :: j, n
+    n=min(size(a,1), size(a,2))
+    d=n
+    do j=n,1,-1
+       if (abs(a(j,j)) <= tol) return
+       d=d-1
+    end do
+  end function d_reverse_first_zero_diagonal
+
+  integer(kind=int32) function z_reverse_first_zero_diagonal(a,tol) result(d)
+    complex(kind=dp), dimension(:,:), intent(in) :: a
+    real(kind=dp), intent(in) :: tol
+    !
+    integer(kind=int32) :: j, n
+    n=min(size(a,1), size(a,2))
+    d=n
+    do j=n,1,-1
+       if (abs(a(j,j)) <= tol) return
+       d=d-1
+    end do
+  end function z_reverse_first_zero_diagonal
 
 end module mod_utility

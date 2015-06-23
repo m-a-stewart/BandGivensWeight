@@ -638,36 +638,36 @@ module mod_error_id
   type(routine_info), parameter :: info_d_lower_min_sv= &
        routine_info(id_d_lower_min_sv, 'd_lower_min_sv', &
        [ character(len=error_message_length) :: 'n<1', 'A is not square.', &
-       'Failure to converge.'])
+       'Singular vector size error', 'Failure to converge.'])
   type(routine_info), parameter :: info_z_lower_min_sv= &
        routine_info(id_z_lower_min_sv, 'z_lower_min_sv', &
        [ character(len=error_message_length) :: 'n<1', 'A is not square.', &
-       'Failure to converge.'])
+       'Singular vector size error', 'Failure to converge.'])
   type(routine_info), parameter :: info_d_upper_min_sv= &
        routine_info(id_d_upper_min_sv, 'd_upper_min_sv', &
        [ character(len=error_message_length) :: 'n<1', 'A is not square.', &
-       'Failure to converge.'])
+       'Singular vector size error', 'Failure to converge.'])
   type(routine_info), parameter :: info_z_upper_min_sv= &
        routine_info(id_z_upper_min_sv, 'z_upper_min_sv', &
        [ character(len=error_message_length) :: 'n<1', 'A is not square.', &
-       'Failure to converge.'])
+       'Singular vector size error', 'Failure to converge.'])
 
   type(routine_info), parameter :: info_d_lower_max_sv= &
        routine_info(id_d_lower_max_sv, 'd_lower_max_sv', &
        [ character(len=error_message_length) :: 'n<1', 'A is not square.', &
-       'Failure to converge.'])
+       'Singular vector size error', 'Failure to converge.'])
   type(routine_info), parameter :: info_z_lower_max_sv= &
        routine_info(id_z_lower_max_sv, 'z_lower_max_sv', &
        [ character(len=error_message_length) :: 'n<1', 'A is not square.', &
-       'Failure to converge.'])
+       'Singular vector size error', 'Failure to converge.'])
   type(routine_info), parameter :: info_d_upper_max_sv= &
        routine_info(id_d_upper_max_sv, 'd_upper_max_sv', &
        [ character(len=error_message_length) :: 'n<1', 'A is not square.', &
-       'Failure to converge.'])
+       'Singular vector size error', 'Failure to converge.'])
   type(routine_info), parameter :: info_z_upper_max_sv= &
        routine_info(id_z_upper_max_sv, 'z_upper_max_sv', &
        [ character(len=error_message_length) :: 'n<1', 'A is not square.', &
-       'Failure to converge.'])
+       'Singular vector size error', 'Failure to converge.'])
 
   ! src/qr_factorization/qr_factorization 1500
   integer(int32), parameter :: mod_id_qr_factorization=1500
@@ -1184,6 +1184,108 @@ module mod_error_id
        [ character(len=error_message_length) :: 'wbv%n<1', &
        'wbv%n /= size(a,1)', 'size(a) /= size(c)'])
 
+  ! src/types/cond_orth_band 2000
+  integer(int32), parameter :: mod_id_cond_orth_band=2000
+  integer(int32), parameter :: id_d_ub_min_sv=mod_id_cond_orth_band + 0
+  integer(int32), parameter :: id_d_ub_max_sv=mod_id_cond_orth_band + 1
+  integer(int32), parameter :: id_z_ub_min_sv=mod_id_cond_orth_band + 2
+  integer(int32), parameter :: id_z_ub_max_sv=mod_id_cond_orth_band + 3
+
+  type(routine_info), parameter :: info_d_ub_min_sv= &
+       routine_info(id_d_ub_min_sv, 'd_ub_min_sv', &
+       [ character(len=error_message_length) :: 'n<1', &
+       'Singular vector size error', 'Failure to converge.'])
+
+  type(routine_info), parameter :: info_d_ub_max_sv= &
+       routine_info(id_d_ub_max_sv, 'd_ub_max_sv', &
+       [ character(len=error_message_length) :: 'n<1', &
+       'Singular vector size error', 'Failure to converge.'])
+
+  type(routine_info), parameter :: info_z_ub_min_sv= &
+       routine_info(id_z_ub_min_sv, 'z_ub_min_sv', &
+       [ character(len=error_message_length) :: 'n<1', &
+       'Singular vector size error', 'Failure to converge.'])
+
+  type(routine_info), parameter :: info_z_ub_max_sv= &
+       routine_info(id_z_ub_max_sv, 'z_ub_max_sv', &
+       [ character(len=error_message_length) :: 'n<1', &
+       'Singular vector size error', 'Failure to converge.'])
+  
+  ! src/types/submatrix 2100
+  integer(int32), parameter :: mod_id_submatrix=1900
+  integer(int32), parameter :: id_d_ub_leading=mod_id_submatrix + 0
+  integer(int32), parameter :: id_z_ub_leading=mod_id_submatrix + 1
+  integer(int32), parameter :: id_d_bv_trailing=mod_id_submatrix + 2
+  integer(int32), parameter :: id_z_bv_trailing=mod_id_submatrix + 3
+  integer(int32), parameter :: id_d_bt_leading=mod_id_submatrix + 4
+  integer(int32), parameter :: id_z_bt_leading=mod_id_submatrix + 5
+  integer(int32), parameter :: id_d_wb_trailing=mod_id_submatrix + 6
+  integer(int32), parameter :: id_z_wb_trailing=mod_id_submatrix + 7
+  integer(int32), parameter :: id_d_ubt_leading=mod_id_submatrix + 8
+  integer(int32), parameter :: id_z_ubt_leading=mod_id_submatrix + 9
+  integer(int32), parameter :: id_d_wbv_trailing=mod_id_submatrix + 10
+  integer(int32), parameter :: id_z_wbv_trailing=mod_id_submatrix + 11
+
+  type(routine_info), parameter :: info_d_ub_leading=routine_info(id_d_ub_leading, &
+       'd_ub_leading', &
+       [ character(len=error_message_length) :: 'ub%n<1', &
+       'lbwmaxl0 < lbw or ubwmaxu0 < ubw'])
+
+  type(routine_info), parameter :: info_z_ub_leading=routine_info(id_z_ub_leading, &
+       'z_ub_leading', &
+       [ character(len=error_message_length) :: 'ub%n<1', &
+       'lbwmaxl0 < lbw or ubwmaxu0 < ubw'])
+
+  type(routine_info), parameter :: info_d_bv_trailing=routine_info(id_d_bv_trailing, &
+       'd_bv_trailing', &
+       [ character(len=error_message_length) :: 'ub%n<1', &
+       'lbwmaxl0 < lbw or ubwmaxu0 < ubw'])
+
+  type(routine_info), parameter :: info_z_bv_trailing=routine_info(id_z_bv_trailing, &
+       'z_bv_trailing', &
+       [ character(len=error_message_length) :: 'ub%n<1', &
+       'lbwmaxl0 < lbw or ubwmaxu0 < ubw'])
+
+  type(routine_info), parameter :: info_d_bt_leading=routine_info(id_d_bt_leading, &
+       'd_bt_leading', &
+       [ character(len=error_message_length) :: 'bt%n<1', &
+       'lbwmaxl0 < lbw or ubwmaxu0 < ubw'])
+
+  type(routine_info), parameter :: info_z_bt_leading=routine_info(id_z_bt_leading, &
+       'z_bt_leading', &
+       [ character(len=error_message_length) :: 'bt%n<1', &
+       'lbwmaxl0 < lbw or ubwmaxu0 < ubw'])
+
+  type(routine_info), parameter :: info_d_wb_trailing=routine_info(id_d_wb_trailing, &
+       'd_wb_trailing', &
+       [ character(len=error_message_length) :: 'ub%n<1', &
+       'lbwmaxl0 < lbw or ubwmaxu0 < ubw'])
+
+  type(routine_info), parameter :: info_z_wb_trailing=routine_info(id_z_wb_trailing, &
+       'z_wb_trailing', &
+       [ character(len=error_message_length) :: 'ub%n<1', &
+       'lbwmaxl0 < lbw or ubwmaxu0 < ubw'])
+
+  type(routine_info), parameter :: info_d_ubt_leading=routine_info(id_d_ubt_leading, &
+       'd_ubt_leading', &
+       [ character(len=error_message_length) :: 'ubt%n<1', &
+       'lbwmaxl0 < lbw or ubwmaxu0 < ubw'])
+
+  type(routine_info), parameter :: info_z_ubt_leading=routine_info(id_z_ubt_leading, &
+       'z_ubt_leading', &
+       [ character(len=error_message_length) :: 'ubt%n<1', &
+       'lbwmaxl0 < lbw or ubwmaxu0 < ubw'])
+
+  type(routine_info), parameter :: info_d_wbv_trailing=routine_info(id_d_wbv_trailing, &
+       'd_wbv_trailing', &
+       [ character(len=error_message_length) :: 'wbv%n<1', &
+       'lbwmaxl0 < lbw or ubwmaxu0 < ubw'])
+
+  type(routine_info), parameter :: info_z_wbv_trailing=routine_info(id_z_wbv_trailing, &
+       'z_wbv_trailing', &
+       [ character(len=error_message_length) :: 'wbv%n<1', &
+       'lbwmaxl0 < lbw or ubwmaxu0 < ubw'])
+  
 contains
 
   subroutine push_id(info,err)
@@ -1494,7 +1596,29 @@ contains
        info_index(info_d_product_of_bt_and_general%routine_id)=info_d_product_of_bt_and_general
        info_index(info_z_bt_times_general%routine_id)=info_z_bt_times_general
        info_index(info_z_product_of_bt_and_general%routine_id)=info_z_product_of_bt_and_general
+
+       ! condition estimation for orth. band types.
        
+       info_index(info_d_ub_min_sv%routine_id)=info_d_ub_min_sv
+       info_index(info_z_ub_min_sv%routine_id)=info_z_ub_min_sv
+       info_index(info_d_ub_max_sv%routine_id)=info_d_ub_max_sv
+       info_index(info_z_ub_max_sv%routine_id)=info_z_ub_max_sv
+
+       ! submatrix
+
+       info_index(info_d_ub_leading%routine_id)=info_d_ub_leading
+       info_index(info_z_ub_leading%routine_id)=info_z_ub_leading       
+       info_index(info_d_bv_trailing%routine_id)=info_d_bv_trailing
+       info_index(info_z_bv_trailing%routine_id)=info_z_bv_trailing
+       info_index(info_d_bt_leading%routine_id)=info_d_bt_leading
+       info_index(info_z_bt_leading%routine_id)=info_z_bt_leading       
+       info_index(info_d_wb_trailing%routine_id)=info_d_wb_trailing
+       info_index(info_z_wb_trailing%routine_id)=info_z_wb_trailing
+       info_index(info_d_ubt_leading%routine_id)=info_d_ubt_leading
+       info_index(info_z_ubt_leading%routine_id)=info_z_ubt_leading       
+       info_index(info_d_wbv_trailing%routine_id)=info_d_wbv_trailing
+       info_index(info_z_wbv_trailing%routine_id)=info_z_wbv_trailing
+
     end if
   end subroutine initialize_errors
 

@@ -1,6 +1,6 @@
 # module dependencies
 
-_ORRB = general assemble products qr_factorization solve \
+_ORRB = general qr_factorization solve cond_orth_band \
 	row_compress transforms convert types misc orth
 
 _MISC = error_id utility
@@ -9,12 +9,13 @@ _ERROR_ID = prec shift
 
 _UTILITY = prec
 
-_TYPES = band_types orth_band_types random products
+_TYPES = band_types orth_band_types random products submatrix assemble
 _BAND_TYPES = rotation utility shift prec
 _ORTH_BAND_TYPES = prec utility band_types
 _RANDOM = prec utility band_types orth_band_types
 _ASSEMBLE = prec error_id band_types orth_band_types rotation
 _PRODUCTS = prec error_id band_types orth_band_types rotation
+_SUBMATRIX = prec error_id band_types orth_band_types rotation
 
 _TRANSFORMS = sweeps rotation shift
 _ROTATION = prec
@@ -70,6 +71,9 @@ _QR_FACTORIZATION = prec error_id \
 _SOLVE = prec error_id orth_band_types \
 	band_types rotation
 
+_COND_ORTH_BAND = prec error_id orth_band_types \
+	band_types rotation solve products submatrix
+
 ORRB=$(patsubst %,$(OBJDIR)/%.o,$(_ORRB))
 MISC=$(patsubst %,$(OBJDIR)/%.o,$(_MISC))
 ERROR_ID=$(patsubst %,$(OBJDIR)/%.o,$(_ERROR_ID))
@@ -88,6 +92,7 @@ COND_TRIANGULAR=$(patsubst %,$(OBJDIR)/%.o,$(_COND_TRIANGULAR))
 GS=$(patsubst %,$(OBJDIR)/%.o,$(_GS))
 ASSEMBLE=$(patsubst %,$(OBJDIR)/%.o,$(_ASSEMBLE))
 PRODUCTS=$(patsubst %,$(OBJDIR)/%.o,$(_PRODUCTS))
+SUBMATRIX=$(patsubst %,$(OBJDIR)/%.o,$(_SUBMATRIX))
 GENERAL=$(patsubst %,$(OBJDIR)/%.o,$(_GENERAL))
 GENERAL_BV=$(patsubst %,$(OBJDIR)/%.o,$(_GENERAL_BV))
 GENERAL_UB=$(patsubst %,$(OBJDIR)/%.o,$(_GENERAL_UB))
@@ -105,6 +110,7 @@ CONVERT_UBT_TO_WBV=$(patsubst %,$(OBJDIR)/%.o,$(_CONVERT_UBT_TO_WBV))
 ROW_COMPRESS=$(patsubst %,$(OBJDIR)/%.o,$(_ROW_COMPRESS))
 QR_FACTORIZATION=$(patsubst %,$(OBJDIR)/%.o,$(_QR_FACTORIZATION))
 SOLVE=$(patsubst %,$(OBJDIR)/%.o,$(_SOLVE))
+COND_ORTH_BAND=$(patsubst %,$(OBJDIR)/%.o,$(_COND_ORTH_BAND))
 
 $(OBJDIR)/orrb.o : $(ORRB)
 
@@ -132,6 +138,7 @@ $(OBJDIR)/gs.o : $(GS)
 
 $(OBJDIR)/assemble.o : $(ASSEMBLE)
 $(OBJDIR)/products.o : $(PRODUCTS)
+$(OBJDIR)/submatrix.o : $(SUBMATRIX)
 
 $(OBJDIR)/general.o : $(GENERAL)
 $(OBJDIR)/general_bv.o : $(GENERAL_BV)
@@ -154,6 +161,7 @@ $(OBJDIR)/row_compress.o : $(ROW_COMPRESS)
 $(OBJDIR)/qr_factorization.o : $(QR_FACTORIZATION)
 
 $(OBJDIR)/solve.o : $(SOLVE)
+$(OBJDIR)/cond_orth_band.o : $(COND_ORTH_BAND)
 
 # List of object files for linking
 
@@ -162,7 +170,7 @@ OBJS=$(patsubst %,$(OBJDIR)/%.o,$(_OBJS))
 _MISCOBJS = misc prec utility error_id
 
 _TYPESOBJS = types band_types orth_band_types \
-	random assemble products
+	random assemble products submatrix
 
 _TRANSFORMSOBJS = transforms rotation shift \
 	sweeps
@@ -179,4 +187,4 @@ _CONVERTOBJS = convert convert_ub_to_bv \
 	convert_ubt_to_wbv 
 
 _OBJS =  $(_MISCOBJS) $(_TYPESOBJS) $(_TRANSFORMSOBJS) $(_ORTHOBJS) $(_GENERALOBJS) \
-	$(_CONVERTOBJS) qr_factorization solve orrb row_compress
+	$(_CONVERTOBJS) qr_factorization solve orrb row_compress cond_orth_band

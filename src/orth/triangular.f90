@@ -26,7 +26,6 @@ module mod_triangular
        upper_tr_left_multiply_linpack, f_z_upper_tr_left_multiply_linpack, &
        f_d_upper_tr_left_multiply_linpack
 
-
   public :: lower_right_invert, f_z_lower_right_invert, f_d_lower_right_invert, &
        lower_tr_right_invert, f_z_lower_tr_right_invert, f_d_lower_tr_right_invert, &
        lower_left_invert, f_z_lower_left_invert, f_d_lower_left_invert, &
@@ -48,9 +47,6 @@ module mod_triangular
        upper_left_invert_linpack, f_z_upper_left_invert_linpack, f_d_upper_left_invert_linpack, &
        upper_tr_left_invert_linpack, f_z_upper_tr_left_invert_linpack, &
        f_d_upper_tr_left_invert_linpack
-
-  public :: first_zero_diagonal, z_first_zero_diagonal, d_first_zero_diagonal, &
-       reverse_first_zero_diagonal, z_reverse_first_zero_diagonal, d_reverse_first_zero_diagonal
 
   ! Multiplication
   
@@ -188,15 +184,6 @@ module mod_triangular
      module procedure f_z_upper_tr_left_invert_linpack, f_d_upper_tr_left_invert_linpack
   end interface upper_tr_left_invert_linpack
   
-  
-  interface first_zero_diagonal
-     module procedure z_first_zero_diagonal, d_first_zero_diagonal
-  end interface first_zero_diagonal
-
-  interface reverse_first_zero_diagonal
-     module procedure z_reverse_first_zero_diagonal, d_reverse_first_zero_diagonal
-  end interface reverse_first_zero_diagonal
-
 contains
 
   ! Multiply
@@ -1509,61 +1496,5 @@ contains
        x(k)=(b(k)-tmp)/conjg(u(k,k))
     end do
   end subroutine f_z_upper_tr_left_invert_linpack
-  
-
-  ! finding zeros on the diagonal
-
-  integer(kind=int32) function d_first_zero_diagonal(a,tol) result(d)
-    real(kind=dp), dimension(:,:), intent(in) :: a
-    real(kind=dp), intent(in) :: tol
-    !
-    integer(kind=int32) :: j, n
-    n=min(size(a,1), size(a,2))
-    d=1
-    do j=1,n
-       if (abs(a(j,j)) <= tol) return
-       d=d+1
-    end do
-  end function d_first_zero_diagonal
-
-  integer(kind=int32) function z_first_zero_diagonal(a,tol) result(d)
-    complex(kind=dp), dimension(:,:), intent(in) :: a
-    real(kind=dp), intent(in) :: tol
-    !
-    integer(kind=int32) :: j, n
-    n=min(size(a,1), size(a,2))
-    d=1
-    do j=1,n
-       if (abs(a(j,j)) <= tol) return
-       d=d+1
-    end do
-  end function z_first_zero_diagonal
-
-  ! Return the first zero diagonal from the bottom right.
-  integer(kind=int32) function d_reverse_first_zero_diagonal(a,tol) result(d)
-    real(kind=dp), dimension(:,:), intent(in) :: a
-    real(kind=dp), intent(in) :: tol
-    !
-    integer(kind=int32) :: j, n
-    n=min(size(a,1), size(a,2))
-    d=n
-    do j=n,1,-1
-       if (abs(a(j,j)) <= tol) return
-       d=d-1
-    end do
-  end function d_reverse_first_zero_diagonal
-
-  integer(kind=int32) function z_reverse_first_zero_diagonal(a,tol) result(d)
-    complex(kind=dp), dimension(:,:), intent(in) :: a
-    real(kind=dp), intent(in) :: tol
-    !
-    integer(kind=int32) :: j, n
-    n=min(size(a,1), size(a,2))
-    d=n
-    do j=n,1,-1
-       if (abs(a(j,j)) <= tol) return
-       d=d-1
-    end do
-  end function z_reverse_first_zero_diagonal
 
 end module mod_triangular
