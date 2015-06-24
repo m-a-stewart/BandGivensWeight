@@ -2,10 +2,10 @@ program test_submatrix
   use mod_orrb
   implicit none
 
-  character(len=*), parameter :: fmt="(A40, 'error: ',ES8.2, ', ', A10)"
-  character(len=40) :: test_name
+  character(len=*), parameter :: fmt="(A45, 'error: ',ES8.2, ', ', A10)"
+  character(len=45) :: test_name
   
-  integer(kind=int32) :: na, lbw, ubw, la
+  integer(kind=int32) :: na, lbw, ubw, la, k0, k1, j0, j1
   type(error_info) :: error
   real(kind=dp), parameter :: tol=1e-15, c=7.0
   !
@@ -30,7 +30,7 @@ program test_submatrix
   print *
   print *, "--------------------------------"
   print *
-  print *, "Tests of Real Submatrices"
+  print *, "Tests of Real Structured Leading and Trailing Submatrices"
   print *
 
   na=50; la=10; lbw=3; ubw=4
@@ -229,7 +229,7 @@ program test_submatrix
   print *
   print *, "--------------------------------"
   print *
-  print *, "Tests of Complex Submatrices"
+  print *, "Tests of Complex Structured Leading and Trailing Submatrices"
   print *
 
   na=50; la=10; lbw=3; ubw=4
@@ -423,6 +423,292 @@ program test_submatrix
   a0_z=general(wbv0_z,error)
   test_name = "Complex WBV Submatrix na=50, la=2:"
   call z_output_result(test_name,a_z(na-la+1:na,na-la+1:na),a0_z,c*tol,error)
+
+  print *
+  print *, "--------------------------------"
+  print *
+  print *, "Tests of Real Unstructured Columns and Rows"
+  print *
+
+  na=50; lbw=3; ubw=4; k0=25; k1=30
+  ub_d=d_random_ub(na,lbw,ubw,error=error)
+  a_d = general(ub_d,error)
+  a0_d=columns_of_ub(k0,k1,ub_d,error)
+  test_name = "Real columns of UB na=50, k0=25, k1=30:"
+  call d_output_result(test_name,a_d(:,k0:k1),a0_d,c*tol,error)
+
+  na=50; lbw=3; ubw=4; k0=1; k1=50
+  ub_d=d_random_ub(na,lbw,ubw,error=error)
+  a_d = general(ub_d,error)
+  a0_d=columns_of_ub(k0,k1,ub_d,error)
+  test_name = "Real columns of UB na=50, k0=1, k1=50:"
+  call d_output_result(test_name,a_d(:,k0:k1),a0_d,c*tol,error)
+
+  na=50; lbw=3; ubw=4; k0=5; k1=5
+  ub_d=d_random_ub(na,lbw,ubw,error=error)
+  a_d = general(ub_d,error)
+  a0_d=columns_of_ub(k0,k1,ub_d,error)
+  test_name = "Real columns of UB na=50, k0=5, k1=5:"
+  call d_output_result(test_name,a_d(:,k0:k1),a0_d,c*tol,error)
+
+  na=50; lbw=3; ubw=4; k0=1; k1=1
+  ub_d=d_random_ub(na,lbw,ubw,error=error)
+  a_d = general(ub_d,error)
+  a0_d=columns_of_ub(k0,k1,ub_d,error)
+  test_name = "Real columns of UB na=50, k0=1, k1=1:"
+  call d_output_result(test_name,a_d(:,k0:k1),a0_d,c*tol,error)
+
+  na=50; lbw=3; ubw=4; k0=50; k1=50
+  ub_d=d_random_ub(na,lbw,ubw,error=error)
+  a_d = general(ub_d,error)
+  a0_d=columns_of_ub(k0,k1,ub_d,error)
+  test_name = "Real columns of UB na=50, k0=50, k1=50:"
+  call d_output_result(test_name,a_d(:,k0:k1),a0_d,c*tol,error)
+
+  na=50; lbw=3; ubw=4; j0=25; j1=30
+  bv_d=d_random_bv(na,lbw,ubw,error=error)
+  a_d = general(bv_d,error)
+  a0_d=rows_of_bv(j0,j1,bv_d,error)
+  test_name = "Real rows of BV na=50, j0=25, j1=30:"
+  call d_output_result(test_name,a_d(j0:j1,:),a0_d,c*tol,error)
+
+  na=50; lbw=3; ubw=4; j0=1; j1=50
+  bv_d=d_random_bv(na,lbw,ubw,error=error)
+  a_d = general(bv_d,error)
+  a0_d=rows_of_bv(j0,j1,bv_d,error)
+  test_name = "Real rows of BV na=50, j0=1, j1=50:"
+  call d_output_result(test_name,a_d(j0:j1,:),a0_d,c*tol,error)
+
+  na=50; lbw=3; ubw=4; j0=5; j1=5
+  bv_d=d_random_bv(na,lbw,ubw,error=error)
+  a_d = general(bv_d,error)
+  a0_d=rows_of_bv(j0,j1,bv_d,error)
+  test_name = "Real rows of BV na=50, j0=5, j1=5:"
+  call d_output_result(test_name,a_d(j0:j1,:),a0_d,c*tol,error)
+
+  na=50; lbw=3; ubw=4; j0=1; j1=1
+  bv_d=d_random_bv(na,lbw,ubw,error=error)
+  a_d = general(bv_d,error)
+  a0_d=rows_of_bv(j0,j1,bv_d,error)
+  test_name = "Real rows of BV na=50, j0=1, j1=1:"
+  call d_output_result(test_name,a_d(j0:j1,:),a0_d,c*tol,error)
+
+  na=50; lbw=3; ubw=4; j0=50; j1=50
+  bv_d=d_random_bv(na,lbw,ubw,error=error)
+  a_d = general(bv_d,error)
+  a0_d=rows_of_bv(j0,j1,bv_d,error)
+  test_name = "Real rows of BV na=50, j0=50, j1=50:"
+  call d_output_result(test_name,a_d(j0:j1,:),a0_d,c*tol,error)
+  
+  na=50; lbw=3; ubw=4; k0=25; k1=30
+  wb_d=d_random_wb(na,lbw,ubw,error=error)
+  a_d = general(wb_d,error)
+  a0_d=columns_of_wb(k0,k1,wb_d,error)
+  test_name = "Real columns of WB na=50, k0=25, k1=30:"
+  call d_output_result(test_name,a_d(:,k0:k1),a0_d,c*tol,error)
+
+  na=50; lbw=3; ubw=4; k0=1; k1=50
+  wb_d=d_random_wb(na,lbw,ubw,error=error)
+  a_d = general(wb_d,error)
+  a0_d=columns_of_wb(k0,k1,wb_d,error)
+  test_name = "Real columns of WB na=50, k0=1, k1=50:"
+  call d_output_result(test_name,a_d(:,k0:k1),a0_d,c*tol,error)
+
+  na=50; lbw=3; ubw=4; k0=5; k1=5
+  wb_d=d_random_wb(na,lbw,ubw,error=error)
+  a_d = general(wb_d,error)
+  a0_d=columns_of_wb(k0,k1,wb_d,error)
+  test_name = "Real columns of WB na=50, k0=5, k1=5:"
+  call d_output_result(test_name,a_d(:,k0:k1),a0_d,c*tol,error)
+  
+  na=50; lbw=3; ubw=4; k0=1; k1=1
+  wb_d=d_random_wb(na,lbw,ubw,error=error)
+  a_d = general(wb_d,error)
+  a0_d=columns_of_wb(k0,k1,wb_d,error)
+  test_name = "Real columns of WB na=50, k0=1, k1=1:"
+  call d_output_result(test_name,a_d(:,k0:k1),a0_d,c*tol,error)
+
+  na=50; lbw=3; ubw=4; k0=50; k1=50
+  wb_d=d_random_wb(na,lbw,ubw,error=error)
+  a_d = general(wb_d,error)
+  a0_d=columns_of_wb(k0,k1,wb_d,error)
+  test_name = "Real columns of WB na=50, k0=50, k1=50:"
+  call d_output_result(test_name,a_d(:,k0:k1),a0_d,c*tol,error)
+
+  na=50; lbw=3; ubw=4; j0=25; j1=30
+  bt_d=d_random_bt(na,lbw,ubw,error=error)
+  a_d = general(bt_d,error)
+  a0_d=rows_of_bt(j0,j1,bt_d,error)
+  test_name = "Real rows of BT na=50, j0=25, j1=30:"
+  call d_output_result(test_name,a_d(j0:j1,:),a0_d,c*tol,error)
+
+  na=50; lbw=3; ubw=4; j0=1; j1=50
+  bt_d=d_random_bt(na,lbw,ubw,error=error)
+  a_d = general(bt_d,error)
+  a0_d=rows_of_bt(j0,j1,bt_d,error)
+  test_name = "Real rows of BT na=50, j0=1, j1=50:"
+  call d_output_result(test_name,a_d(j0:j1,:),a0_d,c*tol,error)
+
+  na=50; lbw=3; ubw=4; j0=5; j1=5
+  bt_d=d_random_bt(na,lbw,ubw,error=error)
+  a_d = general(bt_d,error)
+  a0_d=rows_of_bt(j0,j1,bt_d,error)
+  test_name = "Real rows of BT na=50, j0=5, j1=5:"
+  call d_output_result(test_name,a_d(j0:j1,:),a0_d,c*tol,error)
+  
+  na=50; lbw=3; ubw=4; j0=1; j1=1
+  bt_d=d_random_bt(na,lbw,ubw,error=error)
+  a_d = general(bt_d,error)
+  a0_d=rows_of_bt(j0,j1,bt_d,error)
+  test_name = "Real rows of BT na=50, j0=1, j1=1:"
+  call d_output_result(test_name,a_d(j0:j1,:),a0_d,c*tol,error)
+
+  na=50; lbw=3; ubw=4; j0=50; j1=50
+  bt_d=d_random_bt(na,lbw,ubw,error=error)
+  a_d = general(bt_d,error)
+  a0_d=rows_of_bt(j0,j1,bt_d,error)
+  test_name = "Real rows of BT na=50, j0=50, j1=50:"
+  call d_output_result(test_name,a_d(j0:j1,:),a0_d,c*tol,error)
+  
+  
+  print *
+  print *, "--------------------------------"
+  print *
+  print *, "Tests of Complex Unstructured Columns and Rows"
+  print *
+
+  na=50; lbw=3; ubw=4; k0=25; k1=30
+  ub_z=z_random_ub(na,lbw,ubw,error=error)
+  a_z = general(ub_z,error)
+  a0_z=columns_of_ub(k0,k1,ub_z,error)
+  test_name = "Complex columns of UB na=50, k0=25, k1=30:"
+  call z_output_result(test_name,a_z(:,k0:k1),a0_z,c*tol,error)
+
+  na=50; lbw=3; ubw=4; k0=1; k1=50
+  ub_z=z_random_ub(na,lbw,ubw,error=error)
+  a_z = general(ub_z,error)
+  a0_z=columns_of_ub(k0,k1,ub_z,error)
+  test_name = "Complex columns of UB na=50, k0=1, k1=50:"
+  call z_output_result(test_name,a_z(:,k0:k1),a0_z,c*tol,error)
+
+  na=50; lbw=3; ubw=4; k0=5; k1=5
+  ub_z=z_random_ub(na,lbw,ubw,error=error)
+  a_z = general(ub_z,error)
+  a0_z=columns_of_ub(k0,k1,ub_z,error)
+  test_name = "Complex columns of UB na=50, k0=5, k1=5:"
+  call z_output_result(test_name,a_z(:,k0:k1),a0_z,c*tol,error)
+
+  na=50; lbw=3; ubw=4; k0=1; k1=1
+  ub_z=z_random_ub(na,lbw,ubw,error=error)
+  a_z = general(ub_z,error)
+  a0_z=columns_of_ub(k0,k1,ub_z,error)
+  test_name = "Complex columns of UB na=50, k0=1, k1=1:"
+  call z_output_result(test_name,a_z(:,k0:k1),a0_z,c*tol,error)
+
+  na=50; lbw=3; ubw=4; k0=50; k1=50
+  ub_z=z_random_ub(na,lbw,ubw,error=error)
+  a_z = general(ub_z,error)
+  a0_z=columns_of_ub(k0,k1,ub_z,error)
+  test_name = "Complex columns of UB na=50, k0=50, k1=50:"
+  call z_output_result(test_name,a_z(:,k0:k1),a0_z,c*tol,error)
+  
+  na=50; lbw=3; ubw=4; j0=25; j1=30
+  bv_z=z_random_bv(na,lbw,ubw,error=error)
+  a_z = general(bv_z,error)
+  a0_z=rows_of_bv(j0,j1,bv_z,error)
+  test_name = "Complex rows of BV na=50, j0=25, j1=30:"
+  call z_output_result(test_name,a_z(j0:j1,:),a0_z,c*tol,error)
+
+  na=50; lbw=3; ubw=4; j0=1; j1=50
+  bv_z=z_random_bv(na,lbw,ubw,error=error)
+  a_z = general(bv_z,error)
+  a0_z=rows_of_bv(j0,j1,bv_z,error)
+  test_name = "Complex rows of BV na=50, j0=1, j1=50:"
+  call z_output_result(test_name,a_z(j0:j1,:),a0_z,c*tol,error)
+
+  na=50; lbw=3; ubw=4; j0=5; j1=5
+  bv_z=z_random_bv(na,lbw,ubw,error=error)
+  a_z = general(bv_z,error)
+  a0_z=rows_of_bv(j0,j1,bv_z,error)
+  test_name = "Complex rows of BV na=50, j0=5, j1=5:"
+  call z_output_result(test_name,a_z(j0:j1,:),a0_z,c*tol,error)
+
+  na=50; lbw=3; ubw=4; j0=1; j1=1
+  bv_z=z_random_bv(na,lbw,ubw,error=error)
+  a_z = general(bv_z,error)
+  a0_z=rows_of_bv(j0,j1,bv_z,error)
+  test_name = "Complex rows of BV na=50, j0=1, j1=1:"
+  call z_output_result(test_name,a_z(j0:j1,:),a0_z,c*tol,error)
+
+  na=50; lbw=3; ubw=4; j0=50; j1=50
+  bv_z=z_random_bv(na,lbw,ubw,error=error)
+  a_z = general(bv_z,error)
+  a0_z=rows_of_bv(j0,j1,bv_z,error)
+  test_name = "Complex rows of BV na=50, j0=50, j1=50:"
+  call z_output_result(test_name,a_z(j0:j1,:),a0_z,c*tol,error)
+
+  na=50; lbw=3; ubw=4; k0=25; k1=30
+  wb_z=z_random_wb(na,lbw,ubw,error=error)
+  a_z = general(wb_z,error)
+  a0_z=columns_of_wb(k0,k1,wb_z,error)
+  test_name = "Complex columns of WB na=50, k0=25, k1=30:"
+  call z_output_result(test_name,a_z(:,k0:k1),a0_z,c*tol,error)
+
+  na=50; lbw=3; ubw=4; k0=1; k1=50
+  wb_z=z_random_wb(na,lbw,ubw,error=error)
+  a_z = general(wb_z,error)
+  a0_z=columns_of_wb(k0,k1,wb_z,error)
+  test_name = "Complex columns of WB na=50, k0=1, k1=50:"
+  call z_output_result(test_name,a_z(:,k0:k1),a0_z,c*tol,error)
+
+  na=50; lbw=3; ubw=4; k0=5; k1=5
+  wb_z=z_random_wb(na,lbw,ubw,error=error)
+  a_z = general(wb_z,error)
+  a0_z=columns_of_wb(k0,k1,wb_z,error)
+  test_name = "Complex columns of WB na=50, k0=5, k1=5:"
+  call z_output_result(test_name,a_z(:,k0:k1),a0_z,c*tol,error)
+  
+  na=50; lbw=3; ubw=4; k0=1; k1=1
+  wb_z=z_random_wb(na,lbw,ubw,error=error)
+  a_z = general(wb_z,error)
+  a0_z=columns_of_wb(k0,k1,wb_z,error)
+  test_name = "Complex columns of WB na=50, k0=1, k1=1:"
+  call z_output_result(test_name,a_z(:,k0:k1),a0_z,c*tol,error)
+
+  na=50; lbw=3; ubw=4; k0=50; k1=50
+  wb_z=z_random_wb(na,lbw,ubw,error=error)
+  a_z = general(wb_z,error)
+  a0_z=columns_of_wb(k0,k1,wb_z,error)
+  test_name = "Complex columns of WB na=50, k0=50, k1=50:"
+  call z_output_result(test_name,a_z(:,k0:k1),a0_z,c*tol,error)
+  
+  na=50; lbw=3; ubw=4; j0=1; j1=50
+  bt_z=z_random_bt(na,lbw,ubw,error=error)
+  a_z = general(bt_z,error)
+  a0_z=rows_of_bt(j0,j1,bt_z,error)
+  test_name = "Complex rows of BT na=50, j0=1, j1=50:"
+  call z_output_result(test_name,a_z(j0:j1,:),a0_z,c*tol,error)
+
+  na=50; lbw=3; ubw=4; j0=5; j1=5
+  bt_z=z_random_bt(na,lbw,ubw,error=error)
+  a_z = general(bt_z,error)
+  a0_z=rows_of_bt(j0,j1,bt_z,error)
+  test_name = "Complex rows of BT na=50, j0=5, j1=5:"
+  call z_output_result(test_name,a_z(j0:j1,:),a0_z,c*tol,error)
+  
+  na=50; lbw=3; ubw=4; j0=1; j1=1
+  bt_z=z_random_bt(na,lbw,ubw,error=error)
+  a_z = general(bt_z,error)
+  a0_z=rows_of_bt(j0,j1,bt_z,error)
+  test_name = "Complex rows of BT na=50, j0=1, j1=1:"
+  call z_output_result(test_name,a_z(j0:j1,:),a0_z,c*tol,error)
+
+  na=50; lbw=3; ubw=4; j0=50; j1=50
+  bt_z=z_random_bt(na,lbw,ubw,error=error)
+  a_z = general(bt_z,error)
+  a0_z=rows_of_bt(j0,j1,bt_z,error)
+  test_name = "Complex rows of BT na=50, j0=50, j1=50:"
+  call z_output_result(test_name,a_z(j0:j1,:),a0_z,c*tol,error)
 
 contains
 

@@ -1226,6 +1226,34 @@ module mod_error_id
   integer(int32), parameter :: id_d_wbv_trailing=mod_id_submatrix + 10
   integer(int32), parameter :: id_z_wbv_trailing=mod_id_submatrix + 11
 
+  integer(int32), parameter :: id_d_ub_to_columns=mod_id_submatrix + 12
+  integer(int32), parameter :: id_f_d_ub_to_columns=mod_id_submatrix + 13
+  integer(int32), parameter :: id_d_columns_of_ub=mod_id_submatrix + 14
+  integer(int32), parameter :: id_z_ub_to_columns=mod_id_submatrix + 15
+  integer(int32), parameter :: id_f_z_ub_to_columns=mod_id_submatrix + 16
+  integer(int32), parameter :: id_z_columns_of_ub=mod_id_submatrix + 17
+
+  integer(int32), parameter :: id_d_bv_to_rows=mod_id_submatrix + 18
+  integer(int32), parameter :: id_f_d_bv_to_rows=mod_id_submatrix + 19
+  integer(int32), parameter :: id_d_rows_of_bv=mod_id_submatrix + 20
+  integer(int32), parameter :: id_z_bv_to_rows=mod_id_submatrix + 21
+  integer(int32), parameter :: id_f_z_bv_to_rows=mod_id_submatrix + 22
+  integer(int32), parameter :: id_z_rows_of_bv=mod_id_submatrix + 23
+
+  integer(int32), parameter :: id_d_wb_to_columns=mod_id_submatrix + 24
+  integer(int32), parameter :: id_f_d_wb_to_columns=mod_id_submatrix + 25
+  integer(int32), parameter :: id_d_columns_of_wb=mod_id_submatrix + 26
+  integer(int32), parameter :: id_z_wb_to_columns=mod_id_submatrix + 27
+  integer(int32), parameter :: id_f_z_wb_to_columns=mod_id_submatrix + 28
+  integer(int32), parameter :: id_z_columns_of_wb=mod_id_submatrix + 29
+
+  integer(int32), parameter :: id_d_bt_to_rows=mod_id_submatrix + 30
+  integer(int32), parameter :: id_f_d_bt_to_rows=mod_id_submatrix + 31
+  integer(int32), parameter :: id_d_rows_of_bt=mod_id_submatrix + 32
+  integer(int32), parameter :: id_z_bt_to_rows=mod_id_submatrix + 33
+  integer(int32), parameter :: id_f_z_bt_to_rows=mod_id_submatrix + 34
+  integer(int32), parameter :: id_z_rows_of_bt=mod_id_submatrix + 35
+
   type(routine_info), parameter :: info_d_ub_leading=routine_info(id_d_ub_leading, &
        'd_ub_leading', &
        [ character(len=error_message_length) :: 'ub%n<1', &
@@ -1285,6 +1313,54 @@ module mod_error_id
        'z_wbv_trailing', &
        [ character(len=error_message_length) :: 'wbv%n<1', &
        'lbwmaxl0 < lbw or ubwmaxu0 < ubw'])
+  
+  type(routine_info), parameter :: info_d_ub_to_columns=routine_info(id_d_ub_to_columns, &
+       'd_ub_to_columns', [ character(len=error_message_length) :: 'Size error in A.' ] )
+
+  type(routine_info), parameter :: info_z_ub_to_columns=routine_info(id_z_ub_to_columns, &
+       'z_ub_to_columns', [ character(len=error_message_length) :: 'Size error in A.' ] )
+
+  type(routine_info), parameter :: info_d_columns_of_ub=routine_info(id_d_columns_of_ub, &
+       'd_columns_of_ub', [ character(len=error_message_length) :: '' ] )
+
+  type(routine_info), parameter :: info_z_columns_of_ub=routine_info(id_z_columns_of_ub, &
+       'z_columns_of_ub', [ character(len=error_message_length) :: '' ] )
+
+  type(routine_info), parameter :: info_d_wb_to_columns=routine_info(id_d_wb_to_columns, &
+       'd_wb_to_columns', [ character(len=error_message_length) :: 'Size error in A.' ] )
+
+  type(routine_info), parameter :: info_z_wb_to_columns=routine_info(id_z_wb_to_columns, &
+       'z_wb_to_columns', [ character(len=error_message_length) :: 'Size error in A.' ] )
+
+  type(routine_info), parameter :: info_d_columns_of_wb=routine_info(id_d_columns_of_wb, &
+       'd_columns_of_wb', [ character(len=error_message_length) :: '' ] )
+
+  type(routine_info), parameter :: info_z_columns_of_wb=routine_info(id_z_columns_of_wb, &
+       'z_columns_of_wb', [ character(len=error_message_length) :: '' ] )
+  
+  type(routine_info), parameter :: info_d_bv_to_rows=routine_info(id_d_bv_to_rows, &
+       'd_bv_to_rows', [ character(len=error_message_length) :: 'Size error in A.' ] )
+  
+  type(routine_info), parameter :: info_z_bv_to_rows=routine_info(id_z_bv_to_rows, &
+       'z_bv_to_rows', [ character(len=error_message_length) :: 'Size error in A.' ] )
+
+  type(routine_info), parameter :: info_d_rows_of_bv=routine_info(id_d_rows_of_bv, &
+       'd_rows_of_bv', [ character(len=error_message_length) :: '' ] )
+
+  type(routine_info), parameter :: info_z_rows_of_bv=routine_info(id_z_rows_of_bv, &
+       'z_rows_of_bv', [ character(len=error_message_length) :: '' ] )
+
+  type(routine_info), parameter :: info_d_bt_to_rows=routine_info(id_d_bt_to_rows, &
+       'd_bt_to_rows', [ character(len=error_message_length) :: 'Size error in A.' ] )
+  
+  type(routine_info), parameter :: info_z_bt_to_rows=routine_info(id_z_bt_to_rows, &
+       'z_bt_to_rows', [ character(len=error_message_length) :: 'Size error in A.' ] )
+
+  type(routine_info), parameter :: info_d_rows_of_bt=routine_info(id_d_rows_of_bt, &
+       'd_rows_of_bt', [ character(len=error_message_length) :: '' ] )
+
+  type(routine_info), parameter :: info_z_rows_of_bt=routine_info(id_z_rows_of_bt, &
+       'z_rows_of_bt', [ character(len=error_message_length) :: '' ] )
   
 contains
 
@@ -1381,21 +1457,33 @@ contains
        ! assemble.f90
        info_index(info_d_ub_to_general%routine_id)=info_d_ub_to_general
        info_index(info_z_ub_to_general%routine_id)=info_z_ub_to_general
+       info_index(info_d_general_of_ub%routine_id)=info_d_general_of_ub
+       info_index(info_z_general_of_ub%routine_id)=info_z_general_of_ub
 
        info_index(info_d_bt_to_general%routine_id)=info_d_bt_to_general
        info_index(info_z_bt_to_general%routine_id)=info_z_bt_to_general
+       info_index(info_d_general_of_bt%routine_id)=info_d_general_of_bt
+       info_index(info_z_general_of_bt%routine_id)=info_z_general_of_bt
 
        info_index(info_d_ubt_to_general%routine_id)=info_d_ubt_to_general
        info_index(info_z_ubt_to_general%routine_id)=info_z_ubt_to_general
+       info_index(info_d_general_of_ubt%routine_id)=info_d_general_of_ubt
+       info_index(info_z_general_of_ubt%routine_id)=info_z_general_of_ubt
 
        info_index(info_d_bv_to_general%routine_id)=info_d_bv_to_general
        info_index(info_z_bv_to_general%routine_id)=info_z_bv_to_general
+       info_index(info_d_general_of_bv%routine_id)=info_d_general_of_bv
+       info_index(info_z_general_of_bv%routine_id)=info_z_general_of_bv
 
        info_index(info_d_wb_to_general%routine_id)=info_d_wb_to_general
        info_index(info_z_wb_to_general%routine_id)=info_z_wb_to_general
+       info_index(info_d_general_of_wb%routine_id)=info_d_general_of_wb
+       info_index(info_z_general_of_wb%routine_id)=info_z_general_of_wb
 
        info_index(info_d_wbv_to_general%routine_id)=info_d_wbv_to_general
        info_index(info_z_wbv_to_general%routine_id)=info_z_wbv_to_general
+       info_index(info_d_general_of_wbv%routine_id)=info_d_general_of_wbv
+       info_index(info_z_general_of_wbv%routine_id)=info_z_general_of_wbv
 
        ! convert_bv_to_ub
        info_index(info_d_convert_bv_to_ub%routine_id)=info_d_convert_bv_to_ub
@@ -1618,6 +1706,26 @@ contains
        info_index(info_z_ubt_leading%routine_id)=info_z_ubt_leading       
        info_index(info_d_wbv_trailing%routine_id)=info_d_wbv_trailing
        info_index(info_z_wbv_trailing%routine_id)=info_z_wbv_trailing
+
+       info_index(info_d_ub_to_columns%routine_id)=info_d_ub_to_columns
+       info_index(info_z_ub_to_columns%routine_id)=info_z_ub_to_columns
+       info_index(info_d_columns_of_ub%routine_id)=info_d_columns_of_ub
+       info_index(info_z_columns_of_ub%routine_id)=info_z_columns_of_ub
+
+       info_index(info_d_bt_to_rows%routine_id)=info_d_bt_to_rows
+       info_index(info_z_bt_to_rows%routine_id)=info_z_bt_to_rows
+       info_index(info_d_rows_of_bt%routine_id)=info_d_rows_of_bt
+       info_index(info_z_rows_of_bt%routine_id)=info_z_rows_of_bt
+
+       info_index(info_d_bv_to_rows%routine_id)=info_d_bv_to_rows
+       info_index(info_z_bv_to_rows%routine_id)=info_z_bv_to_rows
+       info_index(info_d_rows_of_bv%routine_id)=info_d_rows_of_bv
+       info_index(info_z_rows_of_bv%routine_id)=info_z_rows_of_bv
+
+       info_index(info_d_wb_to_columns%routine_id)=info_d_wb_to_columns
+       info_index(info_z_wb_to_columns%routine_id)=info_z_wb_to_columns
+       info_index(info_d_columns_of_wb%routine_id)=info_d_columns_of_wb
+       info_index(info_z_columns_of_wb%routine_id)=info_z_columns_of_wb
 
     end if
   end subroutine initialize_errors
