@@ -34,7 +34,7 @@ program test_convert_wb_and_bt
   wb_d=d_random_wb(na,lbwa,ubwa,error=error)
   a0_d=general(wb_d,error)
   call cpu_time(t0)
-  bt_d=bt(wb_d,error)
+  bt_d=bt_of(wb_d,error)
   call cpu_time(t1)
   a1_d=general(bt_d,error)
   test_name = "Real WB to BT, n=40;"
@@ -45,7 +45,7 @@ program test_convert_wb_and_bt
   wb_d=d_random_wb(na,lbwa,ubwa,error=error)
   a0_d=general(wb_d,error)
   call cpu_time(t0)
-  bt_d=bt(wb_d,error)
+  bt_d=bt_of(wb_d,error)
   call cpu_time(t1)
   a1_d=general(bt_d,error)
   test_name = "Real WB to BT, n=1;"
@@ -56,7 +56,7 @@ program test_convert_wb_and_bt
   wb_d=d_random_wb(na,lbwa,ubwa,error=error)
   a0_d=general(wb_d,error)
   call cpu_time(t0)
-  bt_d=bt(wb_d,error)
+  bt_d=bt_of(wb_d,error)
   call cpu_time(t1)
   a1_d=general(bt_d,error)
   test_name = "Real WB to BT, n=2;"
@@ -67,7 +67,7 @@ program test_convert_wb_and_bt
   wb_d=d_random_wb(na,lbwa,ubwa,error=error)
   a0_d=general(wb_d,error)
   call cpu_time(t0)
-  bt_d=bt(wb_d,error)
+  bt_d=bt_of(wb_d,error)
   call cpu_time(t1)
   a1_d=general(bt_d,error)
   test_name = "Real WB to BT, n=3;"
@@ -78,7 +78,7 @@ program test_convert_wb_and_bt
   wb_d=d_random_wb(na,lbwa,ubwa,error=error)
   a0_d=general(wb_d,error)
   call cpu_time(t0)
-  bt_d=bt(wb_d,error)
+  bt_d=bt_of(wb_d,error)
   call cpu_time(t1)
   a1_d=general(bt_d,error)
   test_name = "Real WB to BT, n=4;"
@@ -90,7 +90,7 @@ program test_convert_wb_and_bt
   bt_d=d_random_bt(na,lbwa,ubwa,error=error)
   a0_d=general(bt_d,error)
   call cpu_time(t0)
-  wb_d=wb(bt_d,error)
+  wb_d=wb_of(bt_d,error)
   call cpu_time(t1)
   a1_d=general(wb_d,error)
   test_name = "Real BT to WB, n=40;"
@@ -101,7 +101,7 @@ program test_convert_wb_and_bt
   bt_d=d_random_bt(na,lbwa,ubwa,error=error)
   a0_d=general(bt_d,error)
   call cpu_time(t0)
-  wb_d=wb(bt_d,error)
+  wb_d=wb_of(bt_d,error)
   call cpu_time(t1)
   a1_d=general(wb_d,error)
   test_name = "Real BT to WB, n=1;"
@@ -112,7 +112,7 @@ program test_convert_wb_and_bt
   bt_d=d_random_bt(na,lbwa,ubwa,error=error)
   a0_d=general(bt_d,error)
   call cpu_time(t0)
-  wb_d=wb(bt_d,error)
+  wb_d=wb_of(bt_d,error)
   call cpu_time(t1)
   a1_d=general(wb_d,error)
   test_name = "Real BT to WB, n=2;"
@@ -123,7 +123,7 @@ program test_convert_wb_and_bt
   bt_d=d_random_bt(na,lbwa,ubwa,error=error)
   a0_d=general(bt_d,error)
   call cpu_time(t0)
-  wb_d=wb(bt_d,error)
+  wb_d=wb_of(bt_d,error)
   call cpu_time(t1)
   a1_d=general(wb_d,error)
   test_name = "Real BT to WB, n=3;"
@@ -134,7 +134,7 @@ program test_convert_wb_and_bt
   bt_d=d_random_bt(na,lbwa,ubwa,error=error)
   a0_d=general(bt_d,error)
   call cpu_time(t0)
-  wb_d=wb(bt_d,error)
+  wb_d=wb_of(bt_d,error)
   call cpu_time(t1)
   a1_d=general(wb_d,error)
   test_name = "Real BT to WB, n=4;"
@@ -152,7 +152,7 @@ program test_convert_wb_and_bt
   wb_z=z_random_wb(na,lbwa,ubwa,error=error)
   a0_z=general(wb_z,error)
   call cpu_time(t0)
-  bt_z=bt(wb_z,error)
+  bt_z=bt_of(wb_z,error)
   call cpu_time(t1)
   a1_z=general(bt_z,error)
   test_name = "Complex WB to BT, n=40;"
@@ -163,7 +163,7 @@ program test_convert_wb_and_bt
   wb_z=z_random_wb(na,lbwa,ubwa,error=error)
   a0_z=general(wb_z,error)
   call cpu_time(t0)
-  bt_z=bt(wb_z,error)
+  bt_z=bt_of(wb_z,error)
   call cpu_time(t1)
   a1_z=general(bt_z,error)
   test_name = "Complex WB to BT, n=1;"
@@ -174,7 +174,7 @@ program test_convert_wb_and_bt
   wb_z=z_random_wb(na,lbwa,ubwa,error=error)
   a0_z=general(wb_z,error)
   call cpu_time(t0)
-  bt_z=bt(wb_z,error)
+  bt_z=bt_of(wb_z,error)
   call cpu_time(t1)
   a1_z=general(bt_z,error)
   test_name = "Complex WB to BT, n=2;"
@@ -185,7 +185,7 @@ program test_convert_wb_and_bt
   wb_z=z_random_wb(na,lbwa,ubwa,error=error)
   a0_z=general(wb_z,error)
   call cpu_time(t0)
-  bt_z=bt(wb_z,error)
+  bt_z=bt_of(wb_z,error)
   call cpu_time(t1)
   a1_z=general(bt_z,error)
   test_name = "Complex WB to BT, n=3;"
@@ -196,7 +196,7 @@ program test_convert_wb_and_bt
   wb_z=z_random_wb(na,lbwa,ubwa,error=error)
   a0_z=general(wb_z,error)
   call cpu_time(t0)
-  bt_z=bt(wb_z,error)
+  bt_z=bt_of(wb_z,error)
   call cpu_time(t1)
   a1_z=general(bt_z,error)
   test_name = "Complex WB to BT, n=4;"
@@ -208,7 +208,7 @@ program test_convert_wb_and_bt
   bt_z=z_random_bt(na,lbwa,ubwa,error=error)
   a0_z=general(bt_z,error)
   call cpu_time(t0)
-  wb_z=wb(bt_z,error)
+  wb_z=wb_of(bt_z,error)
   call cpu_time(t1)
   a1_z=general(wb_z,error)
   test_name = "Complex BT to WB, n=40;"
@@ -219,7 +219,7 @@ program test_convert_wb_and_bt
   bt_z=z_random_bt(na,lbwa,ubwa,error=error)
   a0_z=general(bt_z,error)
   call cpu_time(t0)
-  wb_z=wb(bt_z,error)
+  wb_z=wb_of(bt_z,error)
   call cpu_time(t1)
   a1_z=general(wb_z,error)
   test_name = "Complex BT to WB, n=1;"
@@ -230,7 +230,7 @@ program test_convert_wb_and_bt
   bt_z=z_random_bt(na,lbwa,ubwa,error=error)
   a0_z=general(bt_z,error)
   call cpu_time(t0)
-  wb_z=wb(bt_z,error)
+  wb_z=wb_of(bt_z,error)
   call cpu_time(t1)
   a1_z=general(wb_z,error)
   test_name = "Complex BT to WB, n=2;"
@@ -241,7 +241,7 @@ program test_convert_wb_and_bt
   bt_z=z_random_bt(na,lbwa,ubwa,error=error)
   a0_z=general(bt_z,error)
   call cpu_time(t0)
-  wb_z=wb(bt_z,error)
+  wb_z=wb_of(bt_z,error)
   call cpu_time(t1)
   a1_z=general(wb_z,error)
   test_name = "Complex BT to WB, n=3;"
@@ -252,7 +252,7 @@ program test_convert_wb_and_bt
   bt_z=z_random_bt(na,lbwa,ubwa,error=error)
   a0_z=general(bt_z,error)
   call cpu_time(t0)
-  wb_z=wb(bt_z,error)
+  wb_z=wb_of(bt_z,error)
   call cpu_time(t1)
   a1_z=general(wb_z,error)
   test_name = "Complex BT to WB, n=4;"

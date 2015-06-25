@@ -11,7 +11,7 @@ module mod_convert_ub_to_bv
 
   public :: convert_ub_to_bv, d_convert_ub_to_bv, z_convert_ub_to_bv, &
        f_convert_ub_to_bv, f_d_convert_ub_to_bv, f_z_convert_ub_to_bv, &
-       d_bv_of_ub, z_bv_of_ub, bv
+       d_bv_of_ub, z_bv_of_ub, bv_of
 
   interface convert_ub_to_bv
      module procedure d_convert_ub_to_bv, z_convert_ub_to_bv
@@ -21,9 +21,9 @@ module mod_convert_ub_to_bv
      module procedure f_d_convert_ub_to_bv, f_z_convert_ub_to_bv
   end interface f_convert_ub_to_bv
 
-  interface bv
+  interface bv_of
      module procedure d_bv_of_ub, z_bv_of_ub
-  end interface bv
+  end interface bv_of
 
 contains
 

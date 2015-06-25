@@ -33,7 +33,7 @@ program test_convert_ub_and_bv
   ub_d=d_random_ub(na,lbwa,ubwa,error=error)
   a0_d=general(ub_d,error)
   call cpu_time(t0)
-  bv_d=bv(ub_d,error)
+  bv_d=bv_of(ub_d,error)
   call cpu_time(t1)
   a1_d=general(bv_d,error)
   test_name = "Real UB to BV, n=40;"
@@ -44,7 +44,7 @@ program test_convert_ub_and_bv
   ub_d=d_random_ub(na,lbwa,ubwa,error=error)
   a0_d=general(ub_d,error)
   call cpu_time(t0)
-  bv_d=bv(ub_d,error)
+  bv_d=bv_of(ub_d,error)
   call cpu_time(t1)
   a1_d=general(bv_d,error)
   test_name = "Real UB to BV, n=1;"
@@ -55,7 +55,7 @@ program test_convert_ub_and_bv
   ub_d=d_random_ub(na,lbwa,ubwa,error=error)
   a0_d=general(ub_d,error)
   call cpu_time(t0)
-  bv_d=bv(ub_d,error)
+  bv_d=bv_of(ub_d,error)
   call cpu_time(t1)
   a1_d=general(bv_d,error)
   test_name = "Real UB to BV, n=2;"
@@ -66,7 +66,7 @@ program test_convert_ub_and_bv
   ub_d=d_random_ub(na,lbwa,ubwa,error=error)
   a0_d=general(ub_d,error)
   call cpu_time(t0)
-  bv_d=bv(ub_d,error)
+  bv_d=bv_of(ub_d,error)
   call cpu_time(t1)
   a1_d=general(bv_d,error)
   test_name = "Real UB to BV, n=3;"
@@ -77,7 +77,7 @@ program test_convert_ub_and_bv
   ub_d=d_random_ub(na,lbwa,ubwa,error=error)
   a0_d=general(ub_d,error)
   call cpu_time(t0)
-  bv_d=bv(ub_d,error)
+  bv_d=bv_of(ub_d,error)
   call cpu_time(t1)
   a1_d=general(bv_d,error)
   test_name = "Real UB to BV, n=4;"
@@ -89,7 +89,7 @@ program test_convert_ub_and_bv
   bv_d=d_random_bv(na,lbwa,ubwa,error=error)
   a0_d=general(bv_d,error)
   call cpu_time(t0)
-  ub_d=ub(bv_d,error)
+  ub_d=ub_of(bv_d,error)
   call cpu_time(t1)
   a1_d=general(ub_d,error)
   test_name = "Real BV to UB, n=40;"
@@ -100,7 +100,7 @@ program test_convert_ub_and_bv
   bv_d=d_random_bv(na,lbwa,ubwa,error=error)
   a0_d=general(bv_d,error)
   call cpu_time(t0)
-  ub_d=ub(bv_d,error)
+  ub_d=ub_of(bv_d,error)
   call cpu_time(t1)
   a1_d=general(ub_d,error)
   test_name = "Real BV to UB, n=1;"
@@ -111,7 +111,7 @@ program test_convert_ub_and_bv
   bv_d=d_random_bv(na,lbwa,ubwa,error=error)
   a0_d=general(bv_d,error)
   call cpu_time(t0)
-  ub_d=ub(bv_d,error)
+  ub_d=ub_of(bv_d,error)
   call cpu_time(t1)
   a1_d=general(ub_d,error)
   test_name = "Real BV to UB, n=2;"
@@ -122,7 +122,7 @@ program test_convert_ub_and_bv
   bv_d=d_random_bv(na,lbwa,ubwa,error=error)
   a0_d=general(bv_d,error)
   call cpu_time(t0)
-  ub_d=ub(bv_d,error)
+  ub_d=ub_of(bv_d,error)
   call cpu_time(t1)
   a1_d=general(ub_d,error)
   test_name = "Real BV to UB, n=3;"
@@ -133,7 +133,7 @@ program test_convert_ub_and_bv
   bv_d=d_random_bv(na,lbwa,ubwa,error=error)
   a0_d=general(bv_d,error)
   call cpu_time(t0)
-  ub_d=ub(bv_d,error)
+  ub_d=ub_of(bv_d,error)
   call cpu_time(t1)
   a1_d=general(ub_d,error)
   test_name = "Real BV to UB, n=4;"
@@ -152,7 +152,7 @@ program test_convert_ub_and_bv
   ub_z=z_random_ub(na,lbwa,ubwa,error=error)
   a0_z=general(ub_z,error)
   call cpu_time(t0)
-  bv_z=bv(ub_z,error)
+  bv_z=bv_of(ub_z,error)
   call cpu_time(t1)
   a1_z=general(bv_z,error)
   test_name = "Complex UB to BV, n=40;"
@@ -163,7 +163,7 @@ program test_convert_ub_and_bv
   ub_z=z_random_ub(na,lbwa,ubwa,error=error)
   a0_z=general(ub_z,error)
   call cpu_time(t0)
-  bv_z=bv(ub_z,error)
+  bv_z=bv_of(ub_z,error)
   call cpu_time(t1)
   a1_z=general(bv_z,error)
   test_name = "Complex UB to BV, n=1;"
@@ -174,7 +174,7 @@ program test_convert_ub_and_bv
   ub_z=z_random_ub(na,lbwa,ubwa,error=error)
   a0_z=general(ub_z,error)
   call cpu_time(t0)
-  bv_z=bv(ub_z,error)
+  bv_z=bv_of(ub_z,error)
   call cpu_time(t1)
   a1_z=general(bv_z,error)
   test_name = "Complex UB to BV, n=2;"
@@ -185,7 +185,7 @@ program test_convert_ub_and_bv
   ub_z=z_random_ub(na,lbwa,ubwa,error=error)
   a0_z=general(ub_z,error)
   call cpu_time(t0)
-  bv_z=bv(ub_z,error)
+  bv_z=bv_of(ub_z,error)
   call cpu_time(t1)
   a1_z=general(bv_z,error)
   test_name = "Complex UB to BV, n=3;"
@@ -196,7 +196,7 @@ program test_convert_ub_and_bv
   ub_z=z_random_ub(na,lbwa,ubwa,error=error)
   a0_z=general(ub_z,error)
   call cpu_time(t0)
-  bv_z=bv(ub_z,error)
+  bv_z=bv_of(ub_z,error)
   call cpu_time(t1)
   a1_z=general(bv_z,error)
   test_name = "Complex UB to BV, n=4;"
@@ -208,7 +208,7 @@ program test_convert_ub_and_bv
   bv_z=z_random_bv(na,lbwa,ubwa,error=error)
   a0_z=general(bv_z,error)
   call cpu_time(t0)
-  ub_z=ub(bv_z,error)
+  ub_z=ub_of(bv_z,error)
   call cpu_time(t1)
   a1_z=general(ub_z,error)
   test_name = "Complex BV to UB, n=40;"
@@ -219,7 +219,7 @@ program test_convert_ub_and_bv
   bv_z=z_random_bv(na,lbwa,ubwa,error=error)
   a0_z=general(bv_z,error)
   call cpu_time(t0)
-  ub_z=ub(bv_z,error)
+  ub_z=ub_of(bv_z,error)
   call cpu_time(t1)
   a1_z=general(ub_z,error)
   test_name = "Complex BV to UB, n=1;"
@@ -230,7 +230,7 @@ program test_convert_ub_and_bv
   bv_z=z_random_bv(na,lbwa,ubwa,error=error)
   a0_z=general(bv_z,error)
   call cpu_time(t0)
-  ub_z=ub(bv_z,error)
+  ub_z=ub_of(bv_z,error)
   call cpu_time(t1)
   a1_z=general(ub_z,error)
   test_name = "Complex BV to UB, n=2;"
@@ -241,7 +241,7 @@ program test_convert_ub_and_bv
   bv_z=z_random_bv(na,lbwa,ubwa,error=error)
   a0_z=general(bv_z,error)
   call cpu_time(t0)
-  ub_z=ub(bv_z,error)
+  ub_z=ub_of(bv_z,error)
   call cpu_time(t1)
   a1_z=general(ub_z,error)
   test_name = "Complex BV to UB, n=3;"
@@ -252,7 +252,7 @@ program test_convert_ub_and_bv
   bv_z=z_random_bv(na,lbwa,ubwa,error=error)
   a0_z=general(bv_z,error)
   call cpu_time(t0)
-  ub_z=ub(bv_z,error)
+  ub_z=ub_of(bv_z,error)
   call cpu_time(t1)
   a1_z=general(ub_z,error)
   test_name = "Complex BV to UB, n=4;"

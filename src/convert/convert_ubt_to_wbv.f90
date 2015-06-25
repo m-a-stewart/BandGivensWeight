@@ -11,7 +11,7 @@ module mod_convert_ubt_to_wbv
 
   public :: convert_ubt_to_wbv, d_convert_ubt_to_wbv, z_convert_ubt_to_wbv, &
        f_convert_ubt_to_wbv, f_d_convert_ubt_to_wbv, f_z_convert_ubt_to_wbv, &
-       d_wbv_of_ubt, z_wbv_of_ubt, wbv       
+       d_wbv_of_ubt, z_wbv_of_ubt, wbv_of
 
   interface convert_ubt_to_wbv
      module procedure d_convert_ubt_to_wbv, z_convert_ubt_to_wbv
@@ -21,9 +21,9 @@ module mod_convert_ubt_to_wbv
      module procedure f_d_convert_ubt_to_wbv, f_z_convert_ubt_to_wbv
   end interface f_convert_ubt_to_wbv
 
-  interface wbv
+  interface wbv_of
      module procedure d_wbv_of_ubt, z_wbv_of_ubt
-  end interface wbv
+  end interface wbv_of
 
 contains
 

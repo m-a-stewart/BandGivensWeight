@@ -11,7 +11,7 @@ module mod_convert_bt_to_wb
 
   public :: convert_bt_to_wb, d_convert_bt_to_wb, z_convert_bt_to_wb, &
        f_convert_bt_to_wb, f_d_convert_bt_to_wb, f_z_convert_bt_to_wb, &
-       d_wb_of_bt, z_wb_of_bt, wb
+       d_wb_of_bt, z_wb_of_bt, wb_of
 
   interface convert_bt_to_wb
      module procedure d_convert_bt_to_wb, z_convert_bt_to_wb
@@ -21,9 +21,9 @@ module mod_convert_bt_to_wb
      module procedure f_d_convert_bt_to_wb, f_z_convert_bt_to_wb
   end interface f_convert_bt_to_wb
 
-  interface wb
+  interface wb_of
      module procedure d_wb_of_bt, z_wb_of_bt
-  end interface wb
+  end interface wb_of
 
 contains
 

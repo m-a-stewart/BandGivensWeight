@@ -38,9 +38,9 @@ program test_solve
   rhs0_d=rhs_d
   ubt_d=d_random_ubt(na,lbwa,ubwa,error=error)
   a_d = general(ubt_d,error)
-  swbv_d=rc(ubt_d,error)
+  swbv_d=rc_of(ubt_d,error)
   rhs_d=trp(swbv_d%sw) * rhs_d
-  swub_d=qr(swbv_d%bv,error)
+  swub_d=qr_of(swbv_d%bv,error)
   rhs_d=trp(swub_d%sw) * rhs_d
   call cpu_time(t0)
   x_d=solve(swub_d%ub, rhs_d, error)
@@ -55,9 +55,9 @@ program test_solve
   rhs0_v_d=rhs_v_d
   ubt_d=d_random_ubt(na,lbwa,ubwa,error=error)
   a_d = general(ubt_d,error)
-  swbv_d=rc(ubt_d,error)
+  swbv_d=rc_of(ubt_d,error)
   rhs_v_d=trp(swbv_d%sw) * rhs_v_d
-  swub_d=qr(swbv_d%bv,error)
+  swub_d=qr_of(swbv_d%bv,error)
   rhs_v_d=trp(swub_d%sw) * rhs_v_d
   call cpu_time(t0)
   x_v_d=solve(swub_d%ub, rhs_v_d, error)
@@ -73,9 +73,9 @@ program test_solve
   rhs0_z=rhs_z
   ubt_z=z_random_ubt(na,lbwa,ubwa,error=error)
   a_z = general(ubt_z,error)
-  swbv_z=rc(ubt_z,error)
+  swbv_z=rc_of(ubt_z,error)
   rhs_z=trp(swbv_z%sw) * rhs_z
-  swub_z=qr(swbv_z%bv,error)
+  swub_z=qr_of(swbv_z%bv,error)
   rhs_z=trp(swub_z%sw) * rhs_z
   call cpu_time(t0)
   x_z=solve(swub_z%ub, rhs_z, error)
@@ -90,9 +90,9 @@ program test_solve
   rhs0_v_z=rhs_v_z
   ubt_z=z_random_ubt(na,lbwa,ubwa,error=error)
   a_z = general(ubt_z,error)
-  swbv_z=rc(ubt_z,error)
+  swbv_z=rc_of(ubt_z,error)
   rhs_v_z=trp(swbv_z%sw) * rhs_v_z
-  swub_z=qr(swbv_z%bv,error)
+  swub_z=qr_of(swbv_z%bv,error)
   rhs_v_z=trp(swub_z%sw) * rhs_v_z
   call cpu_time(t0)
   x_v_z=solve(swub_z%ub, rhs_v_z, error)
@@ -114,9 +114,9 @@ program test_solve
   rhs0_d=rhs_d
   ubt_d=d_random_ubt(na,lbwa,ubwa,error=error)
   a_d = general(ubt_d,error)
-  swbv_d=rc(ubt_d,error)
-  swub_d=qr(swbv_d%bv,error)
-  bv_d=bv(swub_d%ub,error)
+  swbv_d=rc_of(ubt_d,error)
+  swub_d=qr_of(swbv_d%bv,error)
+  bv_d=bv_of(swub_d%ub,error)
   call cpu_time(t0)
   x_d=solve(bv_d, rhs_d, error)
   call cpu_time(t1)
@@ -132,9 +132,9 @@ program test_solve
   rhs0_v_d=rhs_v_d
   ubt_d=d_random_ubt(na,lbwa,ubwa,error=error)
   a_d = general(ubt_d,error)
-  swbv_d=rc(ubt_d,error)
-  swub_d=qr(swbv_d%bv,error)
-  bv_d=bv(swub_d%ub,error)
+  swbv_d=rc_of(ubt_d,error)
+  swub_d=qr_of(swbv_d%bv,error)
+  bv_d=bv_of(swub_d%ub,error)
   call cpu_time(t0)
   x_v_d=solve(bv_d, rhs_v_d, error)
   call cpu_time(t1)
@@ -151,9 +151,9 @@ program test_solve
   rhs0_z=rhs_z
   ubt_z=z_random_ubt(na,lbwa,ubwa,error=error)
   a_z = general(ubt_z,error)
-  swbv_z=rc(ubt_z,error)
-  swub_z=qr(swbv_z%bv,error)
-  bv_z=bv(swub_z%ub,error)
+  swbv_z=rc_of(ubt_z,error)
+  swub_z=qr_of(swbv_z%bv,error)
+  bv_z=bv_of(swub_z%ub,error)
   call cpu_time(t0)
   x_z=solve(bv_z, rhs_z, error)
   call cpu_time(t1)
@@ -169,9 +169,9 @@ program test_solve
   rhs0_v_z=rhs_v_z
   ubt_z=z_random_ubt(na,lbwa,ubwa,error=error)
   a_z = general(ubt_z,error)
-  swbv_z=rc(ubt_z,error)
-  swub_z=qr(swbv_z%bv,error)
-  bv_z=bv(swub_z%ub,error)
+  swbv_z=rc_of(ubt_z,error)
+  swub_z=qr_of(swbv_z%bv,error)
+  bv_z=bv_of(swub_z%ub,error)
   call cpu_time(t0)
   x_v_z=solve(bv_z, rhs_v_z, error)
   call cpu_time(t1)

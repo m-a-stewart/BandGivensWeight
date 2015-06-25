@@ -21,9 +21,9 @@ module mod_row_compress
      module procedure f_d_row_compress, f_z_row_compress
   end interface f_row_compress
 
-  interface rc
+  interface rc_of
      module procedure d_rc_of, z_rc_of
-  end interface rc
+  end interface rc_of
 
   type d_rc
      type(d_sweeps), allocatable :: sw

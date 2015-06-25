@@ -30,7 +30,7 @@ program test_row_compress
   a_d = general(ubt_d,error)
   a0_d = a_d
   call cpu_time(t0)
-  swbv_d=rc(ubt_d,error)
+  swbv_d=rc_of(ubt_d,error)
   call cpu_time(t1)  
   a_d = general(swbv_d%bv,error)
   a_d = swbv_d%sw * a_d
@@ -43,7 +43,7 @@ program test_row_compress
   a_d = general(ubt_d,error)
   a0_d = a_d
   call cpu_time(t0)
-  swbv_d=rc(ubt_d,error)
+  swbv_d=rc_of(ubt_d,error)
   call cpu_time(t1)  
   a_d = general(swbv_d%bv,error)
   a_d = swbv_d%sw * a_d
@@ -56,7 +56,7 @@ program test_row_compress
   a_d = general(ubt_d,error)
   a0_d = a_d
   call cpu_time(t0)
-  swbv_d=rc(ubt_d,error)
+  swbv_d=rc_of(ubt_d,error)
   call cpu_time(t1)  
   a_d = general(swbv_d%bv,error)
   a_d = swbv_d%sw * a_d
@@ -69,7 +69,7 @@ program test_row_compress
   a_d = general(ubt_d,error)
   a0_d = a_d
   call cpu_time(t0)
-  swbv_d=rc(ubt_d,error)
+  swbv_d=rc_of(ubt_d,error)
   call cpu_time(t1)  
   a_d = general(swbv_d%bv,error)
   a_d = swbv_d%sw * a_d
@@ -82,7 +82,7 @@ program test_row_compress
   a_d = general(ubt_d,error)
   a0_d = a_d
   call cpu_time(t0)
-  swbv_d=rc(ubt_d,error)
+  swbv_d=rc_of(ubt_d,error)
   call cpu_time(t1)  
   a_d = general(swbv_d%bv,error)
   a_d = swbv_d%sw * a_d
@@ -101,7 +101,7 @@ program test_row_compress
   a_z = general(ubt_z,error)
   a0_z = a_z
   call cpu_time(t0)
-  swbv_z=rc(ubt_z,error)
+  swbv_z=rc_of(ubt_z,error)
   call cpu_time(t1)  
   a_z = general(swbv_z%bv,error)
   a_z = swbv_z%sw * a_z
@@ -114,7 +114,7 @@ program test_row_compress
   a_z = general(ubt_z,error)
   a0_z = a_z
   call cpu_time(t0)
-  swbv_z=rc(ubt_z,error)
+  swbv_z=rc_of(ubt_z,error)
   call cpu_time(t1)  
   a_z = general(swbv_z%bv,error)
   a_z = swbv_z%sw * a_z
@@ -127,7 +127,7 @@ program test_row_compress
   a_z = general(ubt_z,error)
   a0_z = a_z
   call cpu_time(t0)
-  swbv_z=rc(ubt_z,error)
+  swbv_z=rc_of(ubt_z,error)
   call cpu_time(t1)  
   a_z = general(swbv_z%bv,error)
   a_z = swbv_z%sw * a_z
@@ -140,7 +140,7 @@ program test_row_compress
   a_z = general(ubt_z,error)
   a0_z = a_z
   call cpu_time(t0)
-  swbv_z=rc(ubt_z,error)
+  swbv_z=rc_of(ubt_z,error)
   call cpu_time(t1)  
   a_z = general(swbv_z%bv,error)
   a_z = swbv_z%sw * a_z
@@ -153,7 +153,7 @@ program test_row_compress
   a_z = general(ubt_z,error)
   a0_z = a_z
   call cpu_time(t0)
-  swbv_z=rc(ubt_z,error)
+  swbv_z=rc_of(ubt_z,error)
   call cpu_time(t1)  
   a_z = general(swbv_z%bv,error)
   a_z = swbv_z%sw * a_z

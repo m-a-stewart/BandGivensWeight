@@ -9,7 +9,7 @@ module mod_convert_bv_to_ub
   private
   public :: convert_bv_to_ub, d_convert_bv_to_ub, z_convert_bv_to_ub, &
        f_convert_bv_to_ub, f_d_convert_bv_to_ub, f_z_convert_bv_to_ub, &
-       d_ub_of_bv, z_ub_of_bv, ub
+       d_ub_of_bv, z_ub_of_bv, ub_of
 
   interface convert_bv_to_ub
      module procedure d_convert_bv_to_ub, z_convert_bv_to_ub
@@ -19,9 +19,9 @@ module mod_convert_bv_to_ub
      module procedure f_d_convert_bv_to_ub, f_z_convert_bv_to_ub
   end interface f_convert_bv_to_ub
 
-  interface ub
+  interface ub_of
      module procedure d_ub_of_bv, z_ub_of_bv
-  end interface ub
+  end interface ub_of
 
 contains
 

@@ -19,11 +19,11 @@ module mod_qr_factorization
   
   public qr_bv_to_ub, d_qr_bv_to_ub, z_qr_bv_to_ub, &
        f_qr_bv_to_ub, f_d_qr_bv_to_ub, f_z_qr_bv_to_ub, &
-       d_qr_of, z_qr_of, qr
+       d_qr_of, z_qr_of, qr_of
 
-  interface qr
+  interface qr_of
      module procedure d_qr_of, z_qr_of
-  end interface qr
+  end interface qr_of
 
   interface qr_bv_to_ub
      module procedure d_qr_bv_to_ub, z_qr_bv_to_ub

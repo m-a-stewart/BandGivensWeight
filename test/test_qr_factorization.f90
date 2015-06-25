@@ -33,7 +33,7 @@ program test_qr_factorization
   a_d = general(bv_d,error)
   a0_d = a_d
   call cpu_time(t0)
-  swub_d=qr(bv_d,error)
+  swub_d=qr_of(bv_d,error)
   call cpu_time(t1)  
   a_d = general(swub_d%ub,error)
   a_d = swub_d%sw * a_d
@@ -46,7 +46,7 @@ program test_qr_factorization
   a_d = general(bv_d,error)
   a0_d = a_d
   call cpu_time(t0)
-  swub_d=qr(bv_d,error)
+  swub_d=qr_of(bv_d,error)
   call cpu_time(t1)  
   a_d = general(swub_d%ub,error)
   a_d = swub_d%sw * a_d
@@ -59,7 +59,7 @@ program test_qr_factorization
   a_d = general(bv_d,error)
   a0_d = a_d
   call cpu_time(t0)
-  swub_d=qr(bv_d,error)
+  swub_d=qr_of(bv_d,error)
   call cpu_time(t1)  
   a_d = general(swub_d%ub,error)
   a_d = swub_d%sw * a_d
@@ -72,7 +72,7 @@ program test_qr_factorization
   a_d = general(bv_d,error)
   a0_d = a_d
   call cpu_time(t0)
-  swub_d=qr(bv_d,error)
+  swub_d=qr_of(bv_d,error)
   call cpu_time(t1)  
   a_d = general(swub_d%ub,error)
   a_d = swub_d%sw * a_d
@@ -85,7 +85,7 @@ program test_qr_factorization
   a_d = general(bv_d,error)
   a0_d = a_d
   call cpu_time(t0)
-  swub_d=qr(bv_d,error)
+  swub_d=qr_of(bv_d,error)
   call cpu_time(t1)  
   a_d = general(swub_d%ub,error)
   a_d = swub_d%sw * a_d
@@ -105,7 +105,7 @@ program test_qr_factorization
   a_z = general(bv_z,error)
   a0_z = a_z
   call cpu_time(t0)
-  swub_z=qr(bv_z,error)
+  swub_z=qr_of(bv_z,error)
   call cpu_time(t1)  
   a_z = general(swub_z%ub,error)
   a_z = swub_z%sw * a_z
@@ -118,7 +118,7 @@ program test_qr_factorization
   a_z = general(bv_z,error)
   a0_z = a_z
   call cpu_time(t0)
-  swub_z=qr(bv_z,error)
+  swub_z=qr_of(bv_z,error)
   call cpu_time(t1)  
   a_z = general(swub_z%ub,error)
   a_z = swub_z%sw * a_z
@@ -131,7 +131,7 @@ program test_qr_factorization
   a_z = general(bv_z,error)
   a0_z = a_z
   call cpu_time(t0)
-  swub_z=qr(bv_z,error)
+  swub_z=qr_of(bv_z,error)
   call cpu_time(t1)  
   a_z = general(swub_z%ub,error)
   a_z = swub_z%sw * a_z
@@ -144,7 +144,7 @@ program test_qr_factorization
   a_z = general(bv_z,error)
   a0_z = a_z
   call cpu_time(t0)
-  swub_z=qr(bv_z,error)
+  swub_z=qr_of(bv_z,error)
   call cpu_time(t1)  
   a_z = general(swub_z%ub,error)
   a_z = swub_z%sw * a_z
@@ -157,7 +157,7 @@ program test_qr_factorization
   a_z = general(bv_z,error)
   a0_z = a_z
   call cpu_time(t0)
-  swub_z=qr(bv_z,error)
+  swub_z=qr_of(bv_z,error)
   call cpu_time(t1)  
   a_z = general(swub_z%ub,error)
   a_z = swub_z%sw * a_z
