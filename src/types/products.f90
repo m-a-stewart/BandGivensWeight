@@ -147,8 +147,8 @@ contains
   ! 3: size(a) /= size(c)
   subroutine d_ub_times_general(ub,a,c,error)
     type(d_ub), intent(in) :: ub
-    real(kind=dp), target, dimension(:,:), intent(in) :: a
-    real(kind=dp), target, dimension(:,:), intent(out) :: c    
+    real(kind=dp), dimension(:,:), intent(in) :: a
+    real(kind=dp), dimension(:,:), intent(out) :: c    
     type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_d_ub_times_general
 
@@ -171,8 +171,8 @@ contains
 
   subroutine f_d_ub_times_general_plus(bc, n, lbw, ubw, lbwmax, ubwmax, numrotsu, &
        jsu, csu, ssu, a, na, c)
-    real(kind=dp), target, dimension(n,na), intent(in) :: a
-    real(kind=dp), target, dimension(n,na), intent(out) :: c    
+    real(kind=dp), dimension(n,na), intent(in) :: a
+    real(kind=dp), dimension(n,na), intent(out) :: c    
     integer(kind=int32), dimension(ubwmax,n), intent(in) :: jsu
     real(kind=dp), dimension(ubwmax,n), intent(in) :: csu, ssu
     real(kind=dp), dimension(lbwmax+ubwmax+1,n), intent(in) :: bc
@@ -237,8 +237,8 @@ contains
   ! 3: size(a) /= size(c)
   subroutine z_ub_times_general(ub,a,c,error)
     type(z_ub), intent(in) :: ub
-    complex(kind=dp), target, dimension(:,:), intent(in) :: a
-    complex(kind=dp), target, dimension(:,:), intent(out) :: c    
+    complex(kind=dp), dimension(:,:), intent(in) :: a
+    complex(kind=dp), dimension(:,:), intent(out) :: c    
     type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_z_ub_times_general
 
@@ -261,8 +261,8 @@ contains
 
   subroutine f_z_ub_times_general_plus(bc, n, lbw, ubw, lbwmax, ubwmax, numrotsu, &
        jsu, csu, ssu, a, na, c)
-    complex(kind=dp), target, dimension(n,na), intent(in) :: a
-    complex(kind=dp), target, dimension(n,na), intent(out) :: c    
+    complex(kind=dp), dimension(n,na), intent(in) :: a
+    complex(kind=dp), dimension(n,na), intent(out) :: c    
     integer(kind=int32), dimension(ubwmax,n), intent(in) :: jsu
     real(kind=dp), dimension(ubwmax,n), intent(in) :: csu
     complex(kind=dp), dimension(ubwmax,n), intent(in) :: ssu    
@@ -328,8 +328,8 @@ contains
   ! 3: size(a) /= size(c)
   subroutine d_bv_times_general(bv,a,c,error)
     type(d_bv), intent(in) :: bv
-    real(kind=dp), target, dimension(:,:), intent(in) :: a
-    real(kind=dp), target, dimension(:,:), intent(out) :: c    
+    real(kind=dp), dimension(:,:), intent(in) :: a
+    real(kind=dp), dimension(:,:), intent(out) :: c    
     type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_d_bv_times_general
 
@@ -352,8 +352,8 @@ contains
 
   subroutine f_d_bv_times_general_plus(br, n, lbw, ubw, lbwmax, ubwmax, numrotsv, &
        ksv, csv, ssv, a, na, c)
-    real(kind=dp), target, dimension(n,na), intent(in) :: a
-    real(kind=dp), target, dimension(n,na), intent(out) :: c    
+    real(kind=dp), dimension(n,na), intent(in) :: a
+    real(kind=dp), dimension(n,na), intent(out) :: c    
     integer(kind=int32), dimension(n,ubwmax), intent(in) :: ksv
     real(kind=dp), dimension(n,ubwmax), intent(in) :: csv, ssv
     real(kind=dp), dimension(n,lbwmax+ubwmax+1), intent(in) :: br
@@ -418,8 +418,8 @@ contains
   ! 3: size(a) /= size(c)
   subroutine z_bv_times_general(bv,a,c,error)
     type(z_bv), intent(in) :: bv
-    complex(kind=dp), target, dimension(:,:), intent(in) :: a
-    complex(kind=dp), target, dimension(:,:), intent(out) :: c    
+    complex(kind=dp), dimension(:,:), intent(in) :: a
+    complex(kind=dp), dimension(:,:), intent(out) :: c    
     type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_z_bv_times_general
 
@@ -442,8 +442,8 @@ contains
 
   subroutine f_z_bv_times_general_plus(br, n, lbw, ubw, lbwmax, ubwmax, numrotsv, &
        ksv, csv, ssv, a, na, c)
-    complex(kind=dp), target, dimension(n,na), intent(in) :: a
-    complex(kind=dp), target, dimension(n,na), intent(out) :: c    
+    complex(kind=dp), dimension(n,na), intent(in) :: a
+    complex(kind=dp), dimension(n,na), intent(out) :: c    
     integer(kind=int32), dimension(n,ubwmax), intent(in) :: ksv
     real(kind=dp), dimension(n,ubwmax), intent(in) :: csv
     complex(kind=dp), dimension(n,ubwmax), intent(in) :: ssv    
@@ -508,8 +508,8 @@ contains
   ! 3: size(a) /= size(c)
   subroutine d_wb_times_general(wb,a,c,error)
     type(d_wb), intent(in) :: wb
-    real(kind=dp), target, dimension(:,:), intent(in) :: a
-    real(kind=dp), target, dimension(:,:), intent(out) :: c    
+    real(kind=dp), dimension(:,:), intent(in) :: a
+    real(kind=dp), dimension(:,:), intent(out) :: c    
     type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_d_wb_times_general
 
@@ -533,8 +533,8 @@ contains
 
   subroutine f_d_wb_times_general_plus(bc, n, lbw, ubw, lbwmax, ubwmax, numrotsw, &
        jsw, csw, ssw, a, na, c)
-    real(kind=dp), target, dimension(n,na), intent(in) :: a
-    real(kind=dp), target, dimension(n,na), intent(out) :: c    
+    real(kind=dp), dimension(n,na), intent(in) :: a
+    real(kind=dp), dimension(n,na), intent(out) :: c    
     integer(kind=int32), dimension(lbwmax,n), intent(in) :: jsw
     real(kind=dp), dimension(lbwmax,n), intent(in) :: csw, ssw
     real(kind=dp), dimension(lbwmax+ubwmax+1,n), intent(in) :: bc
@@ -597,8 +597,8 @@ contains
   ! 3: size(a) /= size(c)
   subroutine z_wb_times_general(wb,a,c,error)
     type(z_wb), intent(in) :: wb
-    complex(kind=dp), target, dimension(:,:), intent(in) :: a
-    complex(kind=dp), target, dimension(:,:), intent(out) :: c    
+    complex(kind=dp), dimension(:,:), intent(in) :: a
+    complex(kind=dp), dimension(:,:), intent(out) :: c    
     type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_z_wb_times_general
 
@@ -622,8 +622,8 @@ contains
 
   subroutine f_z_wb_times_general_plus(bc, n, lbw, ubw, lbwmax, ubwmax, numrotsw, &
        jsw, csw, ssw, a, na, c)
-    complex(kind=dp), target, dimension(n,na), intent(in) :: a
-    complex(kind=dp), target, dimension(n,na), intent(out) :: c    
+    complex(kind=dp), dimension(n,na), intent(in) :: a
+    complex(kind=dp), dimension(n,na), intent(out) :: c    
     integer(kind=int32), dimension(lbwmax,n), intent(in) :: jsw
     real(kind=dp), dimension(lbwmax,n), intent(in) :: csw
     complex(kind=dp), dimension(lbwmax,n), intent(in) :: ssw
@@ -689,8 +689,8 @@ contains
   ! 3: size(a) /= size(c)
   subroutine d_bt_times_general(bt,a,c,error)
     type(d_bt), intent(in) :: bt
-    real(kind=dp), target, dimension(:,:), intent(in) :: a
-    real(kind=dp), target, dimension(:,:), intent(out) :: c    
+    real(kind=dp), dimension(:,:), intent(in) :: a
+    real(kind=dp), dimension(:,:), intent(out) :: c    
     type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_d_bt_times_general
 
@@ -713,8 +713,8 @@ contains
 
   subroutine f_d_bt_times_general_plus(br, n, lbw, ubw, lbwmax, ubwmax, numrotst, &
        kst, cst, sst, a, na, c)
-    real(kind=dp), target, dimension(n,na), intent(in) :: a
-    real(kind=dp), target, dimension(n,na), intent(out) :: c    
+    real(kind=dp), dimension(n,na), intent(in) :: a
+    real(kind=dp), dimension(n,na), intent(out) :: c    
     integer(kind=int32), dimension(n,lbwmax), intent(in) :: kst
     real(kind=dp), dimension(n,lbwmax), intent(in) :: cst, sst
     real(kind=dp), dimension(n,lbwmax+ubwmax+1), intent(in) :: br
@@ -777,8 +777,8 @@ contains
   ! 3: size(a) /= size(c)
   subroutine z_bt_times_general(bt,a,c,error)
     type(z_bt), intent(in) :: bt
-    complex(kind=dp), target, dimension(:,:), intent(in) :: a
-    complex(kind=dp), target, dimension(:,:), intent(out) :: c    
+    complex(kind=dp), dimension(:,:), intent(in) :: a
+    complex(kind=dp), dimension(:,:), intent(out) :: c    
     type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_z_bt_times_general
 
@@ -802,8 +802,8 @@ contains
 
   subroutine f_z_bt_times_general_plus(br, n, lbw, ubw, lbwmax, ubwmax, numrotst, &
        kst, cst, sst, a, na, c)
-    complex(kind=dp), target, dimension(n,na), intent(in) :: a
-    complex(kind=dp), target, dimension(n,na), intent(out) :: c    
+    complex(kind=dp), dimension(n,na), intent(in) :: a
+    complex(kind=dp), dimension(n,na), intent(out) :: c    
     integer(kind=int32), dimension(n,lbwmax), intent(in) :: kst
     real(kind=dp), dimension(n,lbwmax), intent(in) :: cst
     complex(kind=dp), dimension(n,lbwmax), intent(in) :: sst
@@ -869,8 +869,8 @@ contains
   ! 3: size(a) /= size(c)
   subroutine d_ubt_times_general(ubt,a,c,error)
     type(d_ubt), intent(in) :: ubt
-    real(kind=dp), target, dimension(:,:), intent(in) :: a
-    real(kind=dp), target, dimension(:,:), intent(out) :: c    
+    real(kind=dp), dimension(:,:), intent(in) :: a
+    real(kind=dp), dimension(:,:), intent(out) :: c    
     type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_d_ubt_times_general
 
@@ -896,8 +896,8 @@ contains
   subroutine f_d_ubt_times_general_plus(bc, n, lbw, ubw, lbwmax, ubwmax, numrotsu, &
        jsu, csu, ssu, numrotst, kst, cst, sst, a, na, c)
     real(kind=dp), dimension(lbwmax+ubwmax+1,n), intent(in) :: bc
-    real(kind=dp), target, dimension(n,na), intent(in) :: a
-    real(kind=dp), target, dimension(n,na), intent(out) :: c    
+    real(kind=dp), dimension(n,na), intent(in) :: a
+    real(kind=dp), dimension(n,na), intent(out) :: c    
     integer(kind=int32), dimension(ubwmax,n), intent(in) :: jsu
     real(kind=dp), dimension(ubwmax,n), intent(in) :: csu, ssu
     integer(kind=int32), dimension(n), intent(in) :: numrotsu
@@ -948,8 +948,8 @@ contains
   ! 3: size(a) /= size(c)
   subroutine z_ubt_times_general(ubt,a,c,error)
     type(z_ubt), intent(in) :: ubt
-    complex(kind=dp), target, dimension(:,:), intent(in) :: a
-    complex(kind=dp), target, dimension(:,:), intent(out) :: c    
+    complex(kind=dp), dimension(:,:), intent(in) :: a
+    complex(kind=dp), dimension(:,:), intent(out) :: c    
     type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_z_ubt_times_general
 
@@ -975,8 +975,8 @@ contains
   subroutine f_z_ubt_times_general_plus(bc, n, lbw, ubw, lbwmax, ubwmax, numrotsu, &
        jsu, csu, ssu, numrotst, kst, cst, sst, a, na, c)
     complex(kind=dp), dimension(lbwmax+ubwmax+1,n), intent(in) :: bc
-    complex(kind=dp), target, dimension(n,na), intent(in) :: a
-    complex(kind=dp), target, dimension(n,na), intent(out) :: c    
+    complex(kind=dp), dimension(n,na), intent(in) :: a
+    complex(kind=dp), dimension(n,na), intent(out) :: c    
     integer(kind=int32), dimension(ubwmax,n), intent(in) :: jsu
     real(kind=dp), dimension(ubwmax,n), intent(in) :: csu
     complex(kind=dp), dimension(ubwmax,n), intent(in) :: ssu    
@@ -1031,8 +1031,8 @@ contains
   ! 3: size(a) /= size(c)
   subroutine d_wbv_times_general(wbv,a,c,error)
     type(d_wbv), intent(in) :: wbv
-    real(kind=dp), target, dimension(:,:), intent(in) :: a
-    real(kind=dp), target, dimension(:,:), intent(out) :: c    
+    real(kind=dp), dimension(:,:), intent(in) :: a
+    real(kind=dp), dimension(:,:), intent(out) :: c    
     type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_d_wbv_times_general
 
@@ -1056,8 +1056,8 @@ contains
 
   subroutine f_d_wbv_times_general_plus(br, n, lbw, ubw, lbwmax, ubwmax, numrotsw, &
        jsw, csw, ssw, numrotsv, ksv, csv, ssv, a, na, c)
-    real(kind=dp), target, dimension(n,na), intent(in) :: a
-    real(kind=dp), target, dimension(n,na), intent(out) :: c    
+    real(kind=dp), dimension(n,na), intent(in) :: a
+    real(kind=dp), dimension(n,na), intent(out) :: c    
     integer(kind=int32), dimension(n), intent(in) :: numrotsw
     integer(kind=int32), dimension(lbwmax,n), intent(in) :: jsw
     real(kind=dp), dimension(lbwmax,n), intent(in) :: csw, ssw
@@ -1111,8 +1111,8 @@ contains
   ! 3: size(a) /= size(c)
   subroutine z_wbv_times_general(wbv,a,c,error)
     type(z_wbv), intent(in) :: wbv
-    complex(kind=dp), target, dimension(:,:), intent(in) :: a
-    complex(kind=dp), target, dimension(:,:), intent(out) :: c    
+    complex(kind=dp), dimension(:,:), intent(in) :: a
+    complex(kind=dp), dimension(:,:), intent(out) :: c    
     type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_z_wbv_times_general
 
@@ -1136,8 +1136,8 @@ contains
 
   subroutine f_z_wbv_times_general_plus(br, n, lbw, ubw, lbwmax, ubwmax, numrotsw, &
        jsw, csw, ssw, numrotsv, ksv, csv, ssv, a, na, c)
-    complex(kind=dp), target, dimension(n,na), intent(in) :: a
-    complex(kind=dp), target, dimension(n,na), intent(out) :: c    
+    complex(kind=dp), dimension(n,na), intent(in) :: a
+    complex(kind=dp), dimension(n,na), intent(out) :: c    
     integer(kind=int32), dimension(n), intent(in) :: numrotsw
     integer(kind=int32), dimension(lbwmax,n), intent(in) :: jsw
     real(kind=dp), dimension(lbwmax,n), intent(in) :: csw
