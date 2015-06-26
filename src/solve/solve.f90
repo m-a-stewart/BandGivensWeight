@@ -748,6 +748,7 @@ contains
     end if
     call f_z_v_forward_solve_bv(x, bv%br, n, bv%ubw, get_lbwmax(bv), get_ubwmax(bv), &
          bv%numrotsv, bv%ksv, bv%csv, bv%ssv, c)
+    call pop_id(error)
   end subroutine z_v_forward_solve_bv
 
   subroutine f_z_v_forward_solve_bv(x, b_bv, n, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, &
