@@ -1221,7 +1221,8 @@ module mod_error_id
   type(routine_info), parameter :: info_d_ub_min_sv= &
        routine_info(id_d_ub_min_sv, 'd_ub_min_sv', &
        [ character(len=error_message_length) :: 'n<1', &
-       'Singular vector size error', 'Failure to converge.'])
+       'Singular vector size error', 'lbw /= 0', 'Numerically singular.', &
+       'Failure to converge.'])
 
   type(routine_info), parameter :: info_d_ub_max_sv= &
        routine_info(id_d_ub_max_sv, 'd_ub_max_sv', &
@@ -1231,7 +1232,8 @@ module mod_error_id
   type(routine_info), parameter :: info_z_ub_min_sv= &
        routine_info(id_z_ub_min_sv, 'z_ub_min_sv', &
        [ character(len=error_message_length) :: 'n<1', &
-       'Singular vector size error', 'Failure to converge.'])
+       'Singular vector size error', 'lbw /= 0', 'Numerically singular.', &
+       'Failure to converge.'])
 
   type(routine_info), parameter :: info_z_ub_max_sv= &
        routine_info(id_z_ub_max_sv, 'z_ub_max_sv', &
@@ -1711,6 +1713,21 @@ contains
        info_index(info_d_product_of_bt_and_general%routine_id)=info_d_product_of_bt_and_general
        info_index(info_z_bt_times_general%routine_id)=info_z_bt_times_general
        info_index(info_z_product_of_bt_and_general%routine_id)=info_z_product_of_bt_and_general
+
+       info_index(info_d_ubt_times_general%routine_id)=info_d_ubt_times_general
+       info_index(info_d_product_of_ubt_and_general%routine_id)=info_d_product_of_ubt_and_general
+       info_index(info_z_ubt_times_general%routine_id)=info_z_ubt_times_general
+       info_index(info_z_product_of_ubt_and_general%routine_id)=info_z_product_of_ubt_and_general
+
+       info_index(info_d_wbv_times_general%routine_id)=info_d_wbv_times_general
+       info_index(info_d_product_of_wbv_and_general%routine_id)=info_d_product_of_wbv_and_general
+       info_index(info_z_wbv_times_general%routine_id)=info_z_wbv_times_general
+       info_index(info_z_product_of_wbv_and_general%routine_id)=info_z_product_of_wbv_and_general
+
+       info_index(info_d_general_times_ub%routine_id)=info_d_general_times_ub
+       info_index(info_d_product_of_general_and_ub%routine_id)=info_d_product_of_general_and_ub
+       info_index(info_z_general_times_ub%routine_id)=info_z_general_times_ub
+       info_index(info_z_product_of_general_and_ub%routine_id)=info_z_product_of_general_and_ub
 
        ! condition estimation for orth. band types.
        

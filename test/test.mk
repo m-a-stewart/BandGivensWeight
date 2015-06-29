@@ -3,7 +3,7 @@ _TESTS = test_general_ub test_general_bv test_general_bt test_general_wb \
 	test_convert_ub_and_bv test_convert_wb_and_bt \
 	test_convert_ubt_and_wbv test_row_compress \
 	test_qr_factorization test_solve test_cond_triangular test_products \
-	test_submatrix
+	test_submatrix test_cond_orth_band
 TESTS = $(patsubst %,$(BINDIR)/%,$(_TESTS))
 
 .PHONY : all_tests
@@ -12,6 +12,7 @@ all_tests : $(TESTS)
 .PHONY : run_all_tests
 run_all_tests : $(TESTS)
 	$(BINDIR)/test_cond_triangular
+	$(BINDIR)/test_cond_orth_band
 	$(BINDIR)/test_products
 	$(BINDIR)/test_submatrix
 	$(BINDIR)/test_general_ub
@@ -30,6 +31,10 @@ run_all_tests : $(TESTS)
 .PHONY : run_cond_triangular
 run_cond_triangular : $(BINDIR)/test_cond_triangular
 	$(BINDIR)/test_cond_triangular
+
+.PHONY : run_cond_orth_band
+run_cond_orth_band : $(BINDIR)/test_cond_orth_band
+	$(BINDIR)/test_cond_orth_band
 
 .PHONY : run_products
 run_products : $(BINDIR)/test_products
@@ -98,6 +103,7 @@ run_solve : $(BINDIR)/test_solve
 	$(BINDIR)/test_solve
 
 $(OBJDIR)/test_cond_triangular.o : $(OBJDIR)/orrb.o
+$(OBJDIR)/test_cond_orth_band.o : $(OBJDIR)/orrb.o
 $(OBJDIR)/test_products.o : $(OBJDIR)/orrb.o
 $(OBJDIR)/test_submatrix.o : $(OBJDIR)/orrb.o
 $(OBJDIR)/test_general_ub.o : $(OBJDIR)/orrb.o

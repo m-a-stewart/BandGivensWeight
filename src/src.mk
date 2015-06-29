@@ -72,7 +72,7 @@ _SOLVE = prec error_id orth_band_types \
 	band_types rotation
 
 _COND_ORTH_BAND = prec error_id orth_band_types \
-	band_types rotation solve products submatrix
+	band_types rotation solve products submatrix convert
 
 ORRB=$(patsubst %,$(OBJDIR)/%.o,$(_ORRB))
 MISC=$(patsubst %,$(OBJDIR)/%.o,$(_MISC))
