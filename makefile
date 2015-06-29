@@ -8,7 +8,7 @@ SRCDIRS = src src/convert src/general src/misc src/orth \
 FC = gfortran
 LFLAGS =
 !CFLAGS = -Wall -Wno-maybe-uninitialized -O2 -mcmodel=medium
-CFLAGS = -Wall -Wno-maybe-uninitialized -mcmodel=medium -fbounds-check
+CFLAGS = -Wall -Wno-maybe-uninitialized -mcmodel=medium -fbounds-check -fno-range-check
 PROFLFLAGS =
 PROFCFLAGS =
 VIEWER = evince
