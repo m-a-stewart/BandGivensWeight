@@ -99,6 +99,18 @@ program test_products
   c1_d=matmul(b_d,a_d)
   test_name = "Real WBV Times Gen. (40x10)"
   call d_output_result(test_name,c0_d,c1_d,t0,t1,c*tol,error)
+
+  ma=10; na=40; lbwb=5; ubwb=7
+  a_d=d_random_matrix(ma,na)
+  ub_d=d_random_ub(na,lbwb,ubwb,error=error)
+  b_d = general(ub_d,error)
+  call cpu_time(t0)
+  c0_d=d_product_of_general_and_ub(a_d, ub_d,error)
+  call cpu_time(t1)
+  c1_d=matmul(a_d,b_d)
+  test_name = "Real Gen. Times UB. (10x40)"
+  call d_output_result(test_name,c0_d,c1_d,t0,t1,c*tol,error)
+  
   
   print *
   print *, "--------------------------------"
@@ -172,6 +184,16 @@ program test_products
   test_name = "Complex WBV Times Gen. (40x10)"
   call z_output_result(test_name,c0_z,c1_z,t0,t1,c*tol,error)
   
+  ma=10; na=40; lbwb=5; ubwb=7
+  a_z=z_random_matrix(ma,na)
+  ub_z=z_random_ub(na,lbwb,ubwb,error=error)
+  b_z = general(ub_z,error)
+  call cpu_time(t0)
+  c0_z=z_product_of_general_and_ub(a_z, ub_z,error)
+  call cpu_time(t1)
+  c1_z=matmul(a_z,b_z)
+  test_name = "Complex Gen. Times UB. (10x40)"
+  call z_output_result(test_name,c0_z,c1_z,t0,t1,c*tol,error)
 
 contains
 

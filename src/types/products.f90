@@ -14,31 +14,40 @@ module mod_products
   public :: ub_times_general, product_of_ub_and_general, &
        d_ub_times_general, d_product_of_ub_and_general, &
        z_ub_times_general, z_product_of_ub_and_general, &
+       bv_times_general, product_of_bv_and_general, &       
        d_bv_times_general, d_product_of_bv_and_general, &
        z_bv_times_general, z_product_of_bv_and_general, &
+       wb_times_general, product_of_wb_and_general, &       
        d_wb_times_general, d_product_of_wb_and_general, &
        z_wb_times_general, z_product_of_wb_and_general, &
+       bt_times_general, product_of_bt_and_general, &       
        d_bt_times_general, d_product_of_bt_and_general, &
        z_bt_times_general, z_product_of_bt_and_general, &
+       ubt_times_general, product_of_ubt_and_general, &
        d_ubt_times_general, d_product_of_ubt_and_general, &
+       z_ubt_times_general, z_product_of_ubt_and_general, &       
+       wbv_times_general, product_of_wbv_and_general, &
        d_wbv_times_general, d_product_of_wbv_and_general, &
        z_wbv_times_general, z_product_of_wbv_and_general, &
-       z_ubt_times_general, z_product_of_ubt_and_general, &       
-       f_d_ub_times_general_plus, f_z_ub_times_general_plus, &
-       f_d_bv_times_general_plus, f_z_bv_times_general_plus, &
-       f_d_wb_times_general_plus, f_z_wb_times_general_plus, &
-       f_d_bt_times_general_plus, f_z_bt_times_general_plus, &
-       f_d_ubt_times_general_plus, f_z_ubt_times_general_plus, &
-       f_d_wbv_times_general_plus, f_z_wbv_times_general_plus, &
+       f_ub_times_general_plus, f_d_ub_times_general_plus, f_z_ub_times_general_plus, &
+       f_bv_times_general_plus, f_d_bv_times_general_plus, f_z_bv_times_general_plus, &
+       f_wb_times_general_plus, f_d_wb_times_general_plus, f_z_wb_times_general_plus, &
+       f_bt_times_general_plus, f_d_bt_times_general_plus, f_z_bt_times_general_plus, &
+       f_ubt_times_general_plus, f_d_ubt_times_general_plus, f_z_ubt_times_general_plus, &
+       f_wbv_times_general_plus, f_d_wbv_times_general_plus, f_z_wbv_times_general_plus, &
+       f_general_times_ub_plus, f_d_general_times_ub_plus, f_z_general_times_ub_plus, &
+       general_times_ub, product_of_general_and_ub, &
+       d_general_times_ub, d_product_of_general_and_ub, &
+       z_general_times_ub, z_product_of_general_and_ub, &
        operator(*)
        
   interface ub_times_general
      module procedure d_ub_times_general, z_ub_times_general
   end interface ub_times_general
 
-  interface f_ub_times_general
+  interface f_ub_times_general_plus
      module procedure f_d_ub_times_general_plus, f_z_ub_times_general_plus
-  end interface f_ub_times_general
+  end interface f_ub_times_general_plus
   
   interface product_of_ub_and_general
      module procedure d_product_of_ub_and_general, z_product_of_ub_and_general
@@ -48,9 +57,9 @@ module mod_products
      module procedure d_bv_times_general, z_bv_times_general
   end interface bv_times_general
 
-  interface f_bv_times_general
+  interface f_bv_times_general_plus
      module procedure f_d_bv_times_general_plus, f_z_bv_times_general_plus
-  end interface f_bv_times_general
+  end interface f_bv_times_general_plus
   
   interface product_of_bv_and_general
      module procedure d_product_of_bv_and_general, z_product_of_bv_and_general
@@ -60,9 +69,9 @@ module mod_products
      module procedure d_wb_times_general, z_wb_times_general
   end interface wb_times_general
 
-  interface f_wb_times_general
+  interface f_wb_times_general_plus
      module procedure f_d_wb_times_general_plus, f_z_wb_times_general_plus
-  end interface f_wb_times_general
+  end interface f_wb_times_general_plus
   
   interface product_of_wb_and_general
      module procedure d_product_of_wb_and_general, z_product_of_wb_and_general
@@ -72,9 +81,9 @@ module mod_products
      module procedure d_bt_times_general, z_bt_times_general
   end interface bt_times_general
 
-  interface f_bt_times_general
+  interface f_bt_times_general_plus
      module procedure f_d_bt_times_general_plus, f_z_bt_times_general_plus
-  end interface f_bt_times_general
+  end interface f_bt_times_general_plus
   
   interface product_of_bt_and_general
      module procedure d_product_of_bt_and_general, z_product_of_bt_and_general
@@ -84,9 +93,9 @@ module mod_products
      module procedure d_ubt_times_general, z_ubt_times_general
   end interface ubt_times_general
 
-  interface f_ubt_times_general
+  interface f_ubt_times_general_plus
      module procedure f_d_ubt_times_general_plus, f_z_ubt_times_general_plus
-  end interface f_ubt_times_general
+  end interface f_ubt_times_general_plus
   
   interface product_of_ubt_and_general
      module procedure d_product_of_ubt_and_general, z_product_of_ubt_and_general
@@ -96,13 +105,25 @@ module mod_products
      module procedure d_wbv_times_general, z_wbv_times_general
   end interface wbv_times_general
 
-  interface f_wbv_times_general
+  interface f_wbv_times_general_plus
      module procedure f_d_wbv_times_general_plus, f_z_wbv_times_general_plus
-  end interface f_wbv_times_general
+  end interface f_wbv_times_general_plus
   
   interface product_of_wbv_and_general
      module procedure d_product_of_wbv_and_general , z_product_of_wbv_and_general
   end interface product_of_wbv_and_general
+
+  interface general_times_ub
+     module procedure d_general_times_ub, z_general_times_ub
+  end interface general_times_ub
+
+  interface product_of_general_and_ub
+     module procedure d_product_of_general_and_ub, z_product_of_general_and_ub
+  end interface product_of_general_and_ub
+
+  interface f_general_times_ub_plus
+     module procedure f_d_general_times_ub_plus, f_z_general_times_ub_plus
+  end interface f_general_times_ub_plus
   
   interface operator (*)
      module procedure d_product_of_ub_and_general0,  z_product_of_ub_and_general0, &
@@ -294,6 +315,182 @@ contains
        c(:,j)=c(:,j)+x
     end do
   end subroutine f_z_ub_times_general_plus
+
+  ! general times UB
+
+  function d_product_of_general_and_ub0(a, ub) result(c)
+    real(kind=dp), dimension(:,:), intent(in) :: a
+    real(kind=dp), dimension(:,:), allocatable :: c
+    type(d_ub), intent(in) :: ub
+    
+    allocate(c(size(a,1),size(a,2)))
+    call d_general_times_ub(a,ub,c)
+  end function d_product_of_general_and_ub0
+
+  function d_product_of_general_and_ub(a, ub, error) result(c)
+    real(kind=dp), dimension(:,:), intent(in) :: a
+    real(kind=dp), dimension(:,:), allocatable :: c
+    type(d_ub), intent(in) :: ub
+    type(error_info), intent(inout), optional :: error
+    type(routine_info), parameter :: info=info_d_product_of_general_and_ub
+
+    if (failure(error)) return
+    call push_id(info, error)
+    
+    allocate(c(size(a,1),size(a,2)))
+    call d_general_times_ub(a,ub,c,error)
+    call pop_id(error)
+  end function d_product_of_general_and_ub
+
+  ! Errors
+  ! 0: no error
+  ! 1: ub%n < 1
+  ! 2: ub%n /= size(a,2)
+  ! 3: size(a) /= size(c)
+  subroutine d_general_times_ub(a,ub,c,error)
+    type(d_ub), intent(in) :: ub
+    real(kind=dp), dimension(:,:), intent(in) :: a
+    real(kind=dp), dimension(:,:), intent(out) :: c    
+    type(error_info), intent(inout), optional :: error
+    type(routine_info), parameter :: info=info_d_general_times_ub
+
+    if (failure(error)) return
+    call push_id(info, error)
+    if (get_n(ub) < 1) then
+       call set_error(1, info, error); return
+    end if
+    if (get_n(ub) /= size(a,2)) then
+       call set_error(2, info, error); return
+    end if
+    if (size(a) /= size(c)) then
+       call set_error(3, info, error); return
+    end if
+    c=0.0_dp
+    call f_d_general_times_ub_plus(a, size(a,1),ub%bc, get_n(ub), ub%lbw, ub%ubw, get_lbwmax(ub), &
+         get_ubwmax(ub), ub%numrotsu, ub%jsu, ub%csu, ub%ssu,c)
+    call pop_id(error)
+  end subroutine d_general_times_ub
+
+  subroutine f_d_general_times_ub_plus(a, ma, bc, n, lbw, ubw, lbwmax, ubwmax, numrotsu, &
+       jsu, csu, ssu,c)
+    real(kind=dp), dimension(ma,n), intent(in) :: a
+    real(kind=dp), dimension(ma,n), intent(out) :: c    
+    integer(kind=int32), dimension(ubwmax,n), intent(in) :: jsu
+    real(kind=dp), dimension(ubwmax,n), intent(in) :: csu, ssu
+    real(kind=dp), dimension(lbwmax+ubwmax+1,n), intent(in) :: bc
+    integer(kind=int32), dimension(n), intent(in) :: numrotsu
+    integer(kind=int32), intent(in) :: ubw, lbw, n, lbwmax, ubwmax, ma
+    !
+    integer(kind=int32) :: j,k,l,lbwk,ubwk,d0
+    real(kind=dp), dimension(n) :: x
+    type(d_rotation) :: rot
+    d0=ubw+1
+    do j=1,ma
+       x=a(j,:)
+       c(j,1)=c(j,1)+dot_product(bc(ubw+1:ubw+lbw+1,1),x(1:lbw+1))
+       do k=2,n-1
+          ubwk=min(ubw,k-1) ! number of superdiagonals in column k
+          lbwk=min(lbw,n-k) ! number of subdiagonals in column k
+          c(j,k)=c(j,k)+dot_product(bc(d0-ubwk:d0+lbwk,k),x(k-ubwk:k+lbwk))
+          ! apply u_k to x
+          do l=numrotsu(k),1,-1
+             rot%cosine=csu(l,k); rot%sine=ssu(l,k)
+             call general_times_rotation(x,rot,jsu(l,k),jsu(l,k)+1)
+          end do
+       end do
+       ubwk=min(ubw,n-1) ! number of superdiagonals in column k
+       lbwk=0 ! number of subdiagonals in column k
+       c(j,n)=c(j,n)+dot_product(bc(d0-ubwk:d0+lbwk,n),x(n-ubwk:n+lbwk))
+    end do
+  end subroutine f_d_general_times_ub_plus
+
+  function z_product_of_general_and_ub0(a, ub) result(c)
+    complex(kind=dp), dimension(:,:), intent(in) :: a
+    complex(kind=dp), dimension(:,:), allocatable :: c
+    type(z_ub), intent(in) :: ub
+    
+    allocate(c(size(a,1),size(a,2)))
+    call z_general_times_ub(a,ub,c)
+  end function z_product_of_general_and_ub0
+
+  function z_product_of_general_and_ub(a, ub, error) result(c)
+    complex(kind=dp), dimension(:,:), intent(in) :: a
+    complex(kind=dp), dimension(:,:), allocatable :: c
+    type(z_ub), intent(in) :: ub
+    type(error_info), intent(inout), optional :: error
+    type(routine_info), parameter :: info=info_z_product_of_general_and_ub
+
+    if (failure(error)) return
+    call push_id(info, error)
+    
+    allocate(c(size(a,1),size(a,2)))
+    call z_general_times_ub(a,ub,c,error)
+    call pop_id(error)
+  end function z_product_of_general_and_ub
+
+  ! Errors
+  ! 0: no error
+  ! 1: ub%n < 1
+  ! 2: ub%n /= size(a,2)
+  ! 3: size(a) /= size(c)
+  subroutine z_general_times_ub(a,ub,c,error)
+    type(z_ub), intent(in) :: ub
+    complex(kind=dp), dimension(:,:), intent(in) :: a
+    complex(kind=dp), dimension(:,:), intent(out) :: c    
+    type(error_info), intent(inout), optional :: error
+    type(routine_info), parameter :: info=info_z_general_times_ub
+
+    if (failure(error)) return
+    call push_id(info, error)
+    if (get_n(ub) < 1) then
+       call set_error(1, info, error); return
+    end if
+    if (get_n(ub) /= size(a,2)) then
+       call set_error(2, info, error); return
+    end if
+    if (size(a) /= size(c)) then
+       call set_error(3, info, error); return
+    end if
+    c=(0.0_dp,0.0_dp)
+    call f_z_general_times_ub_plus(a, size(a,1),ub%bc, get_n(ub), ub%lbw, ub%ubw, get_lbwmax(ub), &
+         get_ubwmax(ub), ub%numrotsu, ub%jsu, ub%csu, ub%ssu,c)
+    call pop_id(error)
+  end subroutine z_general_times_ub
+
+  subroutine f_z_general_times_ub_plus(a, ma, bc, n, lbw, ubw, lbwmax, ubwmax, numrotsu, &
+       jsu, csu, ssu,c)
+    complex(kind=dp), dimension(ma,n), intent(in) :: a
+    complex(kind=dp), dimension(ma,n), intent(out) :: c    
+    integer(kind=int32), dimension(ubwmax,n), intent(in) :: jsu
+    real(kind=dp), dimension(ubwmax,n), intent(in) :: csu
+    complex(kind=dp), dimension(ubwmax,n), intent(in) :: ssu
+    complex(kind=dp), dimension(lbwmax+ubwmax+1,n), intent(in) :: bc
+    integer(kind=int32), dimension(n), intent(in) :: numrotsu
+    integer(kind=int32), intent(in) :: ubw, lbw, n, lbwmax, ubwmax, ma
+    !
+    integer(kind=int32) :: j,k,l,lbwk,ubwk,d0
+    complex(kind=dp), dimension(n) :: x
+    type(z_rotation) :: rot
+    d0=ubw+1
+    do j=1,ma
+       x=a(j,:)
+       c(j,1)=c(j,1)+dot_no_conjg(bc(ubw+1:ubw+lbw+1,1),x(1:lbw+1))
+       do k=2,n-1
+          ubwk=min(ubw,k-1) ! number of superdiagonals in column k
+          lbwk=min(lbw,n-k) ! number of subdiagonals in column k
+          c(j,k)=c(j,k)+dot_no_conjg(bc(d0-ubwk:d0+lbwk,k),x(k-ubwk:k+lbwk))
+          ! apply u_k to x
+          do l=numrotsu(k),1,-1
+             rot%cosine=csu(l,k); rot%sine=ssu(l,k)
+             call general_times_rotation(x,rot,jsu(l,k),jsu(l,k)+1)
+          end do
+       end do
+       ubwk=min(ubw,n-1) ! number of superdiagonals in column k
+       lbwk=0 ! number of subdiagonals in column k
+       c(j,n)=c(j,n)+dot_no_conjg(bc(d0-ubwk:d0+lbwk,n),x(n-ubwk:n+lbwk))
+    end do
+  end subroutine f_z_general_times_ub_plus
+  
   
   ! real BV times general
 

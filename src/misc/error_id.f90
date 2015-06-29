@@ -1051,6 +1051,10 @@ module mod_error_id
   integer(int32), parameter :: id_z_wbv_times_general=mod_id_products + 22
   integer(int32), parameter :: id_z_product_of_wbv_and_general=mod_id_products + 23
 
+  integer(int32), parameter :: id_d_general_times_ub=mod_id_products + 24
+  integer(int32), parameter :: id_d_product_of_general_and_ub=mod_id_products + 25
+  integer(int32), parameter :: id_z_general_times_ub=mod_id_products + 26
+  integer(int32), parameter :: id_z_product_of_general_and_ub=mod_id_products + 27
   
   type(routine_info), parameter :: info_d_ub_times_general=routine_info(id_d_ub_times_general, &
        'd_ub_times_general', &
@@ -1183,6 +1187,29 @@ module mod_error_id
        'z_product_of_wbv_and_general', &
        [ character(len=error_message_length) :: 'wbv%n<1', &
        'wbv%n /= size(a,1)', 'size(a) /= size(c)'])
+
+  type(routine_info), parameter :: info_d_general_times_ub=routine_info(id_d_general_times_ub, &
+       'd_general_times_ub', &
+       [ character(len=error_message_length) :: 'ub%n<1', &
+       'ub%n /= size(a,1)', 'size(a) /= size(c)'])
+
+  type(routine_info), parameter :: info_d_product_of_general_and_ub= &
+       routine_info(id_d_product_of_general_and_ub, &
+       'd_product_of_general_and_ub', &
+       [ character(len=error_message_length) :: 'ub%n<1', &
+       'ub%n /= size(a,1)', 'size(a) /= size(c)'])
+
+  type(routine_info), parameter :: info_z_general_times_ub=routine_info(id_z_general_times_ub, &
+       'z_general_times_ub', &
+       [ character(len=error_message_length) :: 'ub%n<1', &
+       'ub%n /= size(a,1)', 'size(a) /= size(c)'])
+
+  type(routine_info), parameter :: info_z_product_of_general_and_ub= &
+       routine_info(id_z_product_of_general_and_ub, &
+       'z_product_of_general_and_ub', &
+       [ character(len=error_message_length) :: 'ub%n<1', &
+       'ub%n /= size(a,1)', 'size(a) /= size(c)'])
+  
 
   ! src/types/cond_orth_band 2000
   integer(int32), parameter :: mod_id_cond_orth_band=2000
