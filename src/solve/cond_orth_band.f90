@@ -50,7 +50,7 @@ contains
     real(kind=dp) :: tolres, sigmav, maxub
     real(kind=dp), dimension(size(un)) :: tmpv
     real(kind=dp), dimension(size(un),1) :: tmpc
-    real(kind=dp), dimension(1,size(un)) :: tmpr    
+    real(kind=dp), dimension(1,size(un)) :: tmpr
     type(routine_info), parameter :: info=info_d_ub_min_sv
     type(d_bv), allocatable :: bv, bvt
     type(d_ub), allocatable :: ubl
@@ -145,6 +145,8 @@ contains
              un=sigmau*un
              res=res*sigmav - un*sigmau
              if (norm2(res) < tolres) then
+                call general_times_ub(reshape(un,[1,n]),ub,tmpr)
+                sigmau=normf(tmpr)
                 call pop_id(error)
                 return
              end if
@@ -152,6 +154,8 @@ contains
           end do
           if (tolres==0.0_dp) then
              ! maxits is OK if tolerance is zero.
+             call general_times_ub(reshape(un,[1,n]),ub,tmpr)
+             sigmau=normf(tmpr)
              call pop_id(error)
           else
              call set_error(5, info, error); return
@@ -270,6 +274,8 @@ contains
              un=sigmau*un
              res=res*sigmav - un*sigmau
              if (norm2(res) < tolres) then
+                call general_times_ub(conjg(reshape(un,[1,n])),ub,tmpr)
+                sigmau=normf(tmpr)
                 call pop_id(error)
                 return
              end if
@@ -277,9 +283,11 @@ contains
           end do
           if (tolres==0.0_dp) then
              ! maxits is OK if tolerance is zero.
+             call general_times_ub(conjg(reshape(un,[1,n])),ub,tmpr)
+             sigmau=normf(tmpr)
              call pop_id(error)
           else
-             call set_error(4, info, error); return
+             call set_error(5, info, error); return
           end if
        end if
     end if
