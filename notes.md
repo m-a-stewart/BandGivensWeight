@@ -1,24 +1,24 @@
-Context
-=======
+ORRB:  Orthogonal Rank-structured Reduction to Banded form
+==========================================================
 
-The Fortran code accompanies the paper *An Analysis of Orthogonal
+The Fortran 2003 code works on various Givens-weight parameterizations
+and is intended to accompany the paper *An Analysis of Orthogonal
 Algorithms for Rank Structured Matrices*.  I expect to continue to use
 this code as a basis for further research into related algorithms.
 For that reason, I have put more effort into writing, packaging, and
 testing than I would normally do for a proof of concept
-implementation.  Nevertheless, it is all still experimental and no
-attempt has been made at optimizing the code.  These disclaimers apply
-most strongly to the decomposition routines for rank structured
-matrices stored as general matrices, which are contained in
-`./src/general` and are based on a Gram-Schmidt QR updating algorithm.
-These decomposition routines are not part of the paper and were
-included only because they are convenient to use as a means for
-generating givens weight representations for testing other routines.
+implementation.  Nevertheless, the code is experimental and no attempt
+has been made at optimization.  These disclaimers apply most strongly
+to the decomposition routines for rank structured matrices stored as
+general matrices, which are contained in `./src/general`.  These
+decomposition routines are not part of the paper and were included
+only because they are convenient to use as a means for generating
+givens weight representations.
 
 Build Process
 =============
 
-The code has been testing on a Debian GNU/Linux 7 system with
+The code has been tested on a Debian GNU/Linux 7 system with
 `gfortran` version 4.7.2.  The makefile is arranged as a single top
 level makefile with includes in `./src/src.mk`, `./test/test.mk`, and
 `./exp/exp.mk`.  There are a number of higher level targets:
@@ -257,6 +257,9 @@ The stable, linear complexity system solver described in the paper.
   backward and forward substitution for upper triangular matrices represented
   by BV or UB decompositions.  The backward substitution solves $Tx=b$ while
   the forward substitution solve $x^T T = b^T$.
+* `mod_cond_orth_band` in `./src/solve/cond_orth_band.f90`: Routines
+  for condition estimation for a triangular matrix represented as a UB
+  decomposition.
 
 `./src/transforms`
 ------------------
@@ -305,14 +308,16 @@ program example
     type(d_rc), allocatable :: swbv
     type(d_ubt), allocatable :: ubta
     !
+    ! initialize_errors sets up array mapping error codes to error messages.
+    call initialize_errors
     na=1000; lbwa=20; ubwa=25
     rhs=d_random_vector(na)
     rhs0=rhs
     ubta=d_random_ubt(na,lbwa,ubwa,error=error)
     a = general(ubta,error)
-    swbv=rc(ubta,error)
+    swbv=rc_of(ubta,error)
     rhs=trp(swbv%sw) * rhs
-    swub=qr(swbv%bv,error)
+    swub=qr_of(swbv%bv,error)
     rhs=trp(swub%sw) * rhs
     x=solve(swub%ub, rhs, error)
     res=matmul(a,x)-rhs0

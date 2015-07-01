@@ -401,9 +401,9 @@ contains
        b(d+1,k) = s*tmp + c*b(d+1,k)
     end do
   end subroutine d_rotation_times_tbc
-
+  
   ! Rotation times truncated band matrix with aligned columns.
-  ! First l columns are not modified.
+  ! First l and last p columns are not modified.
   subroutine z_rotation_times_tbc(r,b,n,lbw,ubw,l,p,j)
     complex(kind=dp), dimension(:,:), intent(inout) :: b
     type(z_rotation), intent(in) :: r
