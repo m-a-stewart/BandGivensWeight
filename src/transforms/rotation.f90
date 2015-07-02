@@ -13,6 +13,14 @@ module mod_rotation
 
   public :: trp_rot, d_trp_rot, z_trp_rot
 
+  public :: f_rotation_times_general, f_d_rotation_times_general, &
+       f_z_rotation_times_general, f_d_rotation_times_general_v, &
+       f_z_rotation_times_general_v
+
+  public :: f_general_times_rotation, f_d_general_times_rotation, &
+       f_z_general_times_rotation, f_d_general_times_rotation_v, &
+       f_z_general_times_rotation_v
+
   public :: rotation_times_general, d_rotation_times_general, z_rotation_times_general, &
        d_rotation_times_general_v, z_rotation_times_general_v
 
@@ -50,6 +58,16 @@ module mod_rotation
      module procedure d_trp_rot, z_trp_rot
   end interface trp_rot
 
+  interface f_rotation_times_general
+     module procedure f_d_rotation_times_general, f_z_rotation_times_general, &
+          f_d_rotation_times_general_v, f_z_rotation_times_general_v
+  end interface f_rotation_times_general
+
+  interface f_general_times_rotation
+     module procedure f_d_general_times_rotation, f_z_general_times_rotation, &
+          f_d_general_times_rotation_v, f_z_general_times_rotation_v
+  end interface f_general_times_rotation
+
   interface rotation_times_general
      module procedure d_rotation_times_general, z_rotation_times_general, &
           d_rotation_times_general_v, z_rotation_times_general_v
@@ -59,7 +77,7 @@ module mod_rotation
      module procedure d_general_times_rotation, z_general_times_rotation, &
           d_general_times_rotation_v, z_general_times_rotation_v
   end interface general_times_rotation
-
+  
 contains
 
   ! compute a rotation r=[c,-s;s,c] such that r^T * [x;y]=[z;0]
@@ -200,6 +218,22 @@ contains
   end function z_rgivens2
 
   ! r*a with r=[c,-s;s,c]
+  subroutine f_d_rotation_times_general(c,s,a,j1,j2)
+    real(kind=dp), dimension(:,:), intent(inout) :: a
+    real(kind=dp), intent(in) :: c,s
+    integer(kind=int32), intent(in) :: j1, j2
+    !
+    integer(kind=int32) :: n, k
+    real(kind=dp) :: tmp
+    n=size(a,2)
+    do k=1,n
+       tmp=a(j1, k)
+       a(j1,k)=c*tmp-s*a(j2,k)
+       a(j2,k)=s*tmp+c*a(j2,k)
+    end do
+  end subroutine f_d_rotation_times_general
+
+  ! r*a with r=[c,-s;s,c]
   subroutine d_rotation_times_general(r,a,j1,j2)
     real(kind=dp), dimension(:,:), intent(inout) :: a
     type(d_rotation), intent(in) :: r
@@ -217,6 +251,17 @@ contains
     end do
   end subroutine d_rotation_times_general
 
+  subroutine f_d_rotation_times_general_v(c,s,a,j1,j2)
+    real(kind=dp), dimension(:), intent(inout) :: a
+    real(kind=dp), intent(in) :: c,s
+    integer(kind=int32), intent(in) :: j1, j2
+    !
+    real(kind=dp) :: tmp
+    tmp=a(j1)
+    a(j1)=c*tmp-s*a(j2)
+    a(j2)=s*tmp+c*a(j2)
+  end subroutine f_d_rotation_times_general_v
+
   subroutine d_rotation_times_general_v(r,a,j1,j2)
     real(kind=dp), dimension(:), intent(inout) :: a
     type(d_rotation), intent(in) :: r
@@ -229,6 +274,23 @@ contains
     a(j1)=c*tmp-s*a(j2)
     a(j2)=s*tmp+c*a(j2)
   end subroutine d_rotation_times_general_v
+
+  ! r*a with r=[c,-conj(s);s,c]
+  subroutine f_z_rotation_times_general(c,s,a,j1,j2)
+    complex(kind=dp), dimension(:,:), intent(inout) :: a
+    real(kind=dp), intent(in) :: c
+    complex(kind=dp), intent(in) :: s
+    integer(kind=int32), intent(in) :: j1, j2
+    !
+    integer(kind=int32) :: n, k
+    complex(kind=dp) :: tmp
+    n=size(a,2)
+    do k=1,n
+       tmp=a(j1, k)
+       a(j1,k)=c*tmp-conjg(s)*a(j2,k)
+       a(j2,k)=s*tmp+c*a(j2,k)
+    end do
+  end subroutine f_z_rotation_times_general
 
   ! r*a with r=[c,-conj(s);s,c]
   subroutine z_rotation_times_general(r,a,j1,j2)
@@ -249,6 +311,18 @@ contains
     end do
   end subroutine z_rotation_times_general
 
+  subroutine f_z_rotation_times_general_v(c,s,a,j1,j2)
+    complex(kind=dp), dimension(:), intent(inout) :: a
+    complex(kind=dp), intent(in) :: s
+    real(kind=dp), intent(in) :: c
+    integer(kind=int32), intent(in) :: j1, j2
+    !
+    complex(kind=dp) :: tmp
+    tmp=a(j1)
+    a(j1)=c*tmp-conjg(s)*a(j2)
+    a(j2)=s*tmp+c*a(j2)
+  end subroutine f_z_rotation_times_general_v
+
   subroutine z_rotation_times_general_v(r,a,j1,j2)
     complex(kind=dp), dimension(:), intent(inout) :: a
     type(z_rotation), intent(in) :: r
@@ -262,6 +336,23 @@ contains
     a(j1)=c*tmp-conjg(s)*a(j2)
     a(j2)=s*tmp+c*a(j2)
   end subroutine z_rotation_times_general_v
+
+  ! a*r with r=[c,-s;s,c]
+  subroutine f_d_general_times_rotation(a,c,s,k1,k2)
+    real(kind=dp), dimension(:,:), intent(inout) :: a
+    real(kind=dp), intent(in) :: c,s
+    integer(kind=int32), intent(in) :: k1, k2
+    !
+    integer(kind=int32) :: m, j
+    real(kind=dp) :: tmp
+    m=size(a,1)
+    do j=1,m
+       tmp=a(j,k1)
+       a(j,k1)=c*tmp+s*a(j,k2)
+       a(j,k2)=-s*tmp+c*a(j,k2)
+    end do
+  end subroutine f_d_general_times_rotation
+
 
   ! a*r with r=[c,-s;s,c]
   subroutine d_general_times_rotation(a,r,k1,k2)
@@ -281,6 +372,17 @@ contains
     end do
   end subroutine d_general_times_rotation
 
+  subroutine f_d_general_times_rotation_v(a,c,s,k1,k2)
+    real(kind=dp), dimension(:), intent(inout) :: a
+    real(kind=dp), intent(in) :: c,s
+    integer(kind=int32), intent(in) :: k1, k2
+    !
+    real(kind=dp) :: tmp
+    tmp=a(k1)
+    a(k1)=c*tmp+s*a(k2)
+    a(k2)=-s*tmp+c*a(k2)
+  end subroutine f_d_general_times_rotation_v
+
   subroutine d_general_times_rotation_v(a,r,k1,k2)
     real(kind=dp), dimension(:), intent(inout) :: a
     type(d_rotation), intent(in) :: r
@@ -294,7 +396,23 @@ contains
     a(k2)=-s*tmp+c*a(k2)
   end subroutine d_general_times_rotation_v
 
-
+  ! a*r with r=[c,-conj(s);s,c]
+  subroutine f_z_general_times_rotation(a,c,s,k1,k2)
+    complex(kind=dp), dimension(:,:), intent(inout) :: a
+    real(kind=dp), intent(in) :: c
+    complex(kind=dp), intent(in) :: s
+    integer(kind=int32), intent(in) :: k1, k2
+    !
+    integer(kind=int32) :: m, j
+    complex(kind=dp) :: tmp
+    m=size(a,1)
+    do j=1,m
+       tmp=a(j,k1)
+       a(j,k1)=c*tmp+s*a(j,k2)
+       a(j,k2)=-conjg(s)*tmp+c*a(j,k2)
+    end do
+  end subroutine f_z_general_times_rotation
+  
   ! a*r with r=[c,-conj(s);s,c]
   subroutine z_general_times_rotation(a,r,k1,k2)
     complex(kind=dp), dimension(:,:), intent(inout) :: a
@@ -313,6 +431,18 @@ contains
        a(j,k2)=-conjg(s)*tmp+c*a(j,k2)
     end do
   end subroutine z_general_times_rotation
+
+  subroutine f_z_general_times_rotation_v(a,c,s,k1,k2)
+    complex(kind=dp), dimension(:), intent(inout) :: a
+    complex(kind=dp), intent(in) :: s
+    real(kind=dp), intent(in) :: c
+    integer(kind=int32), intent(in) :: k1, k2
+    !
+    complex(kind=dp) :: tmp
+    tmp=a(k1)
+    a(k1)=c*tmp+s*a(k2)
+    a(k2)=-conjg(s)*tmp+c*a(k2)
+  end subroutine f_z_general_times_rotation_v
 
   subroutine z_general_times_rotation_v(a,r,k1,k2)
     complex(kind=dp), dimension(:), intent(inout) :: a

@@ -37,6 +37,11 @@ module mod_band_types
        print_abs_bc, d_print_abs_bc, z_print_abs_bc, &
        print_abs_br, d_print_abs_br, z_print_abs_br
 
+  public :: f_rotation_times_tbc, f_d_rotation_times_tbc, f_z_rotation_times_tbc, &
+       f_tbc_times_rotation, f_d_tbc_times_rotation, f_z_tbc_times_rotation, &
+       f_tbr_times_rotation, f_d_tbr_times_rotation, f_z_tbr_times_rotation, &
+       f_rotation_times_tbr, f_d_rotation_times_tbr, f_z_rotation_times_tbr
+
   public :: rotation_times_tbc, d_rotation_times_tbc, z_rotation_times_tbc, &
        tbc_times_rotation, d_tbc_times_rotation, z_tbc_times_rotation, &
        tbr_times_rotation, d_tbr_times_rotation, z_tbr_times_rotation, &
@@ -97,6 +102,22 @@ module mod_band_types
 
 
   ! rotations
+
+  interface f_rotation_times_tbc
+     module procedure f_d_rotation_times_tbc, f_z_rotation_times_tbc
+  end interface f_rotation_times_tbc
+
+  interface f_tbc_times_rotation
+     module procedure f_d_tbc_times_rotation, f_z_tbc_times_rotation
+  end interface f_tbc_times_rotation
+
+  interface f_tbr_times_rotation
+     module procedure f_d_tbr_times_rotation, f_z_tbr_times_rotation
+  end interface f_tbr_times_rotation
+
+  interface f_rotation_times_tbr
+     module procedure f_d_rotation_times_tbr, f_z_rotation_times_tbr
+  end interface f_rotation_times_tbr
 
   interface rotation_times_tbc
      module procedure d_rotation_times_tbc, z_rotation_times_tbc
@@ -380,6 +401,28 @@ contains
   !
   ! Rotation times truncated band matrix with aligned columns.
   ! First l and last p columns are not modified.
+
+  subroutine f_d_rotation_times_tbc(c,s,b,n,lbw,ubw,l,p,j)
+    real(kind=dp), dimension(:,:), intent(inout) :: b
+    real(kind=dp), intent(in) :: c, s    
+    integer(kind=int32), intent(in) :: j,n, ubw,lbw, l, p
+    !
+    real(kind=dp) :: tmp
+    integer(kind=int32) :: k, k0, k1, d
+    ! first and last columns operated on, given by the
+    ! intersection of [l+1,n-p] and [max(1,j+1-lbw),min(n,j+ubw)]
+    ! which is [maxl+1,max(1,j+1-lbw)), min(n-p,min(n,j+ubw))]
+    k0=max(l+1,j+1-lbw)
+    k1=min(n-p,j+ubw)
+    ! loop over relevant columns in b.
+    do k=k0,k1
+       d=j-k+ubw+1
+       tmp = b(d,k)
+       b(d,k)=c*tmp - s*b(d+1,k)
+       b(d+1,k) = s*tmp + c*b(d+1,k)
+    end do
+  end subroutine f_d_rotation_times_tbc
+  
   subroutine d_rotation_times_tbc(r,b,n,lbw,ubw,l,p,j)
     real(kind=dp), dimension(:,:), intent(inout) :: b
     type(d_rotation), intent(in) :: r
@@ -401,6 +444,30 @@ contains
        b(d+1,k) = s*tmp + c*b(d+1,k)
     end do
   end subroutine d_rotation_times_tbc
+
+  ! Rotation times truncated band matrix with aligned columns.
+  ! First l and last p columns are not modified.
+  subroutine f_z_rotation_times_tbc(c,s,b,n,lbw,ubw,l,p,j)
+    complex(kind=dp), dimension(:,:), intent(inout) :: b
+    complex(kind=dp), intent(in) :: s
+    real(kind=dp), intent(in) :: c
+    integer(kind=int32), intent(in) :: j,n, ubw,lbw, l, p
+    !
+    complex(kind=dp) :: tmp
+    integer(kind=int32) :: k, k0, k1, d
+    ! first and last columns operated on, given by the
+    ! intersection of [l+1,n-p] and [max(1,j+1-lbw),min(n,j+ubw)]
+    ! which is [maxl+1,max(1,j+1-lbw)), min(n-p,min(n,j+ubw))]
+    k0=max(l+1,j+1-lbw)
+    k1=min(n-p,j+ubw)
+    ! loop over relevant columns in b.
+    do k=k0,k1
+       d=j-k+ubw+1
+       tmp = b(d,k)
+       b(d,k)=c*tmp - conjg(s)*b(d+1,k)
+       b(d+1,k) = s*tmp + c*b(d+1,k)
+    end do
+  end subroutine f_z_rotation_times_tbc
   
   ! Rotation times truncated band matrix with aligned columns.
   ! First l and last p columns are not modified.
@@ -429,6 +496,28 @@ contains
 
   ! apply a rotation to columns k and k+1 of a truncated band matrix with
   ! aligned columns. first l and last p rows are not modified.
+  subroutine f_d_tbc_times_rotation(b,n,lbw,ubw,l,p,c,s,k)
+    real(kind=dp), dimension(:,:), intent(inout) :: b
+    real(kind=dp), intent(in) :: c, s
+    integer(kind=int32), intent(in) :: k,n, ubw,lbw, l, p
+    !
+    real(kind=dp) :: tmp
+    integer(kind=int32) :: d, j0, j1, j
+    ! first and last rows operated on are given by the intersection
+    ! of [l+1,n-p] with [max(k-ubw+1,1),min(k+lbw,n)] which is
+    ! [max(l+1,k-ubw+1),min(k+lbw,n-p)]
+    j0=max(l+1,k-ubw+1)
+    j1=min(k+lbw,n-p)
+    do j=j0,j1
+       d=j-k+ubw+1
+       tmp=b(d,k)
+       b(d,k)=c*tmp+s*b(d-1,k+1)
+       b(d-1,k+1)=-s*tmp+c*b(d-1,k+1)
+    end do
+  end subroutine f_d_tbc_times_rotation
+
+  ! apply a rotation to columns k and k+1 of a truncated band matrix with
+  ! aligned columns. first l and last p rows are not modified.
   subroutine d_tbc_times_rotation(b,n,lbw,ubw,l,p,r,k)
     real(kind=dp), dimension(:,:), intent(inout) :: b
     type(d_rotation), intent(in) :: r
@@ -450,6 +539,27 @@ contains
     end do
   end subroutine d_tbc_times_rotation
 
+  subroutine f_z_tbc_times_rotation(b,n,lbw,ubw,l,p,c,s,k)
+    complex(kind=dp), dimension(:,:), intent(inout) :: b
+    complex(kind=dp), intent(in) :: s
+    real(kind=dp), intent(in) :: c
+    integer(kind=int32), intent(in) :: k,n, ubw,lbw, l, p
+    !
+    complex(kind=dp) :: tmp
+    integer(kind=int32) :: d, j0, j1, j
+    ! first and last rows operated on are given by the intersection
+    ! of [l+1,n-p] with [max(k-ubw+1,1),min(k+lbw,n)] which is
+    ! [max(l+1,k-ubw+1),min(k+lbw,n-p)]
+    j0=max(l+1,k-ubw+1)
+    j1=min(k+lbw,n-p)
+    do j=j0,j1
+       d=j-k+ubw+1
+       tmp=b(d,k)
+       b(d,k)=c*tmp+s*b(d-1,k+1)
+       b(d-1,k+1)=-conjg(s)*tmp+c*b(d-1,k+1)
+    end do
+  end subroutine f_z_tbc_times_rotation
+  
   subroutine z_tbc_times_rotation(b,n,lbw,ubw,l,p,r,k)
     complex(kind=dp), dimension(:,:), intent(inout) :: b
     type(z_rotation), intent(in) :: r
@@ -476,6 +586,28 @@ contains
   !
   ! apply a rotation to columns k and k+1 of a truncated band matrix with aligned rows.
   ! The rotation is not applied to the first l or last p rows.
+  subroutine f_d_tbr_times_rotation(b,m,lbw,ubw,l,p,c,s,k)
+    real(kind=dp), dimension(:, :), intent(inout) :: b
+    real(kind=dp), intent(in) :: c, s    
+    integer(kind=int32), intent(in) :: k,m, ubw,lbw, l,p
+    !
+    real(kind=dp) :: tmp
+    integer(kind=int32) :: j, j0, j1, d
+    ! first and last rows operated on are given by
+    ! the intersection of [l+1,m-p] and [max(k-ubw+1,1),min(k+lbw,m)]
+    ! which is [max(l+1,k-ubw+1), min(k+lbw,m-p)]
+    j0=max(l+1,k-ubw+1)
+    j1=min(k+lbw,m-p)
+    do j=j0,j1
+       d=k-j+lbw+1
+       tmp=b(j,d)
+       b(j,d)=c*tmp+s*b(j,d+1)
+       b(j,d+1)=-s*tmp+c*b(j,d+1)
+    end do
+  end subroutine f_d_tbr_times_rotation
+
+  ! apply a rotation to columns k and k+1 of a truncated band matrix with aligned rows.
+  ! The rotation is not applied to the first l or last p rows.
   subroutine d_tbr_times_rotation(b,m,lbw,ubw,l,p,r,k)
     real(kind=dp), dimension(:, :), intent(inout) :: b
     type(d_rotation), intent(in) :: r
@@ -497,6 +629,27 @@ contains
     end do
   end subroutine d_tbr_times_rotation
 
+  subroutine f_z_tbr_times_rotation(b,m,lbw,ubw,l,p,c,s,k)
+    complex(kind=dp), dimension(:,:), intent(inout) :: b
+    complex(kind=dp), intent(in) :: s
+    real(kind=dp), intent(in) :: c
+    integer(kind=int32), intent(in) :: k,m, ubw,lbw, l, p
+    !
+    complex(kind=dp) :: tmp
+    integer(kind=int32) :: j, j0, j1, d
+    ! first and last rows operated on are given by
+    ! the intersection of [l+1,m-p] and [max(k-ubw+1,1),min(k+lbw,m)]
+    ! which is [max(l+1,k-ubw+1), min(k+lbw,m-p)]
+    j0=max(l+1,k-ubw+1)
+    j1=min(k+lbw,m-p)
+    do j=j0,j1
+       d=k-j+lbw+1
+       tmp=b(j,d)
+       b(j,d)=c*tmp+s*b(j,d+1)
+       b(j,d+1)=-conjg(s)*tmp+c*b(j,d+1)
+    end do
+  end subroutine f_z_tbr_times_rotation
+  
   subroutine z_tbr_times_rotation(b,m,lbw,ubw,l,p,r,k)
     complex(kind=dp), dimension(:,:), intent(inout) :: b
     type(z_rotation), intent(in) :: r
@@ -521,6 +674,28 @@ contains
 
   ! A rotation times a truncated band matrix with aligned rows.  The
   ! rotation is not applied to the first l or last p columns.
+  subroutine f_d_rotation_times_tbr(c,s,b,m,lbw,ubw,l,p,j)
+    real(kind=dp), dimension(:,:), intent(inout) :: b
+    real(kind=dp), intent(in) :: c, s    
+    integer(kind=int32), intent(in) :: j,m, ubw,lbw, l, p
+    !
+    real(kind=dp) :: tmp
+    integer(kind=int32) :: d, k0,k1,k
+    ! first and last columns operated on, given by the
+    ! intersection of [l+1,m-p] and [max(1,j+1-lbw),min(m,j+ubw)]
+    ! which is [maxl+1,max(1,j+1-lbw)), min(m-p,min(n,j+ubw))]
+    k0=max(l+1,j+1-lbw)
+    k1=min(m-p,j+ubw)
+    do k=k0,k1
+       d=k-j+lbw+1
+       tmp=b(j,d)
+       b(j,d)=c*tmp-s*b(j+1,d-1)
+       b(j+1,d-1)=s*tmp+c*b(j+1,d-1)
+    end do
+  end subroutine f_d_rotation_times_tbr
+  
+  ! A rotation times a truncated band matrix with aligned rows.  The
+  ! rotation is not applied to the first l or last p columns.
   subroutine d_rotation_times_tbr(r,b,m,lbw,ubw,l,p,j)
     real(kind=dp), dimension(:,:), intent(inout) :: b
     type(d_rotation), intent(in) :: r
@@ -541,6 +716,27 @@ contains
        b(j+1,d-1)=s*tmp+c*b(j+1,d-1)
     end do
   end subroutine d_rotation_times_tbr
+
+  subroutine f_z_rotation_times_tbr(c,s,b,m,lbw,ubw,l,p,j)
+    complex(kind=dp), dimension(:,:), intent(inout) :: b
+    complex(kind=dp), intent(in) :: s
+    real(kind=dp), intent(in) :: c
+    integer(kind=int32), intent(in) :: j,m, ubw,lbw, l,p
+    !
+    complex(kind=dp) :: tmp
+    integer(kind=int32) :: d, k0,k1,k
+    ! first and last columns operated on, given by the
+    ! intersection of [l+1,m-p] and [max(1,j+1-lbw),min(m,j+ubw)]
+    ! which is [maxl+1,max(1,j+1-lbw)), min(m-p,min(n,j+ubw))]
+    k0=max(l+1,j+1-lbw)
+    k1=min(m-p,j+ubw)
+    do k=k0,k1
+       d=k-j+lbw+1
+       tmp=b(j,d)
+       b(j,d)=c*tmp-conjg(s)*b(j+1,d-1)
+       b(j+1,d-1)=s*tmp+c*b(j+1,d-1)
+    end do
+  end subroutine f_z_rotation_times_tbr
 
   subroutine z_rotation_times_tbr(r,b,m,lbw,ubw,l,p,j)
     complex(kind=dp), dimension(:,:), intent(inout) :: b
