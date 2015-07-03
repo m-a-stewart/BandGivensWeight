@@ -19,7 +19,7 @@ module mod_submatrix
 
   public :: columns_of_ub, ub_to_columns, &
        d_columns_of_ub, d_ub_to_columns, f_d_ub_to_columns, &
-       z_columns_of_ub, z_ub_to_columns, f_z_ub_to_columns       
+       z_columns_of_ub, z_ub_to_columns, f_z_ub_to_columns
 
   public :: columns_of_wb, wb_to_columns, &
        d_columns_of_wb, d_wb_to_columns, f_d_wb_to_columns, &
@@ -32,7 +32,7 @@ module mod_submatrix
   public :: rows_of_bt, bt_to_rows, &
        d_rows_of_bt, d_bt_to_rows, f_d_bt_to_rows, &
        z_rows_of_bt, z_bt_to_rows, f_z_bt_to_rows
-  
+
   interface leading
      module procedure d_ub_leading, z_ub_leading, d_bt_leading, z_bt_leading, &
           d_ubt_leading, z_ubt_leading
@@ -74,7 +74,7 @@ module mod_submatrix
   interface bt_to_rows
      module procedure d_bt_to_rows, z_bt_to_rows
   end interface bt_to_rows
-  
+
 contains
 
   ! Structured leading and trailing principal submatrices.
@@ -84,7 +84,7 @@ contains
     integer(kind=int32), intent(in) :: l
     integer(kind=int32), intent(in), optional :: lbwmaxl0,ubwmaxl0
     type(error_info), intent(inout), optional :: error
-    
+
     integer(kind=int32) :: lbwmax, ubwmax, lbwmaxl, ubwmaxl, n, lbw, ubw
     type(routine_info), parameter :: info=info_d_ub_leading
 
@@ -123,7 +123,7 @@ contains
     integer(kind=int32), intent(in) :: l
     integer(kind=int32), intent(in), optional :: lbwmaxl0,ubwmaxl0
     type(error_info), intent(inout), optional :: error
-    
+
     integer(kind=int32) :: lbwmax, ubwmax, lbwmaxl, ubwmaxl, n, lbw, ubw
     type(routine_info), parameter :: info=info_z_ub_leading
 
@@ -162,7 +162,7 @@ contains
     integer(kind=int32), intent(in) :: l
     integer(kind=int32), intent(in), optional :: lbwmaxl0,ubwmaxl0
     type(error_info), intent(inout), optional :: error
-    
+
     integer(kind=int32) :: lbwmax, ubwmax, lbwmaxl, ubwmaxl, n, lbw, ubw, j, k
     type(routine_info), parameter :: info=info_d_bv_trailing
 
@@ -199,14 +199,14 @@ contains
        end do
     end do
     call pop_id(error)
-  end function d_bv_trailing  
+  end function d_bv_trailing
 
   type(z_bv) function z_bv_trailing(bv,l,lbwmaxl0,ubwmaxl0,error) result(bvl)
     type(z_bv), intent(in) :: bv
     integer(kind=int32), intent(in) :: l
     integer(kind=int32), intent(in), optional :: lbwmaxl0,ubwmaxl0
     type(error_info), intent(inout), optional :: error
-    
+
     integer(kind=int32) :: lbwmax, ubwmax, lbwmaxl, ubwmaxl, n, lbw, ubw, j, k
     type(routine_info), parameter :: info=info_z_bv_trailing
 
@@ -250,7 +250,7 @@ contains
     integer(kind=int32), intent(in) :: l
     integer(kind=int32), intent(in), optional :: lbwmaxl0,ubwmaxl0
     type(error_info), intent(inout), optional :: error
-    
+
     integer(kind=int32) :: lbwmax, ubwmax, lbwmaxl, ubwmaxl, n, lbw, ubw
     type(routine_info), parameter :: info=info_d_bt_leading
 
@@ -289,7 +289,7 @@ contains
     integer(kind=int32), intent(in) :: l
     integer(kind=int32), intent(in), optional :: lbwmaxl0,ubwmaxl0
     type(error_info), intent(inout), optional :: error
-    
+
     integer(kind=int32) :: lbwmax, ubwmax, lbwmaxl, ubwmaxl, n, lbw, ubw
     type(routine_info), parameter :: info=info_z_bt_leading
 
@@ -328,7 +328,7 @@ contains
     integer(kind=int32), intent(in) :: l
     integer(kind=int32), intent(in), optional :: lbwmaxl0,ubwmaxl0
     type(error_info), intent(inout), optional :: error
-    
+
     integer(kind=int32) :: lbwmax, ubwmax, lbwmaxl, ubwmaxl, n, lbw, ubw, j, k
     type(routine_info), parameter :: info=info_d_wb_trailing
 
@@ -365,14 +365,14 @@ contains
        end do
     end do
     call pop_id(error)
-  end function d_wb_trailing  
+  end function d_wb_trailing
 
   type(z_wb) function z_wb_trailing(wb,l,lbwmaxl0,ubwmaxl0,error) result(wbl)
     type(z_wb), intent(in) :: wb
     integer(kind=int32), intent(in) :: l
     integer(kind=int32), intent(in), optional :: lbwmaxl0,ubwmaxl0
     type(error_info), intent(inout), optional :: error
-    
+
     integer(kind=int32) :: lbwmax, ubwmax, lbwmaxl, ubwmaxl, n, lbw, ubw, j, k
     type(routine_info), parameter :: info=info_z_wb_trailing
 
@@ -416,7 +416,7 @@ contains
     integer(kind=int32), intent(in) :: l
     integer(kind=int32), intent(in), optional :: lbwmaxl0,ubwmaxl0
     type(error_info), intent(inout), optional :: error
-    
+
     integer(kind=int32) :: lbwmax, ubwmax, lbwmaxl, ubwmaxl, n, lbw, ubw
     type(routine_info), parameter :: info=info_d_ubt_leading
 
@@ -461,7 +461,7 @@ contains
     integer(kind=int32), intent(in) :: l
     integer(kind=int32), intent(in), optional :: lbwmaxl0,ubwmaxl0
     type(error_info), intent(inout), optional :: error
-    
+
     integer(kind=int32) :: lbwmax, ubwmax, lbwmaxl, ubwmaxl, n, lbw, ubw
     type(routine_info), parameter :: info=info_z_ubt_leading
 
@@ -506,7 +506,7 @@ contains
     integer(kind=int32), intent(in) :: l
     integer(kind=int32), intent(in), optional :: lbwmaxl0,ubwmaxl0
     type(error_info), intent(inout), optional :: error
-    
+
     integer(kind=int32) :: lbwmax, ubwmax, lbwmaxl, ubwmaxl, n, lbw, ubw, j, k
     type(routine_info), parameter :: info=info_d_wbv_trailing
 
@@ -555,15 +555,15 @@ contains
           wbvl%jsw(j,k)=wbvl%jsw(j,k)-(n-l)
        end do
     end do
-    
-  end function d_wbv_trailing  
+
+  end function d_wbv_trailing
 
   type(z_wbv) function z_wbv_trailing(wbv,l,lbwmaxl0,ubwmaxl0,error) result(wbvl)
     type(z_wbv), intent(in) :: wbv
     integer(kind=int32), intent(in) :: l
     integer(kind=int32), intent(in), optional :: lbwmaxl0,ubwmaxl0
     type(error_info), intent(inout), optional :: error
-    
+
     integer(kind=int32) :: lbwmax, ubwmax, lbwmaxl, ubwmaxl, n, lbw, ubw, j, k
     type(routine_info), parameter :: info=info_z_wbv_trailing
 
@@ -612,11 +612,11 @@ contains
           wbvl%jsw(j,k)=wbvl%jsw(j,k)-(n-l)
        end do
     end do
-    
+
   end function z_wbv_trailing
 
   ! Unstructured submatrices.
-  
+
   ! general submatrices
 
   function d_columns_of_ub(k0,k1,ub, error) result(a)
@@ -629,7 +629,7 @@ contains
 
     if (failure(error)) return
     call push_id(info, error)
-    
+
     n=get_n(ub)
     allocate(a(n,k1-k0+1))
     call d_ub_to_columns(k0,k1,ub,a,error)
@@ -667,11 +667,10 @@ contains
     integer(kind=int32), intent(in) :: k0, k1, ubw, lbw, n, lbwmax, ubwmax
     !
     integer(kind=int32) :: j,k,d,ka0,ka1
-    type(d_rotation) :: rot
 
     a=0.0_dp
     do d=1,ubw+1
-       do k=max(k0,ubw-d+2),k1          
+       do k=max(k0,ubw-d+2),k1
           a(d+k-ubw-1,k-k0+1)=bc(d,k)
        end do
     end do
@@ -687,8 +686,7 @@ contains
     do k=k1-1,2,-1
        ka0=max(1,k+1-k0+1)
        do j=1,numrotsu(k)
-          rot%cosine=csu(j,k); rot%sine=ssu(j,k)
-          call rotation_times_general(rot,a(:,ka0:ka1),jsu(j,k),jsu(j,k)+1)
+          call f_rotation_times_general(csu(j,k),ssu(j,k),a(:,ka0:ka1),jsu(j,k),jsu(j,k)+1)
        end do
     end do
   end subroutine f_d_ub_to_columns
@@ -704,7 +702,7 @@ contains
 
     if (failure(error)) return
     call push_id(info, error)
-    
+
     n=get_n(ub)
     allocate(a(n,k1-k0+1))
     call z_ub_to_columns(k0,k1,ub,a,error)
@@ -737,17 +735,16 @@ contains
     complex(kind=dp), target, dimension(n,k1-k0+1), intent(out) :: a
     integer(kind=int32), dimension(ubwmax,n), intent(in) :: jsu
     real(kind=dp), dimension(ubwmax,n), intent(in) :: csu
-    complex(kind=dp), dimension(ubwmax,n), intent(in) :: ssu    
+    complex(kind=dp), dimension(ubwmax,n), intent(in) :: ssu
     complex(kind=dp), dimension(lbwmax+ubwmax+1,n), intent(in) :: bc
     integer(kind=int32), dimension(n), intent(in) :: numrotsu
     integer(kind=int32), intent(in) :: k0, k1, ubw, lbw, n, lbwmax, ubwmax
     !
     integer(kind=int32) :: j,k,d,ka0,ka1
-    type(z_rotation) :: rot
 
     a=(0.0_dp,0.0_dp)
     do d=1,ubw+1
-       do k=max(k0,ubw-d+2),k1          
+       do k=max(k0,ubw-d+2),k1
           a(d+k-ubw-1,k-k0+1)=bc(d,k)
        end do
     end do
@@ -763,8 +760,7 @@ contains
     do k=k1-1,2,-1
        ka0=max(1,k+1-k0+1)
        do j=1,numrotsu(k)
-          rot%cosine=csu(j,k); rot%sine=ssu(j,k)
-          call rotation_times_general(rot,a(:,ka0:ka1),jsu(j,k),jsu(j,k)+1)
+          call f_rotation_times_general(csu(j,k),ssu(j,k),a(:,ka0:ka1),jsu(j,k),jsu(j,k)+1)
        end do
     end do
   end subroutine f_z_ub_to_columns
@@ -779,7 +775,7 @@ contains
 
     if (failure(error)) return
     call push_id(info, error)
-    
+
     n=get_n(bv)
     allocate(a(j1-j0+1,n))
     call d_bv_to_rows(j0,j1,bv,a,error)
@@ -793,7 +789,7 @@ contains
     integer(kind=int32), intent(in) :: j0,j1
     type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_d_bv_to_rows
-    
+
     if (failure(error)) return
     call push_id(info, error)
     if (get_n(bv) /= size(a,2) .or. (j1-j0+1) /= size(a,1) .or. j0 > j1 .or. &
@@ -814,11 +810,10 @@ contains
     integer(kind=int32), intent(in) :: ubw, lbw, n, lbwmax, ubwmax, j0, j1
     !
     integer(kind=int32) :: j,k,d,ja1
-    type(d_rotation) :: rot
 
     a=0.0_dp
     do d=1,lbw+1
-       do j=max(j0,lbw-d+2), j1       
+       do j=max(j0,lbw-d+2), j1
           a(j-j0+1,d+j-lbw-1)=br(j,d)
        end do
     end do
@@ -833,8 +828,7 @@ contains
     do j=j0,n-2
        ja1=min(j1-j0+1,j-j0+1)
        do k=1,numrotsv(j)
-          rot%cosine=csv(j,k); rot%sine=ssv(j,k)
-          call general_times_rotation(a(1:ja1,:),trp_rot(rot),ksv(j,k), ksv(j,k)+1)
+          call f_general_times_rotation(a(1:ja1,:),csv(j,k),-ssv(j,k),ksv(j,k), ksv(j,k)+1)
        end do
     end do
 
@@ -850,7 +844,7 @@ contains
 
     if (failure(error)) return
     call push_id(info, error)
-    
+
     n=get_n(bv)
     allocate(a(j1-j0+1,n))
     call z_bv_to_rows(j0,j1,bv,a,error)
@@ -864,7 +858,7 @@ contains
     integer(kind=int32), intent(in) :: j0,j1
     type(error_info), intent(inout), optional :: error
     type(routine_info), parameter :: info=info_z_bv_to_rows
-    
+
     if (failure(error)) return
     call push_id(info, error)
     if (get_n(bv) /= size(a,2) .or. (j1-j0+1) /= size(a,1) .or. j0 > j1 .or. &
@@ -880,17 +874,16 @@ contains
     complex(kind=dp), target, dimension(j1-j0+1,n), intent(out) :: a
     integer(kind=int32), dimension(n,ubwmax), intent(in) :: ksv
     real(kind=dp), dimension(n, ubwmax), intent(in) :: csv
-    complex(kind=dp), dimension(n, ubwmax), intent(in) :: ssv    
+    complex(kind=dp), dimension(n, ubwmax), intent(in) :: ssv
     complex(kind=dp), dimension(n,lbwmax+ubwmax+1), intent(in) :: br
     integer(kind=int32), dimension(n), intent(in) :: numrotsv
     integer(kind=int32), intent(in) :: ubw, lbw, n, lbwmax, ubwmax, j0, j1
     !
     integer(kind=int32) :: j,k,d,ja1
-    type(z_rotation) :: rot
 
     a=(0.0_dp,0.0_dp)
     do d=1,lbw+1
-       do j=max(j0,lbw-d+2), j1       
+       do j=max(j0,lbw-d+2), j1
           a(j-j0+1,d+j-lbw-1)=br(j,d)
        end do
     end do
@@ -905,8 +898,7 @@ contains
     do j=j0,n-2
        ja1=min(j1-j0+1,j-j0+1)
        do k=1,numrotsv(j)
-          rot%cosine=csv(j,k); rot%sine=ssv(j,k)
-          call general_times_rotation(a(1:ja1,:),trp_rot(rot),ksv(j,k), ksv(j,k)+1)
+          call f_general_times_rotation(a(1:ja1,:),csv(j,k),-ssv(j,k),ksv(j,k), ksv(j,k)+1)
        end do
     end do
 
@@ -922,7 +914,7 @@ contains
 
     if (failure(error)) return
     call push_id(info, error)
-    
+
     n=get_n(wb)
     allocate(a(n,k1-k0+1))
     call d_wb_to_columns(k0,k1,wb,a,error)
@@ -956,11 +948,10 @@ contains
     integer(kind=int32), intent(in) :: ubw, lbw, n, lbwmax, ubwmax, k0, k1
     !
     integer(kind=int32) :: j,k,d,ka1
-    type(d_rotation) :: rot
 
     a=0.0_dp
     do d=1,ubw+1
-       do k=max(k0,ubw-d+2),k1          
+       do k=max(k0,ubw-d+2),k1
           a(d+k-ubw-1,k-k0+1)=bc(d,k)
        end do
     end do
@@ -975,8 +966,7 @@ contains
     do k=k0,n-2
        ka1=min(k-k0+1,k1-k0+1)
        do j=1,numrotsw(k)
-          rot%cosine=csw(j,k); rot%sine=ssw(j,k)
-          call rotation_times_general(rot,a(:,1:ka1),jsw(j,k),jsw(j,k)+1)
+          call f_rotation_times_general(csw(j,k),ssw(j,k),a(:,1:ka1),jsw(j,k),jsw(j,k)+1)
        end do
     end do
   end subroutine f_d_wb_to_columns
@@ -991,7 +981,7 @@ contains
 
     if (failure(error)) return
     call push_id(info, error)
-    
+
     n=get_n(wb)
     allocate(a(n,k1-k0+1))
     call z_wb_to_columns(k0,k1,wb,a,error)
@@ -1020,17 +1010,16 @@ contains
     complex(kind=dp), target, dimension(n,k1-k0+1), intent(out) :: a
     integer(kind=int32), dimension(lbwmax,n), intent(in) :: jsw
     real(kind=dp), dimension(lbwmax,n), intent(in) :: csw
-    complex(kind=dp), dimension(lbwmax,n), intent(in) :: ssw    
+    complex(kind=dp), dimension(lbwmax,n), intent(in) :: ssw
     complex(kind=dp), dimension(lbwmax+ubwmax+1,n), intent(in) :: bc
     integer(kind=int32), dimension(n), intent(in) :: numrotsw
     integer(kind=int32), intent(in) :: ubw, lbw, n, lbwmax, ubwmax, k0, k1
     !
     integer(kind=int32) :: j,k,d,ka1
-    type(z_rotation) :: rot
 
     a=(0.0_dp,0.0_dp)
     do d=1,ubw+1
-       do k=max(k0,ubw-d+2),k1          
+       do k=max(k0,ubw-d+2),k1
           a(d+k-ubw-1,k-k0+1)=bc(d,k)
        end do
     end do
@@ -1045,8 +1034,7 @@ contains
     do k=k0,n-2
        ka1=min(k-k0+1,k1-k0+1)
        do j=1,numrotsw(k)
-          rot%cosine=csw(j,k); rot%sine=ssw(j,k)
-          call rotation_times_general(rot,a(:,1:ka1),jsw(j,k),jsw(j,k)+1)
+          call f_rotation_times_general(csw(j,k),ssw(j,k),a(:,1:ka1),jsw(j,k),jsw(j,k)+1)
        end do
     end do
   end subroutine f_z_wb_to_columns
@@ -1061,7 +1049,7 @@ contains
 
     if (failure(error)) return
     call push_id(info, error)
-    
+
     n=get_n(bt)
     allocate(a(j1-j0+1,n))
     call d_bt_to_rows(j0,j1,bt,a,error)
@@ -1080,7 +1068,7 @@ contains
 
     if (failure(error)) return
     call push_id(info, error)
-    
+
     if (get_n(bt) /= size(a,2) .or. j1-j0+1 /= size(a,1) .or. j1<j0 .or. &
          j0<1 .or. j1>get_n(bt)) then
        call set_error(1, info, error); return
@@ -1096,15 +1084,14 @@ contains
     real(kind=dp), dimension(n,lbwmax), intent(in) :: cst, sst
     real(kind=dp), dimension(n,lbwmax+ubwmax+1), intent(in) :: br
     integer(kind=int32), dimension(n), intent(in) :: numrotst
-    integer(kind=int32), intent(in) :: j0,j1    
+    integer(kind=int32), intent(in) :: j0,j1
     integer(kind=int32), intent(in) :: ubw, lbw, n, lbwmax, ubwmax
     !
     integer(kind=int32) :: j,k, d, ja0, ja1
-    type(d_rotation) :: rot
 
     a=0.0_dp
     do d=1,lbw+1
-       do j=max(j0,lbw-d+2), j1       
+       do j=max(j0,lbw-d+2), j1
           a(j-j0+1,d+j-lbw-1)=br(j,d)
        end do
     end do
@@ -1120,8 +1107,7 @@ contains
     do k=j1-1,2,-1
        ja0=max(k+1-j0+1,1)
        do j=1,numrotst(k)
-          rot%cosine=cst(k,j); rot%sine=sst(k,j)
-          call general_times_rotation(a(ja0:ja1,:), trp_rot(rot), kst(k,j),kst(k,j)+1)
+          call f_general_times_rotation(a(ja0:ja1,:),cst(k,j),-sst(k,j), kst(k,j),kst(k,j)+1)
        end do
     end do
 
@@ -1137,7 +1123,7 @@ contains
 
     if (failure(error)) return
     call push_id(info, error)
-    
+
     n=get_n(bt)
     allocate(a(j1-j0+1,n))
     call z_bt_to_rows(j0,j1,bt,a,error)
@@ -1156,7 +1142,7 @@ contains
 
     if (failure(error)) return
     call push_id(info, error)
-    
+
     if (get_n(bt) /= size(a,2) .or. j1-j0+1 /= size(a,1) .or. j1<j0 .or. &
          j0<1 .or. j1>get_n(bt)) then
        call set_error(1, info, error); return
@@ -1173,15 +1159,14 @@ contains
     complex(kind=dp), dimension(n,lbwmax), intent(in) :: sst
     complex(kind=dp), dimension(n,lbwmax+ubwmax+1), intent(in) :: br
     integer(kind=int32), dimension(n), intent(in) :: numrotst
-    integer(kind=int32), intent(in) :: j0,j1    
+    integer(kind=int32), intent(in) :: j0,j1
     integer(kind=int32), intent(in) :: ubw, lbw, n, lbwmax, ubwmax
     !
     integer(kind=int32) :: j,k, d, ja0, ja1
-    type(z_rotation) :: rot
 
     a=(0.0_dp,0.0_dp)
     do d=1,lbw+1
-       do j=max(j0,lbw-d+2), j1       
+       do j=max(j0,lbw-d+2), j1
           a(j-j0+1,d+j-lbw-1)=br(j,d)
        end do
     end do
@@ -1197,13 +1182,10 @@ contains
     do k=j1-1,2,-1
        ja0=max(k+1-j0+1,1)
        do j=1,numrotst(k)
-          rot%cosine=cst(k,j); rot%sine=sst(k,j)
-          call general_times_rotation(a(ja0:ja1,:), trp_rot(rot), kst(k,j),kst(k,j)+1)
+          call f_general_times_rotation(a(ja0:ja1,:),cst(k,j),-sst(k,j), kst(k,j),kst(k,j)+1)
        end do
     end do
 
   end subroutine f_z_bt_to_rows
-  
-  
-  
+
 end module mod_submatrix

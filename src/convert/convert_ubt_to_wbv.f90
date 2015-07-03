@@ -142,8 +142,7 @@ contains
     do k=n-1,2,-1
        ! Apply T_k
        do j=1,numrotst(k)
-          rot%cosine=cst(k,j); rot%sine=sst(k,j)
-          call tbc_times_rotation(b_ubt,n,lbw1,ubw1,k,0,trp_rot(rot),kst(k,j))
+          call f_tbc_times_rotation(b_ubt,n,lbw1,ubw1,k,0,cst(k,j),-sst(k,j),kst(k,j))
        end do
        ! Rows in which nonzeros have been introduced into the extra subdiagonal.
        j0=max(k+1,lbw+2)
@@ -160,8 +159,8 @@ contains
     ! Upper triangular part
     do k=1,n-2 ! size of trailing principal submatrix
        do j=1,numrotsu(n-k)
-          rot%cosine=csu(j,n-k); rot%sine=ssu(j,n-k)
-          call rotation_times_tbc(rot,b_ubt,n,lbw1,ubw1,n-k,0,jsu(j,n-k))
+          call f_rotation_times_tbc(csu(j,n-k),ssu(j,n-k),b_ubt,n,lbw1,ubw1,&
+               n-k,0,jsu(j,n-k))
        end do
        k0=max(n-k+1,ubw+2)
        k1=min(n-k+ubw,n)
@@ -298,8 +297,7 @@ contains
     do k=n-1,2,-1
        ! Apply T_k
        do j=1,numrotst(k)
-          rot%cosine=cst(k,j); rot%sine=sst(k,j)
-          call tbc_times_rotation(b_ubt,n,lbw1,ubw1,k,0,trp_rot(rot),kst(k,j))
+          call f_tbc_times_rotation(b_ubt,n,lbw1,ubw1,k,0,cst(k,j),-sst(k,j),kst(k,j))
        end do
        ! Rows in which nonzeros have been introduced into the extra subdiagonal.
        j0=max(k+1,lbw+2)
@@ -316,8 +314,8 @@ contains
     ! Upper triangular part
     do k=1,n-2 ! size of trailing principal submatrix
        do j=1,numrotsu(n-k)
-          rot%cosine=csu(j,n-k); rot%sine=ssu(j,n-k)
-          call rotation_times_tbc(rot,b_ubt,n,lbw1,ubw1,n-k,0,jsu(j,n-k))
+          call f_rotation_times_tbc(csu(j,n-k),ssu(j,n-k),b_ubt,n,lbw1,ubw1,n-k,0,&
+               jsu(j,n-k))
        end do
        k0=max(n-k+1,ubw+2)
        k1=min(n-k+ubw,n)

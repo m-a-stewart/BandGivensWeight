@@ -76,13 +76,15 @@ contains
        call set_error(4, info, error); return
     end if
     call f_d_convert_ub_to_bv(ub%bc, get_n(ub), ub%lbw, ub%ubw, get_lbwmax(ub), &
-         get_ubwmax(ub), ub%numrotsu, ub%jsu, ub%csu, ub%ssu, bv%br, bv%lbw, bv%ubw, get_lbwmax(bv), &
+         get_ubwmax(ub), ub%numrotsu, ub%jsu, ub%csu, ub%ssu, bv%br, bv%lbw, &
+         bv%ubw, get_lbwmax(bv), &
          get_ubwmax(bv), bv%numrotsv, bv%ksv, bv%csv, bv%ssv)
     call pop_id(error)
   end subroutine d_convert_ub_to_bv
 
   subroutine f_d_convert_ub_to_bv(b_ub, n, lbw, ubw, lbwmax_ub, ubwmax_ub, numrotsu, &
-       jsu, csu, ssu, b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, ssv)
+       jsu, csu, ssu, b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, &
+       csv, ssv)
     real(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(inout) :: b_ub
     integer(kind=int32), intent(in) :: n, lbw, ubw, lbwmax_ub, ubwmax_ub, lbwmax_bv, ubwmax_bv
     integer(kind=int32), dimension(n), intent(in) :: numrotsu
@@ -119,8 +121,8 @@ contains
     end if
     do k=1,n-2 ! size of trailing principal submatrix
        do j=1,numrotsu(n-k)
-          rot%cosine=csu(j,n-k); rot%sine=ssu(j,n-k)
-          call rotation_times_tbc(rot,b_ub,n,lbw1,ubw1,n-k,0,jsu(j,n-k))
+          call f_rotation_times_tbc(csu(j,n-k),ssu(j,n-k),b_ub,n,lbw1,ubw1,&
+               n-k,0,jsu(j,n-k))
        end do
        k0=max(n-k+1,ubw+2)
        k1=min(n-k+ubw,n)
@@ -180,15 +182,18 @@ contains
        call set_error(4, info, error); return
     end if
     call f_z_convert_ub_to_bv(ub%bc, get_n(ub), ub%lbw, ub%ubw, get_lbwmax(ub), &
-         get_ubwmax(ub), ub%numrotsu, ub%jsu, ub%csu, ub%ssu, bv%br, bv%lbw, bv%ubw, get_lbwmax(bv), &
+         get_ubwmax(ub), ub%numrotsu, ub%jsu, ub%csu, ub%ssu, bv%br, bv%lbw, &
+         bv%ubw, get_lbwmax(bv), &
          get_ubwmax(bv), bv%numrotsv, bv%ksv, bv%csv, bv%ssv)
     call pop_id(error)
   end subroutine z_convert_ub_to_bv
 
   subroutine f_z_convert_ub_to_bv(b_ub, n, lbw, ubw, lbwmax_ub, ubwmax_ub, numrotsu, &
-       jsu, csu, ssu, b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, csv, ssv)
+       jsu, csu, ssu, b_bv, lbw_bv, ubw_bv, lbwmax_bv, ubwmax_bv, numrotsv, ksv, &
+       csv, ssv)
     complex(kind=dp), dimension(lbwmax_ub+ubwmax_ub+1,n), intent(inout) :: b_ub
-    integer(kind=int32), intent(in) :: n, lbw, ubw, lbwmax_ub, ubwmax_ub, lbwmax_bv, ubwmax_bv
+    integer(kind=int32), intent(in) :: n, lbw, ubw, lbwmax_ub, ubwmax_ub, &
+         lbwmax_bv, ubwmax_bv
     integer(kind=int32), dimension(n), intent(in) :: numrotsu
     integer(kind=int32), dimension(ubwmax_ub,n), intent(in) :: jsu
     real(kind=dp), dimension(ubwmax_ub,n), intent(in) :: csu
@@ -225,8 +230,8 @@ contains
     end if
     do k=1,n-2 ! size of trailing principal submatrix
        do j=1,numrotsu(n-k)
-          rot%cosine=csu(j,n-k); rot%sine=ssu(j,n-k)
-          call rotation_times_tbc(rot,b_ub,n,lbw1,ubw1,n-k,0,jsu(j,n-k))
+          call f_rotation_times_tbc(csu(j,n-k),ssu(j,n-k),b_ub,n,lbw1,ubw1,&
+               n-k,0,jsu(j,n-k))
        end do
        k0=max(n-k+1,ubw+2)
        k1=min(n-k+ubw,n)

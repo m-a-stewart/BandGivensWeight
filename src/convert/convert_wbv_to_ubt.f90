@@ -142,8 +142,7 @@ contains
     do k=1,n-2
        ! Apply W_k
        do j=1,numrotsw(k)
-          rot%cosine=csw(j,k); rot%sine=ssw(j,k)
-          call rotation_times_tbr(rot,b_wbv,n,lbw1,ubw1,0,n-k,jsw(j,k))
+          call f_rotation_times_tbr(csw(j,k),ssw(j,k),b_wbv,n,lbw1,ubw1,0,n-k,jsw(j,k))
        end do
        ! columns in which nonzeros have been introduced into the extra subdiagonal
        k0=max(k-lbw+1,1)
@@ -161,8 +160,7 @@ contains
     do k=1,n-2
        ! Apply V_k
        do j=1,numrotsv(k)
-          rot%cosine=csv(k,j); rot%sine=ssv(k,j)
-          call tbr_times_rotation(b_wbv,n,lbw1,ubw1,0,n-k,trp_rot(rot),ksv(k,j))
+          call f_tbr_times_rotation(b_wbv,n,lbw1,ubw1,0,n-k,csv(k,j),-ssv(k,j),ksv(k,j))
        end do
        !
        k0=max(k+2,ubw1+1)
@@ -300,8 +298,7 @@ contains
     do k=1,n-2
        ! Apply W_k
        do j=1,numrotsw(k)
-          rot%cosine=csw(j,k); rot%sine=ssw(j,k)
-          call rotation_times_tbr(rot,b_wbv,n,lbw1,ubw1,0,n-k,jsw(j,k))
+          call f_rotation_times_tbr(csw(j,k),ssw(j,k),b_wbv,n,lbw1,ubw1,0,n-k,jsw(j,k))
        end do
        ! columns in which nonzeros have been introduced into the extra subdiagonal
        k0=max(k-lbw+1,1)
@@ -319,8 +316,7 @@ contains
     do k=1,n-2
        ! Apply V_k
        do j=1,numrotsv(k)
-          rot%cosine=csv(k,j); rot%sine=ssv(k,j)
-          call tbr_times_rotation(b_wbv,n,lbw1,ubw1,0,n-k,trp_rot(rot),ksv(k,j))
+          call f_tbr_times_rotation(b_wbv,n,lbw1,ubw1,0,n-k,csv(k,j),-ssv(k,j),ksv(k,j))
        end do
        !
        k0=max(k+2,ubw1+1)
@@ -338,6 +334,5 @@ contains
     end if
     call br_to_bc(b_wbv,b_ubt,lbw,ubw)
   end subroutine f_z_convert_wbv_to_ubt
-
 
 end module mod_convert_wbv_to_ubt

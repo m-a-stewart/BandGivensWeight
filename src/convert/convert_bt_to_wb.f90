@@ -124,8 +124,7 @@ contains
     do k=n-1,2,-1
        ! Apply T_k
        do j=1,numrotst(k)
-          rot%cosine=cst(k,j); rot%sine=sst(k,j)
-          call tbr_times_rotation(b_bt,n,lbw1,ubw1,k,0,trp_rot(rot),kst(k,j))
+          call f_tbr_times_rotation(b_bt,n,lbw1,ubw1,k,0,cst(k,j),-sst(k,j),kst(k,j))
        end do
        ! Rows in which nonzeros have been introduced into the extra subdiagonal.
        j0=max(k+1,lbw+2)
@@ -244,8 +243,7 @@ contains
     do k=n-1,2,-1
        ! Apply T_k
        do j=1,numrotst(k)
-          rot%cosine=cst(k,j); rot%sine=sst(k,j)
-          call tbr_times_rotation(b_bt,n,lbw1,ubw1,k,0,trp_rot(rot),kst(k,j))
+          call f_tbr_times_rotation(b_bt,n,lbw1,ubw1,k,0,cst(k,j),-sst(k,j),kst(k,j))
        end do
        ! Rows in which nonzeros have been introduced into the extra subdiagonal.
        j0=max(k+1,lbw+2)

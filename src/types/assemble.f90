@@ -138,15 +138,13 @@ contains
     integer(kind=int32), intent(in) :: ubw, lbw, n, lbwmax, ubwmax
     !
     integer(kind=int32) :: j,k
-    type(d_rotation) :: rot
     call bc_to_general(bc,lbw,ubw,a)
     if (n==1) then
        return
     end if
     do k=n-1,2,-1
        do j=1,numrotsu(k)
-          rot%cosine=csu(j,k); rot%sine=ssu(j,k)
-          call rotation_times_general(rot,a(:,k+1:n),jsu(j,k),jsu(j,k)+1)
+          call f_rotation_times_general(csu(j,k),ssu(j,k),a(:,k+1:n),jsu(j,k),jsu(j,k)+1)
        end do
     end do
   end subroutine f_d_ub_to_general
@@ -194,7 +192,6 @@ contains
     integer(kind=int32), intent(in) :: ubw, lbw, n, lbwmax, ubwmax
     !
     integer(kind=int32) :: j,k
-    type(z_rotation) :: rot
 
     call bc_to_general(bc,lbw,ubw,a)
     if (n==1) then
@@ -202,8 +199,7 @@ contains
     end if
     do k=n-1,2,-1
        do j=1,numrotsu(k)
-          rot%cosine=csu(j,k); rot%sine=ssu(j,k)
-          call rotation_times_general(rot,a(:,k+1:n),jsu(j,k),jsu(j,k)+1)
+          call f_rotation_times_general(csu(j,k),ssu(j,k),a(:,k+1:n),jsu(j,k),jsu(j,k)+1)
        end do
     end do
   end subroutine f_z_ub_to_general
@@ -253,15 +249,13 @@ contains
     integer(kind=int32), intent(in) :: ubw, lbw, n, lbwmax, ubwmax
     !
     integer(kind=int32) :: j,k
-    type(d_rotation) :: rot
     call br_to_general(br,lbw,ubw,a)
     if (n==1) then
        return
     end if
     do k=n-1,2,-1
        do j=1,numrotst(k)
-          rot%cosine=cst(k,j); rot%sine=sst(k,j)
-          call general_times_rotation(a(k+1:n,:), trp_rot(rot), kst(k,j),kst(k,j)+1)
+          call f_general_times_rotation(a(k+1:n,:), cst(k,j), -sst(k,j), kst(k,j),kst(k,j)+1)
        end do
     end do
   end subroutine f_d_bt_to_general
@@ -312,15 +306,13 @@ contains
     integer(kind=int32), intent(in) :: ubw, lbw, n, lbwmax, ubwmax
     !
     integer(kind=int32) :: j,k
-    type(z_rotation) :: rot
     call br_to_general(br,lbw,ubw,a)
     if (n==1) then
        return
     end if
     do k=n-1,2,-1
        do j=1,numrotst(k)
-          rot%cosine=cst(k,j); rot%sine=sst(k,j)
-          call general_times_rotation(a(k+1:n,:), trp_rot(rot), kst(k,j),kst(k,j)+1)
+          call f_general_times_rotation(a(k+1:n,:), cst(k,j),-sst(k,j), kst(k,j),kst(k,j)+1)          
        end do
     end do
   end subroutine f_z_bt_to_general
@@ -376,22 +368,20 @@ contains
     integer(kind=int32), intent(in) :: ubw, lbw, n, lbwmax, ubwmax
     !
     integer(kind=int32) :: j,k
-    type(d_rotation) :: rot
+
     call bc_to_general(bc,lbw,ubw,a)
     if (n==1) then
        return
     end if
     do k=n-1,2,-1
        do j=1,numrotsu(k)
-          rot%cosine=csu(j,k); rot%sine=ssu(j,k)
-          call rotation_times_general(rot,a(:,k+1:n),jsu(j,k),jsu(j,k)+1)
+          call f_rotation_times_general(csu(j,k),ssu(j,k),a(:,k+1:n),jsu(j,k),jsu(j,k)+1)
        end do
     end do
 
     do k=n-1,2,-1
        do j=1,numrotst(k)
-          rot%cosine=cst(k,j); rot%sine=sst(k,j)
-          call general_times_rotation(a(k+1:n,:), trp_rot(rot), kst(k,j),kst(k,j)+1)
+          call f_general_times_rotation(a(k+1:n,:), cst(k,j),-sst(k,j), kst(k,j),kst(k,j)+1)
        end do
     end do
   end subroutine f_d_ubt_to_general
@@ -447,22 +437,19 @@ contains
     integer(kind=int32), intent(in) :: ubw, lbw, n, lbwmax, ubwmax
     !
     integer(kind=int32) :: j,k
-    type(z_rotation) :: rot
     call bc_to_general(bc,lbw,ubw,a)
     if (n==1) then
        return
     end if
     do k=n-1,2,-1
        do j=1,numrotsu(k)
-          rot%cosine=csu(j,k); rot%sine=ssu(j,k)
-          call rotation_times_general(rot,a(:,k+1:n),jsu(j,k),jsu(j,k)+1)
+          call f_rotation_times_general(csu(j,k),ssu(j,k),a(:,k+1:n),jsu(j,k),jsu(j,k)+1)
        end do
     end do
 
     do k=n-1,2,-1
        do j=1,numrotst(k)
-          rot%cosine=cst(k,j); rot%sine=sst(k,j)
-          call general_times_rotation(a(k+1:n,:), trp_rot(rot), kst(k,j),kst(k,j)+1)
+          call f_general_times_rotation(a(k+1:n,:), cst(k,j),-sst(k,j), kst(k,j),kst(k,j)+1)          
        end do
     end do
   end subroutine f_z_ubt_to_general
@@ -509,15 +496,13 @@ contains
     integer(kind=int32), intent(in) :: ubw, lbw, n, lbwmax, ubwmax
     !
     integer(kind=int32) :: j,k
-    type(d_rotation) :: rot
     call br_to_general(br,lbw,ubw,a)
     if (n==1) then
        return
     end if
     do j=1,n-2
        do k=1,numrotsv(j)
-          rot%cosine=csv(j,k); rot%sine=ssv(j,k)
-          call general_times_rotation(a(1:j,:),trp_rot(rot),ksv(j,k), ksv(j,k)+1)
+          call f_general_times_rotation(a(1:j,:),csv(j,k),-ssv(j,k),ksv(j,k), ksv(j,k)+1)
        end do
     end do
   end subroutine f_d_bv_to_general
@@ -564,15 +549,13 @@ contains
     integer(kind=int32), intent(in) :: ubw, lbw, n, lbwmax, ubwmax
     !
     integer(kind=int32) :: j,k
-    type(z_rotation) :: rot
     call br_to_general(br,lbw,ubw,a)
     if (n==1) then
        return
     end if
     do j=1,n-2
        do k=1,numrotsv(j)
-          rot%cosine=csv(j,k); rot%sine=ssv(j,k)
-          call general_times_rotation(a(1:j,:),trp_rot(rot),ksv(j,k), ksv(j,k)+1)
+          call f_general_times_rotation(a(1:j,:),csv(j,k),-ssv(j,k),ksv(j,k), ksv(j,k)+1)
        end do
     end do
   end subroutine f_z_bv_to_general
@@ -618,7 +601,6 @@ contains
     integer(kind=int32), intent(in) :: ubw, lbw, n, lbwmax, ubwmax
     !
     integer(kind=int32) :: j,k
-    type(d_rotation) :: rot
     call bc_to_general(bc,lbw,ubw,a)
     if (n==1) then
        return
@@ -626,8 +608,7 @@ contains
 
     do k=1,n-2
        do j=1,numrotsw(k)
-          rot%cosine=csw(j,k); rot%sine=ssw(j,k)
-          call rotation_times_general(rot,a(:,1:k),jsw(j,k),jsw(j,k)+1)
+          call f_rotation_times_general(csw(j,k),ssw(j,k),a(:,1:k),jsw(j,k),jsw(j,k)+1)
        end do
     end do
   end subroutine f_d_wb_to_general
@@ -673,7 +654,6 @@ contains
     integer(kind=int32), intent(in) :: ubw, lbw, n, lbwmax, ubwmax
     !
     integer(kind=int32) :: j,k
-    type(z_rotation) :: rot
     call bc_to_general(bc,lbw,ubw,a)
     if (n==1) then
        return
@@ -681,8 +661,7 @@ contains
 
     do k=1,n-2
        do j=1,numrotsw(k)
-          rot%cosine=csw(j,k); rot%sine=ssw(j,k)
-          call rotation_times_general(rot,a(:,1:k),jsw(j,k),jsw(j,k)+1)
+          call f_rotation_times_general(csw(j,k),ssw(j,k),a(:,1:k),jsw(j,k),jsw(j,k)+1)
        end do
     end do
   end subroutine f_z_wb_to_general
@@ -731,7 +710,6 @@ contains
     integer(kind=int32), intent(in) :: ubw, lbw, n, lbwmax, ubwmax
     !
     integer(kind=int32) :: j,k
-    type(d_rotation) :: rot
     call br_to_general(br,lbw,ubw,a)
     if (n==1) then
        return
@@ -739,15 +717,13 @@ contains
 
     do j=1,n-2
        do k=1,numrotsv(j)
-          rot%cosine=csv(j,k); rot%sine=ssv(j,k)
-          call general_times_rotation(a(1:j,:),trp_rot(rot),ksv(j,k), ksv(j,k)+1)
+          call f_general_times_rotation(a(1:j,:),csv(j,k),-ssv(j,k),ksv(j,k), ksv(j,k)+1)
        end do
     end do
 
     do k=1,n-2
        do j=1,numrotsw(k)
-          rot%cosine=csw(j,k); rot%sine=ssw(j,k)
-          call rotation_times_general(rot,a(:,1:k),jsw(j,k),jsw(j,k)+1)
+          call f_rotation_times_general(csw(j,k),ssw(j,k),a(:,1:k),jsw(j,k),jsw(j,k)+1)
        end do
     end do
   end subroutine f_d_wbv_to_general
@@ -799,7 +775,6 @@ contains
     integer(kind=int32), intent(in) :: ubw, lbw, n, lbwmax, ubwmax
     !
     integer(kind=int32) :: j,k
-    type(z_rotation) :: rot
     call br_to_general(br,lbw,ubw,a)
     if (n==1) then
        return
@@ -807,15 +782,13 @@ contains
 
     do j=1,n-2
        do k=1,numrotsv(j)
-          rot%cosine=csv(j,k); rot%sine=ssv(j,k)
-          call general_times_rotation(a(1:j,:),trp_rot(rot),ksv(j,k), ksv(j,k)+1)
+          call f_general_times_rotation(a(1:j,:),csv(j,k),-ssv(j,k),ksv(j,k), ksv(j,k)+1)
        end do
     end do
 
     do k=1,n-2
        do j=1,numrotsw(k)
-          rot%cosine=csw(j,k); rot%sine=ssw(j,k)
-          call rotation_times_general(rot,a(:,1:k),jsw(j,k),jsw(j,k)+1)
+          call f_rotation_times_general(csw(j,k),ssw(j,k),a(:,1:k),jsw(j,k),jsw(j,k)+1)
        end do
     end do
   end subroutine f_z_wbv_to_general

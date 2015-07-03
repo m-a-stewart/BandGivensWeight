@@ -116,8 +116,7 @@ contains
     do k=1,n-2
        ! Apply V_k
        do j=1,numrotsv(k)
-          rot%cosine=csv(k,j); rot%sine=ssv(k,j)
-          call tbr_times_rotation(b_bv,n,lbw1,ubw1,0,n-k,trp_rot(rot),ksv(k,j))
+          call f_tbr_times_rotation(b_bv,n,lbw1,ubw1,0,n-k,csv(k,j),-ssv(k,j),ksv(k,j))
        end do
        !
        k0=max(k+2,ubw1+1)
@@ -217,8 +216,7 @@ contains
     ! apply v_{n-1}
     do k=1,n-2
        do j=1,numrotsv(k)
-          rot%cosine=csv(k,j); rot%sine=ssv(k,j)
-          call tbr_times_rotation(b_bv,n,lbw1,ubw1,0,n-k,trp_rot(rot),ksv(k,j))
+          call f_tbr_times_rotation(b_bv,n,lbw1,ubw1,0,n-k,csv(k,j),-ssv(k,j),ksv(k,j))
        end do
        !
        k0=max(k+2,ubw1+1)

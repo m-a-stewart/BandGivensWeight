@@ -9,8 +9,8 @@ program test_submatrix
   type(error_info) :: error
   real(kind=dp), parameter :: tol=1e-15, c=7.0
   !
-  real(kind=dp), dimension(:,:), allocatable :: b_d, a_d, a0_d
-  complex(kind=dp), dimension(:,:), allocatable :: b_z, a_z, a0_z
+  real(kind=dp), dimension(:,:), allocatable :: a_d, a0_d
+  complex(kind=dp), dimension(:,:), allocatable :: a_z, a0_z
 
   type(d_ub), allocatable :: ub_d, ub0_d
   type(d_bv), allocatable :: bv_d, bv0_d

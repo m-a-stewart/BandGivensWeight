@@ -388,14 +388,12 @@ contains
   subroutine d_sweeps_times_general(sw,a)
     type(d_sweeps) :: sw
     real(kind=dp), dimension(:,:), intent(inout) :: a
-    type(d_rotation) :: rot
     integer(kind=int32) :: j, m, l,jj
     m=size(a,1)
     do l=sw%right,sw%left,-sw%inc
        do j=1,sw%numrots(l)
           jj=sw%js(j,l)
-          rot%cosine=sw%cs(j,l); rot%sine=sw%ss(j,l)
-          call d_rotation_times_general(rot,a,jj,jj+1)
+          call f_d_rotation_times_general(sw%cs(j,l),sw%ss(j,l),a,jj,jj+1)
        end do
     end do
   end subroutine d_sweeps_times_general
@@ -403,14 +401,12 @@ contains
   subroutine z_sweeps_times_general(sw,a)
     type(z_sweeps) :: sw
     complex(kind=dp), dimension(:,:), intent(inout) :: a
-    type(z_rotation) :: rot
     integer(kind=int32) :: j, m, l,jj
     m=size(a,1)
     do l=sw%right,sw%left,-sw%inc
        do j=1,sw%numrots(l)
           jj=sw%js(j,l)
-          rot%cosine=sw%cs(j,l); rot%sine=sw%ss(j,l)
-          call z_rotation_times_general(rot,a,jj,jj+1)
+          call f_z_rotation_times_general(sw%cs(j,l),sw%ss(j,l),a,jj,jj+1)
        end do
     end do
   end subroutine z_sweeps_times_general
@@ -452,13 +448,11 @@ contains
   subroutine d_trp_sweeps_times_general(sw,a)
     type(d_sweeps) :: sw
     real(kind=dp), dimension(:,:), intent(inout) :: a
-    type(d_rotation) :: rot
     integer(kind=int32) :: j, l, jj
     do l=sw%left,sw%right,sw%inc
        do j=sw%numrots(l),1,-1
           jj=sw%js(j,l)
-          rot%cosine=sw%cs(j,l); rot%sine=sw%ss(j,l)
-          call d_rotation_times_general(trp_rot(rot),a,jj,jj+1)
+          call f_d_rotation_times_general(sw%cs(j,l),-sw%ss(j,l),a,jj,jj+1)
        end do
     end do
   end subroutine d_trp_sweeps_times_general
@@ -466,13 +460,11 @@ contains
   subroutine z_trp_sweeps_times_general(sw,a)
     type(z_sweeps) :: sw
     complex(kind=dp), dimension(:,:), intent(inout) :: a
-    type(z_rotation) :: rot
     integer(kind=int32) :: j, l, jj
     do l=sw%left,sw%right,sw%inc
        do j=sw%numrots(l),1,-1
           jj=sw%js(j,l)
-          rot%cosine=sw%cs(j,l); rot%sine=sw%ss(j,l)
-          call z_rotation_times_general(trp_rot(rot),a,jj,jj+1)
+          call f_z_rotation_times_general(sw%cs(j,l),-sw%ss(j,l),a,jj,jj+1)          
        end do
     end do
   end subroutine z_trp_sweeps_times_general
@@ -513,13 +505,11 @@ contains
   subroutine d_general_times_sweeps(a,sw)
     type(d_sweeps) :: sw
     real(kind=dp), dimension(:,:), intent(inout) :: a
-    type(d_rotation) :: rot
     integer(kind=int32) :: j, l, kk
     do l=sw%left,sw%right,sw%inc
        do j=sw%numrots(l),1,-1
           kk=sw%js(j,l)
-          rot%cosine=sw%cs(j,l); rot%sine=sw%ss(j,l)
-          call d_general_times_rotation(a,rot,kk,kk+1)
+          call f_d_general_times_rotation(a,sw%cs(j,l),sw%ss(j,l),kk,kk+1)
        end do
     end do
   end subroutine d_general_times_sweeps
@@ -527,13 +517,11 @@ contains
   subroutine z_general_times_sweeps(a,sw)
     type(z_sweeps) :: sw
     complex(kind=dp), dimension(:,:), intent(inout) :: a
-    type(z_rotation) :: rot
     integer(kind=int32) :: j, l, kk
     do l=sw%left,sw%right,sw%inc
        do j=sw%numrots(l),1,-1
           kk=sw%js(j,l)
-          rot%cosine=sw%cs(j,l); rot%sine=sw%ss(j,l)
-          call z_general_times_rotation(a,rot,kk,kk+1)
+          call f_z_general_times_rotation(a,sw%cs(j,l),sw%ss(j,l),kk,kk+1)
        end do
     end do
   end subroutine z_general_times_sweeps
@@ -574,13 +562,11 @@ contains
   subroutine d_general_times_trp_sweeps(a,sw)
     type(d_sweeps) :: sw
     real(kind=dp), dimension(:,:), intent(inout) :: a
-    type(d_rotation) :: rot
     integer(kind=int32) :: j, l, kk
     do l=sw%right,sw%left,-sw%inc
        do j=1,sw%numrots(l)
-          rot%cosine=sw%cs(j,l); rot%sine=sw%ss(j,l)
           kk=sw%js(j,l)
-          call d_general_times_rotation(a, trp_rot(rot),kk,kk+1)
+          call f_d_general_times_rotation(a,sw%cs(j,l),-sw%ss(j,l),kk,kk+1)
        end do
     end do
   end subroutine d_general_times_trp_sweeps
@@ -588,13 +574,11 @@ contains
   subroutine z_general_times_trp_sweeps(a,sw)
     type(z_sweeps) :: sw
     complex(kind=dp), dimension(:,:), intent(inout) :: a
-    type(z_rotation) :: rot
     integer(kind=int32) :: j, l, kk
     do l=sw%right,sw%left,-sw%inc
        do j=1,sw%numrots(l)
-          rot%cosine=sw%cs(j,l); rot%sine=sw%ss(j,l)
           kk=sw%js(j,l)
-          call z_general_times_rotation(a, trp_rot(rot),kk,kk+1)
+          call f_z_general_times_rotation(a, sw%cs(j,l),-sw%ss(j,l),kk,kk+1)
        end do
     end do
   end subroutine z_general_times_trp_sweeps

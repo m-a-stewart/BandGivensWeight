@@ -118,8 +118,7 @@ contains
     do k=1,n-2
        ! Apply W_k
        do j=1,numrotsw(k)
-          rot%cosine=csw(j,k); rot%sine=ssw(j,k)
-          call rotation_times_tbc(rot,b_wb,n,lbw1,ubw1,0,n-k,jsw(j,k))
+          call f_rotation_times_tbc(csw(j,k),ssw(j,k),b_wb,n,lbw1,ubw1,0,n-k,jsw(j,k))
        end do
        ! columns in which nonzeros have been introduced into the extra subdiagonal
        k0=max(k-lbw+1,1)
@@ -229,8 +228,7 @@ contains
     do k=1,n-2
        ! Apply W_k
        do j=1,numrotsw(k)
-          rot%cosine=csw(j,k); rot%sine=ssw(j,k)
-          call rotation_times_tbc(rot,b_wb,n,lbw1,ubw1,0,n-k,jsw(j,k))
+          call f_rotation_times_tbc(csw(j,k),ssw(j,k),b_wb,n,lbw1,ubw1,0,n-k,jsw(j,k))
        end do
        ! columns in which nonzeros have been introduced into the extra subdiagonal
        k0=max(k-lbw+1,1)

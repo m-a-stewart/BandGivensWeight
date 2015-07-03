@@ -178,16 +178,14 @@ contains
     ! Apply V_1, ..., V_{lbw_bv-1}
     do k=1,lbw_bv-1
        do j=1,numrotsv(k)
-          rot%cosine=csv(k,j); rot%sine=ssv(k,j)
-          call tbr_times_rotation(b_bv,n,lbw1,ubw1,0,n-k,trp_rot(rot),ksv(k,j))
+          call f_tbr_times_rotation(b_bv,n,lbw1,ubw1,0,n-k,csv(k,j),-ssv(k,j),ksv(k,j))
        end do
     end do
 
     do k=lbw_bv, n-2
        ! Apply V_k^H
        do j=1,numrotsv(k)
-          rot%cosine=csv(k,j); rot%sine=ssv(k,j)
-          call tbr_times_rotation(b_bv,n,lbw1,ubw1,0,n-k,trp_rot(rot),ksv(k,j))
+          call f_tbr_times_rotation(b_bv,n,lbw1,ubw1,0,n-k,csv(k,j),-ssv(k,j),ksv(k,j))
        end do
        ! Zero the subdiagonal elements in column k+1-lbw_bv using Q_{k+1}
        ! (rotation stored in csq(:,k+1-lbw_bv), etc.)
@@ -367,16 +365,14 @@ contains
     ! Apply V_1, ..., V_{lbw_bv-1}
     do k=1,lbw_bv-1
        do j=1,numrotsv(k)
-          rot%cosine=csv(k,j); rot%sine=ssv(k,j)
-          call tbr_times_rotation(b_bv,n,lbw1,ubw1,0,n-k,trp_rot(rot),ksv(k,j))
+          call f_tbr_times_rotation(b_bv,n,lbw1,ubw1,0,n-k,csv(k,j),-ssv(k,j),ksv(k,j))
        end do
     end do
 
     do k=lbw_bv, n-2
        ! Apply V_k^H
        do j=1,numrotsv(k)
-          rot%cosine=csv(k,j); rot%sine=ssv(k,j)
-          call tbr_times_rotation(b_bv,n,lbw1,ubw1,0,n-k,trp_rot(rot),ksv(k,j))
+          call f_tbr_times_rotation(b_bv,n,lbw1,ubw1,0,n-k,csv(k,j),-ssv(k,j),ksv(k,j))
        end do
        ! Zero the subdiagonal elements in column k+1-lbw_bv using Q_{k+1}
        ! (rotation stored in csq(:,k+1-lbw_bv), etc.)
@@ -421,4 +417,3 @@ contains
   end subroutine f_z_qr_bv_to_ub
 
 end module mod_qr_factorization
-

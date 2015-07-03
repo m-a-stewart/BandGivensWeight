@@ -175,7 +175,6 @@ contains
     real(kind=dp), dimension(n,nc), intent(out) :: x
 
     integer(kind=int32) :: j, k, l
-    type(d_rotation) :: rot
 
     if (n==1) then
        x=c/b_ub(1,1); return
@@ -184,8 +183,7 @@ contains
     ! Apply all the u_k^T to c.
     do k=1,n-1
        do j=numrotsu(k),1,-1
-          rot%cosine=csu(j,k); rot%sine=ssu(j,k)
-          call rotation_times_general(trp_rot(rot), c, jsu(j,k), jsu(j,k)+1)
+          call f_rotation_times_general(csu(j,k),-ssu(j,k), c, jsu(j,k), jsu(j,k)+1)
        end do
     end do
     ! diagonals of b are in row ubw_ub+1 of b_ub.
@@ -197,8 +195,7 @@ contains
        end do
        ! Apply u_k to c
        do j=1,numrotsu(k)
-          rot%cosine=csu(j,k); rot%sine=ssu(j,k)
-          call rotation_times_general(rot, c, jsu(j,k), jsu(j,k)+1)
+          call f_rotation_times_general(csu(j,k),ssu(j,k), c, jsu(j,k), jsu(j,k)+1)
        end do
        x(k,:)=c(k,:)/b_ub(ubw_ub+1,k)
     end do
@@ -215,7 +212,6 @@ contains
     real(kind=dp), dimension(n), intent(out) :: x
 
     integer(kind=int32) :: j, k, l
-    type(d_rotation) :: rot
 
     if (n==1) then
        x=c/b_ub(1,1); return
@@ -224,8 +220,9 @@ contains
     ! Apply all the u_k^T to c.
     do k=1,n-1
        do j=numrotsu(k),1,-1
-          rot%cosine=csu(j,k); rot%sine=ssu(j,k)
-          call rotation_times_general(trp_rot(rot), c, jsu(j,k), jsu(j,k)+1)
+          ! rot%cosine=csu(j,k); rot%sine=ssu(j,k)
+          ! call rotation_times_general(trp_rot(rot), c, jsu(j,k), jsu(j,k)+1)
+          call f_rotation_times_general(csu(j,k),-ssu(j,k), c, jsu(j,k), jsu(j,k)+1)     
        end do
     end do
     ! diagonals of b are in row ubw_ub+1 of b_ub.
@@ -235,8 +232,7 @@ contains
        c(k+1-l:k+1)=c(k+1-l:k+1) - x(k+1) * b_ub(ubw_ub+1-l:ubw_ub+1 ,k+1)
        ! Apply u_k to c
        do j=1,numrotsu(k)
-          rot%cosine=csu(j,k); rot%sine=ssu(j,k)
-          call rotation_times_general(rot, c, jsu(j,k), jsu(j,k)+1)
+          call f_rotation_times_general(csu(j,k),ssu(j,k), c, jsu(j,k), jsu(j,k)+1)
        end do
        x(k)=c(k)/b_ub(ubw_ub+1,k)
     end do
@@ -354,7 +350,6 @@ contains
     complex(kind=dp), dimension(n,nc), intent(out) :: x
 
     integer(kind=int32) :: j, k, l
-    type(z_rotation) :: rot
 
     if (n==1) then
        x=c/b_ub(1,1); return
@@ -363,8 +358,7 @@ contains
     ! Apply all the u_k^T to c.
     do k=1,n-1
        do j=numrotsu(k),1,-1
-          rot%cosine=csu(j,k); rot%sine=ssu(j,k)
-          call rotation_times_general(trp_rot(rot), c, jsu(j,k), jsu(j,k)+1)
+          call f_rotation_times_general(csu(j,k),-ssu(j,k), c, jsu(j,k), jsu(j,k)+1)     
        end do
     end do
     ! diagonals of b are in row ubw_ub+1 of b_ub.
@@ -376,8 +370,7 @@ contains
        end do
        ! Apply u_k to c
        do j=1,numrotsu(k)
-          rot%cosine=csu(j,k); rot%sine=ssu(j,k)
-          call rotation_times_general(rot, c, jsu(j,k), jsu(j,k)+1)
+          call f_rotation_times_general(csu(j,k),ssu(j,k), c, jsu(j,k), jsu(j,k)+1)
        end do
        x(k,:)=c(k,:)/b_ub(ubw_ub+1,k)
     end do
@@ -395,7 +388,6 @@ contains
     complex(kind=dp), dimension(n), intent(out) :: x
 
     integer(kind=int32) :: j, k, l
-    type(z_rotation) :: rot
 
     if (n==1) then
        x=c/b_ub(1,1); return
@@ -404,8 +396,7 @@ contains
     ! Apply all the u_k^T to c.
     do k=1,n-1
        do j=numrotsu(k),1,-1
-          rot%cosine=csu(j,k); rot%sine=ssu(j,k)
-          call rotation_times_general(trp_rot(rot), c, jsu(j,k), jsu(j,k)+1)
+          call f_rotation_times_general(csu(j,k),-ssu(j,k), c, jsu(j,k), jsu(j,k)+1)
        end do
     end do
     ! diagonals of b are in row ubw_ub+1 of b_ub.
@@ -415,8 +406,7 @@ contains
        c(k+1-l:k+1)=c(k+1-l:k+1) - x(k+1) * b_ub(ubw_ub+1-l:ubw_ub+1 ,k+1)
        ! Apply u_k to c
        do j=1,numrotsu(k)
-          rot%cosine=csu(j,k); rot%sine=ssu(j,k)
-          call rotation_times_general(rot, c, jsu(j,k), jsu(j,k)+1)
+          call f_rotation_times_general(csu(j,k),ssu(j,k), c, jsu(j,k), jsu(j,k)+1)
        end do
        x(k)=c(k)/b_ub(ubw_ub+1,k)
     end do
@@ -494,7 +484,6 @@ contains
     real(kind=dp), dimension(mc,n), intent(out) :: x
 
     integer(kind=int32) :: j, k, l
-    type(d_rotation) :: rot
 
     if (n==1) then
        x=c/b_bv(1,1); return
@@ -503,8 +492,7 @@ contains
     ! Apply all the v_k to c
     do j=1,n-1
        do k=numrotsv(n-j),1,-1
-          rot%cosine=csv(n-j,k); rot%sine=ssv(n-j,k)
-          call general_times_rotation(c,rot,ksv(n-j,k),ksv(n-j,k)+1)
+          call f_general_times_rotation(c,csv(n-j,k),ssv(n-j,k),ksv(n-j,k),ksv(n-j,k)+1)
        end do
     end do
     ! diagonals of b are in column 1 of b_bv
@@ -516,8 +504,8 @@ contains
        end do
        ! Apply v_{n-j+1} to c
        do k=1,numrotsv(j-1)
-          rot%cosine=csv(j-1,k); rot%sine=ssv(j-1,k)
-          call general_times_rotation(c,trp_rot(rot),ksv(j-1,k), ksv(j-1,k)+1)
+          call f_general_times_rotation(c,csv(j-1,k),-ssv(j-1,k),ksv(j-1,k), &
+               ksv(j-1,k)+1)
        end do
        x(:,j)=c(:,j)/b_bv(j,1)
     end do
@@ -583,7 +571,6 @@ contains
     real(kind=dp), dimension(n), intent(out) :: x
 
     integer(kind=int32) :: j, k, l
-    type(d_rotation) :: rot
 
     if (n==1) then
        x=c/b_bv(1,1); return
@@ -592,8 +579,7 @@ contains
     ! Apply all the v_k to c
     do j=1,n-1
        do k=numrotsv(n-j),1,-1
-          rot%cosine=csv(n-j,k); rot%sine=ssv(n-j,k)
-          call general_times_rotation(c,rot,ksv(n-j,k),ksv(n-j,k)+1)
+          call f_general_times_rotation(c,csv(n-j,k),ssv(n-j,k),ksv(n-j,k),ksv(n-j,k)+1)
        end do
     end do
     ! diagonals of b are in column 1 of b_bv
@@ -603,8 +589,8 @@ contains
        c(j-1:j-1+l)=c(j-1:j-1+l) - b_bv(j-1,1:l+1) * x(j-1)
        ! Apply v_{n-j+1} to c
        do k=1,numrotsv(j-1)
-          rot%cosine=csv(j-1,k); rot%sine=ssv(j-1,k)
-          call general_times_rotation(c,trp_rot(rot),ksv(j-1,k), ksv(j-1,k)+1)
+          call f_general_times_rotation(c,csv(j-1,k),-ssv(j-1,k),ksv(j-1,k), &
+               ksv(j-1,k)+1)
        end do
        x(j)=c(j)/b_bv(j,1)
     end do
@@ -674,7 +660,6 @@ contains
     complex(kind=dp), dimension(mc,n), intent(out) :: x
 
     integer(kind=int32) :: j, k, l
-    type(z_rotation) :: rot
 
     if (n==1) then
        x=c/b_bv(1,1); return
@@ -683,8 +668,7 @@ contains
     ! Apply all the v_k to c
     do j=1,n-1
        do k=numrotsv(n-j),1,-1
-          rot%cosine=csv(n-j,k); rot%sine=ssv(n-j,k)
-          call general_times_rotation(c,rot,ksv(n-j,k),ksv(n-j,k)+1)
+          call f_general_times_rotation(c,csv(n-j,k),ssv(n-j,k),ksv(n-j,k),ksv(n-j,k)+1)
        end do
     end do
     ! diagonals of b are in column 1 of b_bv
@@ -696,8 +680,8 @@ contains
        end do
        ! Apply v_{n-j+1} to c
        do k=1,numrotsv(j-1)
-          rot%cosine=csv(j-1,k); rot%sine=ssv(j-1,k)
-          call general_times_rotation(c,trp_rot(rot),ksv(j-1,k), ksv(j-1,k)+1)
+          call f_general_times_rotation(c,csv(j-1,k),-ssv(j-1,k),ksv(j-1,k), &
+               ksv(j-1,k)+1)
        end do
        x(:,j)=c(:,j)/b_bv(j,1)
     end do
@@ -763,7 +747,6 @@ contains
     complex(kind=dp), dimension(n), intent(out) :: x
 
     integer(kind=int32) :: j, k, l
-    type(z_rotation) :: rot
 
     if (n==1) then
        x=c/b_bv(1,1); return
@@ -772,8 +755,7 @@ contains
     ! Apply all the v_k to c
     do j=1,n-1
        do k=numrotsv(n-j),1,-1
-          rot%cosine=csv(n-j,k); rot%sine=ssv(n-j,k)
-          call general_times_rotation(c,rot,ksv(n-j,k),ksv(n-j,k)+1)
+          call f_general_times_rotation(c,csv(n-j,k),ssv(n-j,k),ksv(n-j,k),ksv(n-j,k)+1)
        end do
     end do
     ! diagonals of b are in column 1 of b_bv
@@ -783,8 +765,8 @@ contains
        c(j-1:j-1+l)=c(j-1:j-1+l) - b_bv(j-1,1:l+1) * x(j-1)
        ! Apply v_{n-j+1} to c
        do k=1,numrotsv(j-1)
-          rot%cosine=csv(j-1,k); rot%sine=ssv(j-1,k)
-          call general_times_rotation(c,trp_rot(rot),ksv(j-1,k), ksv(j-1,k)+1)
+          call f_general_times_rotation(c,csv(j-1,k),-ssv(j-1,k),ksv(j-1,k), &
+               ksv(j-1,k)+1)
        end do
        x(j)=c(j)/b_bv(j,1)
     end do
