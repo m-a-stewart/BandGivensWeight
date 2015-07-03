@@ -1,6 +1,5 @@
 module mod_error_id
   use mod_prec
-  use mod_shift
   use, intrinsic :: iso_fortran_env, only : error_unit
   implicit none
   integer(kind=int32), parameter :: routine_name_length=30
@@ -1401,7 +1400,7 @@ contains
           err%routines(err%rix)=info%routine_id
           err%rix=err%rix+1
        else
-          call shift(err%routines,-1)
+          err%routines=eoshift(err%routines,1)
           err%routines(max_routines)=info%routine_id
           err%rix=max_routines+1
        end if

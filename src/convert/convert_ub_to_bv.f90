@@ -1,7 +1,6 @@
 module mod_convert_ub_to_bv
   use mod_prec
   use mod_error_id
-  use mod_shift
   use mod_rotation
   use mod_orth_band_types
   use mod_band_types
@@ -113,7 +112,7 @@ contains
     lbw1=lbw
     if (ubw < n-1) then
        ubw1=ubw+1
-       call shift(b_ub,1,0)
+       b_ub=eoshift(b_ub,-1,dim=1)
        full_ubw=.false.
     else
        ubw1=ubw
@@ -136,7 +135,7 @@ contains
     end do
     ! Store the results in b_bv
     if (.not. full_ubw) then
-       call shift(b_ub,-1,0)
+       b_ub=eoshift(b_ub,1,dim=1)
     end if
     call bc_to_br(b_ub, b_bv, lbw, ubw)
   end subroutine f_d_convert_ub_to_bv
@@ -222,7 +221,7 @@ contains
     lbw1=lbw
     if (ubw < n-1) then
        ubw1=ubw+1
-       call shift(b_ub,1,0)
+       b_ub=eoshift(b_ub,-1,dim=1)
        full_ubw=.false.
     else
        ubw1=ubw
@@ -245,7 +244,7 @@ contains
     end do
     ! Store the results in b_bv
     if (.not. full_ubw) then
-       call shift(b_ub,-1,0)
+       b_ub=eoshift(b_ub,1,dim=1)
     end if
     call bc_to_br(b_ub, b_bv, lbw, ubw)
   end subroutine f_z_convert_ub_to_bv

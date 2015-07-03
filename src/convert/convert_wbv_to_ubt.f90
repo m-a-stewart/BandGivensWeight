@@ -1,7 +1,6 @@
 module mod_convert_wbv_to_ubt
   use mod_prec
   use mod_error_id
-  use mod_shift
   use mod_rotation
   use mod_orth_band_types
   use mod_band_types
@@ -125,7 +124,7 @@ contains
     ! must allow for temporary fill-in
     if (lbw < n-1) then
        lbw1=lbw+1
-       call shift(b_wbv,0,1)
+       b_wbv=eoshift(b_wbv,-1,dim=2)
        full_lbw=.false.
     else
        lbw1=lbw
@@ -174,7 +173,7 @@ contains
        end do
     end do
     if (.not. full_lbw) then
-       call shift(b_wbv,0,-1)
+       b_wbv=eoshift(b_wbv,1,dim=2)
     end if
     call br_to_bc(b_wbv,b_ubt,lbw,ubw)
   end subroutine f_d_convert_wbv_to_ubt
@@ -281,7 +280,7 @@ contains
     ! must allow for temporary fill-in
     if (lbw < n-1) then
        lbw1=lbw+1
-       call shift(b_wbv,0,1)
+       b_wbv=eoshift(b_wbv,-1,dim=2)
        full_lbw=.false.
     else
        lbw1=lbw
@@ -330,7 +329,7 @@ contains
        end do
     end do
     if (.not. full_lbw) then
-       call shift(b_wbv,0,-1)
+       b_wbv=eoshift(b_wbv,1,dim=2)
     end if
     call br_to_bc(b_wbv,b_ubt,lbw,ubw)
   end subroutine f_z_convert_wbv_to_ubt

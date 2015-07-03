@@ -5,7 +5,6 @@ module mod_row_compress
   use mod_orth_band_types
   use mod_sweeps
   use mod_rotation
-  use mod_shift
   implicit none
 
   ! Routines that when given a rank structured matrix A parameterized
@@ -142,11 +141,11 @@ contains
     end if
 
     ubw=min(n-1,ubw_ubt+lbw_ubt)
-    call shift(b_ubt,ubw-ubw_ubt,0)
+    b_ubt=eoshift(b_ubt,ubw_ubt-ubw,dim=1)
     if (ubw < n-1) then
        ubw1=ubw+1
        full_ubw=.false.
-       call shift(b_ubt,1,0)
+       b_ubt=eoshift(b_ubt,-1,dim=1)
     else
        ubw1=ubw
        full_ubw=.true.
@@ -203,9 +202,8 @@ contains
           end do
        end if
     end do
-
     if (.not. full_ubw) then
-       call shift(b_ubt,-1,0)
+       b_ubt=eoshift(b_ubt,1,dim=1)
     end if
     call bc_to_br(b_ubt,b_bv,lbw,ubw)
     lbw_bv=lbw; ubw_bv=ubw
@@ -321,11 +319,11 @@ contains
     end if
 
     ubw=min(n-1,ubw_ubt+lbw_ubt)
-    call shift(b_ubt,ubw-ubw_ubt,0)
+    b_ubt=eoshift(b_ubt,ubw_ubt-ubw,dim=1)
     if (ubw < n-1) then
        ubw1=ubw+1
        full_ubw=.false.
-       call shift(b_ubt,1,0)
+       b_ubt=eoshift(b_ubt,-1,dim=1)
     else
        ubw1=ubw
        full_ubw=.true.
@@ -383,7 +381,7 @@ contains
     end do
 
     if (.not. full_ubw) then
-       call shift(b_ubt,-1,0)
+       b_ubt=eoshift(b_ubt,1,dim=1)
     end if
     call bc_to_br(b_ubt,b_bv,lbw,ubw)
     lbw_bv=lbw; ubw_bv=ubw

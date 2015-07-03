@@ -1,7 +1,6 @@
 module mod_convert_bt_to_wb
   use mod_prec
   use mod_error_id
-  use mod_shift
   use mod_rotation
   use mod_orth_band_types
   use mod_band_types
@@ -113,7 +112,7 @@ contains
     ubw1=ubw
     if (lbw < n-1) then
        lbw1=lbw+1
-       call shift(b_bt,0,1)
+       b_bt=eoshift(b_bt,-1,dim=2)
        full_lbw=.false.
     else
        lbw1=lbw
@@ -139,7 +138,7 @@ contains
        end do
     end do
     if (.not. full_lbw) then
-       call shift(b_bt,0,-1)
+       b_bt=eoshift(b_bt,1,dim=2)
     end if
     call br_to_bc(b_bt,b_wb,lbw,ubw)
   end subroutine f_d_convert_bt_to_wb
@@ -232,7 +231,7 @@ contains
     ubw1=ubw
     if (lbw < n-1) then
        lbw1=lbw+1
-       call shift(b_bt,0,1)
+       b_bt=eoshift(b_bt,-1,dim=2)
        full_lbw=.false.
     else
        lbw1=lbw
@@ -258,7 +257,7 @@ contains
        end do
     end do
     if (.not. full_lbw) then
-       call shift(b_bt,0,-1)
+       b_bt=eoshift(b_bt,1,dim=2)
     end if
     call br_to_bc(b_bt,b_wb,lbw,ubw)
   end subroutine f_z_convert_bt_to_wb

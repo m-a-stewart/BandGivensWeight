@@ -1,7 +1,6 @@
 module mod_band_types
   use mod_prec
   use mod_rotation
-  use mod_shift
   use mod_utility
   implicit none
   ! Routines for working with compact representations of banded

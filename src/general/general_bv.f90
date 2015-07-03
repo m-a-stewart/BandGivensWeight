@@ -4,7 +4,6 @@ module mod_general_bv
   use mod_utility
   use mod_gs
   use mod_cond_triangular
-  use mod_shift
   use mod_rotation
   use mod_orth_band_types
   use mod_band_types
@@ -248,7 +247,7 @@ contains
              ! Extend the QL decomposition with an additional column
              ! A(1:k-1,coffs) so that L is nl x nl and in
              ! A(k-nl:k-1,k:k+nl-1) and q is (k-1) x nl
-             call shift(pq,0,1)
+             pq=eoshift(pq,-1,dim=2)
              pq => q(1:k-1,1:nl)
              pq(:,1)=a(1:k-1,coffs)
              pl => a(roffs:roffs+nl-1, coffs:coffs+nl-1)
@@ -285,7 +284,7 @@ contains
           ! Downdate a row of A so that L is nl x nl and
           ! stored in A(k-nl:k-1)
           pl => a(roffs:roffs+nl, coffs+1:coffs+nl) ! extend pl up
-          call shift(pl,-1,0)
+          pl=eoshift(pl,1,dim=1)
           pq => q(1:k,1:nl+1)
           pq(:,nl+1)=0.0_dp; pq(k,nl+1)=1.0_dp
           call extend_gs_columns(pq(:,1:nl),x(1:nl), x(nl+1),pq(:,nl+1),error)
@@ -310,7 +309,7 @@ contains
              exit leading_loop
           else ! q is not square.  Make L (nl+1)x(nl+1)
              pq => q(1:k-1,1:nl+1)
-             call shift(pq,0,1)
+             pq=eoshift(pq,-1,dim=2)
              pq(:,1)=a(1:k-1,coffs)
              pl => a(roffs-1:roffs-1+nl,coffs:coffs+nl)
              call extend_gs_columns(pq(:,2:nl+1), pl(2:nl+1,1), &
@@ -560,7 +559,7 @@ contains
              ! Extend the QL decomposition with an additional column
              ! A(1:k-1,coffs) so that L is nl x nl and in
              ! A(k-nl:k-1,k:k+nl-1) and q is (k-1) x nl
-             call shift(pq,0,1)
+             pq=eoshift(pq,-1,dim=2)
              pq => q(1:k-1,1:nl)
              pq(:,1)=a(1:k-1,coffs)
              pl => a(roffs:roffs+nl-1, coffs:coffs+nl-1)
@@ -597,7 +596,7 @@ contains
           ! Downdate a row of A so that L is nl x nl and
           ! stored in A(k-nl:k-1)
           pl => a(roffs:roffs+nl, coffs+1:coffs+nl) ! extend pl up
-          call shift(pl,-1,0)
+          pl=eoshift(pl,1,dim=1)
           pq => q(1:k,1:nl+1)
           pq(:,nl+1)=(0.0_dp,0.0_dp); pq(k,nl+1)=(1.0_dp,0.0_dp)
           call extend_gs_columns(pq(:,1:nl),x(1:nl), x(nl+1),pq(:,nl+1),error)
@@ -622,7 +621,7 @@ contains
              exit leading_loop
           else ! q is not square.  Make L (nl+1)x(nl+1)
              pq => q(1:k-1,1:nl+1)
-             call shift(pq,0,1)
+             pq=eoshift(pq,-1,dim=2)
              pq(:,1)=a(1:k-1,coffs)
              pl => a(roffs-1:roffs-1+nl,coffs:coffs+nl)
              call extend_gs_columns(pq(:,2:nl+1), pl(2:nl+1,1), &

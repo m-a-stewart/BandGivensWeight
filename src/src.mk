@@ -5,22 +5,21 @@ _ORRB = general qr_factorization solve cond_orth_band \
 
 _MISC = error_id utility
 
-_ERROR_ID = prec shift
+_ERROR_ID = prec
 
 _UTILITY = prec
 
 _TYPES = band_types orth_band_types random products submatrix assemble
-_BAND_TYPES = rotation utility shift prec
+_BAND_TYPES = rotation utility prec
 _ORTH_BAND_TYPES = prec utility band_types
 _RANDOM = prec utility band_types orth_band_types
 _ASSEMBLE = prec error_id band_types orth_band_types rotation
 _PRODUCTS = prec error_id band_types orth_band_types rotation
 _SUBMATRIX = prec error_id band_types orth_band_types rotation
 
-_TRANSFORMS = sweeps rotation shift
+_TRANSFORMS = sweeps rotation
 _ROTATION = prec
 _SWEEPS = band_types prec utility
-_SHIFT = prec
 
 _ORTH = triangular gs cond_triangular
 _TRIANGULAR = prec
@@ -30,9 +29,9 @@ _GS = utility prec error_id
 
 _GENERAL = general_bv general_ub general_bt \
 	general_wb general_ubt general_wbv
-_GENERAL_BV = prec utility error_id cond_triangular gs shift rotation \
+_GENERAL_BV = prec utility error_id cond_triangular gs rotation \
 	orth_band_types band_types
-_GENERAL_UB = prec utility error_id cond_triangular gs shift rotation \
+_GENERAL_UB = prec utility error_id cond_triangular gs rotation \
 	orth_band_types band_types
 _GENERAL_BT = prec error_id utility \
 	orth_band_types band_types general_ub
@@ -49,23 +48,23 @@ _CONVERT = convert_bv_to_ub convert_ub_to_bv \
 	convert_wbv_to_ubt convert_ubt_to_wbv 
 _CONVERT_BV_TO_UB = prec error_id \
 	rotation orth_band_types band_types
-_CONVERT_UB_TO_BV = prec error_id shift \
+_CONVERT_UB_TO_BV = prec error_id \
 	rotation orth_band_types band_types
 _CONVERT_WB_TO_BT = prec error_id \
 	rotation orth_band_types band_types
-_CONVERT_BT_TO_WB = prec error_id shift \
+_CONVERT_BT_TO_WB = prec error_id \
 	rotation orth_band_types band_types
-_CONVERT_WBV_TO_UBT = prec error_id shift \
+_CONVERT_WBV_TO_UBT = prec error_id \
 	rotation orth_band_types band_types
-_CONVERT_UBT_TO_WBV = prec error_id shift \
+_CONVERT_UBT_TO_WBV = prec error_id \
 	rotation orth_band_types band_types
 
 _ROW_COMPRESS = prec error_id band_types orth_band_types \
-	sweeps rotation shift
+	sweeps rotation
 
 _QR_FACTORIZATION = prec error_id \
 	convert_bv_to_ub convert_ub_to_bv \
-	sweeps shift rotation \
+	sweeps rotation \
 	band_types orth_band_types
 
 _SOLVE = prec error_id orth_band_types \
@@ -85,7 +84,6 @@ RANDOM=$(patsubst %,$(OBJDIR)/%.o,$(_RANDOM))
 TRANSFORMS=$(patsubst %,$(OBJDIR)/%.o,$(_TRANSFORMS))
 ROTATION=$(patsubst %,$(OBJDIR)/%.o,$(_ROTATION))
 SWEEPS=$(patsubst %,$(OBJDIR)/%.o,$(_SWEEPS))
-SHIFT=$(patsubst %,$(OBJDIR)/%.o,$(_SHIFT))
 ORTH=$(patsubst %,$(OBJDIR)/%.o,$(_ORTH))
 TRIANGULAR=$(patsubst %,$(OBJDIR)/%.o,$(_TRIANGULAR))
 COND_TRIANGULAR=$(patsubst %,$(OBJDIR)/%.o,$(_COND_TRIANGULAR))
@@ -127,8 +125,6 @@ $(OBJDIR)/random.o : $(RANDOM)
 $(OBJDIR)/transforms.o :$(TRANSFORMS)
 $(OBJDIR)/rotation.o :$(ROTATION)
 $(OBJDIR)/sweeps.o : $(SWEEPS)
-$(OBJDIR)/shift.o : $(SHIFT)
-
 
 $(OBJDIR)/orth.o : $(ORTH)
 $(OBJDIR)/triangular.o : $(TRIANGULAR)
@@ -172,8 +168,7 @@ _MISCOBJS = misc prec utility error_id
 _TYPESOBJS = types band_types orth_band_types \
 	random assemble products submatrix
 
-_TRANSFORMSOBJS = transforms rotation shift \
-	sweeps
+_TRANSFORMSOBJS = transforms rotation sweeps
 
 _ORTHOBJS = triangular cond_triangular gs
 

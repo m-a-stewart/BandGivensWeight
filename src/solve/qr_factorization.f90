@@ -3,7 +3,6 @@ module mod_qr_factorization
   use mod_error_id
   use mod_convert_bv_to_ub
   use mod_sweeps
-  use mod_shift
   use mod_rotation
   use mod_band_types
   use mod_orth_band_types
@@ -225,7 +224,7 @@ contains
     end do
 
     lbw_ub=0; ubw_ub=ubw
-    call shift(b_bv,0,-lbw)
+    b_bv=eoshift(b_bv,lbw,dim=2)
     call br_to_bc(b_bv,b_ub,0,ubw)
   end subroutine f_d_qr_bv_to_ub
 
@@ -412,7 +411,7 @@ contains
     end do
 
     lbw_ub=0; ubw_ub=ubw
-    call shift(b_bv,0,-lbw)
+    b_bv=eoshift(b_bv,lbw,dim=2)
     call br_to_bc(b_bv,b_ub,0,ubw)
   end subroutine f_z_qr_bv_to_ub
 
