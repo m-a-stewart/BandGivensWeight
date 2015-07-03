@@ -83,24 +83,32 @@ contains
   ! compute a rotation r=[c,-s;s,c] such that r^T * [x;y]=[z;0]
   type(d_rotation) function d_lgivens(x,y) result(r)
     real(kind=dp), intent(in) :: x, y
-    real(kind=dp) :: w, z
+    real(kind=dp) :: w, z, x0, y0
     z=max(abs(x), abs(y))
     if (z == 0.0_dp) then
        r%cosine=1.0_dp
        r%sine=0.0_dp
     else
-       w=z*sqrt((x/z)**2+(y/z)**2)
-       r%cosine=x/w
-       r%sine=y/w
+       x0=x; y0=y
+       do while (z > sc)
+          z=z*scinv; x0=x0*scinv; y0=y0*scinv
+       end do
+       do while (z < scinv)
+          z=z*sc; x0=x0*sc; y0=y0*sc
+       end do
+       w=1/sqrt(x0*x0+y0*y0)
+       r%cosine=x0*w
+       r%sine=y0*w
     end if
   end function d_lgivens
 
   ! rotation such that r=[c,-conj(s); s, c] and r^H * [x;y] = [z;0]
   type(z_rotation) function z_lgivens(x,y) result(r)
     complex(kind=dp), intent(in) :: x, y
-    real(kind=dp) :: w, z, xabs
-    xabs=abs(x)
-    z=max(xabs, abs(y))
+    complex(kind=dp) :: x0, y0
+    real(kind=dp) :: w, z, xabs, yabs
+    xabs=abs(x); yabs=abs(y)
+    z=max(xabs, yabs)
     if (z == 0.0_dp) then
        r%cosine=1.0_dp
        r%sine=(0.0_dp, 0.0_dp)
@@ -108,33 +116,51 @@ contains
        r%cosine=0.0_dp
        r%sine=(1.0_dp,0.0_dp)
     else
-       w=z*sqrt(abs(x/z)**2+abs(y/z)**2)
-       r%cosine=xabs/w
-       r%sine=y * conjg(x)/xabs/w
+       x0=x; y0=y
+       do while (z > sc)
+          z=z*scinv; x0=x0*scinv; y0=y0*scinv;
+          xabs=xabs*scinv; yabs=yabs*scinv
+       end do
+       do while (z < scinv)
+          z=z*sc; x0=x0*sc; y0=y0*sc;
+          xabs=xabs*sc; yabs=yabs*sc
+       end do
+       w=1/sqrt(xabs*xabs+yabs*yabs)
+       r%cosine=xabs*w
+       r%sine=y0*w*(conjg(x0)/xabs)
     end if
   end function z_lgivens
 
   ! compute a rotation r=[c,-s;s,c] such that r^T * [x;y]=[0;z]
   type(d_rotation) function d_lgivens2(x,y) result(r)
     real(kind=dp), intent(in) :: x, y
-    real(kind=dp) :: w, z
+    real(kind=dp) :: w, z, x0, y0
     z=max(abs(x), abs(y))
     if (z == 0.0_dp) then
        r%cosine=1.0_dp
        r%sine=0.0_dp
     else
-       w=z*sqrt((x/z)**2+(y/z)**2)
-       r%cosine=y/w
-       r%sine=-x/w
+       x0=x; y0=y
+       do while (z > sc)
+          z=z*scinv; x0=x0*scinv; y0=y0*scinv
+       end do
+       do while (z < scinv)
+          z=z*sc; x0=x0*sc; y0=y0*sc
+       end do
+       w=1/sqrt(x0*x0+y0*y0)
+       r%cosine=y0*w
+       r%sine=-x0*w
     end if
   end function d_lgivens2
 
   ! rotation such that r=[c,-conj(s); s, c] and r^H * [x;y] = [0;z]
   type(z_rotation) function z_lgivens2(x,y) result(r)
     complex(kind=dp), intent(in) :: x, y
-    real(kind=dp) :: w, z, yabs
+    complex(kind=dp) :: x0, y0
+    real(kind=dp) :: w, z, xabs, yabs
     yabs=abs(y)
-    z=max(yabs, abs(x))
+    xabs=abs(x)
+    z=max(yabs, xabs)
     if (z == 0.0_dp) then
        r%cosine=1.0_dp
        r%sine=(0.0_dp,0.0_dp)
@@ -142,9 +168,18 @@ contains
        r%cosine=0.0_dp
        r%sine=(1.0_dp,0.0_dp)
     else
-       w=z*sqrt(abs(x/z)**2+abs(y/z)**2)
-       r%cosine=yabs/w
-       r%sine=-conjg(x) * y/yabs/w
+       x0=x; y0=y
+       do while (z > sc)
+          z=z*scinv; x0=x0*scinv; y0=y0*scinv;
+          xabs=xabs*scinv; yabs=yabs*scinv
+       end do
+       do while (z < scinv)
+          z=z*sc; x0=x0*sc; y0=y0*sc;
+          xabs=xabs*sc; yabs=yabs*sc
+       end do
+       w=1/sqrt(xabs*xabs+yabs*yabs)
+       r%cosine=yabs*w
+       r%sine=-conjg(x0)*w*(y0/yabs)
     end if
   end function z_lgivens2
 
@@ -152,24 +187,33 @@ contains
   ! rotations r=[c,-s; s, c] such that [x,y] * r = [z, 0]
   type(d_rotation) function d_rgivens(x,y) result(r)
     real(kind=dp), intent(in) :: x, y
-    real(kind=dp) :: w, z
+    real(kind=dp) :: w, z, x0, y0
     z=max(abs(x), abs(y))
     if (z == 0.0_dp) then
        r%cosine=1.0_dp
        r%sine=0.0_dp
     else
-       w=z*sqrt((x/z)**2+(y/z)**2)
-       r%cosine=x/w
-       r%sine=y/w
+       x0=x; y0=y
+       do while (z > sc)
+          z=z*scinv; x0=x0*scinv; y0=y0*scinv
+       end do
+       do while (z < scinv)
+          z=z*sc; x0=x0*sc; y0=y0*sc
+       end do
+       w=1/sqrt(x0*x0+y0*y0)
+       r%cosine=x0*w
+       r%sine=y0*w
     end if
   end function d_rgivens
 
   ! rotations r=[c,-conj(s); s, c] such that [x,y] * r = [z, 0]
   type(z_rotation) function z_rgivens(x,y) result(r)
     complex(kind=dp), intent(in) :: x, y
-    real(kind=dp) :: w, z, xabs
+    complex(kind=dp) :: x0, y0
+    real(kind=dp) :: w, z, xabs, yabs
     xabs=abs(x)
-    z=max(xabs, abs(y))
+    yabs=abs(y)
+    z=max(xabs,yabs)
     if (z == 0.0_dp) then
        r%cosine=1.0_dp
        r%sine=(0.0_dp,0.0_dp)
@@ -177,33 +221,51 @@ contains
        r%cosine=0.0_dp
        r%sine=(1.0_dp,0.0_dp)
     else
-       w=z*sqrt(abs(x/z)**2+abs(y/z)**2)
-       r%cosine=xabs/w
-       r%sine=conjg(y) * x/xabs/w
+       x0=x; y0=y
+       do while (z > sc)
+          z=z*scinv; x0=x0*scinv; y0=y0*scinv;
+          xabs=xabs*scinv; yabs=yabs*scinv
+       end do
+       do while (z < scinv)
+          z=z*sc; x0=x0*sc; y0=y0*sc;
+          xabs=xabs*sc; yabs=yabs*sc
+       end do
+       w=1/sqrt(xabs*xabs+yabs*yabs)
+       r%cosine=xabs*w
+       r%sine=conjg(y0)*w*(x0/xabs)
     end if
   end function z_rgivens
 
   ! rotations r=[c,-s; s, c] such that [x,y] * r = [0, z]
   type(d_rotation) function d_rgivens2(x,y) result(r)
     real(kind=dp), intent(in) :: x, y
-    real(kind=dp) :: w, z
+    real(kind=dp) :: w, z, x0, y0
     z=max(abs(x), abs(y))
     if (z == 0.0_dp) then
        r%cosine=1.0_dp
        r%sine=0.0_dp
     else
-       w=z*sqrt((x/z)**2+(y/z)**2)
-       r%cosine=y/w
-       r%sine=-x/w
+       x0=x; y0=y
+       do while (z > sc)
+          z=z*scinv; x0=x0*scinv; y0=y0*scinv
+       end do
+       do while (z < scinv)
+          z=z*sc; x0=x0*sc; y0=y0*sc
+       end do
+       w=1/sqrt(x0*x0+y0*y0)
+       r%cosine=y0*w
+       r%sine=-x0*w
     end if
   end function d_rgivens2
 
   ! rotations r=[c,-conj(s); s, c] such that [x,y] * r = [0, z]
   type(z_rotation) function z_rgivens2(x,y) result(r)
     complex(kind=dp), intent(in) :: x, y
-    real(kind=dp) :: w, z, yabs
+    complex(kind=dp) :: x0, y0
+    real(kind=dp) :: w, z, yabs, xabs
+    xabs=abs(x)
     yabs=abs(y)
-    z=max(yabs, abs(x))
+    z=max(xabs, yabs)
     if (z == 0.0_dp) then
        r%cosine=1.0_dp
        r%sine=(0.0_dp,0.0_dp)
@@ -211,9 +273,18 @@ contains
        r%cosine=0.0_dp
        r%sine=(1.0_dp,0.0_dp)
     else
-       w=z*sqrt(abs(x/z)**2+abs(y/z)**2)
-       r%cosine=yabs/w
-       r%sine=-x * conjg(y)/yabs/w
+       x0=x; y0=y
+       do while (z > sc)
+          z=z*scinv; x0=x0*scinv; y0=y0*scinv;
+          xabs=xabs*scinv; yabs=yabs*scinv
+       end do
+       do while (z < scinv)
+          z=z*sc; x0=x0*sc; y0=y0*sc;
+          xabs=xabs*sc; yabs=yabs*sc
+       end do
+       w=1/sqrt(xabs*xabs+yabs*yabs)
+       r%cosine=yabs*w       
+       r%sine=-x0 * w* conjg(y0)/yabs
     end if
   end function z_rgivens2
 

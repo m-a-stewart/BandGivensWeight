@@ -8,7 +8,7 @@ program test_general_ub
   real(kind=dp) :: t0, t1
   type(error_info) :: error
   integer(kind=int32) :: na, lbwa, ubwa, j
-  real(kind=dp), parameter :: tol=1e-14, c=5
+  real(kind=dp), parameter :: tol=1e-14, c=9
   !
   real(kind=dp), dimension(:,:), allocatable :: a_d, a0_d, a1_d
   complex(kind=dp), dimension(:,:), allocatable :: a_z, a0_z, a1_z
