@@ -2,18 +2,20 @@ ORRB:  Orthogonal Rank-structured Reduction to Banded form
 ==========================================================
 
 The Fortran 2003 code works on various Givens-weight parameterizations
-and is intended to accompany the paper *An Analysis of Orthogonal
-Algorithms for Rank Structured Matrices*.  I expect to continue to use
-this code as a basis for further research into related algorithms.
-For that reason, I have put more effort into writing, packaging, and
+and is intended to accompany the paper *On the Stability of Orthogonal
+Transformation of Rank Structured Matrices*.  Since I expect to
+continue to use this code as a basis for further research into related
+algorithms, I have put more effort into writing, packaging, and
 testing than I would normally do for a proof of concept
-implementation.  Nevertheless, the code is experimental and no attempt
-has been made at optimization.  These disclaimers apply most strongly
-to the decomposition routines for rank structured matrices stored as
-general matrices, which are contained in `./src/general`.  These
-decomposition routines are not part of the paper and were included
-only because they are convenient to use as a means for generating
-givens weight representations.
+implementation.  Nevertheless, the code is experimental and no
+significant attempt has been made at optimization.  These disclaimers
+apply most strongly to the decomposition routines for rank structured
+matrices stored as general matrices, which are contained in
+`./src/general`.  These decomposition routines are not part of the
+paper and were included only because they are convenient to use as a
+means for generating givens weight representations.  They represent an
+experiment in applying QR updating techniques; they did not end up
+being very efficient.
 
 Build Process
 =============
