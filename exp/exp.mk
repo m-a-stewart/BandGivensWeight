@@ -12,4 +12,8 @@ run_all_exps : $(EXPS)
 run_exp : $(BINDIR)/exp
 	$(BINDIR)/exp
 
+.PHONY : profile_exp
+profile_exp : $(BINDIR)/exp
+	$(BINDIR)/exp; gprof $(BINDIR)/exp
+
 $(OBJDIR)/exp.o : $(OBJDIR)/orrb.o

@@ -8,9 +8,9 @@ SRCDIRS = src src/convert src/general src/misc src/orth \
 FC = gfortran
 LFLAGS =
 CFLAGS = -Wall -Wno-maybe-uninitialized -O2 -mcmodel=medium -fno-range-check
-!CFLAGS = -Wall -Wno-maybe-uninitialized -mcmodel=medium -fbounds-check -fno-range-check
-PROFLFLAGS =
-PROFCFLAGS =
+#CFLAGS = -Wall -Wno-maybe-uninitialized -mcmodel=medium -fbounds-check -fno-range-check
+#PROFLFLAGS = -pg
+#PROFCFLAGS = -pg
 VIEWER = evince
 
 vpath %.f90 $(SRCDIRS) test exp
