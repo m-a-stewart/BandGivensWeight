@@ -2,7 +2,7 @@ ORRB:  Orthogonal Rank-structured Reduction to Banded form
 ==========================================================
 
 The Fortran 2003 code works on various Givens-weight parameterizations
-and is intended to accompany the paper *On the Stability of Orthogonal
+and is intended to accompany the paper *On Orthogonal
 Transformation of Rank Structured Matrices*.  Since I expect to
 continue to use this code as a basis for further research into related
 algorithms, I have put more effort into writing, packaging, and
