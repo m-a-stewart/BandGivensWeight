@@ -208,7 +208,7 @@ module mod_orth_band_types
           d_copy_ubt, z_copy_ubt, d_copy_bv, z_copy_bv, d_copy_wb, z_copy_wb, &
           d_copy_wbv, z_copy_wbv
   end interface copy
-  
+
   interface truncate_profile
      module procedure d_truncate_profile_ub, z_truncate_profile_ub, &
           d_truncate_profile_ubt, z_truncate_profile_ubt, &
@@ -225,15 +225,17 @@ module mod_orth_band_types
   end interface get_n
 
   interface get_lbwmax
-     module procedure d_ub_get_lbwmax, d_bv_get_lbwmax, z_ub_get_lbwmax, z_bv_get_lbwmax, &
-          d_ubt_get_lbwmax, d_wbv_get_lbwmax, z_ubt_get_lbwmax, z_wbv_get_lbwmax, &
+     module procedure d_ub_get_lbwmax, d_bv_get_lbwmax, z_ub_get_lbwmax, &
+          z_bv_get_lbwmax, d_ubt_get_lbwmax, d_wbv_get_lbwmax, &
+          z_ubt_get_lbwmax, z_wbv_get_lbwmax, &
           d_bt_get_lbwmax, d_wb_get_lbwmax, z_bt_get_lbwmax, z_wb_get_lbwmax
   end interface get_lbwmax
 
   interface get_ubwmax
-     module procedure d_ub_get_ubwmax, d_bv_get_ubwmax, z_ub_get_ubwmax, z_bv_get_ubwmax, &
-          d_ubt_get_ubwmax, d_wbv_get_ubwmax, z_ubt_get_ubwmax, z_wbv_get_ubwmax, &
-          d_bt_get_ubwmax, d_wb_get_ubwmax, z_bt_get_ubwmax, z_wb_get_ubwmax
+     module procedure d_ub_get_ubwmax, d_bv_get_ubwmax, z_ub_get_ubwmax, &
+          z_bv_get_ubwmax, d_ubt_get_ubwmax, d_wbv_get_ubwmax, &
+          z_ubt_get_ubwmax, z_wbv_get_ubwmax, d_bt_get_ubwmax, &
+          d_wb_get_ubwmax, z_bt_get_ubwmax, z_wb_get_ubwmax
   end interface get_ubwmax
 
 contains
@@ -329,8 +331,8 @@ contains
     ubt%n=n; ubt%lbwmax=lbwmax; ubt%ubwmax=ubwmax
     ubt%ubw=0; ubt%lbw=0
     allocate(ubt%bc(lbwmax+ubwmax+1,n), ubt%csu(ubwmax,n), ubt%ssu(ubwmax,n), &
-         ubt%jsu(ubwmax,n), ubt%numrotsu(n), ubt%cst(n,lbwmax), ubt%sst(n,lbwmax), &
-         ubt%kst(n,lbwmax), ubt%numrotst(n))
+         ubt%jsu(ubwmax,n), ubt%numrotsu(n), ubt%cst(n,lbwmax), &
+         ubt%sst(n,lbwmax), ubt%kst(n,lbwmax), ubt%numrotst(n))
     ubt%bc=0.0_dp
     ubt%csu=0.0_dp; ubt%ssu=0.0_dp
     ubt%jsu=0; ubt%numrotsu=0
@@ -352,8 +354,8 @@ contains
     ubt%n=n; ubt%lbwmax=lbwmax; ubt%ubwmax=ubwmax
     ubt%ubw=0; ubt%lbw=0
     allocate(ubt%bc(lbwmax+ubwmax+1,n), ubt%csu(ubwmax,n), ubt%ssu(ubwmax,n), &
-         ubt%jsu(ubwmax,n), ubt%numrotsu(n), ubt%cst(n,lbwmax), ubt%sst(n,lbwmax), &
-         ubt%kst(n,lbwmax), ubt%numrotst(n))
+         ubt%jsu(ubwmax,n), ubt%numrotsu(n), ubt%cst(n,lbwmax), &
+         ubt%sst(n,lbwmax), ubt%kst(n,lbwmax), ubt%numrotst(n))
     ubt%bc=(0.0_dp,0.0_dp)
     ubt%csu=0.0_dp; ubt%ssu=(0.0_dp,0.0_dp)
     ubt%jsu=0; ubt%numrotsu=0
@@ -418,8 +420,8 @@ contains
     integer(kind=int32), intent(in) :: n, lbwmax, ubwmax
     wb%n=n; wb%lbwmax=lbwmax; wb%ubwmax=ubwmax
     wb%ubw=0; wb%lbw=0
-    allocate(wb%bc(lbwmax+ubwmax+1,n), wb%csw(lbwmax,n), wb%ssw(lbwmax,n), wb%jsw(lbwmax,n), &
-         wb%numrotsw(n))
+    allocate(wb%bc(lbwmax+ubwmax+1,n), wb%csw(lbwmax,n), wb%ssw(lbwmax,n), &
+         wb%jsw(lbwmax,n), wb%numrotsw(n))
     wb%bc=0.0_dp; wb%csw=0.0_dp; wb%ssw=0.0_dp
     wb%jsw=0; wb%numrotsw=0
   end function d_new_wb
@@ -460,8 +462,8 @@ contains
     wbv%n=n; wbv%lbwmax=lbwmax; wbv%ubwmax=ubwmax
     wbv%ubw=0; wbv%lbw=0
     allocate(wbv%br(n,lbwmax+ubwmax+1), wbv%csv(n,ubwmax), wbv%ssv(n,ubwmax), &
-         wbv%ksv(n,ubwmax), wbv%numrotsv(n), &
-         wbv%csw(lbwmax,n), wbv%ssw(lbwmax,n), wbv%jsw(lbwmax,n), wbv%numrotsw(n))
+         wbv%ksv(n,ubwmax), wbv%numrotsv(n), wbv%csw(lbwmax,n), &
+         wbv%ssw(lbwmax,n), wbv%jsw(lbwmax,n), wbv%numrotsw(n))
     wbv%br=0.0_dp; wbv%csv=0.0_dp; wbv%ssv=0.0_dp
     wbv%ksv=0; wbv%numrotsv=0
     wbv%csw=0.0_dp; wbv%ssw=0.0_dp
@@ -482,8 +484,8 @@ contains
     wbv%n=n; wbv%lbwmax=lbwmax; wbv%ubwmax=ubwmax
     wbv%ubw=0; wbv%lbw=0
     allocate(wbv%br(n,lbwmax+ubwmax+1), wbv%csv(n,ubwmax), wbv%ssv(n,ubwmax), &
-         wbv%ksv(n,ubwmax), wbv%numrotsv(n), &
-         wbv%csw(lbwmax,n), wbv%ssw(lbwmax,n), wbv%jsw(lbwmax,n), wbv%numrotsw(n))
+         wbv%ksv(n,ubwmax), wbv%numrotsv(n), wbv%csw(lbwmax,n), &
+         wbv%ssw(lbwmax,n), wbv%jsw(lbwmax,n), wbv%numrotsw(n))
     wbv%br=(0.0_dp,0.0_dp); wbv%csv=0.0_dp; wbv%ssv=(0.0_dp,0.0_dp)
     wbv%ksv=0; wbv%numrotsv=0
     wbv%csw=0.0_dp; wbv%ssw=(0.0_dp,0.0_dp)
@@ -509,11 +511,13 @@ contains
     ub2%lbw=ub1%lbw
     ub2%ubw=ub1%ubw
     if ( ub2%ubwmax < ub1%ubw .or. ub2%lbwmax < ub1%lbw .or. &
-         size(ub2%bc,2) /= ub1%n .or. not_all_allocated(ub2%bc, ub2%csu, ub2%ssu) .or. &
-         not_all_allocated(ub2%jsu) .or. not_all_allocated(ub2%numrotsu)) then
+         size(ub2%bc,2) /= ub1%n .or. not_all_allocated(ub2%bc, ub2%csu, &
+         ub2%ssu) .or. not_all_allocated(ub2%jsu) .or. &
+         not_all_allocated(ub2%numrotsu)) then
        call d_deallocate_ub(ub2)
-       allocate(ub2%bc(ub1%lbwmax+ub1%ubwmax+1,ub1%n), ub2%csu(ub1%ubwmax,ub1%n), &
-            ub2%ssu(ub1%ubwmax,ub1%n), ub2%jsu(ub1%ubwmax,ub1%n), ub2%numrotsu(ub1%n))
+       allocate(ub2%bc(ub1%lbwmax+ub1%ubwmax+1,ub1%n), &
+            ub2%csu(ub1%ubwmax,ub1%n), ub2%ssu(ub1%ubwmax,ub1%n), &
+            ub2%jsu(ub1%ubwmax,ub1%n), ub2%numrotsu(ub1%n))
        ub2%lbwmax=ub1%lbwmax
        ub2%ubwmax=ub1%ubwmax
     end if
@@ -535,8 +539,9 @@ contains
          not_all_allocated(ub2%csu) .or. not_all_allocated(ub2%jsu) .or. &
          not_all_allocated(ub2%numrotsu)) then
        call z_deallocate_ub(ub2)
-       allocate(ub2%bc(ub1%lbwmax+ub1%ubwmax+1,ub1%n), ub2%csu(ub1%ubwmax,ub1%n), &
-            ub2%ssu(ub1%ubwmax,ub1%n), ub2%jsu(ub1%ubwmax,ub1%n), ub2%numrotsu(ub1%n))
+       allocate(ub2%bc(ub1%lbwmax+ub1%ubwmax+1,ub1%n), &
+            ub2%csu(ub1%ubwmax,ub1%n), ub2%ssu(ub1%ubwmax,ub1%n), &
+            ub2%jsu(ub1%ubwmax,ub1%n), ub2%numrotsu(ub1%n))
        ub2%lbwmax=ub1%lbwmax
        ub2%ubwmax=ub1%ubwmax
     end if
@@ -554,8 +559,9 @@ contains
     bt2%lbw=bt1%lbw
     bt2%ubw=bt1%ubw
     if ( bt2%ubwmax < bt1%ubw .or. bt2%lbwmax < bt1%lbw .or. &
-         size(bt2%br,1) /= bt1%n .or. not_all_allocated(bt2%br, bt2%cst, bt2%sst) .or. &
-         not_all_allocated(bt2%kst) .or. not_all_allocated(bt2%numrotst) ) then
+         size(bt2%br,1) /= bt1%n .or. not_all_allocated(bt2%br, bt2%cst, &
+         bt2%sst) .or. not_all_allocated(bt2%kst) .or. &
+         not_all_allocated(bt2%numrotst) ) then
        call d_deallocate_bt(bt2)
        allocate(bt2%br(bt1%n,bt1%lbwmax+bt1%ubwmax+1), &
             bt2%cst(bt1%n, bt1%lbwmax), bt2%sst(bt1%n,bt1%lbwmax), &
@@ -563,7 +569,7 @@ contains
        bt2%lbwmax=bt1%lbwmax
        bt2%ubwmax=bt1%ubwmax
     end if
-    
+
     bt2%br(:,1:bt1%lbw+bt1%ubw+1)=bt1%br(:,1:bt1%lbw+bt1%ubw+1)
     bt2%numrotst=bt1%numrotst
     bt2%cst(:,1:bt1%lbw)=bt1%cst(:,1:bt1%lbw)
@@ -603,24 +609,25 @@ contains
     ubt2%ubw=ubt1%ubw
     if ( ubt2%ubwmax < ubt1%ubw .or. ubt2%lbwmax < ubt1%lbw .or. &
          size(ubt2%bc,2) /= ubt1%n .or. &
-         not_all_allocated(ubt2%bc, ubt2%csu, ubt2%ssu, ubt2%cst, ubt2%sst) .or. &
-         not_all_allocated(ubt2%jsu, ubt2%kst) .or. &
+         not_all_allocated(ubt2%bc, ubt2%csu, ubt2%ssu, ubt2%cst, &
+         ubt2%sst) .or. not_all_allocated(ubt2%jsu, ubt2%kst) .or. &
          not_all_allocated(ubt2%numrotsu, ubt2%numrotst) ) then
        call d_deallocate_ubt(ubt2)
-       allocate(ubt2%bc(ubt1%lbwmax+ubt1%ubwmax+1,ubt1%n), ubt2%csu(ubt1%ubwmax,ubt1%n), &
-            ubt2%ssu(ubt1%ubwmax,ubt1%n), ubt2%jsu(ubt1%ubwmax,ubt1%n), ubt2%numrotsu(ubt1%n), &
+       allocate(ubt2%bc(ubt1%lbwmax+ubt1%ubwmax+1,ubt1%n), &
+            ubt2%csu(ubt1%ubwmax,ubt1%n), ubt2%ssu(ubt1%ubwmax,ubt1%n), &
+            ubt2%jsu(ubt1%ubwmax,ubt1%n), ubt2%numrotsu(ubt1%n), &
             ubt2%cst(ubt1%n, ubt1%lbwmax), ubt2%sst(ubt1%n, ubt1%lbwmax), &
             ubt2%kst(ubt1%n, ubt1%lbwmax), ubt2%numrotst(ubt1%n))
        ubt2%lbwmax=ubt1%lbwmax
        ubt2%ubwmax=ubt1%ubwmax
     end if
-    
+
     ubt2%bc(1:ubt1%lbw+ubt1%ubw+1,:)=ubt1%bc(1:ubt1%lbw+ubt1%ubw+1,:)
     ubt2%numrotsu=ubt1%numrotsu
     ubt2%csu(1:ubt1%ubw,:)=ubt1%csu(1:ubt1%ubw,:)
     ubt2%ssu(1:ubt1%ubw,:)=ubt1%ssu(1:ubt1%ubw,:)
     ubt2%jsu(1:ubt1%ubw,:)=ubt1%jsu(1:ubt1%ubw,:)
-    
+
     ubt2%numrotst=ubt1%numrotst
     ubt2%cst(:,1:ubt1%lbw)=ubt1%cst(:,1:ubt1%lbw)
     ubt2%sst(:,1:ubt1%lbw)=ubt1%sst(:,1:ubt1%lbw)
@@ -640,20 +647,21 @@ contains
          not_all_allocated(ubt2%jsu, ubt2%kst) .or. &
          not_all_allocated(ubt2%numrotsu, ubt2%numrotst)) then
        call z_deallocate_ubt(ubt2)
-       allocate(ubt2%bc(ubt1%lbwmax+ubt1%ubwmax+1,ubt1%n), ubt2%csu(ubt1%ubwmax,ubt1%n), &
-            ubt2%ssu(ubt1%ubwmax,ubt1%n), ubt2%jsu(ubt1%ubwmax,ubt1%n), ubt2%numrotsu(ubt1%n), &
+       allocate(ubt2%bc(ubt1%lbwmax+ubt1%ubwmax+1,ubt1%n), &
+            ubt2%csu(ubt1%ubwmax,ubt1%n), ubt2%ssu(ubt1%ubwmax,ubt1%n), &
+            ubt2%jsu(ubt1%ubwmax,ubt1%n), ubt2%numrotsu(ubt1%n), &
             ubt2%cst(ubt1%n, ubt1%lbwmax), ubt2%sst(ubt1%n, ubt1%lbwmax), &
             ubt2%kst(ubt1%n, ubt1%lbwmax), ubt2%numrotst(ubt1%n))
        ubt2%lbwmax=ubt1%lbwmax
        ubt2%ubwmax=ubt1%ubwmax
     end if
-    
+
     ubt2%bc(1:ubt1%lbw+ubt1%ubw+1,:)=ubt1%bc(1:ubt1%lbw+ubt1%ubw+1,:)
     ubt2%numrotsu=ubt1%numrotsu
     ubt2%csu(1:ubt1%ubw,:)=ubt1%csu(1:ubt1%ubw,:)
     ubt2%ssu(1:ubt1%ubw,:)=ubt1%ssu(1:ubt1%ubw,:)
     ubt2%jsu(1:ubt1%ubw,:)=ubt1%jsu(1:ubt1%ubw,:)
-    
+
     ubt2%numrotst=ubt1%numrotst
     ubt2%cst(:,1:ubt1%lbw)=ubt1%cst(:,1:ubt1%lbw)
     ubt2%sst(:,1:ubt1%lbw)=ubt1%sst(:,1:ubt1%lbw)
@@ -667,11 +675,13 @@ contains
     bv2%lbw=bv1%lbw
     bv2%ubw=bv1%ubw
     if ( bv2%ubwmax < bv1%ubw .or. bv2%lbwmax < bv1%lbw .or. &
-         size(bv2%br,1) /= bv1%n .or. not_all_allocated(bv2%br, bv2%csv, bv2%ssv) .or. &
-         not_all_allocated(bv2%ksv) .or. not_all_allocated(bv2%numrotsv) ) then
+         size(bv2%br,1) /= bv1%n .or. not_all_allocated(bv2%br, bv2%csv, &
+         bv2%ssv) .or. not_all_allocated(bv2%ksv) .or. &
+         not_all_allocated(bv2%numrotsv) ) then
        call d_deallocate_bv(bv2)
-       allocate(bv2%br(bv1%n,bv1%lbwmax+bv1%ubwmax+1), bv2%csv(bv1%n,bv1%ubwmax), &
-            bv2%ssv(bv1%n,bv1%ubwmax), bv2%ksv(bv1%n,bv1%ubwmax), bv2%numrotsv(bv1%n))
+       allocate(bv2%br(bv1%n,bv1%lbwmax+bv1%ubwmax+1), &
+            bv2%csv(bv1%n,bv1%ubwmax), bv2%ssv(bv1%n,bv1%ubwmax), &
+            bv2%ksv(bv1%n,bv1%ubwmax), bv2%numrotsv(bv1%n))
        bv2%lbwmax=bv1%lbwmax
        bv2%ubwmax=bv1%ubwmax
     end if
@@ -689,8 +699,9 @@ contains
     wb2%lbw=wb1%lbw
     wb2%ubw=wb1%ubw
     if ( wb2%ubwmax < wb1%ubw .or. wb2%lbwmax < wb1%lbw .or. &
-         size(wb2%bc,2) /= wb1%n .or. not_all_allocated(wb2%bc, wb2%csw, wb2%ssw) .or. &
-         not_all_allocated(wb2%jsw) .or. not_all_allocated(wb2%numrotsw) ) then
+         size(wb2%bc,2) /= wb1%n .or. not_all_allocated(wb2%bc, wb2%csw, &
+         wb2%ssw) .or. not_all_allocated(wb2%jsw) .or. &
+         not_all_allocated(wb2%numrotsw) ) then
        call d_deallocate_wb(wb2)
        allocate(wb2%bc(wb1%lbwmax+wb1%ubwmax+1,wb1%n), &
             wb2%csw(wb1%lbwmax,wb1%n), wb2%ssw(wb1%lbwmax,wb1%n), &
@@ -713,12 +724,13 @@ contains
     wbv2%ubw=wbv1%ubw
     if ( wbv2%ubwmax < wbv1%ubw .or. wbv2%lbwmax < wbv1%lbw .or. &
          size(wbv2%br,1) /= wbv1%n .or. &
-         not_all_allocated(wbv2%br, wbv2%csw, wbv2%ssw, wbv2%csv, wbv2%ssv) .or. &
-         not_all_allocated(wbv2%jsw, wbv2%ksv) .or. &
+         not_all_allocated(wbv2%br, wbv2%csw, wbv2%ssw, wbv2%csv, &
+         wbv2%ssv) .or. not_all_allocated(wbv2%jsw, wbv2%ksv) .or. &
          not_all_allocated(wbv2%numrotsw, wbv2%numrotsv) ) then
        call d_deallocate_wbv(wbv2)
-       allocate(wbv2%br(wbv1%n,wbv1%lbwmax+wbv1%ubwmax+1), wbv2%csv(wbv1%n,wbv1%ubwmax), &
-            wbv2%ssv(wbv1%n,wbv1%ubwmax), wbv2%ksv(wbv1%n,wbv1%ubwmax), wbv2%numrotsv(wbv1%n), &
+       allocate(wbv2%br(wbv1%n,wbv1%lbwmax+wbv1%ubwmax+1), &
+            wbv2%csv(wbv1%n,wbv1%ubwmax), wbv2%ssv(wbv1%n,wbv1%ubwmax), &
+            wbv2%ksv(wbv1%n,wbv1%ubwmax), wbv2%numrotsv(wbv1%n), &
             wbv2%csw(wbv1%lbwmax,wbv1%n), wbv2%ssw(wbv1%lbwmax,wbv1%n), &
             wbv2%jsw(wbv1%lbwmax,wbv1%n), wbv2%numrotsw(wbv1%n))
        wbv2%lbwmax=wbv1%lbwmax
@@ -749,8 +761,9 @@ contains
          not_all_allocated(bv2%csv) .or. &
          not_all_allocated(bv2%ksv) .or. not_all_allocated(bv2%numrotsv) ) then
        call z_deallocate_bv(bv2)
-       allocate(bv2%br(bv1%n,bv1%lbwmax+bv1%ubwmax+1), bv2%csv(bv1%n,bv1%ubwmax), &
-            bv2%ssv(bv1%n,bv1%ubwmax), bv2%ksv(bv1%n,bv1%ubwmax), bv2%numrotsv(bv1%n))
+       allocate(bv2%br(bv1%n,bv1%lbwmax+bv1%ubwmax+1), &
+            bv2%csv(bv1%n,bv1%ubwmax), bv2%ssv(bv1%n,bv1%ubwmax), &
+            bv2%ksv(bv1%n,bv1%ubwmax), bv2%numrotsv(bv1%n))
        bv2%lbwmax=bv1%lbwmax
        bv2%ubwmax=bv1%ubwmax
     end if
@@ -798,8 +811,9 @@ contains
          not_all_allocated(wbv2%csw, wbv2%csv) .or. &
          not_all_allocated(wbv2%numrotsw, wbv2%numrotsv) ) then
        call z_deallocate_wbv(wbv2)
-       allocate(wbv2%br(wbv1%n,wbv1%lbwmax+wbv1%ubwmax+1), wbv2%csv(wbv1%n,wbv1%ubwmax), &
-            wbv2%ssv(wbv1%n,wbv1%ubwmax), wbv2%ksv(wbv1%n,wbv1%ubwmax), wbv2%numrotsv(wbv1%n), &
+       allocate(wbv2%br(wbv1%n,wbv1%lbwmax+wbv1%ubwmax+1), &
+            wbv2%csv(wbv1%n,wbv1%ubwmax), wbv2%ssv(wbv1%n,wbv1%ubwmax), &
+            wbv2%ksv(wbv1%n,wbv1%ubwmax), wbv2%numrotsv(wbv1%n), &
             wbv2%csw(wbv1%lbwmax,wbv1%n), wbv2%ssw(wbv1%lbwmax,wbv1%n), &
             wbv2%jsw(wbv1%lbwmax,wbv1%n), wbv2%numrotsw(wbv1%n))
        wbv2%lbwmax=wbv1%lbwmax
@@ -881,7 +895,7 @@ contains
     call z_truncate_profile_bc(ubt%bc,get_n(ubt), ubt%ubw, get_lbwmax(ubt), &
          get_ubwmax(ubt), lower, upper)
   end subroutine z_truncate_profile_ubt
-  
+
   subroutine d_truncate_profile_wbv(wbv,lower,upper)
     type(d_wbv), intent(inout) :: wbv
     integer(kind=int32), dimension(:), intent(in), optional :: lower, upper
@@ -913,7 +927,7 @@ contains
     call z_truncate_profile_bc(wb%bc,get_n(wb), wb%ubw, get_lbwmax(wb), &
          get_ubwmax(wb), lower, upper)
   end subroutine z_truncate_profile_wb
-  
+
   integer(kind=int32) function d_ub_get_n(ub) result(n)
     type(d_ub) :: ub
     n=ub%n

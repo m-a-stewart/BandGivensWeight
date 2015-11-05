@@ -15,7 +15,7 @@ module mod_qr_factorization
   private
 
   public d_qr, z_qr
-  
+
   public qr_bv_to_ub, d_qr_bv_to_ub, z_qr_bv_to_ub, &
        f_qr_bv_to_ub, f_d_qr_bv_to_ub, f_z_qr_bv_to_ub, &
        d_qr_of, z_qr_of, qr_of

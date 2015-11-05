@@ -45,7 +45,7 @@ _GENERAL_WBV = prec error_id utility \
 
 _CONVERT = convert_bv_to_ub convert_ub_to_bv \
 	convert_wb_to_bt convert_bt_to_wb \
-	convert_wbv_to_ubt convert_ubt_to_wbv 
+	convert_wbv_to_ubt convert_ubt_to_wbv
 _CONVERT_BV_TO_UB = prec error_id \
 	rotation orth_band_types band_types
 _CONVERT_UB_TO_BV = prec error_id \
@@ -179,7 +179,8 @@ _GENERALOBJS = general general_bv general_ub \
 _CONVERTOBJS = convert convert_ub_to_bv \
 	convert_bv_to_ub convert_wb_to_bt \
 	convert_bt_to_wb convert_wbv_to_ubt \
-	convert_ubt_to_wbv 
+	convert_ubt_to_wbv
 
-_OBJS =  $(_MISCOBJS) $(_TYPESOBJS) $(_TRANSFORMSOBJS) $(_ORTHOBJS) $(_GENERALOBJS) \
-	$(_CONVERTOBJS) qr_factorization solve orrb row_compress cond_orth_band
+_OBJS =  $(_MISCOBJS) $(_TYPESOBJS) $(_TRANSFORMSOBJS) $(_ORTHOBJS) \
+	$(_GENERALOBJS) $(_CONVERTOBJS) qr_factorization solve \
+	orrb row_compress cond_orth_band

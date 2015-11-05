@@ -36,10 +36,11 @@ module mod_band_types
        print_abs_bc, d_print_abs_bc, z_print_abs_bc, &
        print_abs_br, d_print_abs_br, z_print_abs_br
 
-  public :: f_rotation_times_tbc, f_d_rotation_times_tbc, f_z_rotation_times_tbc, &
-       f_tbc_times_rotation, f_d_tbc_times_rotation, f_z_tbc_times_rotation, &
-       f_tbr_times_rotation, f_d_tbr_times_rotation, f_z_tbr_times_rotation, &
-       f_rotation_times_tbr, f_d_rotation_times_tbr, f_z_rotation_times_tbr
+  public :: f_rotation_times_tbc, f_d_rotation_times_tbc, &
+       f_z_rotation_times_tbc, f_tbc_times_rotation, f_d_tbc_times_rotation, &
+       f_z_tbc_times_rotation, f_tbr_times_rotation, f_d_tbr_times_rotation, &
+       f_z_tbr_times_rotation, f_rotation_times_tbr, f_d_rotation_times_tbr, &
+       f_z_rotation_times_tbr
 
   public :: rotation_times_tbc, d_rotation_times_tbc, z_rotation_times_tbc, &
        tbc_times_rotation, d_tbc_times_rotation, z_tbc_times_rotation, &
@@ -49,11 +50,15 @@ module mod_band_types
   public :: bc_to_br, d_bc_to_br, z_bc_to_br, &
        br_to_bc, d_br_to_bc, z_br_to_bc
 
-  public :: extract_diagonals_bc, d_extract_diagonals_bc, z_extract_diagonals_bc, &
-       extract_diagonals_br, d_extract_diagonals_br, z_extract_diagonals_br
+  public :: extract_diagonals_bc, d_extract_diagonals_bc, &
+       z_extract_diagonals_bc, extract_diagonals_br, d_extract_diagonals_br, &
+       z_extract_diagonals_br
 
   public :: truncate_profile_bc, d_truncate_profile_bc, z_truncate_profile_bc, &
        truncate_profile_br, d_truncate_profile_br, z_truncate_profile_br
+
+  public :: d_band_norm_bc, z_band_norm_bc, band_norm_bc, &
+       d_band_norm_br, z_band_norm_br, band_norm_br
 
   interface get_el_bc
      module procedure d_get_el_bc, z_get_el_bc
@@ -145,11 +150,11 @@ module mod_band_types
   end interface br_to_bc
 
   interface extract_diagonals_br
-     module procedure d_extract_diagonals_br, z_extract_diagonals_br 
+     module procedure d_extract_diagonals_br, z_extract_diagonals_br
   end interface extract_diagonals_br
 
   interface extract_diagonals_bc
-     module procedure d_extract_diagonals_bc, z_extract_diagonals_bc 
+     module procedure d_extract_diagonals_bc, z_extract_diagonals_bc
   end interface extract_diagonals_bc
 
   interface truncate_profile_bc
@@ -159,6 +164,14 @@ module mod_band_types
   interface truncate_profile_br
      module procedure d_truncate_profile_br, z_truncate_profile_br
   end interface truncate_profile_br
+
+  interface band_norm_bc
+     module procedure d_band_norm_bc, z_band_norm_bc
+  end interface band_norm_bc
+
+  interface band_norm_br
+     module procedure d_band_norm_br, z_band_norm_br
+  end interface band_norm_br
 
 contains
 
@@ -230,7 +243,7 @@ contains
     real(kind=dp), dimension(:,:), intent(in) :: bc
     integer(kind=int32), intent(in) :: ubw, lbw
     real(kind=dp), dimension(:,:), intent(out) :: a
-    ! 
+    !
     integer(kind=int32) :: d, n, k
     a=0.0_dp
     n=size(bc,2)
@@ -250,7 +263,7 @@ contains
     complex(kind=dp), dimension(:,:), intent(in) :: bc
     integer(kind=int32), intent(in) :: ubw, lbw
     complex(kind=dp), dimension(:,:), intent(out) :: a
-    ! 
+    !
     integer(kind=int32) :: d, n, k
     a=(0.0_dp,0.0_dp)
     n=size(bc,2)
@@ -403,7 +416,7 @@ contains
 
   subroutine f_d_rotation_times_tbc(c,s,b,n,lbw,ubw,l,p,j)
     real(kind=dp), dimension(:,:), intent(inout) :: b
-    real(kind=dp), intent(in) :: c, s    
+    real(kind=dp), intent(in) :: c, s
     integer(kind=int32), intent(in) :: j,n, ubw,lbw, l, p
     !
     real(kind=dp) :: tmp
@@ -421,7 +434,7 @@ contains
        b(d+1,k) = s*tmp + c*b(d+1,k)
     end do
   end subroutine f_d_rotation_times_tbc
-  
+
   subroutine d_rotation_times_tbc(r,b,n,lbw,ubw,l,p,j)
     real(kind=dp), dimension(:,:), intent(inout) :: b
     type(d_rotation), intent(in) :: r
@@ -467,7 +480,7 @@ contains
        b(d+1,k) = s*tmp + c*b(d+1,k)
     end do
   end subroutine f_z_rotation_times_tbc
-  
+
   ! Rotation times truncated band matrix with aligned columns.
   ! First l and last p columns are not modified.
   subroutine z_rotation_times_tbc(r,b,n,lbw,ubw,l,p,j)
@@ -558,7 +571,7 @@ contains
        b(d-1,k+1)=-conjg(s)*tmp+c*b(d-1,k+1)
     end do
   end subroutine f_z_tbc_times_rotation
-  
+
   subroutine z_tbc_times_rotation(b,n,lbw,ubw,l,p,r,k)
     complex(kind=dp), dimension(:,:), intent(inout) :: b
     type(z_rotation), intent(in) :: r
@@ -583,11 +596,11 @@ contains
 
   ! rotations for band matrices with aligned rows.
   !
-  ! apply a rotation to columns k and k+1 of a truncated band matrix with aligned rows.
-  ! The rotation is not applied to the first l or last p rows.
+  ! apply a rotation to columns k and k+1 of a truncated band matrix with
+  ! aligned rows. The rotation is not applied to the first l or last p rows.
   subroutine f_d_tbr_times_rotation(b,m,lbw,ubw,l,p,c,s,k)
     real(kind=dp), dimension(:, :), intent(inout) :: b
-    real(kind=dp), intent(in) :: c, s    
+    real(kind=dp), intent(in) :: c, s
     integer(kind=int32), intent(in) :: k,m, ubw,lbw, l,p
     !
     real(kind=dp) :: tmp
@@ -605,8 +618,8 @@ contains
     end do
   end subroutine f_d_tbr_times_rotation
 
-  ! apply a rotation to columns k and k+1 of a truncated band matrix with aligned rows.
-  ! The rotation is not applied to the first l or last p rows.
+  ! apply a rotation to columns k and k+1 of a truncated band matrix with
+  ! aligned rows. The rotation is not applied to the first l or last p rows.
   subroutine d_tbr_times_rotation(b,m,lbw,ubw,l,p,r,k)
     real(kind=dp), dimension(:, :), intent(inout) :: b
     type(d_rotation), intent(in) :: r
@@ -648,7 +661,7 @@ contains
        b(j,d+1)=-conjg(s)*tmp+c*b(j,d+1)
     end do
   end subroutine f_z_tbr_times_rotation
-  
+
   subroutine z_tbr_times_rotation(b,m,lbw,ubw,l,p,r,k)
     complex(kind=dp), dimension(:,:), intent(inout) :: b
     type(z_rotation), intent(in) :: r
@@ -675,7 +688,7 @@ contains
   ! rotation is not applied to the first l or last p columns.
   subroutine f_d_rotation_times_tbr(c,s,b,m,lbw,ubw,l,p,j)
     real(kind=dp), dimension(:,:), intent(inout) :: b
-    real(kind=dp), intent(in) :: c, s    
+    real(kind=dp), intent(in) :: c, s
     integer(kind=int32), intent(in) :: j,m, ubw,lbw, l, p
     !
     real(kind=dp) :: tmp
@@ -692,7 +705,7 @@ contains
        b(j+1,d-1)=s*tmp+c*b(j+1,d-1)
     end do
   end subroutine f_d_rotation_times_tbr
-  
+
   ! A rotation times a truncated band matrix with aligned rows.  The
   ! rotation is not applied to the first l or last p columns.
   subroutine d_rotation_times_tbr(r,b,m,lbw,ubw,l,p,j)
@@ -922,7 +935,7 @@ contains
     real(kind=dp), dimension(n,lbwmax+ubwmax+1), intent(inout) :: br
     integer(kind=int32), intent(in) :: n, lbw, lbwmax, ubwmax
     integer(kind=int32), dimension(n), intent(in), optional :: lower, upper
-    
+
     integer(kind=int32) :: j
 
     if (present(upper)) then
@@ -936,14 +949,14 @@ contains
           br(j,1:lbw-lower(j)) = 0.0_dp
        end do
     end if
-    
+
   end subroutine d_truncate_profile_br
 
   subroutine z_truncate_profile_br(br,n,lbw,lbwmax,ubwmax,lower,upper)
     complex(kind=dp), dimension(n,lbwmax+ubwmax+1), intent(inout) :: br
     integer(kind=int32), intent(in) :: n, lbw, lbwmax, ubwmax
     integer(kind=int32), dimension(n), intent(in), optional :: lower, upper
-    
+
     integer(kind=int32) :: j
 
     if (present(upper)) then
@@ -963,7 +976,7 @@ contains
     real(kind=dp), dimension(lbwmax+ubwmax+1,n), intent(inout) :: bc
     integer(kind=int32), intent(in) :: n, ubw, lbwmax, ubwmax
     integer(kind=int32), dimension(n), intent(in), optional :: lower, upper
-    
+
     integer(kind=int32) :: j
 
     if (present(upper)) then
@@ -977,14 +990,14 @@ contains
           bc(ubw+2+lower(j):lbwmax+ubwmax+1,j)=0.0_dp
        end do
     end if
-    
+
   end subroutine d_truncate_profile_bc
 
   subroutine z_truncate_profile_bc(bc,n,ubw,lbwmax,ubwmax,lower,upper)
     complex(kind=dp), dimension(lbwmax+ubwmax+1,n), intent(inout) :: bc
     integer(kind=int32), intent(in) :: n, ubw, lbwmax, ubwmax
     integer(kind=int32), dimension(n), intent(in), optional :: lower, upper
-    
+
     integer(kind=int32) :: j
 
     if (present(upper)) then
@@ -998,8 +1011,251 @@ contains
           bc(ubw+2+lower(j):lbwmax+ubwmax+1,j)=(0.0_dp,0.0_dp)
        end do
     end if
-    
+
   end subroutine z_truncate_profile_bc
 
-end module mod_band_types
+  real(kind=dp) function d_band_norm_bc(bc,n,lbw,ubw,lbwmax, &
+       ubwmax,d0,d1) result(x)
+    real(kind=dp), dimension(lbwmax+ubwmax+1,n), intent(in) :: bc
+    integer(kind=int32), intent(in) :: n, lbw, ubw, lbwmax, ubwmax, d0, d1
 
+    integer(kind=int32) :: k,l,l0,l1
+    real(kind=dp) :: y, tmp
+
+    l0 = ubw+1-d1
+    l1 = ubw+1-d0
+
+    y=0.0_dp
+    ! maxabs for the specified band.
+    do l=max(1,l0),min(ubw+1,l1)
+       do k=ubw-l+2,n
+          tmp=abs(bc(l,k))
+          if (tmp > y) y=tmp
+       end do
+    end do
+    do l=max(l0,ubw+2), min(ubw+lbw+1,l1)
+       do k=1,n-l+ubw+1
+          tmp=abs(bc(l,k))
+          if (tmp > y) y=tmp
+       end do
+    end do
+    x=0.0_dp;
+    if (y==0.0_dp) return
+    y=(2.0_dp)**(floor(log(y)/log(2.0_dp)))
+    y=1.0_dp/y
+    if (y > 1e150_dp .or. y < 1e-150_dp) then
+       do l=max(1,l0),min(ubw+1,l1)
+          do k=ubw-l+2,n
+             tmp=bc(l,k)*y
+             x=x+tmp*tmp
+          end do
+       end do
+       do l=max(l0,ubw+2), min(ubw+lbw+1,l1)
+          do k=1,n-l+ubw+1
+             tmp=bc(l,k)*y
+             x=x+tmp*tmp
+          end do
+       end do
+       x=sqrt(x)/y
+    else
+       do l=max(1,l0),min(ubw+1,l1)
+          do k=ubw-l+2,n
+             tmp=bc(l,k)
+             x=x+tmp*tmp
+          end do
+       end do
+       do l=max(l0,ubw+2), min(ubw+lbw+1,l1)
+          do k=1,n-l+ubw+1
+             tmp=bc(l,k)
+             x=x+tmp*tmp
+          end do
+       end do
+       x=sqrt(x)
+    end if
+  end function d_band_norm_bc
+
+  real(kind=dp) function z_band_norm_bc(bc,n,lbw,ubw,lbwmax, &
+       ubwmax,d0,d1) result(x)
+    complex(kind=dp), dimension(lbwmax+ubwmax+1,n), intent(in) :: bc
+    integer(kind=int32), intent(in) :: n, lbw, ubw, lbwmax, ubwmax, d0, d1
+
+    integer(kind=int32) :: k,l,l0,l1
+    real(kind=dp) :: y, tmp
+
+    l0 = ubw+1-d1
+    l1 = ubw+1-d0
+
+    y=0.0_dp
+    ! maxabs for the specified band.
+    do l=max(1,l0),min(ubw+1,l1)
+       do k=ubw-l+2,n
+          tmp=abs(bc(l,k))
+          if (tmp > y) y=tmp
+       end do
+    end do
+    do l=max(l0,ubw+2), min(ubw+lbw+1,l1)
+       do k=1,n-l+ubw+1
+          tmp=abs(bc(l,k))
+          if (tmp > y) y=tmp
+       end do
+    end do
+
+    x=0.0_dp;
+    if (y==0.0_dp) return
+    y=(2.0_dp)**(floor(log(y)/log(2.0_dp)))
+    y=1.0_dp/y
+    if (y > 1e150_dp .or. y < 1e-150_dp) then
+       do l=max(1,l0),min(ubw+1,l1)
+          do k=ubw-l+2,n
+             tmp=abs(bc(l,k)*y)
+             x=x+tmp*tmp
+          end do
+       end do
+       do l=max(l0,ubw+2), min(ubw+lbw+1,l1)
+          do k=1,n-l+ubw+1
+             tmp=abs(bc(l,k)*y)
+             x=x+tmp*tmp
+          end do
+       end do
+       x=sqrt(x)/y
+    else
+       do l=max(1,l0),min(ubw+1,l1)
+          do k=ubw-l+2,n
+             tmp=abs(bc(l,k))
+             x=x+tmp*tmp
+          end do
+       end do
+       do l=max(l0,ubw+2), min(ubw+lbw+1,l1)
+          do k=1,n-l+ubw+1
+             tmp=abs(bc(l,k))
+             x=x+tmp*tmp
+          end do
+       end do
+       x=sqrt(x)
+    end if
+  end function z_band_norm_bc
+
+  real(kind=dp) function d_band_norm_br(br,n,lbw,ubw,lbwmax, &
+       ubwmax,d0,d1) result(x)
+    real(kind=dp), dimension(n,lbwmax+ubwmax+1), intent(in) :: br
+    integer(kind=int32), intent(in) :: n, lbw, ubw, lbwmax, ubwmax, d0, d1
+
+    integer(kind=int32) :: j,l,l0,l1
+    real(kind=dp) :: y, tmp
+
+    l0 = d0+lbw+1
+    l1 = d1+lbw+1
+
+    y=0.0_dp
+    ! maxabs for the specified band.
+
+    do l=max(1,l0),min(lbw+1,l1)
+       do j=lbw-l+2,n
+          tmp=abs(br(j,l))
+          if (tmp > y) y=tmp
+       end do
+    end do
+    do l=max(l0,lbw+2), min(ubw+lbw+1,l1)
+       do j=1,n-l+lbw+1
+          tmp=abs(br(j,l))
+          if (tmp > y) y=tmp
+       end do
+    end do
+
+    x=0.0_dp;
+    if (y==0.0_dp) return
+    y=(2.0_dp)**(floor(log(y)/log(2.0_dp)))
+    y=1.0_dp/y
+    if (y > 1e150_dp .or. y < 1e-150_dp) then
+       do l=max(1,l0),min(lbw+1,l1)
+          do j=lbw-l+2,n
+             tmp=br(j,l)*y
+             x=x+tmp*tmp
+          end do
+       end do
+       do l=max(l0,lbw+2), min(ubw+lbw+1,l1)
+          do j=1,n-l+lbw+1
+             tmp=br(j,l)*y
+             x=x+tmp*tmp
+          end do
+       end do
+       x=sqrt(x)/y
+    else
+       do l=max(1,l0),min(lbw+1,l1)
+          do j=lbw-l+2,n
+             tmp=br(j,l)
+             x=x+tmp*tmp
+          end do
+       end do
+       do l=max(l0,lbw+2), min(ubw+lbw+1,l1)
+          do j=1,n-l+lbw+1
+             tmp=br(j,l)
+             x=x+tmp*tmp
+          end do
+       end do
+       x=sqrt(x)
+    end if
+  end function d_band_norm_br
+
+  real(kind=dp) function z_band_norm_br(br,n,lbw,ubw,lbwmax, &
+       ubwmax,d0,d1) result(x)
+    complex(kind=dp), dimension(n,lbwmax+ubwmax+1), intent(in) :: br
+    integer(kind=int32), intent(in) :: n, lbw, ubw, lbwmax, ubwmax, d0, d1
+
+    integer(kind=int32) :: j,l,l0,l1
+    real(kind=dp) :: y, tmp
+
+    l0 = d0+lbw+1
+    l1 = d1+lbw+1
+
+    y=0.0_dp
+    ! maxabs for the specified band.
+    do l=max(1,l0),min(lbw+1,l1)
+       do j=lbw-l+2,n
+          tmp=abs(br(j,l))
+          if (tmp > y) y=tmp
+       end do
+    end do
+    do l=max(l0,lbw+2), min(ubw+lbw+1,l1)
+       do j=1,n-l+lbw+1
+          tmp=abs(br(j,l))
+          if (tmp > y) y=tmp
+       end do
+    end do
+
+    x=0.0_dp;
+    if (y==0.0_dp) return
+    y=(2.0_dp)**(floor(log(y)/log(2.0_dp)))
+    y=1.0_dp/y
+    if (y > 1e150_dp .or. y < 1e-150_dp) then
+       do l=max(1,l0),min(lbw+1,l1)
+          do j=lbw-l+2,n
+             tmp=abs(br(j,l)*y)
+             x=x+tmp*tmp
+          end do
+       end do
+       do l=max(l0,lbw+2), min(ubw+lbw+1,l1)
+          do j=1,n-l+lbw+1
+             tmp=abs(br(j,l)*y)
+             x=x+tmp*tmp
+          end do
+       end do
+       x=sqrt(x)/y
+    else
+       do l=max(1,l0),min(lbw+1,l1)
+          do j=lbw-l+2,n
+             tmp=abs(br(j,l))
+             x=x+tmp*tmp
+          end do
+       end do
+       do l=max(l0,lbw+2), min(ubw+lbw+1,l1)
+          do j=1,n-l+lbw+1
+             tmp=abs(br(j,l))
+             x=x+tmp*tmp
+          end do
+       end do
+       x=sqrt(x)
+    end if
+  end function z_band_norm_br
+
+end module mod_band_types
