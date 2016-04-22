@@ -33,9 +33,8 @@ $(OBJDIR)/%.o : %.f90
 	$(FC) $(CFLAGS) $(PROFCFLAGS) -I$(OBJDIR) -J$(OBJDIR) -c $< -o $@
 
 $(BINDIR)/% : $(OBJDIR)/%.o
-	$(FC) $(PROFLFLAGS) $(LFLAGS) $< $(OBJS) -o $@
+	$(FC) $(PROFLFLAGS) $< $(OBJS) $(LFLAGS) -o $@
 
 .PHONY : clean
 clean :
 	rm $(OBJDIR)/* $(BINDIR)/*
-
