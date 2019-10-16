@@ -141,11 +141,11 @@ contains
     end if
 
     ubw=min(n-1,ubw_ubt+lbw_ubt)
-    b_ubt=eoshift(b_ubt,ubw_ubt-ubw,dim=1)
+    b_ubt=eoshift(b_ubt,ubw_ubt-ubw,dim=1_int64)
     if (ubw < n-1) then
        ubw1=ubw+1
        full_ubw=.false.
-       b_ubt=eoshift(b_ubt,-1,dim=1)
+       b_ubt=eoshift(b_ubt,-1,dim=1_int64)
     else
        ubw1=ubw
        full_ubw=.true.
@@ -203,7 +203,7 @@ contains
        end if
     end do
     if (.not. full_ubw) then
-       b_ubt=eoshift(b_ubt,1,dim=1)
+       b_ubt=eoshift(b_ubt,1,dim=1_int64)
     end if
     call bc_to_br(b_ubt,b_bv,lbw,ubw)
     lbw_bv=lbw; ubw_bv=ubw
@@ -319,11 +319,11 @@ contains
     end if
 
     ubw=min(n-1,ubw_ubt+lbw_ubt)
-    b_ubt=eoshift(b_ubt,ubw_ubt-ubw,dim=1)
+    b_ubt=eoshift(b_ubt,ubw_ubt-ubw,dim=1_int64)
     if (ubw < n-1) then
        ubw1=ubw+1
        full_ubw=.false.
-       b_ubt=eoshift(b_ubt,-1,dim=1)
+       b_ubt=eoshift(b_ubt,-1,dim=1_int64)
     else
        ubw1=ubw
        full_ubw=.true.
@@ -381,7 +381,7 @@ contains
     end do
 
     if (.not. full_ubw) then
-       b_ubt=eoshift(b_ubt,1,dim=1)
+       b_ubt=eoshift(b_ubt,1,dim=1_int64)
     end if
     call bc_to_br(b_ubt,b_bv,lbw,ubw)
     lbw_bv=lbw; ubw_bv=ubw

@@ -112,7 +112,7 @@ contains
     lbw1=lbw
     if (ubw < n-1) then
        ubw1=ubw+1
-       b_ub=eoshift(b_ub,-1,dim=1)
+       b_ub=eoshift(b_ub,-1,dim=1_int64)
        full_ubw=.false.
     else
        ubw1=ubw
@@ -135,7 +135,7 @@ contains
     end do
     ! Store the results in b_bv
     if (.not. full_ubw) then
-       b_ub=eoshift(b_ub,1,dim=1)
+       b_ub=eoshift(b_ub,1,dim=1_int64)
     end if
     call bc_to_br(b_ub, b_bv, lbw, ubw)
   end subroutine f_d_convert_ub_to_bv
@@ -221,7 +221,7 @@ contains
     lbw1=lbw
     if (ubw < n-1) then
        ubw1=ubw+1
-       b_ub=eoshift(b_ub,-1,dim=1)
+       b_ub=eoshift(b_ub,-1,dim=1_int64)
        full_ubw=.false.
     else
        ubw1=ubw
@@ -244,7 +244,7 @@ contains
     end do
     ! Store the results in b_bv
     if (.not. full_ubw) then
-       b_ub=eoshift(b_ub,1,dim=1)
+       b_ub=eoshift(b_ub,1,dim=1_int64)
     end if
     call bc_to_br(b_ub, b_bv, lbw, ubw)
   end subroutine f_z_convert_ub_to_bv

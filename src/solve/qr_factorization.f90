@@ -224,7 +224,7 @@ contains
     end do
 
     lbw_ub=0; ubw_ub=ubw
-    b_bv=eoshift(b_bv,lbw,dim=2)
+    b_bv=eoshift(b_bv,lbw,dim=2_int64)
     call br_to_bc(b_bv,b_ub,0,ubw)
   end subroutine f_d_qr_bv_to_ub
 
@@ -411,7 +411,7 @@ contains
     end do
 
     lbw_ub=0; ubw_ub=ubw
-    b_bv=eoshift(b_bv,lbw,dim=2)
+    b_bv=eoshift(b_bv,lbw,dim=2_int64)
     call br_to_bc(b_bv,b_ub,0,ubw)
   end subroutine f_z_qr_bv_to_ub
 

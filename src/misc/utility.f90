@@ -678,7 +678,7 @@ contains
        do k=1,size(a,2)
           call random_number(x)
           call random_number(y)
-          a(j,k)=z_random_scale*cmplx(x,y)+z_random_shift
+          a(j,k)=z_random_scale*cmplx(x,y,dp)+z_random_shift
        end do
     end do
   end subroutine z_random_matrix_to
@@ -690,7 +690,7 @@ contains
     do j=1,size(a)
        call random_number(x)
        call random_number(y)
-       a(j)= z_random_scale*cmplx(x,y)+z_random_shift
+       a(j)= z_random_scale*cmplx(x,y,dp)+z_random_shift
     end do
   end subroutine z_v_random_matrix_to
 
@@ -699,7 +699,7 @@ contains
     real(kind=dp) :: x,y
     call random_number(x)
     call random_number(y)
-    a=z_random_scale*cmplx(x,y)+z_random_shift
+    a=z_random_scale*cmplx(x,y,dp)+z_random_shift
   end subroutine z_s_random_matrix_to
 
   integer(kind=int32) function i_equals_option(j,k) result(i)

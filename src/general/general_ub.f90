@@ -220,7 +220,7 @@ contains
           end do
           pl(:,1)=pl(:,1)*pq(1,1)
           ! shift so q is (nl-1) x (n-k-1)
-          pq=eoshift(eoshift(pq,1,dim=1),1,dim=2)
+          pq=eoshift(eoshift(pq,1,dim=1_int64),1,dim=2_int64)
 
           if (k+nl==n) then
              ! q is (nl-1) x (nl-1) extend one row and exit
@@ -258,7 +258,7 @@ contains
                 call general_times_rotation(pl, rot, j-1,j)
              end do
              pl(:,1)=pl(:,1)*pq(1,1)
-             pq=eoshift(eoshift(pq,1,dim=1),1,dim=2)
+             pq=eoshift(eoshift(pq,1,dim=1_int64),1,dim=2_int64)
              roffs1=k-nl ! L starts in row k-nl+1
              k1=k+1 ! u_k+1 is the next transformation
              ubw1=nl
@@ -267,9 +267,9 @@ contains
           ! extend pl to the right. (note this requires k+nl < n),
           ! making pl nl x nl+1 and q (nl+1) x (n-k)
           pl => a(roffs+1:k, k+1:k+nl+1)
-          pl=eoshift(pl,-1,dim=2)
+          pl=eoshift(pl,-1,dim=2_int64)
           pq => q(1:nl+1, 1:n-k)
-          pq=eoshift(pq,-1,dim=1)
+          pq=eoshift(pq,-1,dim=1_int64)
 
           ! Downdate a column of a.  This makes L nl x nl and q nl x n-k-1
           ! with L stored in a(k-nl+1:k,k+2:k+nl+1)
@@ -283,7 +283,7 @@ contains
              call general_times_rotation(pl(j-1:nl,:),rot,1,j)
           end do
           pl(:,1)=pl(:,1)*pq(1,1)
-          pq=eoshift(eoshift(pq,1,dim=1),1,dim=2)
+          pq=eoshift(eoshift(pq,1,dim=1_int64),1,dim=2_int64)
           
           if (nl==n-k-1) then
              ! q is now (nl) x (nl).  Extend the LQ factorization down one
@@ -525,7 +525,7 @@ contains
              call general_times_rotation(pl(j:nl,:),rot,1,j)
           end do
           pl(:,1)=pl(:,1)*pq(1,1)
-          pq=eoshift(eoshift(pq,1,dim=1),1,dim=2)
+          pq=eoshift(eoshift(pq,1,dim=1_int64),1,dim=2_int64)
 
           if (k+nl==n) then
              ! q is (nl-1) x (nl-1) extend one row and exit
@@ -564,7 +564,7 @@ contains
                 call general_times_rotation(pl, rot, j-1,j)
              end do
              pl(:,1)=pl(:,1)*pq(1,1)
-             pq=eoshift(eoshift(pq,1,dim=1),1,dim=2)
+             pq=eoshift(eoshift(pq,1,dim=1_int64),1,dim=2_int64)
              roffs1=k-nl ! L starts in row k-nl+1
              k1=k+1 ! u_k+1 is the next transformation
              ubw1=nl
@@ -573,9 +573,9 @@ contains
           ! extend pl to the right. (note this requires k+nl < n),
           ! making pl nl x nl+1 and q (nl+1) x (n-k)
           pl => a(roffs+1:k, k+1:k+nl+1)
-          pl=eoshift(pl,-1,dim=2)
+          pl=eoshift(pl,-1,dim=2_int64)
           pq => q(1:nl+1, 1:n-k)
-          pq=eoshift(pq,-1,dim=1)
+          pq=eoshift(pq,-1,dim=1_int64)
 
           ! Downdate a column of a.  This makes L nl x nl and q nl x n-k-1
           ! with L stored in a(k-nl+1:k,k+2:k+nl+1)
@@ -589,7 +589,7 @@ contains
              call general_times_rotation(pl(j-1:nl,:),rot,1,j)
           end do
           pl(:,1)=pl(:,1)*pq(1,1)
-          pq=eoshift(eoshift(pq,1,dim=1),1,dim=2)
+          pq=eoshift(eoshift(pq,1,dim=1_int64),1,dim=2_int64)
           
           if (nl==n-k-1) then
              ! q is now (nl) x (nl).  Extend the LQ factorization down one

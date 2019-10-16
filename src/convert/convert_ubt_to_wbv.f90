@@ -124,7 +124,7 @@ contains
     ! must allow for temporary fill-in
     if (ubw < n-1) then
        ubw1=ubw+1
-       b_ubt=eoshift(b_ubt,-1,dim=1)
+       b_ubt=eoshift(b_ubt,-1,dim=1_int64)
        full_ubw=.false.
     else
        ubw1=ubw
@@ -173,7 +173,7 @@ contains
     end do
     ! Store the results in b_wbv
     if (.not. full_ubw) then
-       b_ubt=eoshift(b_ubt,1,dim=1)
+       b_ubt=eoshift(b_ubt,1,dim=1_int64)
     end if
     call bc_to_br(b_ubt, b_wbv, lbw, ubw)
   end subroutine f_d_convert_ubt_to_wbv
@@ -279,7 +279,7 @@ contains
     ! must allow for temporary fill-in
     if (ubw < n-1) then
        ubw1=ubw+1
-       b_ubt=eoshift(b_ubt,-1,dim=1)
+       b_ubt=eoshift(b_ubt,-1,dim=1_int64)
        full_ubw=.false.
     else
        ubw1=ubw
@@ -328,7 +328,7 @@ contains
     end do
     ! Store the results in b_wbv
     if (.not. full_ubw) then
-       b_ubt=eoshift(b_ubt,1,dim=1)
+       b_ubt=eoshift(b_ubt,1,dim=1_int64)
     end if
     call bc_to_br(b_ubt, b_wbv, lbw, ubw)
   end subroutine f_z_convert_ubt_to_wbv
