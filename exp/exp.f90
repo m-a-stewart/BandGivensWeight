@@ -11,14 +11,17 @@ program exp
   real(kind=dp) :: t0, t1, sigma1, sigman
 
   integer(kind=int32), parameter :: runs=50
-  real(kind=dp) :: cond_sum, rc_time, qr_time, q_rc_time, q_qr_time, res_sum, solve_time
-  
+  real(kind=dp) :: cond_sum, rc_time, qr_time, q_rc_time, q_qr_time, res_sum, &
+       max_res, solve_time
 
   call initialize_errors
-  na=100000; lbwa=5; ubwa=5
+  ! na=100000; lbwa=5; ubwa=5
+  ! na=1000000; lbwa=5; ubwa=5
+  na=1000000; lbwa=5; ubwa=6
   cond_sum=0.0_dp; rc_time=0.0_dp; qr_time=0.0_dp;
   q_rc_time=0.0_dp; q_qr_time=0.0_dp; res_sum=0.0_dp
   solve_time=0.0_dp
+  max_res=0.0_dp
   do j=1,runs
      print *, "j: ", j
      allocate(ur(na),vr(na),svres(na))
@@ -60,10 +63,12 @@ program exp
      res=reshape(ubta*reshape(x,[na,1])-reshape(rhs0,[na,1]),[na])
      print *, "Relative residual: ", norm2(res)/(sigma1*norm2(x)+norm2(rhs0))
      res_sum=res_sum+norm2(res)/(sigma1*norm2(x)+norm2(rhs0))
+     max_res=max(max_res,norm2(res)/(sigma1*norm2(x)+norm2(rhs0)))
      deallocate(ur,vr,svres)
      print *
   end do
   print *, "Average residual: ", res_sum/runs
+  print *, "Max residual: ", max_res
   write (*, "(' Cond2: ', ES8.2)") cond_sum/runs
   print *, "Average row compress time: ", rc_time/runs
   print *, "Averge Q_rc multiply time: ", q_rc_time/runs
