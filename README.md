@@ -21,18 +21,18 @@ being very efficient.
 Build Process
 =============
 
-The code has been tested on a Debian GNU/Linux 7 system with
-`gfortran` version 4.7.2.  The makefile is arranged as a single top
+The code has been tested on a Debian GNU/Linux 10 system with
+`gfortran` version 8.3.0.  The makefile is arranged as a single top
 level makefile with includes in `./src/src.mk`, `./test/test.mk`, and
 `./exp/exp.mk`.  There are a number of higher level targets:
 
-|-----------------|--------------------------------------------|
+| Target          | Description                                |
+| --------------- | ------------------------------------------ |
 | `all`           | build all modules                          |
 | `all_tests`     | build all tests                            |
 | `run_all_tests` | build and run all tests                    |
 | `run_exp`       | build and run numerical experiments        |
 | `view_notes`    | Convert this file to pdf and open a viewer |
-|-----------------|--------------------------------------------|
 
 There are also a number of more specific targets in `./src/src.mk`,
 `./test/test.mk`, and `./exp/exp.mk`.
