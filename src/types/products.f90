@@ -131,7 +131,8 @@ module mod_products
           d_product_of_wb_and_general0, z_product_of_wb_and_general0, &
           d_product_of_bt_and_general0, z_product_of_bt_and_general0, &
           d_product_of_ubt_and_general0,  z_product_of_ubt_and_general0, &
-          d_product_of_wbv_and_general0,  z_product_of_wbv_and_general0
+          d_product_of_wbv_and_general0,  z_product_of_wbv_and_general0, &
+          d_product_of_general_and_ub0, z_product_of_general_and_ub0
   end interface operator (*)
 
 contains

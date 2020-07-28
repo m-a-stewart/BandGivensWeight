@@ -10,7 +10,7 @@ program test_convert_ubt_and_wbv
   real(kind=dp) :: t0, t1
   integer(kind=int32) :: na, ubwa, lbwa
   type(error_info) :: error
-  real(kind=dp), parameter :: tol=1e-15, c=2.0
+  real(kind=dp), parameter :: tol=3e-15, c=2.0
   !
   real(kind=dp), dimension(:,:), allocatable :: a0_d, a1_d
   complex(kind=dp), dimension(:,:), allocatable :: a0_z, a1_z
